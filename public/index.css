@@ -1,0 +1,39 @@
+body{
+	width: 100%;
+	height: 100%;
+}
+
+.page-container{
+	margin: 5px 41px;
+}
+
+.feed-container .make-post{
+	position: relative;
+    background: #F78C8C;
+    top: 85px;
+    padding: 12px 20px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.feed-container .make-post textarea{
+	height: 100px;
+    width: 307px;
+    border-radius: 17px;
+    resize: none;
+    display: block;
+}
+
+.feed-container .make-post button{
+	background: none;
+	border: none;
+}
+
+.menu{
+	height: 1000px;
+    background: rgb(87, 89, 90);
+}
+
+.assignment-dashboard{
+	background: rgb(230,230,230);
+}
