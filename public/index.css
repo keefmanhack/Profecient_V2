@@ -34,6 +34,104 @@ body{
     background: rgb(87, 89, 90);
 }
 
+.assignments-container{
+    background: rgb(30,30,30);
+    padding: 10px;
+}
+
 .assignment-dashboard{
-	background: rgb(230,230,230);
+    padding: 10px;
+    height: 300px;
+    background: rgb(245,245,245);
+    color: rgb(30,30,30);;
+    border-radius: 5px;
+    position: relative;
+}
+
+.assignment-dashboard h5{
+    font-size: 15px;
+}
+
+.assignment-dashboard #add-assignment{
+    background: none;
+    border: none;
+    color: #F65656;
+    font-weight: 800;
+    position: absolute;
+    font-size: 42px;
+    top: -6%;
+    left: 90%;
+}
+
+.assignment-dashboard #add-todo{
+    background: none;
+    border: none;
+    color: #9CFF94;
+    font-weight: 800;
+    position: absolute;
+    font-size: 42px;
+    top: 69%;
+    left: 89%;
+}
+
+.see-more{
+    background: none;
+    border: none;
+    font-size: 14px;
+    position: relative;
+    left: 79%;
+    top: -8px;
+    font-weight: 600;
+}
+
+.see-more-to-do {
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    position: absolute;
+    left: 78%;
+}
+
+.assignment{
+    margin-bottom: 5px;
+    padding: 8px 10px 0px 10px;
+    border-radius: 15px;
+    font-weight: 800;
+}
+
+.assignment-dashboard hr{
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.assignment button{
+    font-size: 15px;
+    color: black;
+    background: none;
+    border: none;
+    position: relative;
+    top: -5px;
+    background: white;
+    border-radius: 100%;
+    padding: 0 10px 8px 10px;
+}
+
+.to-do{
+    background: #9CFF94;
+    display: inline-flex;
+    font-weight: 700;
+    border-radius: 6px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.to-do h1{
+    padding: 0 5px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+button:hover{
+    opacity: .7;
 }
