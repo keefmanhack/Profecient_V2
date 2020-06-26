@@ -5,11 +5,12 @@ body{
 
 .page-container{
 	margin: 5px 41px;
+    position: relative;
 }
 
 .feed-container .make-post{
 	position: relative;
-    background: #F78C8C;
+    background: #3185FC;
     top: 85px;
     padding: 12px 20px;
     border-top-left-radius: 5px;
@@ -118,7 +119,6 @@ body{
 }
 
 .to-do{
-    background: #9CFF94;
     display: inline-flex;
     font-weight: 700;
     border-radius: 6px;
@@ -126,12 +126,82 @@ body{
     margin-bottom: 5px;
 }
 
-.to-do h1{
+.to-do button{
+    background: #9CFF94;
+    border: none;
     padding: 0 5px;
     font-size: 15px;
     font-weight: 600;
+    margin: 0;
+    margin-bottom: 5px;
 }
 
 button:hover{
     opacity: .7;
+}
+
+.truncate {
+  width: 97%;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+}
+
+
+
+.agenda{
+    background: rgb(30,30,30);
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.agenda .foreground{
+    height: 300px;
+    background: rgb(245,245,245);
+    color: rgb(30,30,30);
+    border-radius: 5px;
+    position: relative;
+    overflow: scroll;
+}
+
+.agenda h1{
+    color: white;
+}
+
+.agenda .time-hr h5{
+        position: relative;
+    font-size: 10px;
+    font-weight: 600;
+    left: 87%;
+    top: -29px;
+}
+
+.agenda .time-hr{
+    position: absolute;
+    width: 100%;
+}
+
+.agenda .item-container{
+    background: #BFF2A7;
+    position: relative;
+    width: fit-content;
+    padding: 10px;
+    left: 10px;
+    top: 10px;
+    border-radius: 11px;
+}
+
+.item-container h2{
+        display: inline-block;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.item-container h3{
+    font-size: 14px;
+    display: inline-block;
+    margin-left: 10px;
+    font-weight: 200;
 }

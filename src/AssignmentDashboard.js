@@ -5,7 +5,7 @@ class AssignmentDashboard extends React.Component{
 		return(
 			<div className='assignment-dashboard'>
 				<h1>Upcomming</h1>
-				<button id='add-assignment'>+</button>
+				<button onClick={() => this.props.handleNewAssignment()} id='add-assignment'>+</button>
 				<hr/>
 				<Assignment backgroundColor={{backgroundColor:'#FFCECE'}} dueDate='Tomorrow' name='Algebra HW'/>
 				<Assignment backgroundColor={{backgroundColor:'#F9E7CD'}} dueDate='Wed.' name='Geometry HW'/>
@@ -44,14 +44,62 @@ class Assignment extends React.Component{
 	}
 }
 
-class ToDo extends React.Component{
+class NewAssignment extends React.Component{
 	render(){
+		const classes = this.props.classes.map((o, index) =>
+				<div key={index} className='col-lg-3'>
+			       <button 
+			       		className='class' 
+			       		onClick={() => this.props.handleClassClick(index)} 
+			       		key={index}
+			       	>
+			       			<h5 
+			       				className='truncate'
+			       			>{o}
+			       			</h5>
+			       	</button>
+			      </div>
+			)
+
 		return(
-			<div className='to-do'>
-				<h1>{this.props.text}</h1>
+			<div className='new-assignment'>
+				<button onClick={()=> this.props.hideNewAssignment()} id='X'>X</button>
+				<div className='row'>
+					{classes}
+				</div>
+
+				<div className='row'>
+					<div className='col'>
+						<input placeholder='Assignment Name' className='name' type='text' />
+					</div>
+				</div>
+
+				<div className='row'>
+					<div className='col'>
+						<input placeholder='Date due' type='text' />
+					</div>
+					<div className='col'>
+						<input placeholder='Time due' type='text' />
+					</div>
+				</div>
+				<div className='col textarea-col'>
+					<textarea placeholder='Description'></textarea>
+				</div>
+				<button className='submit'>Submit</button>
 			</div>
 		);
 	}
 }
 
+class ToDo extends React.Component{
+	render(){
+		return(
+			<div className='to-do'>
+				<button>{this.props.text}</button>
+			</div>
+		);
+	}
+}
+
+export {NewAssignment};
 export default AssignmentDashboard;
