@@ -52,20 +52,14 @@ class Agenda extends React.Component{
 }
 
 function findTopPosition(start){
-	const startMT = convertToMilitary(start);
-	const timeInDay = 2400;
-	const agendaLength = 48 * 25;
-
-	console.log(startMT);
 	const startHour = parseInt((startMT+ '').substring(0, (startMT+'').length-2)) * 100;
 	const startMinute = parseInt((startMT+ '').substring((startMT+ '').length-2, (startMT + '').length));
 
-	console.log(startHour);
-	console.log(startMinute);
-
+	const startMT = convertToMilitary(start);
+	const timeInDay = 2400;
+	const agendaLength = 48 * 25;
 	const convertMin = (startMinute/60)*100
 
-	console.log(convertMin);
 
 	if (startHour){
 		return (((startHour+convertMin)/2400)* agendaLength) + 17
