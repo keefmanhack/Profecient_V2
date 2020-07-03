@@ -1,3 +1,7 @@
+a:hover *{
+    text-decoration: underline;
+}
+
 body{
 	width: 100%;
 	height: 100%;
@@ -9,16 +13,15 @@ body{
 }
 
 .feed-container .make-post{
-	position: relative;
     background: #3185FC;
-    top: 85px;
     padding: 12px 20px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    margin-bottom:10px;
 }
 
 .feed-container .make-post textarea{
-	height: 100px;
+	height: 50px;
     width: 307px;
     border-radius: 17px;
     resize: none;
@@ -31,8 +34,17 @@ body{
 }
 
 .menu{
-	height: 1000px;
     background: rgb(87, 89, 90);
+}
+
+.menu button{
+    width: 100%;
+    height: 73px;
+    background: #434343;
+    border: none;
+    font-size: 25px;
+    font-weight: 600;
+    color: white;
 }
 
 .assignments-container{
@@ -185,7 +197,8 @@ button:hover{
 
 .agenda .item-container{
     background: #BFF2A7;
-    position: relative;
+    position: absolute;
+    opacity: .8;
     width: fit-content;
     padding: 10px;
     left: 10px;
@@ -204,4 +217,145 @@ button:hover{
     display: inline-block;
     margin-left: 10px;
     font-weight: 200;
+}
+
+#add-agenda-item{
+    background: none;
+    border: none;
+    color: #A3CCF1;
+    font-weight: 800;
+    position: absolute;
+    font-size: 42px;
+    top: -3%;
+    left: 89%;
+}
+
+.feed-data{
+    height: 594px;
+    overflow: scroll;
+    padding: 0 10px;
+    background: rgb(30,30,30);
+}
+
+.feed .post{
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.post .profile-photo{
+    height: 35px;
+    width: 35px;
+    object-fit: cover;
+    border-radius: 100%;
+    border: 1px solid #3185FC;
+}
+
+.post h1{
+    position: absolute;
+    top: 4px;
+    left: 53px;
+    color: #3185FC;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.post h5{
+    font-size: 14px;
+    font-weight: 200;
+    position: absolute;
+    top: 35px;
+    left: 53px;
+}
+
+.post p{
+    margin-top: 10px;
+    text-align: justify;
+    font-weight: 600;
+}
+
+.make-post .textarea{
+    border: 1px solid;
+    width: 20px;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    min-height: 40px;
+    line-height: 20px;
+    border-radius: 5px;
+    padding: 5px;
+    background: white;
+}
+
+.make-post .textarea[contenteditable]:empty::before {
+  content: "Write a post...";
+  color: gray;
+}
+
+.make-post button{
+    border: none;
+    background: none;
+    font-size: 23px;
+    display: inline;
+}
+
+.make-post button.submit{
+    display: inline;
+    width: 194px;
+    background: white;
+    margin-left: 41px;
+    border-radius: 5px;
+    font-weight: 600;
+
+}
+
+.post .textarea{
+    border: 1px solid;
+    width: 20px;
+    display: block;
+    width: 50%;
+    overflow: hidden;
+    min-height: 40px;
+    line-height: 20px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.textarea[contenteditable]:empty::before {
+  content: "Write a comment...";
+  color: gray;
+}
+
+.post button{
+    border: none;
+    background: none;
+    font-size: 23px;
+    display: inline;
+}
+
+.post .large-image{
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+
+.post .small-image{
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+    border: 1px solid;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.post .submit{
+    display: inline;
+    width: 204px;
+    background: #3185FC;
+    margin-left: 41px;
+    border-radius: 5px;
+    font-weight: 600;
+
 }
