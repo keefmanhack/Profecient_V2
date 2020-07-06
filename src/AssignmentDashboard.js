@@ -2,22 +2,24 @@ import React from 'react';
 
 class AssignmentDashboard extends React.Component{
 	render(){
-		return(
-			<div className='assignment-dashboard'>
-				<h1>Upcomming</h1>
-				<button onClick={() => this.props.handleNewAssignment()} id='add-assignment'>+</button>
-				<hr/>
-				<Assignment backgroundColor={{backgroundColor:'#FFCECE'}} dueDate='Tomorrow' name='Algebra HW'/>
-				<Assignment backgroundColor={{backgroundColor:'#F9E7CD'}} dueDate='Wed.' name='Geometry HW'/>
-				<Assignment backgroundColor={{backgroundColor:'#D3E3F6'}} dueDate='Thurs.' name='English Paper'/>
-				<button className='see-more'>See More</button>
-				<hr/>
+		const addAssign = !this.props.profileMode ? <button onClick={() => this.props.handleNewAssignment()} id='add-assignment'>+</button>: null;
+		const toDoSection = !this.props.profileMode ? <div><hr/>
 				<button id='add-todo'>+</button>
 				<ToDo text='I need to clean my car'/>
 				<ToDo text='walk the dog'/>
 				<ToDo text='walk the dog'/>
 				<ToDo text='make my bed later'/>
-				<button className='see-more-to-do'>See More</button>
+				<button className='see-more-to-do'>See More</button></div> : null;
+		return(
+			<div className='assignment-dashboard' style={this.props.style}>
+				<h1>Upcomming</h1>
+				{addAssign}
+				<hr/>
+				<Assignment backgroundColor={{backgroundColor:'#FFCECE'}} dueDate='Tomorrow' name='Algebra HW'/>
+				<Assignment backgroundColor={{backgroundColor:'#F9E7CD'}} dueDate='Wed.' name='Geometry HW'/>
+				<Assignment backgroundColor={{backgroundColor:'#D3E3F6'}} dueDate='Thurs.' name='English Paper'/>
+				<button className='see-more'>See More</button>
+				{toDoSection}
 
 			</div>	
 		);

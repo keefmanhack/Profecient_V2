@@ -3,3 +3,66 @@
     padding: 10px;
     border-radius: 5px;
 }
+
+.profile-page .top button{
+	border: none;
+	color: white;
+	font-size: 20px;
+	font-weight: 600;
+	margin-right: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.profile-page .top img{
+	height: 120px;
+    width: 120px;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.profile-page .top button.follow{
+	background: #3185FC;
+}
+
+.profile-page .top button.message{
+	background: rgb(41, 40, 40);;
+}
+
+.profile-page .top h1{
+    display: inline;
+    position: relative;
+    top: -30px;
+    font-weight: 600;
+    font-size: 45px;
+    left: 20px;
+}
+
+.profile-page .top .school{
+	position: absolute;
+    left: 150px;
+    height: 40px;
+    width: 40px;
+    top: 47px;
+}
+
+.profile-page .top h2{
+	display: inline;
+    font-weight: 200;
+    font-size: 24px;
+    position: relative;
+    left: -164px;
+    top: 10px;
+}
+
+.top .classes h5{
+	font-size: 24px;
+    font-weight: 600;
+    display: inline;
+}
+
+.profile-page .feed-container{
+	margin-top: 20px;
+	overflow: scroll;
+	height: 400px;
+}

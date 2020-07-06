@@ -1,0 +1,128 @@
+.message-center{
+	    background: #D7E6F4;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.message-center .left input{
+    width: 100%;
+    border: none;
+    height: 49px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 22px;
+}
+
+.message-center .left button{
+	background: none;
+    border: none;
+    font-weight: 800;
+    font-size: 55px;
+    position: absolute;
+    top: -22px;
+    color: #4F9AF1;
+}
+
+.message-center .message-trail{
+	background: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.message-trail img{
+	height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    object-fit: contain;
+}
+
+.message-trail h1{
+	font-size: 30px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.message-trail h2{
+	font-size: 12px;
+    color: #4F9AF1;
+    font-weight: 500;
+    margin: 0;
+}
+
+.message-trail h3{
+	font-size: 12px;
+    position: relative;
+    left: 44px;
+    display: inline;
+    top: -16px;
+    color: #7B7373;
+}
+
+.message-trail p{
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 25px;
+    color: #848484;
+}
+
+.right .header{
+	margin-bottom: 5px;
+}
+
+.right .header img{
+	height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 100%;
+}
+
+.right .header h1{
+	display: inline;
+    margin-left: 18px;
+    font-size: 50px;
+    position: relative;
+    top: 39px;
+}
+
+.messages{
+	background: white;
+    padding: 10px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    position: relative;
+}
+
+.messages h5{
+	font-size: 12px;
+    color: #848484;
+    position: relative;
+    left: 38%;
+}
+
+.messages .received{
+	padding: 5px;
+    background: #E2E2E2;
+    border-radius: 5px;
+    width: 47%;
+}
+
+.messages .sent{
+	padding: 5px;
+    background: #88B4E8;
+    border-radius: 5px;
+    width: 47%;
+    margin-top: 8px;
+    position: relative;
+    left: 53%;
+}
+
+.messages-container .reply{
+	background: #4F9AF1;
+    padding: 20px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}

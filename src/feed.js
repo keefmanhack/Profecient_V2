@@ -10,7 +10,7 @@ class Feed extends React.Component{
 
 	render(){
 		return(
-			<div className='feed' style={{marginTop: 20}}>
+			<div className='feed'>
 				<Post images={this.testData} selectedIndex={this.selectedIndex}/>
 				<Post />
 			</div>
@@ -40,6 +40,25 @@ class Post extends React.Component{
 				</p>
 				{imageGal}
 				
+				<CommentSection />
+				
+			</div>
+		);
+	}
+}
+
+class CommentSection extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state={
+			showSubmit: false
+		}
+	}
+
+	render(){
+		return(
+			<div className='comment-section'>
 				<p><span className='textarea' role='textbox' contenteditable='true'></span></p>
 				<button><i class="fas fa-camera-retro"></i></button>
 				<button className='submit'>Submit</button>
