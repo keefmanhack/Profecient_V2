@@ -1,0 +1,22 @@
+.profile-page .top{
+	background: rgba(175, 207, 254, 1);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.profile-page .top button{
+	border: none;
+	color: white
+	font-size: 20px;
+	font-weight: 600;
+	margin-right: 10px;
+	border-right: 5px;
+}
+
+.profile-page .top button.follow{
+	background: #3185FC;
+}
+
+.profile-page .top button.message{
+	background: rgb(41, 40, 40);;
+}
