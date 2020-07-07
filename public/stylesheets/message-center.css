@@ -1,7 +1,8 @@
 .message-center{
-	    background: #D7E6F4;
+	background: #D7E6F4;
     padding: 10px;
     border-radius: 5px;
+    height: 625px;
 }
 
 .message-center .left input{
@@ -23,44 +24,50 @@
     color: #4F9AF1;
 }
 
-.message-center .message-trail{
+.message-center .message-selector{
 	background: white;
     padding: 10px;
     border-radius: 5px;
     position: relative;
     margin-bottom: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
 }
 
-.message-trail img{
+.message-center .message-selector:hover{
+	opacity: .8;
+}
+
+.message-selector img{
 	height: 40px;
     width: 40px;
     border-radius: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
-.message-trail h1{
+.message-selector h1{
 	font-size: 30px;
     font-weight: 600;
-    margin-left: 10px;
+    margin-left: 15px;
 }
 
-.message-trail h2{
+.message-selector h2{
 	font-size: 12px;
     color: #4F9AF1;
     font-weight: 500;
     margin: 0;
 }
 
-.message-trail h3{
+.message-selector h3{
 	font-size: 12px;
     position: relative;
-    left: 44px;
+    left: 48px;
     display: inline;
     top: -16px;
     color: #7B7373;
 }
 
-.message-trail p{
+.message-selector p{
     margin: 0;
     width: 100%;
     overflow: hidden;
@@ -70,7 +77,10 @@
 }
 
 .right .header{
-	margin-bottom: 5px;
+    background: rgba(0,0,0,.1);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    padding: 5px;
 }
 
 .right .header img{
@@ -86,6 +96,7 @@
     font-size: 50px;
     position: relative;
     top: 39px;
+    font-weight: 600;
 }
 
 .messages{
@@ -120,9 +131,54 @@
     left: 53%;
 }
 
-.messages-container .reply{
+.right .reply{
 	background: #4F9AF1;
     padding: 20px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+}
+
+.right textarea{
+	width: 100%;
+    resize: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.messages-body{
+	height: 385px;
+	overflow: scroll;
+}
+
+.message-selector.selected{
+    border: 2px solid rgba(79,154,241,1);
+
+    /*-webkit-box-shadow: inset 0px 0px 105px -58px rgba(79,154,241,1);
+    -moz-box-shadow: inset 0px 0px 105px -58px rgba(79,154,241,1);
+    box-shadow: inset 0px 0px 105px -58px rgba(79,154,241,1);*/
+}
+
+
+.right .no-select{
+    height: 600px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 5px;
+    position: relative;
+}
+
+.no-select h2{
+    position: absolute;
+    left: 23%;
+    font-size: 24px;
+    font-weight: 600;
+    top: 50%;
+    color: rgba(0,0,0,.6);
+}
+
+.messages p{
+    margin: 0;
+}
+
+.messages .sent, .received{
+    display: inline-block;
 }
