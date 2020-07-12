@@ -1,0 +1,147 @@
+.class-view-container{
+	    padding: 10px;
+    background: white;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.semester-container{
+    border-radius: 5px;
+    position: relative;
+    background: rgba(49, 133, 252, .2);
+    padding-left: 5px;
+}
+
+.class-view-container h5{
+	margin-left: 10px;
+	font-size: 14px;
+    color: rgb(100,100,100);
+    margin-bottom: 0;
+}
+
+.class-view-container hr{
+	margin-top: 5px;
+}
+
+.semester-container h1{
+	display: inline;
+    font-weight: 600;
+    font-size: 36px;
+}
+
+.semester-container button{
+	background: none;
+    border: none;
+    position: absolute;
+    font-weight: 800;
+    font-size: 26px;
+    left: 89%;
+    top: -7px;
+}
+
+.class-container{
+	background: lightgreen;
+    margin: 5px 0;
+    border-radius: 5px;
+    padding: 5px;
+    position: relative;
+}
+
+.class-container h1{
+	display: inline;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.class-container h2{
+	display: inline;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.class-container h3{
+	    margin-left: 10px;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+.class-container h4{
+	margin-left: 20px;
+    font-size: 16px;
+    font-weight: 200;
+}
+
+.class-container .link{
+	position: absolute;
+    left: 85%;
+    border: none;
+    font-weight: 800;
+    background: #3185FC;
+    border-radius: 5px;
+}
+
+.class-container .see-assign{
+	border: none;
+	background: none;
+	color: #3185FC;
+	margin-left: -3px;
+	font-weight: 700;
+}
+
+.assign-container{
+	background: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.assign-container .assign{
+	background: lightyellow;
+    border-radius: 5px;
+    padding: 10px;
+    position: relative;
+}
+
+.assign p{
+	font-size: 14px;
+	margin-bottom: 0;
+}
+
+.assign-container h5{
+	margin: 0;
+}
+
+.assign button{
+	    background: none;
+    border: none;
+    position: absolute;
+    left: 91%;
+    font-weight: 800;
+    font-size: 21px;
+    top: 1px;
+}
+
+.edit-sem-con{
+	position: absolute;
+    top: 10%;
+    left: 46%;
+    margin-right: 5px;
+    border-radius: 5px;
+    background: rgb(50,50,50);
+}
+
+.edit-sem-con button{
+	display: block;
+	width: 100%;
+	border: none;
+	font-size: 18px;
+	font-weight: 600;
+	background: rgb(50,50,50);
+	color: white;
+	border-radius: 5px;
+}
+
+.edit-sem-con button:nth-of-type(2n){
+	background: rgb(35,35,35);
+}

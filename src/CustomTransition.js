@@ -56,6 +56,42 @@ function RotateInOutRight(props){
 	);
 }
 
+function FadeInOut_HandleState(props){
+	return(
+		<CSSTransition
+			in={props.condition}
+			timeout={500}
+			classNames={{
+				enter: 'animate__animated animate__faster',
+				enterActive: 'animate__fadeIn',
+				exit: 'animate__animated animate__faster',
+				exitActive: 'animate__fadeOut',
+			}}
+			unmountOnExit
+		>
+			{props.children}
+		</CSSTransition>
+	);
+}
+
+function FadeDownUp_HandleState(props){
+	return(
+		<CSSTransition
+			in={props.condition}
+			timeout={500}
+			classNames={{
+				enter: 'animate__animated animate__faster',
+				enterActive: 'animate__fadeInDown',
+				exit: 'animate__animated animate__faster',
+				exitActive: 'animate__fadeOutUp',
+			}}
+			unmountOnExit
+		>
+			{props.children}
+		</CSSTransition>
+	);
+}
+
 function FadeInOut(props){
 	return(
 		<TransitionGroup component={null}>
@@ -80,3 +116,5 @@ export {RotateInOutLeft};
 export {RotateInOutRight};
 export {FadeInOut};
 export {FlipInOut};
+export {FadeInOut_HandleState};
+export {FadeDownUp_HandleState};

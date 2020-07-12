@@ -1,6 +1,7 @@
 import React from 'react';
 import AssignmentDashboard from './AssignmentDashboard';
 import Feed from './feed';
+import ClassView from './ClassView';
 
 function ProfilePage(props){
 	return (
@@ -45,6 +46,7 @@ function ProfilePage(props){
 			</div>
 			<div className='row'>
 				<div className='col-lg-4'>
+					<ClassView />
 					<AssignmentDashboard profileMode={true} style={{marginTop: 20}} />
 				</div>
 				<div className='col-lg-8'>
