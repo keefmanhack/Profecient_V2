@@ -128,7 +128,25 @@
     left: 46%;
     margin-right: 5px;
     border-radius: 5px;
-    background: rgb(50,50,50);
+    
+}
+
+.edit-sem-con .main, .perif{
+	background: rgb(50,50,50);
+	border-radius: 5px;
+	border: 1px solid white;
+}
+
+.edit-sem-con .perif{
+    position: absolute;
+    left: 100%;
+    top: 60px;
+    z-index: 2;
+}
+
+.edit-sem-con .perif button{
+	font-size: 16px;
+    font-weight: 200;
 }
 
 .edit-sem-con button{

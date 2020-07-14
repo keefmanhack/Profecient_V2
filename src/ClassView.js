@@ -1,5 +1,5 @@
 import React from 'react';
-import {FadeDownUp_HandleState} from './CustomTransition';
+import {FadeDownUp_HandleState, FadeInOut, FadeInOut_HandleState} from './CustomTransition';
 
 class ClassView extends React.Component{
 	constructor(props){
@@ -8,6 +8,7 @@ class ClassView extends React.Component{
 		this.state={
 			testData: {
 				name: 'Freshman 1st Semester',
+				showDialog: false,
 				classes: [
 					{
 						name: 'Algebra',
@@ -56,6 +57,18 @@ class ClassView extends React.Component{
 		}
 	}
 
+	showDialog(){
+		this.setState({
+			showDialog: true,
+		})
+	}
+
+	hideDialog(){
+		this.setState({
+			showDialog: false,
+		})
+	}
+
 	render(){
 		const classes = this.state.testData.classes.map((data, index) =>
 			<ClassCon  
@@ -73,29 +86,126 @@ class ClassView extends React.Component{
 			<div className='class-view-container'>
 				<div className='semester-container'>
 					<h1>{this.state.testData.name}</h1>
-					<button>...</button>
+					<button onClick={() => this.showDialog()}>...</button>
 				</div>
 				<h5>{this.state.testData.classes.length} Classes</h5>
 				<hr/>
 				<div style={{minHeight: 150, maxHeight: 250, overflow: 'scroll'}}>
 					{classes}
 				</div>
+				<FadeInOut_HandleState condition={this.state.showDialog}>
+					<MenuDropDown hideDropDown={() => this.hideDialog()}>
+						<DropDownMain>
+							<button> <i style={{color: 'lightgreen'}} class="fas fa-plus"></i> Add Class</button>
+							<button> <i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester</button>
+							<Options 
+								text={'Select Semester'} 
+								icon={<i class="fas fa-caret-right"></i>} 
+								options={['Freshman', 'Sophomore', 'Junior', 'Senior']} 
+							/>
+						</DropDownMain>
+					</MenuDropDown>
+				</FadeInOut_HandleState>
 				
-				<div className='edit-sem-con'>
-					<button>Add Class</button>
-					<button>New Semester</button>
-					<button>Select Semester ></button>
-
-					<div>
-						<button>Freshman <span>.</span></button>
-						<button>Sophomore</button>
-						<button>Junior</button>
-					</div>
-				</div>
 			</div>
 		);
 	}
 }
+
+class MenuDropDown extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.wrapperRef = React.createRef();
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+
+	componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+    	console.log(event)
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+            this.props.hideDropDown();
+        }
+    }
+
+	render(){
+		return(
+			<div ref={this.wrapperRef} className='edit-sem-con'>
+				{this.props.children}
+			</div>
+		);
+	}
+}
+
+class DropDownMain extends React.Component{
+	render(){
+		return(
+			<div className='main'>
+				{this.props.children}
+			</div>
+		);
+	}
+}
+
+class Options extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state={
+			showOptions: false,
+			selectedIndex: 0,
+		}
+	}
+
+	showOptions(){
+		this.setState({
+			showOptions: true,
+		})
+	}
+
+	hideOptions(){
+		this.setState({
+			showOptions: false,
+		})
+	}
+
+	setSelectedIndex(i){
+		this.setState({
+			selectedIndex: i,
+		})
+	}
+
+	render(){
+		let options;
+		if(this.state.showOptions){
+			options = this.props.options.map((data, index) =>
+				<button 
+					onClick={() => this.setSelectedIndex(index)}
+					style={this.state.selectedIndex === index ? {fontWeight: 600}: null}
+					key={index}
+				>{data}</button>
+			);
+		}
+		return(
+			<div onMouseEnter={() => this.showOptions()} onMouseLeave={() => this.hideOptions()}>
+				<button >{this.props.text} {this.props.icon}</button>
+				<FadeInOut condition={this.state.showOptions}>
+					<div className='perif'>
+						{options}
+					</div>
+				</FadeInOut>
+			</div>
+		);
+	}
+}
+
 
 class ClassCon extends React.Component{
 	constructor(props){
