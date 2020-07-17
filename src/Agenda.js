@@ -1,4 +1,5 @@
 import React from 'react';
+import {findTopPosition, findHeightProportion} from './Agenda_Helper'
 
 class Agenda extends React.Component{
 	constructor(props){
@@ -49,45 +50,6 @@ class Agenda extends React.Component{
 		);
 	}
 
-}
-
-function findTopPosition(start){
-	const startMT = convertToMilitary(start);
-	const startHour = parseInt((startMT+ '').substring(0, (startMT+'').length-2)) * 100;
-	const startMinute = parseInt((startMT+ '').substring((startMT+ '').length-2, (startMT + '').length));
-
-	const timeInDay = 2400;
-	const agendaLength = 48 * 25;
-	const convertMin = (startMinute/60)*100
-
-
-	if (startHour){
-		return (((startHour+convertMin)/2400)* agendaLength) + 17
-	}else{
-		return ((convertMin/2400)* agendaLength) + 17
-	}
-}
-
-function findHeightProportion(start, end){
-	const startMT = convertToMilitary(start);
-	const endMT = convertToMilitary(end);
-
-	return (endMT - startMT)/100 * 50;
-}
-
-function convertToMilitary(stdTime){
-	const minute = parseInt(stdTime.substring(stdTime.length-4 ,stdTime.length-2));
-	const hour = parseInt(stdTime.substring(0 ,stdTime.length-5));
-
-	if(stdTime.includes('PM') && hour === 12){
-		return (hour*100 + minute)
-	}else if(stdTime.includes('PM')){
-		return (hour * 100 + minute) + 1200;
-	}else if(hour === 12){
-		return minute; 
-	}else{
-		return hour * 100 + minute;
-	}
 }
 
 

@@ -2,6 +2,7 @@ import React from 'react';
 import AssignmentDashboard from './AssignmentDashboard';
 import Feed from './feed';
 import ClassView from './ClassView';
+import SemesterCreator from './SemesterCreator'
 
 function ProfilePage(props){
 	return (
@@ -55,6 +56,7 @@ function ProfilePage(props){
 					</div>
 				</div>
 			</div>
+			<SemesterCreator/>
 		</div>
 	);
 }

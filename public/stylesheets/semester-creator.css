@@ -1,0 +1,128 @@
+.semester-creator-container{
+	background: rgb(219, 255, 222);;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 625px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.seven-day-agenda{
+	background: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.seven-day-agenda table{
+	width: 100%;
+}
+
+.class-item{
+    padding: 5px;
+    background: rgb(218, 224, 249);
+    border-radius: 17px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.class-item button{
+	position: absolute;
+    left: 94.1%;
+    color: red;
+    font-weight: 800;
+    top: 0;
+    background: white;
+    width: 45px;
+    height: 46px;
+    border: none;
+    border-radius: 16px;
+}
+
+.class-item h3{
+	font-size: 16px;
+    font-weight: 600;
+}
+
+.class-item h2{
+	    font-size: 18px;
+    font-weight: 200;
+}
+
+.class-item h1{
+	    font-size: 24px;
+    font-weight: 800;
+}
+
+.time-container{
+	height: 200px;
+    background: white;
+    padding: 5px;
+    position: relative;
+}
+
+.time-container button{
+	display: block;
+	width: 130px;
+    border: none;
+    background: #4F9AF1;
+    height: 15px;
+    text-align: center;
+    /*border-radius: 5px;*/
+   	position: absolute;
+    left: 24%;
+}
+
+.time-container .time-hr h5{
+	left: 83%;
+}
+
+.time-container .top-con .up{
+	top: 5px;
+}
+.time-container .top-con .down{
+	top: 20px;
+}
+
+.time-container .bottom-con .up{
+	top: 155px;
+}
+.time-container .bottom-con .down{
+	top: 170px;
+} 
+
+
+.time-container .timeDis{
+	position: absolute;
+    background: rgb(144, 238, 144, .5);
+    height: 120px;
+    top: 35px;
+    width: 130px;
+    left: 65px;
+}
+
+.timeDis input.topIn{
+	width: 84%;
+    margin: 5px 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.timeDis input.bottomIn{
+	position: relative;
+    top: 40%;
+    width: 84%;
+    margin: 5px 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+
+
+.time-container button i{
+	vertical-align: top;
+}
+
+.time-container .down{
+
+}

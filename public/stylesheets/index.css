@@ -181,7 +181,7 @@ button:hover{
     color: white;
 }
 
-.agenda .time-hr h5{
+.time-hr h5{
         position: relative;
     font-size: 10px;
     font-weight: 600;
@@ -189,7 +189,7 @@ button:hover{
     top: -29px;
 }
 
-.agenda .time-hr{
+.time-hr{
     position: absolute;
     width: 100%;
 }
