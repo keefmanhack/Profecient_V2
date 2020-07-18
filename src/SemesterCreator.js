@@ -1,5 +1,6 @@
 import React from 'react';
 import {convertToMilitary, convertToStandard} from './Agenda_Helper';
+import {FadeInOut_HandleState} from './CustomTransition';
 
 class SemesterCreator extends React.Component{
 	render(){
@@ -62,6 +63,7 @@ class StartEndTime extends React.Component{
 		this.state={
 			startTime: '2:00PM',
 			endTime: '4:00PM',
+			error: false,
 		}
 
 		this.intervalHandler = null;
@@ -69,17 +71,36 @@ class StartEndTime extends React.Component{
 
 	incrementHandler(val){
 		let timeCopy = this.state[val];
-		this.setState({
-			[val]: increment(1, timeCopy)
-		})
+		let inc = increment(1, timeCopy);
+
+		if(checkDif(val, this.state.startTime, this.state.endTime, inc)){
+			this.setState({
+				[val]: inc,
+				 error: false,
+			})
+		}else{
+			this.setState({
+				error: true,
+			})
+		}
+
+
 		let ct =2;
 		this.intervalHandler = setInterval(
 			() => {
 				timeCopy = this.state[val];
-				this.setState({
-					[val]: increment(ct++, timeCopy)
-				})
-				
+				inc = increment(ct++, timeCopy);
+
+				if(checkDif(val, this.state.startTime, this.state.endTime, inc)){
+					this.setState({
+						[val]: inc,
+						 error: false,
+					})
+				}else{
+					this.setState({
+						error: true,
+					})
+				}	
 			} 
 
 		, 500)
@@ -90,63 +111,125 @@ class StartEndTime extends React.Component{
 
 	decrementHandler(val){
 		let timeCopy = this.state[val];
-		this.setState({
-			[val]: decrement(1, timeCopy)
-		})
+		let dec = decrement(1, timeCopy);
+
+		if(checkDif(val, this.state.startTime, this.state.endTime, dec)){
+			this.setState({
+				[val]: dec,
+				 error: false,
+			})
+		}else{
+			this.setState({
+				error: true,
+			})
+		}
+
 		let ct =2;
 		this.intervalHandler = setInterval(
 			() => {
 				timeCopy = this.state[val];
-				this.setState({
-					[val]: decrement(ct++, timeCopy)
-				})
-				
+				dec = decrement(ct++, timeCopy);
+				if(checkDif(val, this.state.startTime, this.state.endTime, dec)){
+					this.setState({
+						[val]: dec,
+						 error: false,
+					})
+				}else{
+					this.setState({
+						error: true,
+					})
+				}
 			} 
 
 		, 300)
 	}
 
-	render(){
-		// const containHeight = 200;
-		// const dif = convertToMilitary(this.state.endTime) - convertToMilitary(this.state.startTime);
-		// const count = Math.floor(4800/dif);
-		// const each = containHeight/count;
-		// const spacing = 160 - (.1 * convertToMilitary(this.state.startTime));
-
-		// let arr =[];
-		// console.log(4800/dif);
-
-		// for(let i =1; i <= count; i++){
-		// 	arr.push(
-		// 		{
-		// 			t: 'text',
-		// 			spacing: i* spacing,
-		// 		}
-		// 	);
-		// }
-
-		let arr = [];
-		const startTimeMT = convertToStandardNum(convertToMilitary(this.state.startTime));
-		const endTimeMT = convertToStandardNum(convertToMilitary(this.state.endTime));
-		const dif = endTimeMT - startTimeMT;
-		console.log(dif)
-		console.log(endTimeMT)
-		console.log(startTimeMT)
-		const num = Math.floor(dif/50);
-
-		let startTime = roundTimeDown(this.state.startTime);
-		for(let i =0; i <= num; i++){
-			
-			arr.push(startTime);
-
-			startTime= increment(4, startTime, true);
-		}
-
-		const timeHRs = arr.map((data, index) =>
-			<TimeHR spacing={index*(120/(arr.length-1)) + 20 + convertToStandardNum(convertToMilitary(arr[0])) - startTimeMT} time={data} />
-		);
-
+	handleHourInput(e, str){
+		const min = findMinute(this.state[str]);
+		const AMPM = findAMPM(this.state[str]);
 		
+		const stdTime = assembleTime(e.target.value, min, AMPM);
+		
+		if(checkDif(str, this.state.startTime, this.state.endTime, stdTime)){
+			this.setState({
+				[str]: stdTime,
+				error: false,
+			})
+		}else{
+			this.setState({
+				error: true
+			})
+		}
+		
+	}
+
+	handleMinInput(e, str){
+		const hour = findHour(this.state[str]);
+		const AMPM = findAMPM(this.state[str]);
+		
+		const stdTime = assembleTime(hour, e.target.value, AMPM);
+
+		if(checkDif(str, this.state.startTime, this.state.endTime, stdTime)){
+			this.setState({
+				[str]: stdTime,
+				error: false,
+			})
+		}else{
+			this.setState({
+				error: true
+			})
+		}
+	}
+
+	handleAMPMInput(e, str){
+		const min = findMinute(this.state[str]);
+		const hour = findHour(this.state[str]);
+		
+		const stdTime = assembleTime(hour, min, e.target.value);
+
+		if(checkDif(str, this.state.startTime, this.state.endTime, stdTime)){
+			this.setState({
+				[str]: stdTime,
+				error: false,
+			})
+		}else{
+			this.setState({
+				error: true
+			})
+		}
+	}
+
+	render(){
+		let timeHRs;
+		let arr = [];
+
+		const dif = findProportionalTimeDif(this.state.startTime, this.state.endTime);
+
+		if(dif>0){
+			const num = Math.ceil(dif/50);
+			const startTimeMT = convertToMilitary(this.state.startTime)
+			const endTimeMT = convertToMilitary(this.state.endTime)
+
+			let startTime = roundTimeDown(this.state.startTime);
+			for(let i =0; i <= num; i++){
+				
+				arr.push(startTime);
+
+				startTime= increment(4, startTime, true);
+			}
+
+			
+			
+			const spacing = 120/(arr.length-1)
+			
+			const topSpace = (convertToStandardNum(convertToMilitary(arr[0]))- startTimeMT)*spacing/43;
+			const bottomSpace = (convertToStandardNum(convertToMilitary(arr[arr.length-1])) - endTimeMT) * spacing/50;
+			
+			timeHRs = arr.map((data, index) =>
+				<TimeHR spacing={index*spacing - index * topSpace/(arr.length-2) + index * bottomSpace/(arr.length-2) + 43 + topSpace} time={data} />
+				
+			);
+		}
 
 		return(
 			<div className='start-end-time-container'>
@@ -158,11 +241,137 @@ class StartEndTime extends React.Component{
 						stopInterval={() => this.stopInterval()}
 						startTime={this.state.startTime}
 						endTime={this.state.endTime}
+						handleHourInput={(e, str) => this.handleHourInput(e, str)}
+						handleMinInput={(e, str) => this.handleMinInput(e, str)}
+						handleAMPMInput={(e, str) => this.handleAMPMInput(e, str)}
 					/>
 				</div>
+				<FadeInOut_HandleState condition={this.state.error}>
+					<h5 className='error-message'>The head must come before the tail</h5>
+				</FadeInOut_HandleState>
 			</div>
 		);
 	}
+}
+
+
+
+function TimeHR(props){
+
+	const hrStyle= !props.time.includes('3') ? {borderTopWidth: 2} : null;
+
+	return(
+		<div style={{top: props.spacing}} className='time-hr'>
+			<hr style={hrStyle}/>
+			<h5>{props.time}</h5>
+		</div>
+	);
+}
+
+function TimeUnit(props){
+	return(
+		<div className='time-unit'>
+			<div className='top-con'>
+				<Scaler
+					decMouseDown={() => props.decrementHandler('startTime')}
+					mouseUp={() => props.stopInterval()}
+					incMouseDown={() => props.incrementHandler('startTime')}
+				/>
+			</div>
+			<div className='timeDis'>
+				<h5 className='topIn' >
+					<TimeShowEdit 
+						handleHourInput={(e) => props.handleHourInput(e, 'startTime')} 
+						handleMinInput={(e) => props.handleMinInput(e, 'startTime')} 
+						handleAMPMInput={(e) => props.handleAMPMInput(e, 'startTime')} 
+						time={props.startTime} 
+					/>
+				</h5>
+				<h5 className='bottomIn' >
+					<TimeShowEdit
+						handleHourInput={(e) => props.handleHourInput(e, 'endTime')} 
+						handleMinInput={(e) => props.handleMinInput(e, 'endTime')} 
+						handleAMPMInput={(e) => props.handleAMPMInput(e, 'endTime')} 
+						time={props.endTime}
+					/>
+				</h5>
+			</div>
+			<div className='bottom-con'>
+				<Scaler
+					decMouseDown={() => props.decrementHandler('endTime')}
+					mouseUp={() => props.stopInterval()}
+					incMouseDown={() => props.incrementHandler('endTime')}
+				/>
+			</div>
+		</div>
+	);
+}
+
+function TimeShowEdit(props){
+	return(
+		<div style={{position: 'relative'}}>
+			<select onChange={(e) => props.handleHourInput(e)} value={findHour(props.time)}>
+				{createHours()}
+			</select>
+			:
+			<select onChange={(e) => props.handleMinInput(e)} value={findMinute(props.time)}>
+				{createMins()}
+			</select>
+			<select onChange={(e) => props.handleAMPMInput(e)} className='AMPM' value={props.time.includes('AM') ? 'AM' : 'PM'}>
+				<option>AM</option>
+				<option>PM</option>
+			</select>
+		</div>
+	);
+}
+
+function Scaler(props){
+	return(
+		<div>
+			<button 
+				onMouseUp={() => props.mouseUp()} 
+				onMouseDown={() => props.decMouseDown()} 
+				className='up'
+			><i class="fas fa-caret-up"></i></button>
+			<button 
+				onMouseUp={() => props.mouseUp()} 
+				onMouseDown={() => props.incMouseDown()} 
+				className='down'
+			><i class="fas fa-caret-down"></i></button>
+		</div>
+	);
+}
+
+function createHours(){
+	let hourArr =[]
+
+	for(var i =1; i < 13; i++){
+		hourArr.push(i);
+	}
+
+	const hours = hourArr.map((data, index)=>
+		<option key={index}>{data}</option>
+	);
+
+	return hours;
+}
+
+function createMins(){
+	let minArr =[]
+
+	for(var i =0; i < 60; i++){
+		if(i< 10){
+			minArr.push('0' + i);
+		}else{
+			minArr.push(i);
+		}
+	}
+
+	const mins = minArr.map((data, index)=>
+		<option key={index}>{data}</option>
+	);
+
+	return mins;
 }
 
 function convertToStandardNum(mtTime){
@@ -200,60 +409,6 @@ function roundTimeDown(stdTime){
 	}else{
 		return hour + ':' + '00' + AMPM;
 	}
-}
-
-function TimeHR(props){
-
-	const hrStyle= !props.time.includes('3') ? {borderTopWidth: 2} : null;
-
-	return(
-		<div style={{top: props.spacing}} className='time-hr'>
-			<hr style={hrStyle}/>
-			<h5>{props.time}</h5>
-		</div>
-	);
-}
-
-function TimeUnit(props){
-	return(
-		<div>
-			<div className='top-con'>
-				<Scaler
-					decMouseDown={() => props.decrementHandler('startTime')}
-					mouseUp={() => props.stopInterval()}
-					incMouseDown={() => props.incrementHandler('startTime')}
-				/>
-			</div>
-			<div className='timeDis'>
-				<input value={props.startTime} className='topIn' type="text" placeholder='12:00AM'/>
-				<input value={props.endTime} className='bottomIn' type="text" placeholder='2:00PM'/>
-			</div>
-			<div className='bottom-con'>
-				<Scaler
-					decMouseDown={() => props.decrementHandler('endTime')}
-					mouseUp={() => props.stopInterval()}
-					incMouseDown={() => props.incrementHandler('endTime')}
-				/>
-			</div>
-		</div>
-	);
-}
-
-function Scaler(props){
-	return(
-		<div>
-			<button 
-				onMouseUp={() => props.mouseUp()} 
-				onMouseDown={() => props.decMouseDown()} 
-				className='up'
-			><i class="fas fa-caret-up"></i></button>
-			<button 
-				onMouseUp={() => props.mouseUp()} 
-				onMouseDown={() => props.incMouseDown()} 
-				className='down'
-			><i class="fas fa-caret-down"></i></button>
-		</div>
-	);
 }
 
 
@@ -339,6 +494,44 @@ function ClassItem(props){
 			<button><i class="fas fa-trash"></i></button>
 		</div>
 	)
+}
+
+function findProportionalTimeDif(start, end){
+	const startTimeMT = convertToStandardNum(convertToMilitary(start));
+	const endTimeMT = convertToStandardNum(convertToMilitary(end));
+	return endTimeMT - startTimeMT;
+}
+
+function findHour(stdTime){
+	return stdTime.substring(0, stdTime.length-5);
+}
+
+function findMinute(stdTime){
+	return stdTime.substring(stdTime.length-4, stdTime.length-2);
+}
+
+function findAMPM(stdTime){
+	return stdTime.substring(stdTime.length-2, stdTime.length);
+}
+
+function assembleTime(hour, minute, AMPM){
+	return hour + ':' + minute + AMPM;
+}
+
+function checkDif(str, startTime, endTime, newTime){
+	let dif;
+		
+	if(str === 'startTime'){
+		dif =findProportionalTimeDif(newTime, endTime)
+	}else{
+		dif =findProportionalTimeDif(startTime, newTime)
+	}
+	
+	if(dif>0){
+		return true
+	}else{
+		return false;
+	}
 }
 
 export default SemesterCreator;
