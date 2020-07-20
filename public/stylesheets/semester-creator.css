@@ -172,3 +172,19 @@
     color: red;
     font-weight: 200;
 }
+
+.start-end-time-container{
+	overflow: hidden;
+}
+
+.time-container .time-hr{
+	width: 97%;
+}
+
+.time-container hr{
+	margin: 0;
+}
+
+.time-container .time-hr h5{
+	top: -12px;
+}

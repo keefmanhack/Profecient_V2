@@ -206,27 +206,37 @@ class StartEndTime extends React.Component{
 		const dif = findProportionalTimeDif(this.state.startTime, this.state.endTime);
 
 		if(dif>0){
-			const num = Math.ceil(dif/50);
+			const spaceFromTop = 60;
+			const spacingConst = 175;
+
+			const num = Math.ceil(dif/50) + 2;
 			const startTimeMT = convertToMilitary(this.state.startTime)
 			const endTimeMT = convertToMilitary(this.state.endTime)
 
-			let startTime = roundTimeDown(this.state.startTime);
+			let startTime = decrement(4, roundTimeDown(this.state.startTime), true);
 			for(let i =0; i <= num; i++){
 				
 				arr.push(startTime);
 
 				startTime= increment(4, startTime, true);
 			}
+			
+			const spacing = spacingConst/(arr.length-1);
 
+			const topSpace = (convertToStandardNum(convertToMilitary(arr[1]))- convertToStandardNum(startTimeMT))*spacing/spaceFromTop;
+			const bottomSpace = (convertToStandardNum(convertToMilitary(arr[arr.length-2])) - convertToStandardNum(endTimeMT)) * spacing/50;
 			
+			// console.log('rounded: ' + convertToStandardNum(convertToMilitary(arr[arr.length-2])));
+			// console.log('End Time: ' + convertToStandardNum(endTimeMT))
+			// console.log(bottomSpace);
 			
-			const spacing = 120/(arr.length-1)
-			
-			const topSpace = (convertToStandardNum(convertToMilitary(arr[0]))- startTimeMT)*spacing/43;
-			const bottomSpace = (convertToStandardNum(convertToMilitary(arr[arr.length-1])) - endTimeMT) * spacing/50;
-			
+			// - index * topSpace/(arr.length-2) + index * bottomSpace/(arr.length-2)
+			//+ index * bottomSpace/(arr.length-2) + spaceFromTop + index * topSpace/(arr.length-2)
+			//+ (spaceFromTop - spacing) + topSpace
+
+			//+ (spaceFromTop - spacing) + topSpace * index * bottomSpace/(arr.length-2)
 			timeHRs = arr.map((data, index) =>
-				<TimeHR spacing={index*spacing - index * topSpace/(arr.length-2) + index * bottomSpace/(arr.length-2) + 43 + topSpace} time={data} />
+				<TimeHR spacing={index*spacing - index * topSpace/(arr.length-2) + index * bottomSpace/(arr.length-2) + 32 + topSpace } time={data} />
 				
 			);
 		}
@@ -436,12 +446,12 @@ function increment(ct, time, isButton){
 	return convertToStandard(incrmentedMT);
 }
 
-function decrement(ct, time){
+function decrement(ct, time, isButton){
 	const timeMT = convertToMilitary(time);
 	let incrementVal = findIncrementVal(ct);
 	let incrmentedMT;
 
-	if(ct < 6){
+	if(ct < 6 && !isButton){
 		let previousIncVal = findIncrementVal(ct-1);
 		incrmentedMT = timeMT - incrementVal+previousIncVal;
 	}else{
