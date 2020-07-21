@@ -1,5 +1,5 @@
 .semester-creator-container{
-	background: rgb(219, 255, 222);;
+	background: rgb(106, 106, 111);
     position: absolute;
     top: 0;
     width: 100%;
@@ -20,8 +20,8 @@
 
 .class-item{
     padding: 5px;
-    background: rgb(218, 224, 249);
-    border-radius: 17px;
+    background: rgb(215, 255, 224);
+    border-radius: 5px;
     margin-bottom: 5px;
     position: relative;
 }
@@ -36,7 +36,7 @@
     width: 45px;
     height: 46px;
     border: none;
-    border-radius: 16px;
+    border-radius: 5px;
 }
 
 .class-item h3{
@@ -54,137 +54,169 @@
     font-weight: 800;
 }
 
-.time-container{
-	height: 220px;
-    background: white;
-    padding: 5px;
+.class-editor input.class-name{
+    width: 100;
+    border: none;
+    font-size: 26px;
+    width: 100%;
+    font-weight: 700;
+}
+
+.day-buttons{
+    margin: 5px 0;
     position: relative;
+    left: 7px;
+
 }
 
-.time-container button{
-	display: block;
-	width: 130px;
+.day-buttons button{
+    margin: 0 6px;
     border: none;
-    background: #4F9AF1;
-    height: 15px;
-    text-align: center;
-    /*border-radius: 5px;*/
-   	position: absolute;
-    left: 24%;
-}
-
-.time-container .time-hr h5{
-	left: 83%;
-}
-
-.time-container .top-con .up{
-	top: 5px;
-}
-.time-container .top-con .down{
-	top: 20px;
-}
-
-.time-container .bottom-con .up{
-	top: 155px;
-}
-.time-container .bottom-con .down{
-	top: 170px;
-} 
-
-.time-container .time-unit{
-	position: relative;
-	top: 20px;
-}
-
-.time-container .timeDis{
-	position: absolute;
-    background: rgb(144, 238, 144, .5);
-    height: 120px;
-    top: 35px;
-    width: 130px;
-    left: 63px;
-}
-
-.timeDis h5.topIn{
-	width: 84%;
-    margin: 5px 10px;
-    border: none;
+    background: #d3d4e8;
     border-radius: 5px;
-    background: white;
-    position: relative;
+    font-weight: 800;
 }
 
-.timeDis h5.bottomIn{
-	position: relative;
-    top: 47%;
-    width: 84%;
-    margin: 5px 10px;
+.day-buttons button:first{
+    margin: 0;
+}
+
+.class-editor .instruct-loc input{
+    width: 100%;
     border: none;
-    border-radius: 5px;
-    background: white;
-}
-
-
-
-.time-container button i{
-	vertical-align: top;
-}
-
-.time-container select::-ms-expand{
-    display: none;
-}
-
-.time-container select{
-	-webkit-appearance: none;
-    -moz-appearance: none;
-    text-indent: 1px;
-    text-overflow: '';
-
-    border: none;
-}
-
-.topIn select.AMPM{
-    display: inline;
-    position: absolute;
-    left: 60px;
-    top: 2px;
-    height: 20px;
-    width: 40px;
-    border: none;
-    padding: 0;
-    font-size: 14px;
-}
-
-.bottomIn select.AMPM{
-    display: inline;
-    position: absolute;
-    left: 60px;
-    top: 2px;
-    height: 20px;
-    width: 40px;
-    border: none;
-    padding: 0;
-    font-size: 14px;
-}
-
-.start-end-time-container h5.error-message{
-	font-size: 17px;
-    color: red;
     font-weight: 200;
 }
 
-.start-end-time-container{
-	overflow: hidden;
+.class-editor .instruct-loc{
+    margin-top: 3px;
 }
 
-.time-container .time-hr{
-	width: 97%;
+.class-editor .start-end-date{
+    margin: 0 14px;
+    margin-bottom: 3px;
 }
 
-.time-container hr{
-	margin: 0;
+
+input{
+    width: 100%;
+    border: none;
+    border-radius: 5px;
 }
 
-.time-container .time-hr h5{
-	top: -12px;
+.suggested-links{
+    background: lightgrey;
+    border-radius: 5px;
+    padding: 5px;
+    height: 355px;
+    overflow: scroll;
+}
+
+.suggested-links .link{
+    background: white;
+    padding: 5px;
+    height: 250px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.link h1{
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.link h5{
+    font-size: 14px;
+    position: relative;
+    top: -10px;
+    color: rgb(144, 141, 141);
+}
+
+.link h2{
+    font-size: 20px;
+    font-weight: 200;
+    position: relative;
+    top: -20px;
+}
+
+.link h3{
+    font-size: 20px;
+    font-weight: 200;
+    position: relative;
+    top: -28px;
+}
+
+.link .week-days{
+    position: relative;
+    top: -32px;
+}
+
+.link button{
+    background: #4F9AF1;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    font-size: 22px;
+    font-weight: 800;
+    color: white;
+}
+
+.link .user{
+    position: relative;
+    top: -26px;
+    background: #ade6c6;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.user img{
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    position: relative;
+    top: -4px;
+    object-fit: cover;
+}
+
+.user a{
+    font-weight: 600;
+    font-size: 24px;
+    color: #4F9AF1;
+    margin-left: 5px;
+}
+
+.user h5{
+    top: 0;
+}
+
+.link button{
+    position: relative;
+    top: -20px;
+}
+
+.suggested-links .short-link{
+    height: 112px;
+}
+
+.short-link a{
+        position: relative;
+    top: -24px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #4F9AF1;
+}
+
+.short-link button{
+        position: initial;
+}
+
+.link button.drop-down{
+        background: lightgrey;
+    height: 18px;
+    position: relative;
+}
+
+.drop-down i{
+        position: absolute;
+    top: -2px;
+    left: 46%;
 }

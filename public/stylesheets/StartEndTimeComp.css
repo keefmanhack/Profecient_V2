@@ -1,0 +1,135 @@
+.time-container{
+	height: 220px;
+    background: white;
+    padding: 5px;
+    position: relative;
+    border-radius: 5px;
+}
+
+.time-container button{
+	display: block;
+	width: 130px;
+    border: none;
+    background: #4F9AF1;
+    height: 15px;
+    text-align: center;
+    /*border-radius: 5px;*/
+   	position: absolute;
+    left: 24%;
+}
+
+.time-container .time-hr h5{
+	left: 83%;
+}
+
+.time-container .top-con .up{
+	top: 5px;
+}
+.time-container .top-con .down{
+	top: 20px;
+}
+
+.time-container .bottom-con .up{
+	top: 155px;
+}
+.time-container .bottom-con .down{
+	top: 170px;
+} 
+
+.time-container .time-unit{
+	position: relative;
+	top: 20px;
+}
+
+.time-container .timeDis{
+	position: absolute;
+    background: rgb(144, 238, 144, .5);
+    height: 120px;
+    top: 35px;
+    width: 130px;
+    left: 63px;
+}
+
+.timeDis h5.topIn{
+	width: 84%;
+    margin: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: white;
+    position: relative;
+}
+
+.timeDis h5.bottomIn{
+	position: relative;
+    top: 47%;
+    width: 84%;
+    margin: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: white;
+}
+
+
+
+.time-container button i{
+	vertical-align: top;
+}
+
+.time-container select::-ms-expand{
+    display: none;
+}
+
+.time-container select{
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+
+    border: none;
+}
+
+.topIn select.AMPM{
+    display: inline;
+    position: absolute;
+    left: 60px;
+    top: 2px;
+    height: 20px;
+    width: 40px;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+}
+
+.bottomIn select.AMPM{
+    display: inline;
+    position: absolute;
+    left: 60px;
+    top: 2px;
+    height: 20px;
+    width: 40px;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+}
+
+.start-end-time-container h5.error-message{
+	font-size: 17px;
+    color: red;
+    font-weight: 200;
+}
+
+.start-end-time-container{
+	overflow: hidden;
+}
+
+.time-container .time-hr{
+	width: 97%;
+}
+
+.time-container hr{
+	margin: 0;
+}
+
+.time-container .time-hr h5{
+	top: -12px;
+}
