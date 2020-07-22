@@ -1,5 +1,6 @@
 import React from 'react';
 import StartEndTime from './StartEndTimeComp/StartEndTime';
+import {FlipInOut} from './CustomTransition';
 
 class SemesterCreator extends React.Component{
 	render(){
@@ -52,42 +53,7 @@ class SemesterCreator extends React.Component{
 								</div>
 							</div>
 							<div className='col-lg-6'>
-								<div className='suggested-links'>
-									<div className='short-link link'>
-										<div className='row'>
-											<div className='col-lg-8'>
-												<h1>Algebra 1</h1>
-												<h5>25 Links</h5>
-												<a href=''>Sarah Steel</a>
-											</div>
-											<div className='col-lg-4'>
-												<button><i class="fas fa-plus-square"></i> Link</button>
-											</div>
-										</div>
-										<button className='drop-down'><i class="fas fa-caret-down"></i></button>
-									</div>
-									<div className='link'>
-										<h1>Algebra 1</h1>
-										<h5>25 Links</h5>
-										<h2>Zurn 101</h2>
-										<h3>Dr. Lee</h3>
-										<div className='week-days'>
-											<span>M</span>
-											<span>M</span>
-											<span>M</span>
-											<span>M</span>
-											<span>M</span>
-											<span>M</span>
-											<span>M</span>
-										</div>
-										<div className='user'>
-											<img src="/generic_person.jpg" alt=""/>
-											<a href=''>Sarah Steel</a>
-											<h5>500 Classmates Link to this Profile</h5>
-										</div>
-										<button><i class="fas fa-plus-square"></i> Link</button>
-									</div>
-								</div>
+								<SuggestedLinksContainer/>
 							</div>
 						</div>
 						
@@ -114,6 +80,162 @@ class SemesterCreator extends React.Component{
 			</div>
 		);
 	}
+}
+
+class SuggestedLinksContainer extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state ={
+			testData: [
+				{
+					name: 'Algebra 1',
+					links: 25,
+					user: {
+						name: 'Sarah Steel',
+						image: './generic_person.jpg',
+						links: 500,
+					},
+					location: 'Zurn 101',
+					instructor: 'Dr. Lee',
+					weekDays: {
+						monday: false,
+						tuesday: false,
+						wednesday: false,
+						thursday: false,
+						friday: false,
+						saturday: false,
+						sunday: false,
+					},
+				},
+				{
+					name: 'Algebra 1',
+					links: 25,
+					user: {
+						name: 'Sarah Steel',
+						image: './generic_person.jpg',
+						links: 500,
+					},
+					location: 'Zurn 101',
+					instructor: 'Dr. Lee',
+					weekDays: {
+						monday: false,
+						tuesday: false,
+						wednesday: false,
+						thursday: false,
+						friday: false,
+						saturday: false,
+						sunday: false,
+					},
+				},
+				{
+					name: 'Algebra 1',
+					links: 25,
+					user: {
+						name: 'Sarah Steel',
+						image: './generic_person.jpg',
+						links: 500,
+					},
+					location: 'Zurn 101',
+					instructor: 'Dr. Lee',
+					weekDays: {
+						monday: false,
+						tuesday: false,
+						wednesday: false,
+						thursday: false,
+						friday: false,
+						saturday: false,
+						sunday: false,
+					},
+				}
+			]
+		}
+	}
+
+	render(){
+		const links = this.state.testData.map((data, index) =>
+			<Link data={data} key={index}/>
+		)
+		return(
+			<div className='suggested-links'>
+				{links}
+			</div>
+		)
+	}
+}
+
+class Link extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state={
+			isExpanded: false,
+		}
+	}
+
+	toggleExpanded(){
+		const isExpandedCopy = this.state.isExpanded;
+
+		this.setState({
+			isExpanded: ! isExpandedCopy
+		})
+	}
+
+	render(){
+		const display = this.state.isExpanded ? <ExpandedLink data={this.props.data} toggleExpanded={() => this.toggleExpanded()}/> : <ShortLink data={this.props.data} toggleExpanded={() => this.toggleExpanded()}/>
+		return(
+			<React.Fragment>
+				<FlipInOut condition={this.state.isExpanded}>
+					{display}
+				</FlipInOut>
+			</React.Fragment>
+		);
+	}
+}
+
+function ExpandedLink(props){
+	return(
+		<div className='link'>
+			<h1>{props.data.name}</h1>
+			<h5>{props.data.links} Links</h5>
+			<h2>{props.data.location}</h2>
+			<h3>{props.data.instructor}</h3>
+			<div className='week-days'>
+				<span className={props.data.weekDays.monday ? 'active' : null}>M</span>
+				<span className={props.data.weekDays.tuesday ? 'active' : null}>T</span>
+				<span className={props.data.weekDays.wednesday ? 'active' : null}>W</span>
+				<span className={props.data.weekDays.thursday ? 'active' : null}>T</span>
+				<span className={props.data.weekDays.friday ? 'active' : null}>F</span>
+				<span className={props.data.weekDays.saturday ? 'active' : null}>S</span>
+				<span className={props.data.weekDays.sunday ? 'active' : null}>S</span>
+			</div>
+			<div className='user'>
+				<img src={props.data.user.image} alt=""/>
+				<a href=''>{props.data.user.name}</a>
+				<h5>{props.data.user.links} Classmates Link to this Profile</h5>
+			</div>
+			<button><i class="fas fa-plus-square"></i> Link</button>
+			<button onClick={() => props.toggleExpanded()} className='drop-down'><i class="fas fa-caret-down"></i></button>
+		</div>
+	)
+}
+
+function ShortLink(props){
+	return(
+		<div className='short-link link'>
+			<div className='row'>
+				<div className='col-lg-8'>
+					<h1>{props.data.name}</h1>
+					<h5>{props.data.links} Links</h5>
+					<a href=''>{props.data.user.name}</a>
+				</div>
+				<div className='col-lg-4'>
+					<button><i class="fas fa-plus-square"></i> Link</button>
+				</div>
+			</div>
+			<button onClick={() => props.toggleExpanded()} className='drop-down'><i class="fas fa-caret-up"></i></button>
+		</div>
+	);
 }
 
 function ClassItem(props){

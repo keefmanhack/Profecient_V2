@@ -2,7 +2,7 @@ import React from "react";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 
-function FlipInOut(props){
+function FlipInOut_HandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -20,7 +20,26 @@ function FlipInOut(props){
 	);
 }
 
-function RotateInOutLeft(props){
+function FlipInOut(props){
+	return(
+		<TransitionGroup component={null}>
+			<CSSTransition
+				key={props.condition}
+				timeout={500}
+				classNames={{
+					enter: 'animate__animated animate__faster',
+					enterActive: 'animate__flipInX',
+					exit: 'animate__animated',
+					exitActive: 'animate__flipOutX animate__faster'
+				}}
+			>
+				{props.children}
+			</CSSTransition>
+		</TransitionGroup>
+	);
+}
+
+function RotateInOutLeft_HandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -38,7 +57,7 @@ function RotateInOutLeft(props){
 	);
 }
 
-function RotateInOutRight(props){
+function RotateInOutRight_HandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -112,9 +131,10 @@ function FadeInOut(props){
 	);
 }
 
-export {RotateInOutLeft};
-export {RotateInOutRight};
+export {RotateInOutLeft_HandleState};
+export {RotateInOutRight_HandleState};
 export {FadeInOut};
 export {FlipInOut};
+export {FlipInOut_HandleState};
 export {FadeInOut_HandleState};
 export {FadeDownUp_HandleState};

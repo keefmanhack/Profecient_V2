@@ -28,7 +28,7 @@
 
 .class-item button{
 	position: absolute;
-    left: 94.1%;
+    left: 92.1%;
     color: red;
     font-weight: 800;
     top: 0;
@@ -114,7 +114,7 @@ input{
 .suggested-links .link{
     background: white;
     padding: 5px;
-    height: 250px;
+    height: 270px;
     border-radius: 5px;
     margin-bottom: 5px;
 }
@@ -210,9 +210,10 @@ input{
 }
 
 .link button.drop-down{
-        background: lightgrey;
+    background: lightgrey;
     height: 18px;
     position: relative;
+    margin-top: 5px;
 }
 
 .drop-down i{
