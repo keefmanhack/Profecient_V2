@@ -107,7 +107,6 @@ export function roundTimeDown(stdTime){
 }
 
 
-
 export function increment(ct, time, isButton){
 
 	const timeMT = convertToMilitary(time);

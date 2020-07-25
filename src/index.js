@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // import App from './App';
-// import ClassPage from './ClassPage'
 import ProfilePage from './profile-page';
 // import MessageCenter from './MessageCenter/Message-Center'
 import Header from './header';

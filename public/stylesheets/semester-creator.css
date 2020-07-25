@@ -12,10 +12,47 @@
 	background: white;
     padding: 5px;
     border-radius: 5px;
+    height: 588px;
+    overflow: scroll;
+    position: relative;
 }
 
 .seven-day-agenda table{
 	width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.seven-day-agenda table td{
+    position: relative;
+    width: 14.6%;
+    height: 40px;
+    border-top: 1px solid lightgrey;
+    border-right: 1px dashed lightgrey;
+    border-left: 1px dashed lightgrey;
+}
+
+.seven-day-agenda .event-item{
+    padding: 4%;
+    border-radius: 5px;
+    background: #fbdbb0ba;
+    cursor: pointer;
+}
+
+.event-item:hover{
+    opacity: .7;
+}
+
+.event-item h5{
+    font-size: 100%;
+}
+
+.seven-day-agenda h5.time{
+    left: 90.5%;
+    position: absolute;
+    font-size: 10px;
+    color: #545353;
+    font-weight: 600;
 }
 
 .class-item{
@@ -221,3 +258,4 @@ input{
     top: -2px;
     left: 46%;
 }
+

@@ -69,180 +69,180 @@ class MessageCenter extends React.Component{
 
 
 				},
-				// {
-				// 	correspondent: {
-				// 		name: 'John Doe',
-				// 		profileImage: 'morganFreeman.jpg',
-				// 	},
-				// 	unReadMessages: 6,
-				// 	messageData: [
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+				{
+					correspondent: {
+						name: 'John Doe',
+						profileImage: 'morganFreeman.jpg',
+					},
+					unReadMessages: 6,
+					messageData: [
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: false,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: false,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		}
+						}
 
-				// 	]
-				// },
-				// {
-				// 	correspondent: {
-				// 		name: 'Sarah Steel',
-				// 		profileImage: 'generic_person.jpg',
-				// 	},
-				// 	unReadMessages: 1,
-				// 	messageData: [
-				// 		{
-				// 			date: new Date().toDateString() ,
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+					]
+				},
+				{
+					correspondent: {
+						name: 'Sarah Steel',
+						profileImage: 'generic_person.jpg',
+					},
+					unReadMessages: 1,
+					messageData: [
+						{
+							date: new Date() ,
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: false,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: false,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		}
+						}
 
-				// 	]
-
-
-
-				// },
-				// {
-				// 	correspondent: {
-				// 		name: 'John Doe',
-				// 		profileImage: 'morganFreeman.jpg',
-				// 	},
-				// 	unReadMessages: 6,
-				// 	messageData: [
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: false,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-				// 		}
-
-				// 	]
-				// },
-				// {
-				// 	correspondent: {
-				// 		name: 'Sarah Steel',
-				// 		profileImage: 'generic_person.jpg',
-				// 	},
-				// 	unReadMessages: 1,
-				// 	messageData: [
-				// 		{
-				// 			date: new Date().toDateString() ,
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: false,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-				// 		}
-
-				// 	]
+					]
 
 
 
-				// },
-				// {
-				// 	correspondent: {
-				// 		name: 'John Doe',
-				// 		profileImage: 'morganFreeman.jpg',
-				// 	},
-				// 	unReadMessages: 6,
-				// 	messageData: [
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+				},
+				{
+					correspondent: {
+						name: 'John Doe',
+						profileImage: 'morganFreeman.jpg',
+					},
+					unReadMessages: 6,
+					messageData: [
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: false,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: false,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		}
+						}
 
-				// 	]
-				// },
-				// {
-				// 	correspondent: {
-				// 		name: 'Bartholemu Jankins',
-				// 		profileImage: 'markWalberg.jpg',
-				// 	},
-				// 	unReadMessages: 6,
-				// 	messageData: [
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+					]
+				},
+				{
+					correspondent: {
+						name: 'Sarah Steel',
+						profileImage: 'generic_person.jpg',
+					},
+					unReadMessages: 1,
+					messageData: [
+						{
+							date: new Date() ,
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: false,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: false,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		},
-				// 		{
-				// 			date: new Date().toDateString(),
-				// 			fromCorrespondent: true,
-				// 			message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
 										
-				// 		}
+						}
 
-				// 	]
-				// }
+					]
+
+
+
+				},
+				{
+					correspondent: {
+						name: 'John Doe',
+						profileImage: 'morganFreeman.jpg',
+					},
+					unReadMessages: 6,
+					messageData: [
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+										
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: false,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+										
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+										
+						}
+
+					]
+				},
+				{
+					correspondent: {
+						name: 'Bartholemu Jankins',
+						profileImage: 'markWalberg.jpg',
+					},
+					unReadMessages: 6,
+					messageData: [
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+										
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: false,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+										
+						},
+						{
+							date: new Date(),
+							fromCorrespondent: true,
+							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
+										
+						}
+
+					]
+				}
 
 			]
 		}
