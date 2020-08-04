@@ -1,5 +1,9 @@
 .semester-creator-container{
-	background: rgb(106, 106, 111);
+	background: rgb(255,255,255);
+    background: -moz-linear-gradient(144deg, rgba(255,255,255,1) 0%, rgba(79,154,241,1) 100%);
+    background: -webkit-linear-gradient(144deg, rgba(255,255,255,1) 0%, rgba(79,154,241,1) 100%);
+    background: linear-gradient(144deg, rgba(255,255,255,1) 0%, rgba(79,154,241,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#4f9af1",GradientType=1);
     position: absolute;
     top: 0;
     width: 100%;
@@ -37,6 +41,7 @@
     border-radius: 5px;
     background: #fbdbb0ba;
     cursor: pointer;
+    z-index: 1;
 }
 
 .event-item:hover{
@@ -118,6 +123,13 @@
     margin: 0;
 }
 
+.class-editor{
+    width: 274px;
+    display: inline-block;
+    position: relative;
+    left: 25%;
+}
+
 .class-editor .instruct-loc input{
     width: 100%;
     border: none;
@@ -141,11 +153,21 @@ input{
 }
 
 .suggested-links{
-    background: lightgrey;
+    background: #e7f9f5;
     border-radius: 5px;
     padding: 5px;
     height: 355px;
     overflow: scroll;
+    position: relative;
+    top: -44px;
+    left: 29%;
+}
+
+.suggested-links p{
+    text-align: center;
+    font-weight: 200;
+    position: relative;
+    top: 45%;
 }
 
 .suggested-links .link{
@@ -230,6 +252,11 @@ input{
     top: -20px;
 }
 
+.suggested-links{
+    width: 275px;
+    display: inline-block;
+}
+
 .suggested-links .short-link{
     height: 112px;
 }
@@ -257,5 +284,79 @@ input{
         position: absolute;
     top: -2px;
     left: 46%;
+}
+
+.name-semester{
+    -webkit-box-shadow: 0px 17px 10px 10px rgba(226,232,245,1);
+-moz-box-shadow: 0px 17px 10px 10px rgba(226,232,245,1);
+box-shadow: 0px 17px 10px 10px rgba(226,232,245,1);
+    background: white;
+    position: relative;
+    width: 400px;
+    left: 33%;
+    top: 25%;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.name-semester input{
+    display: block;
+    position: relative;
+    font-size: 30px;
+    border: 2px solid lightgrey;
+}
+
+.name-semester h1, h2, h3{
+    text-align: center;
+}
+
+.name-semester h1{
+    font-weight: 600;
+}
+
+.name-semester h2{
+    font-weight: 200;
+    margin: 0;
+}
+
+.name-semester h3{
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.name-semester button{
+    border: none;
+    position: relative;
+    margin-top: 10px;
+    /*background: #64f14f;*/
+    font-size: 32px;
+    font-weight: 800;
+    left: 5%;
+    border-radius: 5px;
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#75fa61",GradientType=1);
+}
+
+.class-editor button.add-class{
+    border: none;
+    position: relative;
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 600;
+    width: 100%;
+    border-radius: 5px;
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#75fa61",GradientType=1);
+}
+
+.day-buttons .selected{
+    background: rgba(117,250,97,1);
+    transition: .3s;
 }
 

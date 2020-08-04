@@ -1,5 +1,5 @@
 import React from 'react';
-import {convertToMilitary, convertToStandard} from '../Agenda_Helper';
+import {convertToMilitary, convertToStandard} from '../../Agenda_Helper';
 import {TimeHR} from './StartEndTime';
 
 export function createTimeHRs(stdStartTime, stdEndTime){
@@ -193,7 +193,7 @@ export function assembleTime(hour, minute, AMPM){
 export function checkDif(str, startTime, endTime, newTime){
 	let dif;
 		
-	if(str === 'startTime'){
+	if(str === 'start'){
 		dif =findProportionalTimeDif(newTime, endTime)
 	}else{
 		dif =findProportionalTimeDif(startTime, newTime)

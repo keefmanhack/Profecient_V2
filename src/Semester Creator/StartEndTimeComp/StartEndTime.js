@@ -1,5 +1,5 @@
 import React from 'react';
-import {FadeInOut_HandleState} from '../CustomTransition';
+import {FadeInOut_HandleState} from '../../CustomTransition';
 import {increment, checkDif, decrement, assembleTime, findMinute, findHour, findAMPM, createTimeHRs, createHours, createMins} from './helperFunc';
 
 class StartEndTime extends React.Component{
@@ -7,8 +7,6 @@ class StartEndTime extends React.Component{
 		super(props);
 
 		this.state={
-			startTime: '2:00PM',
-			endTime: '4:00PM',
 			error: false,
 		}
 
@@ -16,12 +14,12 @@ class StartEndTime extends React.Component{
 	}
 
 	incrementHandler(val){
-		let timeCopy = this.state[val];
+		let timeCopy = this.props.time[val];
 		let inc = increment(1, timeCopy);
 
-		if(checkDif(val, this.state.startTime, this.state.endTime, inc)){
+		if(checkDif(val, this.props.time.start, this.props.time.end, inc)){
+			this.props.setTime(val, inc);
 			this.setState({
-				[val]: inc,
 				 error: false,
 			})
 		}else{
@@ -34,12 +32,12 @@ class StartEndTime extends React.Component{
 		let ct =2;
 		this.intervalHandler = setInterval(
 			() => {
-				timeCopy = this.state[val];
+				timeCopy = this.props.time[val];
 				inc = increment(ct++, timeCopy);
 
-				if(checkDif(val, this.state.startTime, this.state.endTime, inc)){
+				if(checkDif(val, this.props.time.start, this.props.time.end, inc)){
+					this.props.setTime(val, inc);
 					this.setState({
-						[val]: inc,
 						 error: false,
 					})
 				}else{
@@ -56,12 +54,12 @@ class StartEndTime extends React.Component{
 	}
 
 	decrementHandler(val){
-		let timeCopy = this.state[val];
+		let timeCopy = this.props.time[val];
 		let dec = decrement(1, timeCopy);
 
-		if(checkDif(val, this.state.startTime, this.state.endTime, dec)){
+		if(checkDif(val, this.props.time.start, this.props.time.end, dec)){
+			this.props.setTime(val, dec);
 			this.setState({
-				[val]: dec,
 				 error: false,
 			})
 		}else{
@@ -73,11 +71,11 @@ class StartEndTime extends React.Component{
 		let ct =2;
 		this.intervalHandler = setInterval(
 			() => {
-				timeCopy = this.state[val];
+				timeCopy = this.props.time[val];
 				dec = decrement(ct++, timeCopy);
-				if(checkDif(val, this.state.startTime, this.state.endTime, dec)){
+				if(checkDif(val, this.props.time.start, this.props.time.end, dec)){
+				this.props.setTime(val, dec);       
 					this.setState({
-						[val]: dec,
 						 error: false,
 					})
 				}else{
@@ -91,14 +89,14 @@ class StartEndTime extends React.Component{
 	}
 
 	handleHourInput(e, str){
-		const min = findMinute(this.state[str]);
-		const AMPM = findAMPM(this.state[str]);
+		const min = findMinute(this.props.time[str]);
+		const AMPM = findAMPM(this.props.time[str]);
 		
 		const stdTime = assembleTime(e.target.value, min, AMPM);
 		
-		if(checkDif(str, this.state.startTime, this.state.endTime, stdTime)){
+		if(checkDif(str, this.props.time.start, this.props.time.end, stdTime)){
+		this.props.setTime(str, stdTime);   
 			this.setState({
-				[str]: stdTime,
 				error: false,
 			})
 		}else{
@@ -110,14 +108,14 @@ class StartEndTime extends React.Component{
 	}
 
 	handleMinInput(e, str){
-		const hour = findHour(this.state[str]);
-		const AMPM = findAMPM(this.state[str]);
+		const hour = findHour(this.props.time[str]);
+		const AMPM = findAMPM(this.props.time[str]);
 		
 		const stdTime = assembleTime(hour, e.target.value, AMPM);
 
-		if(checkDif(str, this.state.startTime, this.state.endTime, stdTime)){
+		if(checkDif(str, this.props.time.start, this.props.time.end, stdTime)){
+		this.props.setTime(str, stdTime);   
 			this.setState({
-				[str]: stdTime,
 				error: false,
 			})
 		}else{
@@ -128,14 +126,14 @@ class StartEndTime extends React.Component{
 	}
 
 	handleAMPMInput(e, str){
-		const min = findMinute(this.state[str]);
-		const hour = findHour(this.state[str]);
+		const min = findMinute(this.props.time[str]);
+		const hour = findHour(this.props.time[str]);
 		
 		const stdTime = assembleTime(hour, min, e.target.value);
 
-		if(checkDif(str, this.state.startTime, this.state.endTime, stdTime)){
+		if(checkDif(str, this.props.time.start, this.props.time.end, stdTime)){
+			this.props.setTime(str, stdTime);   
 			this.setState({
-				[str]: stdTime,
 				error: false,
 			})
 		}else{
@@ -146,7 +144,7 @@ class StartEndTime extends React.Component{
 	}
 
 	render(){
-		let timeHRs = createTimeHRs(this.state.startTime, this.state.endTime);
+		let timeHRs = createTimeHRs(this.props.time.start, this.props.time.end);
 
 		return(
 			<div className='start-end-time-container'>
@@ -156,8 +154,8 @@ class StartEndTime extends React.Component{
 						decrementHandler={(str) => this.decrementHandler(str)}
 						incrementHandler={(str) => this.incrementHandler(str)}
 						stopInterval={() => this.stopInterval()}
-						startTime={this.state.startTime}
-						endTime={this.state.endTime}
+						startTime={this.props.time.start}
+						endTime={this.props.time.end}
 						handleHourInput={(e, str) => this.handleHourInput(e, str)}
 						handleMinInput={(e, str) => this.handleMinInput(e, str)}
 						handleAMPMInput={(e, str) => this.handleAMPMInput(e, str)}
@@ -191,34 +189,34 @@ function TimeUnit(props){
 		<div className='time-unit'>
 			<div className='top-con'>
 				<Scaler
-					decMouseDown={() => props.decrementHandler('startTime')}
+					decMouseDown={() => props.decrementHandler('start')}
 					mouseUp={() => props.stopInterval()}
-					incMouseDown={() => props.incrementHandler('startTime')}
+					incMouseDown={() => props.incrementHandler('start')}
 				/>
 			</div>
 			<div className='timeDis'>
 				<h5 className='topIn' >
 					<TimeShowEdit 
-						handleHourInput={(e) => props.handleHourInput(e, 'startTime')} 
-						handleMinInput={(e) => props.handleMinInput(e, 'startTime')} 
-						handleAMPMInput={(e) => props.handleAMPMInput(e, 'startTime')} 
+						handleHourInput={(e) => props.handleHourInput(e, 'start')} 
+						handleMinInput={(e) => props.handleMinInput(e, 'start')} 
+						handleAMPMInput={(e) => props.handleAMPMInput(e, 'start')} 
 						time={props.startTime} 
 					/>
 				</h5>
 				<h5 className='bottomIn' >
 					<TimeShowEdit
-						handleHourInput={(e) => props.handleHourInput(e, 'endTime')} 
-						handleMinInput={(e) => props.handleMinInput(e, 'endTime')} 
-						handleAMPMInput={(e) => props.handleAMPMInput(e, 'endTime')} 
+						handleHourInput={(e) => props.handleHourInput(e, 'end')} 
+						handleMinInput={(e) => props.handleMinInput(e, 'end')} 
+						handleAMPMInput={(e) => props.handleAMPMInput(e, 'end')} 
 						time={props.endTime}
 					/>
 				</h5>
 			</div>
 			<div className='bottom-con'>
 				<Scaler
-					decMouseDown={() => props.decrementHandler('endTime')}
+					decMouseDown={() => props.decrementHandler('end')}
 					mouseUp={() => props.stopInterval()}
-					incMouseDown={() => props.incrementHandler('endTime')}
+					incMouseDown={() => props.incrementHandler('end')}
 				/>
 			</div>
 		</div>

@@ -86,6 +86,7 @@
     text-overflow: '';
 
     border: none;
+    cursor: pointer;
 }
 
 .topIn select.AMPM{

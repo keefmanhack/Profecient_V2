@@ -131,6 +131,24 @@ function FadeInOut(props){
 	);
 }
 
+function BackInOut_HandleState(props){
+	return(
+		<CSSTransition
+			in={props.condition}
+			timeout={500}
+			classNames={{
+				enter: 'animate__animated animate__faster',
+				enterActive: 'animate__backInDown',
+				exit: 'animate__animated animate__faster',
+				exitActive: 'animate__backOutUp',
+			}}
+			unmountOnExit
+		>
+			{props.children}
+		</CSSTransition>
+	);
+}
+
 export {RotateInOutLeft_HandleState};
 export {RotateInOutRight_HandleState};
 export {FadeInOut};
@@ -138,3 +156,4 @@ export {FlipInOut};
 export {FlipInOut_HandleState};
 export {FadeInOut_HandleState};
 export {FadeDownUp_HandleState};
+export {BackInOut_HandleState};

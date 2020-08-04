@@ -23,7 +23,6 @@ export function findHeightProportion(start, end){
 }
 
 export function convertToMilitary(stdTime){
-	// console.log(stdTime);
 	const minute = parseInt(stdTime.substring(stdTime.length-4 ,stdTime.length-2));
 	const hour = parseInt(stdTime.substring(0 ,stdTime.length-5));
 
