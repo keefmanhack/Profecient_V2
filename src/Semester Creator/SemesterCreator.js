@@ -1,6 +1,6 @@
 import React from 'react';
 import StartEndTime from './StartEndTimeComp/StartEndTime';
-import {BackInOut_HandleState} from '../CustomTransition';
+import {BackInOut_HandleState, FadeInOut_HandleState} from '../CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 
 class SemesterCreator extends React.Component{
@@ -57,6 +57,15 @@ class SemesterCreator extends React.Component{
 		});
 	}
 
+	addClass(val){
+		const semData_copy = this.state.semData;
+		semData_copy.classData.push(val);
+
+		this.setState({
+			semData: semData_copy,
+		})
+	}
+
 	render(){
 		return(
 			<div className='semester-creator-container'>
@@ -64,10 +73,12 @@ class SemesterCreator extends React.Component{
 						<h1>{this.state.semData.name} text</h1>
 						<hr/>
 
-						<ClassEditor 
+						<ClassEditor
+							style={this.state.semData.classData.length>0 ? classEditorNewPos: null}
 							setTime={(key, time) => this.setTime(key, time)} 
 							updateCurrent={(key, text) => this.updateCurrent(key, text)}
 							time={this.state.currentClass.time}
+							addClass={(val) => this.addClass(val)}
 						/>
 
 						<SuggestedLinksContainer currentClass={this.state.currentClass}/>
@@ -75,6 +86,11 @@ class SemesterCreator extends React.Component{
 			</div>
 		);
 	}
+}
+
+const classEditorNewPos={
+    left: 0,
+	top: 100,
 }
 
 class ClassEditor extends React.Component{
@@ -111,7 +127,15 @@ class ClassEditor extends React.Component{
 					text: 'S',
 					selected: false,
 				}
-			]
+			],
+			errors: {
+				className: false,
+				instructor: false,
+				location: false,
+				startDate: false,
+				endDate: false,
+			},
+			daysOfWeek_error: false,
 		}
 		
 		this.className = React.createRef();
@@ -131,6 +155,104 @@ class ClassEditor extends React.Component{
 		})
 	}
 
+	addClass(){
+		const error = this.checkErrors();
+		
+		if(!error){
+			let daysOfWeek = [];
+
+			this.state.buttons.forEach((x) => {
+				daysOfWeek.push(x.selected);
+			});
+
+			const returnVal = {
+				name: this.className.current.value,
+				instructor: this.instructor.current.value,
+				location: this.location.current.value,
+				daysOfWeek: daysOfWeek,
+				date: {
+					start: this.startDate.current.value,
+					end: this.endDate.current.value,
+				},
+				time: {
+					start: this.props.time.start,
+					end: this.props.time.end,
+				}
+			}
+			this.props.addClass(returnVal);
+		}
+	}
+
+	checkErrors(){
+		let error = false;
+
+		//check inputs
+		let errors_copy = this.state.errors;
+		for(let key in errors_copy){
+			if(this[key].current.value.length < 1){
+				errors_copy[key] = true;
+				error = true;
+			}else{
+				errors_copy[key] = false;
+			}
+		}
+		
+		//check day buttons
+		let daysOfWeek_error_copy = this.state.daysOfWeek_error;
+		let ct =0;
+		this.state.buttons.forEach((x) =>{
+			if(x.selected){
+				ct++;
+			}
+		})
+		if(ct<1){
+			daysOfWeek_error_copy = true;
+			error= true;
+		}else{
+			daysOfWeek_error_copy = false;
+		}
+
+		//checkDate
+		const startArr = this.startDate.split('/');
+		const endArr = this.endDate.split('/');
+		const monthToDays ={
+			1: 31,
+			2: 29,
+			3: 31,
+			4: 30,
+			5: 31,
+			6: 30,
+			7: 31,
+			8: 31,
+			9: 30,
+			10: 31,
+			11: 30,
+			12: 31,
+		}
+		
+		if(startArr.length !==3 || endArr.length !== 3){
+			//SET ERROR
+		}else{
+			if(parseInt(startArr[0]) > 0 && parseInt(startArr[0]) < 13){
+				const month = parseInt(startArr[0]);
+				const day = parseInt(startArr[1]);
+
+				if(day > 0 && day <= monthToDays[month]){
+					if(parseInt(startArr[2]) !== Nan){
+
+					}
+				}
+			}
+		}
+
+
+		this.setState({
+			errors: errors_copy,
+			daysOfWeek_error: daysOfWeek_error_copy,
+		})
+		return error;
+	}
+
 	render(){
 		const dayButtons = this.state.buttons.map((data, index) =>
 			<DayButton 
@@ -143,13 +265,14 @@ class ClassEditor extends React.Component{
 		)
 
 		return(
-			<div className='class-editor'>
+			<div style={this.props.style} className='class-editor'>
 				<input 
 					ref={this.className} 
 					onKeyUp={() => this.props.updateCurrent('name', this.className.current.value)}  
 					className='class-name' 
 					type="text" 
 					placeholder='Class Name'
+					style={this.state.errors.className ? {border: '2px solid red', transition: '.3s'} : null}
 				/>
 				<div className='row instruct-loc'>
 					<div className='col-lg-6'>
@@ -158,6 +281,7 @@ class ClassEditor extends React.Component{
 							ref={this.instructor} 
 							type="text" 
 							placeholder='Instructor'
+							style={this.state.errors.instructor ? {border: '2px solid red', transition: '.3s'} : null}
 						/>
 					</div>
 					<div className='col-lg-6'>
@@ -166,29 +290,34 @@ class ClassEditor extends React.Component{
 							onKeyUp={() => this.props.updateCurrent('location', this.location.current.value)}
 							type="text" 
 							placeholder='Location'
+							style={this.state.errors.location ? {border: '2px solid red', transition: '.3s'} : null}
 						/>
 					</div>
 				</div>
 
-				<div className='day-buttons'>
+				<div style={this.state.daysOfWeek_error ? {border: '2px solid red', transition: '.3s'} : null} className='day-buttons'>
 					{dayButtons}
 				</div>
 
 				<div className='row start-end-date'>
 					<div className='col-lg-6'>
-						<input 
+						<input
+							className='datepicker'
 							ref={this.startDate} 
 							type="text" 
 							placeholder='Start Date'
 							onKeyUp={() => this.props.updateCurrent('date[start]', this.startDate.current.value)}
+							style={this.state.errors.startDate ? {border: '2px solid red', transition: '.3s'} : null}
 						/>
 					</div>
 					<div className='col-lg-6'>
 						<input 
+							className='datepicker'
 							ref={this.endDate} 
 							type="text" 
 							placeholder='End Date'
 							onKeyUp={() => this.props.updateCurrent('date[end]', this.endDate.current.value)}
+							style={this.state.errors.endDate ? {border: '2px solid red', transition: '.3s'} : null}
 						/>
 					</div>
 				</div>
@@ -197,7 +326,7 @@ class ClassEditor extends React.Component{
 					time={this.props.time} 
 					setTime={(key, time) => this.props.setTime(key, time)}
 				/>
-				<button className='add-class'>Add Class</button>
+				<button onClick={() => this.addClass()} className='add-class'>Add Class</button>
 			</div>
 		);
 	}
