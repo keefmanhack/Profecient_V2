@@ -341,7 +341,11 @@ box-shadow: 0px 17px 10px 10px rgba(226,232,245,1);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#75fa61",GradientType=1);
 }
 
-.class-editor button.add-class{
+.class-editor .button-container{
+    position: relative;
+    height: 60px;
+}
+.class-editor .button-container button{
     border: none;
     position: relative;
     margin-top: 10px;
@@ -349,12 +353,34 @@ box-shadow: 0px 17px 10px 10px rgba(226,232,245,1);
     font-weight: 600;
     width: 100%;
     border-radius: 5px;
+    position: absolute;
+}
+
+.class-editor .button-container button.add-class{
     background: rgb(255,255,255);
     background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
     background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(117,250,97,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#75fa61",GradientType=1);
 }
+
+.class-editor .button-container button.cancel-update{
+    font-weight: 400;
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(167 173 165) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(167 173 165) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(167 173 165) 100%);
+    width: 80%;
+}
+
+.class-editor .button-container button.update{
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(250 217 97) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(250 217 97) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgb(250 217 97) 100%);
+    width: 80%;
+}
+
 
 .day-buttons .selected{
     background: rgba(117,250,97,1);
