@@ -7,7 +7,7 @@
     position: absolute;
     top: 0;
     width: 100%;
-    height: 625px;
+    min-height: 625px;
     padding: 10px;
     border-radius: 5px;
 }
@@ -65,6 +65,14 @@
     border-radius: 5px;
     margin-bottom: 5px;
     position: relative;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: .3s;
+}
+
+.class-item:hover{
+    opacity: .8;
+    border: 2px solid #4F9AF1;
 }
 
 .class-item button{
@@ -77,6 +85,7 @@
     width: 45px;
     height: 46px;
     border-radius: 5px;
+    border: none;
 }
 
 .class-item h3{
@@ -125,8 +134,7 @@
 .class-editor{
     width: 274px;
     display: inline-block;
-    position: relative;
-    left: 25%;
+
 }
 
 .class-editor .instruct-loc input{
@@ -153,11 +161,8 @@ input{
     background: #e7f9f5;
     border-radius: 5px;
     padding: 5px;
-    height: 355px;
+    height: 372px;
     overflow: scroll;
-    position: relative;
-    top: -57px;
-    left: 29%;
 }
 
 .suggested-links p{

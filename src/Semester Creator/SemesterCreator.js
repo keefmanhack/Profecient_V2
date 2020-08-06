@@ -1,7 +1,8 @@
 import React from 'react';
 import StartEndTime from './StartEndTimeComp/StartEndTime';
-import {BackInOut_HandleState, FadeInOut_HandleState} from '../CustomTransition';
+import {BackInOut_HandleState, FadeInOut_HandleState, FadeRight_HandleState} from '../CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
+import {checkDateDif, checkDate} from './helperFunc';
 
 class SemesterCreator extends React.Component{
 	constructor(props){
@@ -10,7 +11,50 @@ class SemesterCreator extends React.Component{
 		this.state ={
 			semData: {
 				name: null,
-				classData: [],
+				classData: [
+					{
+						name: 'Algebra 1',
+						instructor: 'l',
+						location: 'g',
+						daysOfWeek: [false, true, false, true, false, true, false],
+						time: {
+							start: '2:00PM',
+							end: '4:00PM',
+						},
+						date: {
+							start: '10/12/2020',
+							end: '10/12/2021',
+						}
+					},
+					{
+						name: 'b',
+						instructor: 'l',
+						location: 'g',
+						daysOfWeek: [false, true, false, true, false, true, false],
+						time: {
+							start: '2:00PM',
+							end: '4:00PM',
+						},
+						date: {
+							start: '10/12/2020',
+							end: '10/12/2021',
+						}
+					},
+					{
+						name: 'c',
+						instructor: 'l',
+						location: 'g',
+						daysOfWeek: [false, true, false, true, false, true, false],
+						time: {
+							start: '2:00PM',
+							end: '4:00PM',
+						},
+						date: {
+							start: '10/12/2020',
+							end: '10/12/2021',
+						}
+					},
+				],
 			},
 			currentClass: {
 				name: null,
@@ -25,6 +69,23 @@ class SemesterCreator extends React.Component{
 					start: null,
 					end: null,
 				}
+			},
+			editMode: false,
+			selectedIndex: null,
+		}
+
+		this.currentClass_default = {
+			name: null,
+			instructor: null,
+			location: null,
+			daysOfWeek: [],
+			time: {
+				start: '2:00PM',
+				end: '4:00PM',
+			},
+			date: {
+				start: null,
+				end: null,
 			}
 		}
 	}
@@ -63,71 +124,104 @@ class SemesterCreator extends React.Component{
 
 		this.setState({
 			semData: semData_copy,
+			currentClass: this.currentClass_default,
+		})
+	}
+
+	removeClassItem(i){
+		let semData_copy = this.state.semData;
+		semData_copy.classData.splice(i, 1);
+		
+		this.setState({
+			semData: semData_copy,
+		})
+		console.log(this.state.semData)
+	}
+
+	classItemSelected(i){
+		const classData_copy = this.state.semData.classData[i]
+
+		this.setState({
+			editMode: true,
+			selectedIndex: i,
+			currentClass: classData_copy,
 		})
 	}
 
 	render(){
+		const classItems = this.state.semData.classData.map((data, index) =>
+			<ClassItem 
+				key={index}
+				i={index} 
+				itemSelected={(i) => this.classItemSelected(i)} 
+				removeClassItem={(i) => this.removeClassItem(i)} 
+				data={data}
+				selected={index === this.state.selectedIndex ? true: false}
+			/>
+		);
 		return(
 			<div className='semester-creator-container'>
-					<div>
-						<h1>{this.state.semData.name} text</h1>
-						<hr/>
+				<div>
+					<h1>{this.state.semData.name} text</h1>
+					<hr/>
+				<div className='row'>
+					<div className='col-lg-6'>
+						<FadeInOut_HandleState condition={this.state.semData.classData.length>0}>
+							<div className='class-item-container'>
+								{classItems}
+							</div>
+						</FadeInOut_HandleState>
 
-						<ClassEditor
-							style={this.state.semData.classData.length>0 ? classEditorNewPos: null}
-							setTime={(key, time) => this.setTime(key, time)} 
-							updateCurrent={(key, text) => this.updateCurrent(key, text)}
-							time={this.state.currentClass.time}
-							addClass={(val) => this.addClass(val)}
-						/>
-
-						<SuggestedLinksContainer currentClass={this.state.currentClass}/>
+						<div className='row'>
+							<div className='col-lg-6'>
+								<ClassEditor
+									setTime={(key, time) => this.setTime(key, time)} 
+									updateCurrent={(key, text) => this.updateCurrent(key, text)}
+									currentClass={this.state.currentClass}
+									addClass={(val) => this.addClass(val)}
+									editMode={this.state.editMode}
+								/>
+							</div>
+							<div className='col-lg-6'>
+								<SuggestedLinksContainer 
+									currentClass={this.state.currentClass}
+									
+								/>
+							</div>
+						</div>
 					</div>
+					<div className='col-lg-6'>
+						
+					</div>
+				</div>
+					
+
+					
+
+					
+				</div>
 			</div>
 		);
 	}
 }
 
-const classEditorNewPos={
-    left: 0,
-	top: 100,
-}
+// const classEditorNewPos={
+//     left: 0,
+// 	top: 100,
+// 	transition: '.3s',
+// }
+
+// const suggLinksNewPos={
+// 	left: 10,
+//     top: 61,
+//     transition: '.3s',
+// }
 
 class ClassEditor extends React.Component{
 	constructor(props){
 		super(props);
 
 		this.state = {
-			buttons: [
-				{
-					text: 'M',
-					selected: false,
-				},
-				{
-					text: 'T',
-					selected: false,
-				},
-				{
-					text: 'W',
-					selected: false,
-				},
-				{
-					text: 'T',
-					selected: false,
-				},
-				{
-					text: 'F',
-					selected: false,
-				},
-				{
-					text: 'S',
-					selected: false,
-				},
-				{
-					text: 'S',
-					selected: false,
-				}
-			],
 			errors: {
 				className: false,
 				instructor: false,
@@ -137,6 +231,10 @@ class ClassEditor extends React.Component{
 			},
 			daysOfWeek_error: false,
 		}
+
+		this.days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+
 		
 		this.className = React.createRef();
 		this.instructor = React.createRef();
@@ -145,42 +243,49 @@ class ClassEditor extends React.Component{
 		this.endDate = React.createRef();
 	}
 
-	toggleSelected(i){
-		const buttons_Copy = this.state.buttons;
-
-		buttons_Copy[i].selected = !buttons_Copy[i].selected;
-
-		this.setState({
-			buttons: buttons_Copy,
-		})
-	}
-
 	addClass(){
 		const error = this.checkErrors();
 		
 		if(!error){
 			let daysOfWeek = [];
-
-			this.state.buttons.forEach((x) => {
-				daysOfWeek.push(x.selected);
-			});
+			let buttons_Copy = this.state.buttons;
 
 			const returnVal = {
 				name: this.className.current.value,
 				instructor: this.instructor.current.value,
 				location: this.location.current.value,
-				daysOfWeek: daysOfWeek,
+				daysOfWeek: this.props.currentClass.daysOfWeek,
 				date: {
 					start: this.startDate.current.value,
 					end: this.endDate.current.value,
 				},
 				time: {
-					start: this.props.time.start,
-					end: this.props.time.end,
+					start: this.props.currentClass.time.start,
+					end: this.props.currentClass.time.end,
 				}
 			}
 			this.props.addClass(returnVal);
+
+			this.resetInputs();
+			this.setState({
+				buttons: buttons_Copy,
+			})
 		}
+	}
+
+	resetInputs(){
+		this.className.current.value = '';
+		this.instructor.current.value = '';
+		this.location.current.value = '';
+		this.startDate.current.value = '';
+		this.endDate.current.value = '';
+	}
+
+	toggleSelected(i){
+		let daysOfWeek_copy = this.props.currentClass.daysOfWeek;
+		daysOfWeek_copy[i] = !daysOfWeek_copy[i];
+
+		this.props.updateCurrent('daysOfWeek', daysOfWeek_copy);
 	}
 
 	checkErrors(){
@@ -200,8 +305,8 @@ class ClassEditor extends React.Component{
 		//check day buttons
 		let daysOfWeek_error_copy = this.state.daysOfWeek_error;
 		let ct =0;
-		this.state.buttons.forEach((x) =>{
-			if(x.selected){
+		this.props.currentClass.daysOfWeek.forEach((x) =>{
+			if(x){
 				ct++;
 			}
 		})
@@ -213,36 +318,22 @@ class ClassEditor extends React.Component{
 		}
 
 		//checkDate
-		const startArr = this.startDate.split('/');
-		const endArr = this.endDate.split('/');
-		const monthToDays ={
-			1: 31,
-			2: 29,
-			3: 31,
-			4: 30,
-			5: 31,
-			6: 30,
-			7: 31,
-			8: 31,
-			9: 30,
-			10: 31,
-			11: 30,
-			12: 31,
-		}
-		
-		if(startArr.length !==3 || endArr.length !== 3){
-			//SET ERROR
-		}else{
-			if(parseInt(startArr[0]) > 0 && parseInt(startArr[0]) < 13){
-				const month = parseInt(startArr[0]);
-				const day = parseInt(startArr[1]);
+		const startArr = this.startDate.current.value.split('/');
+		const endArr = this.endDate.current.value.split('/');
 
-				if(day > 0 && day <= monthToDays[month]){
-					if(parseInt(startArr[2]) !== Nan){
-
-					}
+		if(checkDate(startArr)){
+			if(checkDate(endArr)){
+				if(!checkDateDif(startArr, endArr)){
+					errors_copy.endDate = true;
+					error=true;
 				}
+			}else{
+				errors_copy.endDate = true;
+				error=true;
 			}
+		}else{
+			errors_copy.startDate = true;
+			error=true;
 		}
 
 
@@ -253,16 +344,28 @@ class ClassEditor extends React.Component{
 		return error;
 	}
 
+	setInputVals(val){
+		this.className.current.value = val.name;
+		this.instructor.current.value = val.instructor;
+		this.location.current.value = val.location;
+		this.startDate.current.value = val.date.start;
+		this.endDate.current.value = val.date.end;
+	}
+
 	render(){
-		const dayButtons = this.state.buttons.map((data, index) =>
+		const dayButtons = this.days.map((data, index) =>
 			<DayButton 
-				text={data.text} 
+				text={data} 
 				i={index} 
 				key={index} 
 				toggleSelected={(i) => this.toggleSelected(i)}
-				selected={this.state.buttons[index].selected}
+				selected={this.props.currentClass.daysOfWeek[index]}
 			/>
 		)
+
+		if(this.props.editMode){
+			this.setInputVals(this.props.currentClass);
+		}
 
 		return(
 			<div style={this.props.style} className='class-editor'>
@@ -323,10 +426,16 @@ class ClassEditor extends React.Component{
 				</div>
 
 				<StartEndTime 
-					time={this.props.time} 
+					time={this.props.editMode ? {start: this.props.currentClass.time.start, end: this.props.currentClass.time.end} : this.props.currentClass.time} 
 					setTime={(key, time) => this.props.setTime(key, time)}
 				/>
-				<button onClick={() => this.addClass()} className='add-class'>Add Class</button>
+				<FadeInOut_HandleState condition={!this.props.editMode}>
+					<button onClick={() => this.addClass()} className='add-class'>Add Class</button>
+				</FadeInOut_HandleState>
+				<FadeInOut_HandleState condition={this.props.editMode}>
+					<button onClick={() => this.addClass()} className='add-class'>Update Class</button>
+				</FadeInOut_HandleState>
+				
 			</div>
 		);
 	}
@@ -337,7 +446,8 @@ function DayButton(props){
 		<button 
 			onClick={(i) => props.toggleSelected(props.i)}
 			className={props.selected ? 'selected' : null}
-		>{props.text}</button>
+		>{props.text}
+		</button>
 	);
 }
 
@@ -362,26 +472,56 @@ class NameSemester extends React.Component{
 	}
 }
 
-function ClassItem(props){
-	return(
-		<div className='class-item'>
-			<div className='row'>
-				<div className='col-lg-3'>
-					<h1>Algebra</h1>
+class ClassItem extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state ={
+			mouseOver: false
+		}
+
+		this.days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+	}
+
+	toggleMouseOver(isMouseOver){
+		this.setState({
+			mouseOver: isMouseOver,
+		})
+	}
+	
+	
+	render(){
+		const daySpans = this.days.map((day, index)=>
+			<span style={this.props.data.daysOfWeek[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
+		);
+		return(
+			<div
+				style={this.props.selected ? {border: '2px solid #4F9AF1', transition: '.3s'} : null}
+				onClick={() => this.props.itemSelected(this.props.i)}
+				onMouseEnter={() => this.toggleMouseOver(true)} 
+				onMouseLeave={() => this.toggleMouseOver(false)} 
+				className='class-item'
+			>
+				<div className='row'>
+					<div className='col-lg-3'>
+						<h1>{this.props.data.name}</h1>
+					</div>
+					<div className='col-lg-3'>
+						<h2>{this.props.data.instructor}</h2>
+					</div>
+					<div className='col-lg-4'>
+						<h3>{daySpans}</h3>
+					</div>
+					<div className='col-lg-2'>
+						
+					</div>
 				</div>
-				<div className='col-lg-3'>
-					<h2>Dr. Lee</h2>
-				</div>
-				<div className='col-lg-4'>
-					<h3>M T W Th F S S</h3>
-				</div>
-				<div className='col-lg-2'>
-					
-				</div>
+				<FadeRight_HandleState condition={this.state.mouseOver}>
+					<button onClick={() => this.props.removeClassItem(this.props.i)}><i class="fas fa-trash"></i></button>
+				</FadeRight_HandleState>
 			</div>
-			<button><i class="fas fa-trash"></i></button>
-		</div>
-	)
+		)
+	}
 }
 
 export default SemesterCreator;

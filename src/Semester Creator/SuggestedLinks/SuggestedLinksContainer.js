@@ -76,7 +76,7 @@ class SuggestedLinksContainer extends React.Component{
 			this.props.currentClass.name && this.props.currentClass.name===data.name ? <Link data={data} key={index}/> : null
 		)
 		return(
-			<div className='suggested-links'>
+			<div style={this.props.style} className='suggested-links'>
 				<FadeInOut_HandleState condition={links[0] !== null}> 
 					<React.Fragment>
 						{links}
