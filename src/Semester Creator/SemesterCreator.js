@@ -3,6 +3,7 @@ import StartEndTime from './StartEndTimeComp/StartEndTime';
 import {BackInOut_HandleState, FadeInOut_HandleState, FadeRight_HandleState} from '../CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import {checkDateDif, checkDate} from './helperFunc';
+import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda'
 
 class SemesterCreator extends React.Component{
 	constructor(props){
@@ -16,9 +17,9 @@ class SemesterCreator extends React.Component{
 						name: 'Algebra 1',
 						instructor: 'l',
 						location: 'g',
-						daysOfWeek: [false, true, false, true, false, true, false],
+						daysOfWeek: [true, false, false, true, false, true, false],
 						time: {
-							start: '2:00PM',
+							start: '2:00AM',
 							end: '4:00PM',
 						},
 						date: {
@@ -137,11 +138,12 @@ class SemesterCreator extends React.Component{
 		
 		this.setState({
 			semData: semData_copy,
+			currentClass: this.currentClass_default
 		})
-		console.log(this.state.semData)
 	}
 
 	classItemSelected(i){
+		console.log(i);
 		const classData_copy = JSON.parse(JSON.stringify(this.state.semData.classData[i])); //makes deep copy
 
 		this.setState({
@@ -152,8 +154,19 @@ class SemesterCreator extends React.Component{
 	}
 
 	updateCurrent(key, text){
+		console.log(key);
+		console.log(text);
 		const currentClass_copy = this.state.currentClass;
 		currentClass_copy[key] = text;
+
+		this.setState({
+			currentClass: currentClass_copy,
+		});
+	}
+
+	updateCurrent_2Key(key1, key2, text){
+		const currentClass_copy = this.state.currentClass;
+		currentClass_copy[key1][key2] = text;
 
 		this.setState({
 			currentClass: currentClass_copy,
@@ -196,6 +209,7 @@ class SemesterCreator extends React.Component{
 							<div className='col-lg-6'>
 								<ClassEditor
 									updateCurrent={(key, text) => this.updateCurrent(key, text)}
+									updateCurrent_2Key={(key1, key2, text) => this.updateCurrent_2Key(key1, key2, text)}
 									currentClass={this.state.currentClass}
 									addClass={(val) => this.addClass(val)}
 									editMode={this.state.editMode}
@@ -212,7 +226,7 @@ class SemesterCreator extends React.Component{
 						</div>
 					</div>
 					<div className='col-lg-6'>
-						
+						<SevenDayAgenda evItClick={(i) => this.classItemSelected(i)} data={this.state.semData.classData}/>
 					</div>
 				</div>
 				</div>
@@ -263,8 +277,7 @@ class ClassEditor extends React.Component{
 		const error = this.checkErrors();
 		
 		if(!error){
-			const currentClass_copy = this.state.currentClass_copy;
-			currentClass_copy.date.start= this.startDate.current.value; //not seeing change
+			const currentClass_copy = this.props.currentClass;
 			this.props.addClass(currentClass_copy);
 
 			this.resetInputs();
@@ -354,6 +367,11 @@ class ClassEditor extends React.Component{
 		this.endDate.current.value = val.date.end;
 	}
 
+	cancelUpdate(){
+		this.resetInputs();
+		this.props.cancelUpdate()
+	}
+
 	render(){
 		const dayButtons = this.days.map((data, index) =>
 			<DayButton 
@@ -411,7 +429,7 @@ class ClassEditor extends React.Component{
 							ref={this.startDate} 
 							type="text" 
 							placeholder='Start Date'
-							onClick={() => this.props.updateCurrent('date[start]', this.startDate.current.value)}
+							onClick={() => this.props.updateCurrent_2Key('date', 'start', this.startDate.current.value)}
 							style={this.state.errors.startDate ? {border: '2px solid red', transition: '.3s'} : null}
 						/>
 					</div>
@@ -421,7 +439,7 @@ class ClassEditor extends React.Component{
 							ref={this.endDate} 
 							type="text" 
 							placeholder='End Date'
-							onClick={() => this.props.updateCurrent('date[end]', this.endDate.current.value)}
+							onClick={() => this.props.updateCurrent_2Key('date', 'end', this.endDate.current.value)}
 							style={this.state.errors.endDate ? {border: '2px solid red', transition: '.3s'} : null}
 						/>
 					</div>
@@ -429,7 +447,7 @@ class ClassEditor extends React.Component{
 
 				<StartEndTime 
 					time={this.props.editMode ? {start: this.props.currentClass.time.start, end: this.props.currentClass.time.end} : this.props.currentClass.time} 
-					setTime={(key, time) => this.props.updateCurrent(key, time)}
+					setTime={(key, time) => this.props.updateCurrent_2Key('time', key, time)}
 				/>
 				<div className='button-container'>
 					<FadeInOut_HandleState condition={!this.props.editMode}>
@@ -438,7 +456,7 @@ class ClassEditor extends React.Component{
 					<FadeInOut_HandleState condition={this.props.editMode}>
 						<div className='row'>
 							<div className='col-lg-6'>
-								<button onClick={() => this.props.cancelUpdate()} className='cancel-update'>Cancel</button>
+								<button onClick={() => this.cancelUpdate()} className='cancel-update'>Cancel</button>
 							</div>
 							<div className='col-lg-6'>
 								<button onClick={() => this.updateClass()} className='update'>Update</button>

@@ -1,5 +1,5 @@
-import {convertToStandardNum, increment, findIncrementVal, decrement, roundTimeDown} from '../StartEndTimeComp/helperFunc';
-import {convertToMilitary} from './Agenda_Helper';
+import {convertToStandardNum, increment, findIncrementVal, decrement, roundTimeDown, findProportionalTimeDif} from '../StartEndTimeComp/helperFunc';
+import {convertToMilitary} from '../../Agenda_Helper';
 
 export function convertToAgendaFormat(data){
 	const sortedData = sortByStartTime(data);
@@ -21,11 +21,11 @@ export function convertToAgendaFormat(data){
 		const currentTimeInt = [intervalDivider * i + firstEvent_stdNum, intervalDivider * (i+1) + firstEvent_stdNum-1];
 
 		let weekArr = []
-			for(let day in sortedData[0].daysOfWeek){
+			for(let i =0; i<sortedData[0].daysOfWeek.length; i++){
 				let dayArr = [];
 				sortedData.forEach(function(o){
 					const timeEvent_stdNum = convertToStandardNum(convertToMilitary(o.time.start));
-					if(currentTimeInt[0] <= timeEvent_stdNum && timeEvent_stdNum <= currentTimeInt[1] && o.daysOfWeek[day]){
+					if(currentTimeInt[0] <= timeEvent_stdNum && timeEvent_stdNum <= currentTimeInt[1] && o.daysOfWeek[i]){
 						dayArr.push(o);
 					}
 				})

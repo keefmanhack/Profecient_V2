@@ -34,10 +34,18 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
       $( function() {
-        $(".datepicker").datepicker();
+        $(".datepicker").datepicker({
+          onClose: function(){$(this).trigger('click')}
+        });
 
-        //add click event
+      
+
       } );
+
+      function triggerClick(x){
+        x.trigger('click');
+        console.log(x);
+      }
     </script>
     <!-- END JQUERY UI -->
 
