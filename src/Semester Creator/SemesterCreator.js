@@ -226,7 +226,11 @@ class SemesterCreator extends React.Component{
 						</div>
 					</div>
 					<div className='col-lg-6'>
-						<SevenDayAgenda evItClick={(i) => this.classItemSelected(i)} data={this.state.semData.classData}/>
+						<SevenDayAgenda 
+							evItClick={(i) => this.classItemSelected(i)} 
+							data={this.state.semData.classData}
+							selectedIndex={this.state.selectedIndex}
+						/>
 					</div>
 				</div>
 				</div>
@@ -271,7 +275,24 @@ class ClassEditor extends React.Component{
 		this.location = React.createRef();
 		this.startDate = React.createRef();
 		this.endDate = React.createRef();
+
+		this.wrapperRef = React.createRef();
+        this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
+
+	componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+            this.cancelUpdate();
+        }
+    }
 
 	addClass(){
 		const error = this.checkErrors();
@@ -290,8 +311,6 @@ class ClassEditor extends React.Component{
 		if(!error){
 			const currentClass_copy = this.state.currentClass;
 			this.props.updateClass(currentClass_copy);
-
-			this.resetInputs();
 		}
 	}
 
@@ -368,8 +387,10 @@ class ClassEditor extends React.Component{
 	}
 
 	cancelUpdate(){
+		alert('lkdsjflkasdj')
 		this.resetInputs();
-		this.props.cancelUpdate()
+		this.props.cancelUpdate();
+		console.log(this.wrapperRef);
 	}
 
 	render(){
@@ -388,7 +409,7 @@ class ClassEditor extends React.Component{
 		}
 
 		return(
-			<div style={this.props.style} className='class-editor'>
+			<div ref={this.wrapperRef} style={this.props.style} className='class-editor'>
 				<input 
 					ref={this.className} 
 					onKeyUp={() => this.props.updateCurrent('name', this.className.current.value)}  

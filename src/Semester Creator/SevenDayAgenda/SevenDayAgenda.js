@@ -14,6 +14,7 @@ class SevenDayAgenda extends React.Component{
 				row={data.weekArr}
 				time={data.time}
 				evItClick={(i) => this.props.evItClick(i)}
+				selectedIndex={this.props.selectedIndex}
 			/>
 		);
 		
@@ -43,7 +44,13 @@ class SevenDayAgenda extends React.Component{
 
 function AgendaRow(props){
 	const agendaData = props.row.map((tableData, index)=>
-		<AgendaData evItClick={(i) => props.evItClick(i)} time={props.time} key={index} tableData={tableData}/>
+		<AgendaData 
+			selectedIndex={props.selectedIndex} 
+			evItClick={(i) => props.evItClick(i)} 
+			time={props.time} 
+			key={index} 
+			tableData={tableData}
+		/>
 	)
 
 	return(
@@ -56,7 +63,14 @@ function AgendaRow(props){
 
 function AgendaData(props){
 	const dis = props.tableData.map((data, index) =>
-		<EventItem evItClick={(i) => props.evItClick(i)} i={index} time={props.time} data={data} key={index}/>
+		<EventItem 
+			evItClick={(i) => props.evItClick(i)} 
+			i={index} 
+			time={props.time} 
+			data={data} 
+			key={index}
+			selectedIndex={props.selectedIndex}
+		/>
 	)
 	return(
 		<td>
@@ -69,9 +83,11 @@ function EventItem(props){
 	const tdHeight = 40;
 	const topDis = tdHeight * findProportionalTimeDif(props.time, props.data.time.start)/50;
 	const height = tdHeight * findProportionalTimeDif(props.data.time.start, props.data.time.end)/50;
+	const background = props.i % 2 ===0 ? '#fbdbb0ba' : '#b0fbb2ba';
+	const border = props.i === props.selectedIndex ? '2px solid red' : null;
 
 	return(
-		<div onClick={(i) => props.evItClick(props.i)} className='event-item' style={{position: 'absolute', top: topDis, height: height}}>
+		<div onClick={(i) => props.evItClick(props.i)} className='event-item' style={{position: 'absolute', top: topDis, height: height, backgroundColor: background, zIndex: props.i+1, border: border}}>
 			<h5>{props.data.name}</h5>
 		</div>
 	)

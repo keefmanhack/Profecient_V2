@@ -38,10 +38,12 @@
 .seven-day-agenda .event-item{
     padding: 4%;
     border-radius: 5px;
-    background: #fbdbb0ba;
+    /*background: #fbdbb0ba;*/
     cursor: pointer;
     z-index: 1;
     width: 98%;
+    border: 2px solid transparent;
+    transition: .3s;
 }
 
 .event-item:hover{

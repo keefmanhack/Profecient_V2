@@ -129,7 +129,6 @@ class MenuDropDown extends React.Component{
     }
 
     handleClickOutside(event) {
-    	console.log(event)
         if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
             this.props.hideDropDown();
         }
