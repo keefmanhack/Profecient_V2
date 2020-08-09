@@ -1,6 +1,6 @@
 import React from 'react';
 import StartEndTime from './StartEndTimeComp/StartEndTime';
-import {BackInOut_HandleState, FadeInOut_HandleState, FadeRight_HandleState} from '../CustomTransition';
+import {BackInOut_HandleState, FadeInOut_HandleState, FadeInOut, FadeRight_HandleState} from '../CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import {checkDateDif, checkDate} from './helperFunc';
 import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda'
@@ -194,46 +194,52 @@ class SemesterCreator extends React.Component{
 		);
 		return(
 			<div className='semester-creator-container'>
-				<div>
-					<h1>{this.state.semData.name} text</h1>
-					<hr/>
-				<div className='row'>
-					<div className='col-lg-6'>
-						<FadeInOut_HandleState condition={this.state.semData.classData.length>0}>
-							<div className='class-item-container'>
-								{classItems}
-							</div>
-						</FadeInOut_HandleState>
-
+				<BackInOut_HandleState condition={this.state.semData.name === null} >
+					<NameSemester semName={(key, text) => this.semName(key, text)}/>
+				</BackInOut_HandleState>
+				<FadeInOut_HandleState condition={this.state.semData.name !== null}>
+					<div>
+						<h1>{this.state.semData.name}</h1>
+						<hr/>
 						<div className='row'>
 							<div className='col-lg-6'>
-								<ClassEditor
-									updateCurrent={(key, text) => this.updateCurrent(key, text)}
-									updateCurrent_2Key={(key1, key2, text) => this.updateCurrent_2Key(key1, key2, text)}
-									currentClass={this.state.currentClass}
-									addClass={(val) => this.addClass(val)}
-									editMode={this.state.editMode}
-									toggleSelected={(i) => this.toggleSelected(i)}
-									cancelUpdate={() => this.cancelUpdate()}
-									updateClass={() => this.updateClass()}
-								/>
+								<FadeInOut_HandleState condition={this.state.semData.classData.length>0}>
+									<div className='class-item-container'>
+										{classItems}
+									</div>
+								</FadeInOut_HandleState>
+
+								<div className='row'>
+									<div className='col-lg-6'>
+										<ClassEditor
+											updateCurrent={(key, text) => this.updateCurrent(key, text)}
+											updateCurrent_2Key={(key1, key2, text) => this.updateCurrent_2Key(key1, key2, text)}
+											currentClass={this.state.currentClass}
+											addClass={(val) => this.addClass(val)}
+											editMode={this.state.editMode}
+											toggleSelected={(i) => this.toggleSelected(i)}
+											cancelUpdate={() => this.cancelUpdate()}
+											updateClass={() => this.updateClass()}
+										/>
+									</div>
+									<div className='col-lg-6'>
+										<SuggestedLinksContainer 
+											currentClass={this.state.currentClass}
+										/>
+									</div>
+								</div>
 							</div>
 							<div className='col-lg-6'>
-								<SuggestedLinksContainer 
-									currentClass={this.state.currentClass}
-								/>
+								{this.state.semData.classData.length > 0 ?
+									<SevenDayAgenda 
+										evItClick={(i) => this.classItemSelected(i)} 
+										data={this.state.semData.classData}
+										selectedIndex={this.state.selectedIndex}
+									/> : null}
 							</div>
 						</div>
 					</div>
-					<div className='col-lg-6'>
-						<SevenDayAgenda 
-							evItClick={(i) => this.classItemSelected(i)} 
-							data={this.state.semData.classData}
-							selectedIndex={this.state.selectedIndex}
-						/>
-					</div>
-				</div>
-				</div>
+				</FadeInOut_HandleState>
 			</div>
 		);
 	}
@@ -289,7 +295,8 @@ class ClassEditor extends React.Component{
     }
 
     handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+    	const datepicker = document.getElementById('ui-datepicker-div');
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target) && !datepicker.contains(event.target)) {
             this.cancelUpdate();
         }
     }
@@ -387,10 +394,8 @@ class ClassEditor extends React.Component{
 	}
 
 	cancelUpdate(){
-		alert('lkdsjflkasdj')
 		this.resetInputs();
 		this.props.cancelUpdate();
-		console.log(this.wrapperRef);
 	}
 
 	render(){
@@ -508,6 +513,10 @@ class NameSemester extends React.Component{
 		super(props);
 
 		this.input = React.createRef();
+	}
+
+	componentDidMount(){
+		this.input.current.focus();
 	}
 	render(){
 		return(
