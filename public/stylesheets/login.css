@@ -1,0 +1,51 @@
+#login{
+	background-image: url('/backgroundImages/login.svg');
+	padding: 10px;
+}
+
+#login #header-tag{
+	text-decoration: none;
+    font-weight: bold;
+    font-size: 64px;
+    line-height: 78px;
+}
+
+#login h2{
+	font-size: 24px;
+    line-height: 50px;
+    text-align: center;
+}
+
+#login h1{
+	font-weight: bold;
+    font-size: 48px;
+    line-height: 59px;
+    text-align: center;
+}
+
+#login input{
+	font-size: 24px;
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+}
+
+#login a{
+	display: flex;
+}
+
+#login a.helper{
+	position: relative;
+	left: 38.5%;
+}
+
+#login button{
+	display: block;
+	margin: 0 auto;
+	border: none;
+	width: 25%;
+	margin-top: 40px;
+	font-size: 36px;
+	font-weight: bold;
+	border-radius: 5px;	
+}

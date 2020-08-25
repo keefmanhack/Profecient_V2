@@ -12,6 +12,42 @@ body{
     position: relative;
 }
 
+.mont-font{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.blue-c{
+    color: #007bff;
+}
+
+.blue-bc{
+    background: #007bff;
+}
+
+.muted-c{
+    color: #DFE6F0;
+}
+
+.black-c{
+    color: #282828;
+}
+
+.background{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+
+
+
+
+/*End of all page styling*/
+
+
 .feed-container .make-post{
     background: #3185FC;
     padding: 12px 20px;

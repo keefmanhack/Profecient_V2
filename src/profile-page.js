@@ -56,7 +56,7 @@ function ProfilePage(props){
 					</div>
 				</div>
 			</div>
-			<SemesterCreator/>
+			
 		</div>
 	);
 }
