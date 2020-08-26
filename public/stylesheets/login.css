@@ -39,7 +39,7 @@
 	left: 38.5%;
 }
 
-#login button{
+#login .butt{
 	display: block;
 	margin: 0 auto;
 	border: none;
@@ -48,4 +48,5 @@
 	font-size: 36px;
 	font-weight: bold;
 	border-radius: 5px;	
+	text-align: center;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link, BrowserRouter as Router} from "react-router-dom";
 
 class Login extends React.Component{
 	render(){
@@ -12,7 +13,7 @@ class Login extends React.Component{
 				<input className='mont-font' type="password" placeholder='Password'/>
 				<a className='mont-font muted-c helper' href="#">Forgot Password?</a>
 				<a className='mont-font muted-c helper' href="#">Don't have an account? Sign Up!</a>
-				<button className='mont-font blue-bc black-c'>Login</button>
+				<Link className='mont-font blue-bc black-c butt' to='Home'>Login</Link>
 			</div>
 		);
 	}
