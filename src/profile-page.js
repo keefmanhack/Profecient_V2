@@ -26,7 +26,7 @@ class ProfilePage extends React.Component{
 			<React.Fragment>
 				<Header/>
 				<div className='page-container profile-page' style={this.state.showNewSem ? {opacity: .7}: null}>
-					<div className='top'>
+					<div className='top white-c'>
 						<div className='row'>
 							<div className='col-lg-8'>
 								<img src="./generic_person.jpg" alt="Can't display image"/>
@@ -37,12 +37,11 @@ class ProfilePage extends React.Component{
 							</div>
 							<div className='col-lg-4'>
 								<div style={{margin: '0 55px'}}>
-									<button style={{marginRight: 30}} className='message'><i class="far fa-comment"></i> Message</button>
-									<button className='follow'><i class="fas fa-plus"></i> Follow</button>
+									<button style={{marginRight: 30}} className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
+									<button className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
 								</div>
 							</div>
 						</div>
-						<hr/>
 						<div className='classes row' style={{marginTop: 30}}>
 								<div className='col-lg-2'>
 									<h5>English</h5>
@@ -65,9 +64,8 @@ class ProfilePage extends React.Component{
 							</div>
 					</div>
 					<div className='row'>
-						<div className='col-lg-4'>
+						<div className='col-lg-4 left'>
 							<ClassView showNewSem={(val) => this.showNewSem(val)} />
-							<AssignmentDashboard profileMode={true} style={{marginTop: 20}} />
 						</div>
 						<div className='col-lg-8'>
 							<div className='feed-container'>

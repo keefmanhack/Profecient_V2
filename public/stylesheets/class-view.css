@@ -1,21 +1,16 @@
 .class-view-container{
-	    padding: 10px;
-    background: white;
     margin-top: 20px;
-    border-radius: 5px;
 }
 
 .semester-container{
     border-radius: 5px;
     position: relative;
-    background: rgba(49, 133, 252, .2);
     padding-left: 5px;
 }
 
 .class-view-container h5{
 	margin-left: 10px;
 	font-size: 14px;
-    color: rgb(100,100,100);
     margin-bottom: 0;
 }
 

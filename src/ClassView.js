@@ -84,11 +84,11 @@ class ClassView extends React.Component{
 
 		return(
 			<div className='class-view-container'>
-				<div className='semester-container'>
+				<div className='semester-container white-c'>
 					<h1>{this.state.testData.name}</h1>
-					<button onClick={() => this.showDialog()}>...</button>
+					<button className='white-c' onClick={() => this.showDialog()}>...</button>
 				</div>
-				<h5>{this.state.testData.classes.length} Classes</h5>
+				<h5 className='muted-c'>{this.state.testData.classes.length} Classes</h5>
 				<hr/>
 				<div style={{minHeight: 150, maxHeight: 250, overflow: 'scroll'}}>
 					{classes}

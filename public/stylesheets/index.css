@@ -1,5 +1,5 @@
-a:hover *{
-    text-decoration: underline;
+a:webkit-any-link *:hover{
+ text-decoration: none;   
 }
 
 body{
@@ -52,6 +52,10 @@ body{
     background: #282828;
 }
 
+.white-c{
+    color: white;
+}
+
 .background{
     height: 100%;
     width: 100%;
@@ -72,6 +76,9 @@ body{
     color: white;
 }
 
+button:hover{
+    opacity: .7;
+}
 
 
 /*End of all page styling*/
@@ -152,6 +159,16 @@ body{
     font-weight: 800;
 }
 
+.assignment button{
+    background: white;
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    position: relative;
+    top: -5px;
+    border: none;
+}
+
 /*End of Assignment Dashboard Styling*/
 
 /*Agenda Styling*/
@@ -179,46 +196,110 @@ body{
 /*End of Agenda Styling*/
 
 /*Feed container styling*/
+.make-post{
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(223, 221, 221, 0.71);
+}
+
 .make-post h5{
     color: white;
 }
+
+.make-post button{
+    border: none;
+    font-size: 24px;
+
+}
+
+.make-post button.submit{
+    display: inline;
+    width: 194px;
+    margin-left: 41px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.feed{
+    overflow: scroll;
+    height: 500px;
+}
+
+.feed .post{
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.post .profile-photo{
+    height: 35px;
+    width: 35px;
+    object-fit: cover;
+    border-radius: 100%;
+}
+
+.post a:hover{
+    text-decoration: none;
+    opacity: .7;
+}
+
+.post h1{
+    position: absolute;
+    top: -9px;
+    left: 52px;
+}
+
+.post h1:hover{
+    opacity: .7;
+}
+
+.post h5{
+    font-size: 14px;
+    font-weight: 200;
+    position: absolute;
+    top: 35px;
+    left: 53px;
+}
+
+.post p{
+    margin-top: 20px;
+    text-align: justify;
+    font-weight: 600;
+}
+
+.post button{
+    border: none;
+    background: none;
+    font-size: 23px;
+    display: inline;
+}
+
+.post .image{
+    width: 100%;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.post .submit{
+    display: inline;
+    width: 195px;
+    background: #3185FC;
+    margin-left: 41px;
+    border-radius: 5px;
+    font-weight: 600;
+
+}
+
+.comment-section{
+    width: 75%;
+}
+
+.comment-section .p-fake{
+    margin: 0;
+}
+
+
 /*End of feed container styling*/
 
-
-.feed-container .make-post{
-    background: #3185FC;
-    padding: 12px 20px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    margin-bottom:10px;
-}
-
-.feed-container .make-post textarea{
-	height: 50px;
-    width: 307px;
-    border-radius: 17px;
-    resize: none;
-    display: block;
-}
-
-.feed-container .make-post button{
-	background: none;
-	border: none;
-}
-
-.menu{
-    background: rgb(87, 89, 90);
-}
-
-.menu button{
-    width: 100%;
-    height: 73px;
-    background: #434343;
-    border: none;
-    font-size: 25px;
-    font-weight: 600;
-    color: white;
-}
 
 .assignment-dashboard h5{
     font-size: 15px;
@@ -235,76 +316,12 @@ body{
     left: 90%;
 }
 
-.assignment-dashboard #add-todo{
-    background: none;
-    border: none;
-    color: #9CFF94;
-    font-weight: 800;
-    position: absolute;
-    font-size: 42px;
-    top: 69%;
-    left: 89%;
-}
-
-.see-more{
-    background: none;
-    border: none;
-    font-size: 14px;
-    position: relative;
-    left: 79%;
-    top: -8px;
-    font-weight: 600;
-}
-
-.see-more-to-do {
-    background: none;
-    border: none;
-    font-weight: 600;
-    font-size: 14px;
-    position: absolute;
-    left: 78%;
-}
-
-
-
 .assignment-dashboard hr{
     margin-top: 0;
     margin-bottom: 5px;
 }
 
-.assignment button{
-    font-size: 15px;
-    color: black;
-    background: none;
-    border: none;
-    position: relative;
-    top: -5px;
-    background: white;
-    border-radius: 100%;
-    padding: 0 10px 8px 10px;
-}
 
-.to-do{
-    display: inline-flex;
-    font-weight: 700;
-    border-radius: 6px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-
-.to-do button{
-    background: #9CFF94;
-    border: none;
-    padding: 0 5px;
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0;
-    margin-bottom: 5px;
-}
-
-button:hover{
-    opacity: .7;
-}
 
 .truncate {
   width: 97%;
@@ -364,52 +381,6 @@ button:hover{
     left: 89%;
 }
 
-.feed-data{
-    height: 594px;
-    overflow: scroll;
-    padding: 10px 10px;
-    background: rgb(30,30,30);
-}
-
-.feed .post{
-    background: white;
-    border-radius: 5px;
-    padding: 10px;
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.post .profile-photo{
-    height: 35px;
-    width: 35px;
-    object-fit: cover;
-    border-radius: 100%;
-    border: 1px solid #3185FC;
-}
-
-.post h1{
-    position: absolute;
-    top: 4px;
-    left: 53px;
-    color: #3185FC;
-    font-size: 30px;
-    font-weight: 800;
-}
-
-.post h5{
-    font-size: 14px;
-    font-weight: 200;
-    position: absolute;
-    top: 35px;
-    left: 53px;
-}
-
-.post p{
-    margin-top: 10px;
-    text-align: justify;
-    font-weight: 600;
-}
-
 .make-post .textarea{
     border: 1px solid;
     width: 20px;
@@ -426,23 +397,6 @@ button:hover{
 .make-post .textarea[contenteditable]:empty::before {
   content: "Write a post...";
   color: gray;
-}
-
-.make-post button{
-    border: none;
-    background: none;
-    font-size: 23px;
-    display: inline;
-}
-
-.make-post button.submit{
-    display: inline;
-    width: 194px;
-    background: white;
-    margin-left: 41px;
-    border-radius: 5px;
-    font-weight: 600;
-
 }
 
 .post .textarea{
@@ -462,34 +416,4 @@ button:hover{
   color: gray;
 }
 
-.post button{
-    border: none;
-    background: none;
-    font-size: 23px;
-    display: inline;
-}
 
-.post .large-image{
-    width: 100%;
-    height: 200px;
-    object-fit: contain;
-}
-
-.post .small-image{
-    width: 100%;
-    height: 100px;
-    object-fit: contain;
-    border: 1px solid;
-    border-radius: 5px;
-    margin-top: 5px;
-}
-
-.post .submit{
-    display: inline;
-    width: 195px;
-    background: #3185FC;
-    margin-left: 41px;
-    border-radius: 5px;
-    font-weight: 600;
-
-}

@@ -19,6 +19,7 @@ class Home extends React.Component{
 			showNewAssignmentForm: false,
 			classes: ['Algebra', 'Geometry', 'Geology', 'Philosophy', 'Chemistry', 'Biology', 'English', 'Political Science'],
 			selectedIndex: null,
+			userName: 'Keefer',
 		}
 	}
 
@@ -45,14 +46,12 @@ class Home extends React.Component{
 					    </div>
 					    <div className='col-lg-8 right'>
 					    	<div className="make-post mont-font">
-					    		<h5>Keefer, what happened today in class?</h5>
+					    		<h5><span style={{fontWeight: 600}}>{this.state.userName}</span>, what happened today in class?</h5>
 						        <p><span className='textarea' role='textbox' contenteditable='true'></span></p>
-								<button><i class="fas fa-camera-retro"></i></button>
-								<button className='submit'>Submit</button>
+								<button style={{background: 'none'}} className='white-c'><i class="fas fa-camera-retro"></i></button>
+								<button className='submit blue-bc'>Submit</button>
 					      	</div>
-							<div className="feed-data">
-								<Feed />
-							</div>
+							<Feed />
 					    </div>
 					</div>
 					<FadeInOut_HandleState condition={this.state.showNewAssignmentForm}>
