@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from "react-router-dom";
 
 import Header from './header';
+import {FadeInOut_HandleState} from './CustomTransition';
 import AssignmentDashboard from './AssignmentDashboard';
 import {NewAssignment} from './AssignmentDashboard';
 import Agenda from './Agenda';
@@ -12,7 +13,7 @@ class Home extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.handleNewAssignment = this.handleNewAssignment.bind(this);
+		this.showNewAssForm = this.showNewAssForm.bind(this);
 
 		this.state = {
 			showNewAssignmentForm: false,
@@ -21,15 +22,9 @@ class Home extends React.Component{
 		}
 	}
 
-	handleNewAssignment(){
+	showNewAssForm(val){
 		this.setState({
-			showNewAssignmentForm: true,
-		})
-	}
-
-	hideNewAssignment(){
-		this.setState({
-			showNewAssignmentForm: false,
+			showNewAssignmentForm: val,
 		})
 	}
 
@@ -39,59 +34,35 @@ class Home extends React.Component{
 		})
 	}
 	render(){
-		let newAssignment;
-		if(this.state.showNewAssignmentForm){
-			newAssignment = <NewAssignment selectedIndex={this.props.selectedIndex} handleClassClick={(i) => this.handleClassClick(i)} hideNewAssignment={() => this.hideNewAssignment()} classes={this.state.classes}/>
-		}
 		return(
 			<React.Fragment>
 				<Header/>
-				<div className='page-container'>
-				  <div className="row" style={this.state.showNewAssignmentForm ? {opacity: .6} : null}>
-				    <div className="col-lg-2 menu" style={{padding: 0, height: 'fit-content'}}>
-				      <ul style={{padding: 0, margin: 0}}>
-				      	<li style={{listStyle: 'none'}}>
-				      		<Link to='/profilePage'>
-					      		<button> 
-									Classes
-					      		</button>
-					      	</Link>
-				      	</li>
-				      	<li>
-				      		<button> 
-								Calendar
-				      		</button>
-				      	</li>
-				      	<li>
-				      		<Link to='/message'>
-					      		<button> 
-									Message Center
-					      		</button>
-					      	</Link>
-				      	</li>
-				      </ul>
-				    </div>
-				    <div className="col-lg-6 feed-container">
-				      <div className="make-post">
-				        <p><span className='textarea' role='textbox' contenteditable='true'></span></p>
-						<button><i class="fas fa-camera-retro"></i></button>
-						<button className='submit'>Submit</button>
-				      </div>
-				      <div className="feed-data">
-				        <Feed />
-				      </div>
-				    </div>
-				    <div className="col-lg-4 dash">
-				      <div className="assignments-container">
-				        <AssignmentDashboard  handleNewAssignment={() => this.handleNewAssignment()}/>
-				      </div>
-				      <div className="agenda">
-				        <Agenda />
-				      </div>
-
-				    </div>
-				  </div>
-				  {newAssignment}
+				<div className='page-container black-bc'>
+				  	<div className="row" style={this.state.showNewAssignmentForm ? {opacity: .7, transition: '.3s'} : null}>
+					    <div className='col-lg-4 left'>
+						    <AssignmentDashboard  showNewAssForm={(val) => this.showNewAssForm(val)}/>
+							<Agenda />
+					    </div>
+					    <div className='col-lg-8 right'>
+					    	<div className="make-post mont-font">
+					    		<h5>Keefer, what happened today in class?</h5>
+						        <p><span className='textarea' role='textbox' contenteditable='true'></span></p>
+								<button><i class="fas fa-camera-retro"></i></button>
+								<button className='submit'>Submit</button>
+					      	</div>
+							<div className="feed-data">
+								<Feed />
+							</div>
+					    </div>
+					</div>
+					<FadeInOut_HandleState condition={this.state.showNewAssignmentForm}>
+						<NewAssignment 
+							selectedIndex={this.props.selectedIndex} 
+							handleClassClick={(i) => this.handleClassClick(i)} 
+							showNewAssForm={(val) => this.showNewAssForm(val)} 
+							classes={this.state.classes}
+						/>
+					</FadeInOut_HandleState>
 				</div>
 			</React.Fragment>
 		);

@@ -39,9 +39,9 @@ class Agenda extends React.Component{
 		);
 
 		return(
-			<div className='background' style={{position: 'relative'}}>
-				<h1>Agenda</h1>
-				<button onClick={() => this.props.handleNewAssignment()} id='add-agenda-item'>+</button>
+			<div className='agenda sans-font' style={{position: 'relative'}}>
+				<h1 className=' gray-c'>Agenda</h1>
+				<button className='add green-bc'>Add</button>
 				<div className='foreground'>
 					{timeHRs}
 					{AgendaItems}

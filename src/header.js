@@ -1,24 +1,33 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 function Header(){
 	return(
-		<div className='top-bar' style={style_topBar}>
-			<div className='row'>
-				<div className='col-lg-2'>
-					<h1>Profecient</h1>
-				</div>
+		<div className='top-bar black-bc' style={style_topBar}>
+			<h1 className='mont-font blue-c'>Profecient</h1>
+			<input className='sans-font' type='text' placeholder='Find classmates'/>
+			
+			<span className='not'>
+				<button className='green-c'><i class="fas fa-pencil-alt"></i></button>
+				<button className='green-c'><i class="fas fa-user-friends"></i></button>
+				<Link to='/messages'>
+					<button className='green-c'><i class="fas fa-comments"></i></button>
+				</Link>
+			</span>
 
-				<div className='col-lg-3'>
-					<input className='form-control' type='text' placeholder='Find classmates' style={{position: 'relative', top: 5}} />
-				</div>
-			</div>
+			
+			<span className='profile'>
+				<img src="./generic_person.jpg" alt=""/>
+				<Link to='/profilePage'>
+					<button className='blue-c'><i class="fas fa-chevron-down"></i></button>
+				</Link>
+			</span>
+
 		</div>
 	);
 }
 
 const style_topBar = {
-	backgroundColor: '#171D1C', 
-	color: 'white',
 	paddingTop: 10,
 	paddingLeft: 40,
 	paddingRight: 40

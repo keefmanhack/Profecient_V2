@@ -17,6 +17,10 @@ body{
     font-family: 'Montserrat', sans-serif;
 }
 
+.sans-font{
+    font-family: 'Open Sans', sans-serif;
+}
+
 .blue-c{
     color: #007bff;
 }
@@ -25,12 +29,27 @@ body{
     background: #007bff;
 }
 
+.green-c{
+    color: #28965A;
+}
+
+.green-bc{
+    background: #28965A;
+}
+
 .muted-c{
     color: #DFE6F0;
 }
 
+.gray-c{
+    color: #9A9A9A;
+}
+
 .black-c{
     color: #282828;
+}
+.black-bc{
+    background: #282828;
 }
 
 .background{
@@ -42,11 +61,128 @@ body{
     background-repeat: no-repeat;
 }
 
-
+.add{
+    border: none;
+    border-radius: 5px;
+    margin-left: 31%;
+    font-weight: 800;
+    position: absolute;
+    right: 0;
+    top: 10px;
+    color: white;
+}
 
 
 
 /*End of all page styling*/
+
+/*Header Styling*/
+.top-bar{
+    border-bottom: 1px solid rgba(223, 221, 221, 0.71);;
+}
+.top-bar h1{
+    font-weight: bold;
+    display: inline;
+    margin-right: 40px;
+    font-size: 48px;
+}
+
+.top-bar input{
+    position: relative;
+    top: -7px;
+    width: 300px;
+    font-size: 20px;
+}
+
+.top-bar .not{
+    margin: 0 30px;
+    position: relative;
+    top: -6px;
+}
+
+.not button{
+    border: none;
+    margin: 0 10px;
+    font-size: 20px;
+    border-radius: 5px;
+    background: none;
+}
+
+.top-bar .profile{
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+
+.profile img{
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+    border-radius: 100%;
+}
+
+.profile button{
+    border: none;background: none;
+    font-size: 18px;
+}
+/*End of Header Styling*/
+
+/*MainPage Styling*/
+.left{
+    border-right: 1px solid rgba(223, 221, 221, 0.71);
+}
+/*End of MainPage Styling*/
+
+/*Assignment Dashboard Styling*/
+.assignment-dashboard{
+    position: relative;
+}
+.assignment-dashboard h1{
+    font-weight: bold;
+    font-size: 36px;
+    display: inline;
+}
+
+
+
+.assignment{
+    margin-bottom: 5px;
+    padding: 8px 10px 0px 10px;
+    border-radius: 5px;
+    font-weight: 800;
+}
+
+/*End of Assignment Dashboard Styling*/
+
+/*Agenda Styling*/
+.agenda h1{
+    font-weight: bold;
+    font-size: 36px;
+}
+
+.agenda .foreground{
+    /*background: white;*/
+    height: 400px;
+    overflow: scroll;
+    position: relative;
+}
+
+.time-hr{
+    /*border-color: white;*/
+    color: white;
+}
+
+.time-hr hr{
+    border-color: white;
+}
+
+/*End of Agenda Styling*/
+
+/*Feed container styling*/
+.make-post h5{
+    color: white;
+}
+/*End of feed container styling*/
 
 
 .feed-container .make-post{
@@ -82,19 +218,6 @@ body{
     font-size: 25px;
     font-weight: 600;
     color: white;
-}
-
-.assignments-container{
-    background: rgb(30,30,30);
-    padding: 10px;
-}
-
-.assignment-dashboard{
-    padding: 10px;
-    background: rgb(245,245,245);
-    color: rgb(30,30,30);;
-    border-radius: 5px;
-    position: relative;
 }
 
 .assignment-dashboard h5{
@@ -142,12 +265,7 @@ body{
     left: 78%;
 }
 
-.assignment{
-    margin-bottom: 5px;
-    padding: 8px 10px 0px 10px;
-    border-radius: 15px;
-    font-weight: 800;
-}
+
 
 .assignment-dashboard hr{
     margin-top: 0;
@@ -197,26 +315,6 @@ button:hover{
   color: inherit;
 }
 
-
-
-.agenda{
-    background: rgb(30,30,30);
-    padding: 10px;
-    margin-top: 10px;
-}
-
-.agenda .foreground{
-    height: 300px;
-    background: rgb(245,245,245);
-    color: rgb(30,30,30);
-    border-radius: 5px;
-    position: relative;
-    overflow: scroll;
-}
-
-.agenda h1{
-    color: white;
-}
 
 .time-hr h5{
         position: relative;
