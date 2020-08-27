@@ -2,6 +2,7 @@ import React from 'react';
 import {FadeInOut, FadeInOut_HandleState} from '../CustomTransition';
 import NewMessage from './NewMessage';
 import {toSingleCharArr, Soundex, findSimilarity, timeDifString} from './helperFunc';
+import Header from '../header';
 
 class MessageCenter extends React.Component{
 	constructor(props){
@@ -325,60 +326,63 @@ class MessageCenter extends React.Component{
 		)
 
 		return(
-			<div className='page-container message-center'>
-				<div className='row' style={showNewStyle}>
-					<div className='col-lg-4 left' style={{borderRight: '1px solid', height: 600}}>
-						<div className='row'>
-							<div className='col-lg-10'>
-								<input 
-									placeholder='Find classmates' 
-									type="text" 
-									onKeyUp={() => this.handleSearch()}
-									ref={this.searchMessages}
-								/>
+			<React.Fragment>
+				<Header/>
+				<div className='page-container message-center'>
+					<div className='row' style={showNewStyle}>
+						<div className='col-lg-4 left' style={{borderRight: '1px solid', height: 600}}>
+							<div className='row'>
+								<div className='col-lg-10'>
+									<input 
+										placeholder='Find classmates' 
+										type="text" 
+										onKeyUp={() => this.handleSearch()}
+										ref={this.searchMessages}
+									/>
+								</div>
+								<div className='col-lg-2'>
+									<button onClick={() => this.showNew()}>+</button>
+								</div>
 							</div>
-							<div className='col-lg-2'>
-								<button onClick={() => this.showNew()}>+</button>
+							<div className='message-selector-container'>
+								{messageSelectors}
 							</div>
 						</div>
-						<div className='message-selector-container'>
-							{messageSelectors}
-						</div>
-					</div>
-					<div className='col-lg-8'>
-						<div className='right'>
-							{this.state.selectedIndex || this.state.selectedIndex===0 ? 
-								<div style={{position: 'relative'}}>
-									<FadeInOut condition={this.state.selectedIndex}>
-										<div style={{position: 'absolute'}}>
-											<MessageContainer
-												messageData={this.state.testData[this.state.selectedIndex].messageData}
-												profileImage={this.state.testData[this.state.selectedIndex].correspondent.profileImage}
-												name={this.state.testData[this.state.selectedIndex].correspondent.name}
-												noneSelected={!this.state.selectedIndex}
-												key={this.state.testData[this.state.selectedIndex].messageData.length}
-											/>
-											<div className='reply'>
-												<textarea ref={this.textarea} onKeyUp={(e) => this.handleTextInput(e)}></textarea>
+						<div className='col-lg-8'>
+							<div className='right'>
+								{this.state.selectedIndex || this.state.selectedIndex===0 ? 
+									<div style={{position: 'relative'}}>
+										<FadeInOut condition={this.state.selectedIndex}>
+											<div style={{position: 'absolute'}}>
+												<MessageContainer
+													messageData={this.state.testData[this.state.selectedIndex].messageData}
+													profileImage={this.state.testData[this.state.selectedIndex].correspondent.profileImage}
+													name={this.state.testData[this.state.selectedIndex].correspondent.name}
+													noneSelected={!this.state.selectedIndex}
+													key={this.state.testData[this.state.selectedIndex].messageData.length}
+												/>
+												<div className='reply'>
+													<textarea ref={this.textarea} onKeyUp={(e) => this.handleTextInput(e)}></textarea>
+												</div>
 											</div>
-										</div>
-									</FadeInOut>
-								</div>
-								:
-								<div className='no-select'>
-									<h2>Start or select a previous conversation</h2>
-								</div>
-							}
+										</FadeInOut>
+									</div>
+									:
+									<div className='no-select'>
+										<h2>Start or select a previous conversation</h2>
+									</div>
+								}
+							</div>
 						</div>
 					</div>
+					<FadeInOut_HandleState condition={this.state.showNew}>
+						<NewMessage 
+							classmates={this.state.classMates}
+							closeNew={() => this.closeNew()}
+						/>
+					</FadeInOut_HandleState>
 				</div>
-				<FadeInOut_HandleState condition={this.state.showNew}>
-					<NewMessage 
-						classmates={this.state.classMates}
-						closeNew={() => this.closeNew()}
-					/>
-				</FadeInOut_HandleState>
-			</div>
+			</React.Fragment>
 			
 		)
 	}

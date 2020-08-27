@@ -6,10 +6,22 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#4f9af1",GradientType=1);
     position: absolute;
     top: 0;
-    width: 100%;
+    width: 98.5%;
     min-height: 625px;
     padding: 10px;
     border-radius: 5px;
+    margin-top: 50px;
+    margin-left: 10px;
+}
+
+.semester-creator-container #exit{
+    font-weight: 800;
+    border: none;
+    background: none;
+    color: red;
+    position: absolute;
+    right: 10px;
+    top: 5px;
 }
 
 .seven-day-agenda{

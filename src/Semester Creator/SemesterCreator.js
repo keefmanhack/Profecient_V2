@@ -147,6 +147,8 @@ class SemesterCreator extends React.Component{
 		);
 		return(
 			<div className='semester-creator-container'>
+				<button onClick={() => this.props.showNewSem(false)} id='exit'>Exit</button>
+
 				<BackInOut_HandleState condition={this.state.semData.name === null} >
 					<NameSemester semName={(key, text) => this.semName(key, text)}/>
 				</BackInOut_HandleState>

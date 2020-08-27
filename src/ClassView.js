@@ -97,7 +97,9 @@ class ClassView extends React.Component{
 					<MenuDropDown hideDropDown={() => this.hideDialog()}>
 						<DropDownMain>
 							<button> <i style={{color: 'lightgreen'}} class="fas fa-plus"></i> Add Class</button>
-							<button> <i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester</button>
+							<button onClick={() => this.props.showNewSem(true)}> 
+								<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
+							</button>
 							<Options 
 								text={'Select Semester'} 
 								icon={<i class="fas fa-caret-right"></i>} 
