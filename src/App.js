@@ -5,6 +5,7 @@ import Login from './LandingSignUpLogin/Login';
 import MessageCenter from './MessageCenter/Message-Center';
 import Home from './Home';
 import ProfilePage from './profile-page';
+import Landing from './landing';
 // import SemesterCreator from './SemesterCreator/SemesterCreator';
 
 
@@ -16,7 +17,7 @@ function App(){
 					<Route path='/message' component={MessageCenter}/>
 					<Route path='/home' component={Home}/>
 					<Route path='/profilePage' component={ProfilePage}/>
-					<Route path='/' component={Login}/>
+					<Route path='/' component={Landing}/>
 				</Switch>
 			</div>
 		</Router>

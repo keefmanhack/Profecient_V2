@@ -1,0 +1,91 @@
+#landing{
+	background: white;
+	padding: 10px 20px;
+	height: 100%;
+	width: 100%;
+	background-image: url('/backgroundImages/landing.svg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+#landing .row{
+	/*height: 90%;*/
+}
+
+#landing #header-tag{
+	text-decoration: none;
+    font-weight: bold;
+    font-size: 64px;
+    line-height: 78px;
+}
+
+#landing button{
+	border: none;
+	border-radius: 5px;
+}
+
+#landing button.login{
+	font-size: 24px;
+	font-weight: bold;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+}
+
+#landing ul{
+	position: relative;
+	top: 150px;
+    left: 40px;
+	list-style: none;
+}
+
+#landing li{
+	margin-bottom: 50px;
+}
+
+#landing h5{
+	font-size: 24px;
+    font-weight: bold;
+}
+#landing h5 i{
+	padding-right: 25px;
+	font-size: 36px;
+}
+
+#landing #footer-tag{
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+}
+
+#landing h3{
+	font-weight: bold;
+	margin-top: 50px;
+	margin-bottom: 30px;
+	font-size: 48px;
+}
+
+#landing input{
+	font-size: 26px;
+    border: none;
+    margin-bottom: 5px;
+    font-weight: 200;
+    background: #d9ebf9;
+}
+
+#landing button.sign-up{
+	width: 100%;
+	margin-top: 25px;
+	font-size: 40px;
+	font-weight: bold;
+}
+
+#landing .tag-line{
+	position: relative;
+    top: 100px;
+    left: -150px;
+}
+
+#landing .tag-line h2{
+	font-size: 48px;
+}
