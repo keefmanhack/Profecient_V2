@@ -6,7 +6,10 @@ let UserSchema = mongoose.Schema({
 	// password: String,
 	lastName: String,
 	firstName: String,
-	school: String,
+	school: {
+		name: String,
+		logoUrl: String,
+	},
 	email: {type: String, unique: true, required: true},
 	resetPasswordToken: String,
 	resetPasswordExpires: Date,
@@ -14,7 +17,7 @@ let UserSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Post"
 	}],
-	semester: [{
+	semesters: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Semester"
 	}],

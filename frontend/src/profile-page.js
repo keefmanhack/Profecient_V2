@@ -5,6 +5,7 @@ import ClassView from './ClassView';
 import SemesterCreator from './Semester Creator/SemesterCreator';
 import {FadeInOut_HandleState} from './CustomTransition';
 import Header from './header';
+import PostCreator from './PostCreator';
 
 class ProfilePage extends React.Component{
 	constructor(props){
@@ -22,64 +23,61 @@ class ProfilePage extends React.Component{
 	}
 
 	render(){
-		return (
-			<React.Fragment>
-				<Header/>
-				<div className='page-container profile-page' style={this.state.showNewSem ? {opacity: .7}: null}>
-					<div className='top white-c'>
-						<div className='row'>
-							<div className='col-lg-8'>
-								<img src="./generic_person.jpg" alt="Can't display image"/>
-								<h1>Sarah Steel</h1>
-
-								<img className='school' src="./generic_person.jpg" alt="Can't display image"/>
-								<h2>Gannon University</h2>
-							</div>
-							<div className='col-lg-4'>
-								<div style={{margin: '0 55px'}}>
-									<button style={{marginRight: 30}} className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
-									<button className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
-								</div>
-							</div>
-						</div>
-						<div className='classes row' style={{marginTop: 30}}>
-								<div className='col-lg-2'>
-									<h5>English</h5>
-								</div>
-								<div className='col-lg-2'>
-									<h5>English</h5>
-								</div>
-								<div className='col-lg-2'>
-									<h5>English</h5>
-								</div>
-								<div className='col-lg-2'>
-									<h5>English</h5>
-								</div>
-								<div className='col-lg-2'>
-									<h5>English</h5>
-								</div>
-								<div className='col-lg-2'>
-									<h5>English</h5>
-								</div>
-							</div>
-					</div>
-					<div className='row'>
-						<div className='col-lg-4 left'>
-							<ClassView showNewSem={(val) => this.showNewSem(val)} />
-						</div>
-						<div className='col-lg-8'>
-							<div className='feed-container'>
-								<Feed/>
-							</div>
-						</div>
-					</div>
-					
+		if(this.props.currentUser ===null){
+			return(
+				<h1>aklsdjfklasdjflkasdjf</h1>
+			)
+		}else{
+			const classList = this.props.currentUser.semesters[0].classes.map((data, index) =>
+				<div className='col-lg-2'>
+					<h5 key={data.id}>{data.name}</h5>
 				</div>
-				<FadeInOut_HandleState condition={this.state.showNewSem}>
-					<SemesterCreator showNewSem={(val) => this.showNewSem(val)}/>
-				</FadeInOut_HandleState>
-			</React.Fragment>
-		);
+			);
+
+			return (
+				<React.Fragment>
+					<Header/>
+					<div className='page-container profile-page' style={this.state.showNewSem ? {opacity: .7}: null}>
+						<div className='top white-c'>
+							<div className='row'>
+								<div className='col-lg-8'>
+									<img src="./generic_person.jpg" alt="Can't display image"/>
+									<h1>{this.props.currentUser.firstName} {this.props.currentUser.lastName}</h1>
+
+									<img className='school' src={this.props.currentUser.school.logoUrl} alt="Can't display image"/>
+									<h2>{this.props.currentUser.school.name}</h2>
+								</div>
+								<div className='col-lg-4'>
+									<div style={{margin: '0 55px'}}>
+										<button style={{marginRight: 30}} className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
+										<button className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
+									</div>
+								</div>
+							</div>
+							<div className='classes row' style={{marginTop: 30}}>
+								{classList}
+							</div>
+						</div>
+						<div className='row'>
+							<div className='col-lg-4 left'>
+								<ClassView semesters={this.props.currentUser.semesters} showNewSem={(val) => this.showNewSem(val)} />
+							</div>
+							<div className='col-lg-8'>
+								<PostCreator firstName={this.props.currentUser.firstName}/>
+								<div className='feed-container'>
+
+									<Feed feedData={this.props.currentUser.posts} author={this.props.currentUser}/>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					<FadeInOut_HandleState condition={this.state.showNewSem}>
+						<SemesterCreator showNewSem={(val) => this.showNewSem(val)}/>
+					</FadeInOut_HandleState>
+				</React.Fragment>
+			);
+		}
 	}
 }
 

@@ -70,13 +70,13 @@ class ClassView extends React.Component{
 	}
 
 	render(){
-		const classes = this.state.testData.classes.map((data, index) =>
+		const classes = this.props.semesters[0].classes.map((data, index) =>
 			<ClassCon  
 				name={data.name}
 				instructor={data.instructor}
 				location={data.location}
-				startTime={data.startTime}
-				endTime={data.endTime}
+				startTime={data.time.start}
+				endTime={data.time.end}
 				assignments={data.assignments}
 				key={index}
 			/>
@@ -85,7 +85,7 @@ class ClassView extends React.Component{
 		return(
 			<div className='class-view-container'>
 				<div className='semester-container white-c'>
-					<h1>{this.state.testData.name}</h1>
+					<h1>{this.props.semesters[0].name}</h1>
 					<button className='white-c' onClick={() => this.showDialog()}>...</button>
 				</div>
 				<h5 className='muted-c'>{this.state.testData.classes.length} Classes</h5>
@@ -103,7 +103,7 @@ class ClassView extends React.Component{
 							<Options 
 								text={'Select Semester'} 
 								icon={<i class="fas fa-caret-right"></i>} 
-								options={['Freshman', 'Sophomore', 'Junior', 'Senior']} 
+								options={this.props.semesters} 
 							/>
 						</DropDownMain>
 					</MenuDropDown>
@@ -191,7 +191,7 @@ class Options extends React.Component{
 					onClick={() => this.setSelectedIndex(index)}
 					style={this.state.selectedIndex === index ? {fontWeight: 600}: null}
 					key={index}
-				>{data}</button>
+				>{data.name}</button>
 			);
 		}
 		return(

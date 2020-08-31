@@ -10,6 +10,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 //MongoDB Models
 let User = require('./models/User');
+let Semester = require('./models/Semester');
+let Class = require('./models/Class');
+let Posts = require('./models/Post');
 //End of MongoDB Models
 
 mongoose.set('useNewUrlParser', true);
@@ -34,9 +37,16 @@ app.use(express.urlencoded({ extended: false }));
 
 // app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('/ping', function (req, res) {
-	console.log('received');
- return res.send(JSON.stringify('pong'));
+app.get('/users/:id', function (req, res) {
+	console.log('received')
+	User.findById(req.params.id).populate({path: 'semesters', populate: {path: 'classes'}}).populate('posts').exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUser);
+			console.log(foundUser);
+		}
+	});
 });
 
 

@@ -7,6 +7,7 @@ import AssignmentDashboard from './AssignmentDashboard';
 import {NewAssignment} from './AssignmentDashboard';
 import Agenda from './Agenda';
 import Feed from './feed';
+import PostCreator from './PostCreator';
 
 
 class Home extends React.Component{
@@ -45,12 +46,7 @@ class Home extends React.Component{
 							<Agenda />
 					    </div>
 					    <div className='col-lg-8 right'>
-					    	<div className="make-post mont-font">
-					    		<h5><span style={{fontWeight: 600}}>{this.state.userName}</span>, what happened today in class?</h5>
-						        <p><span className='textarea' role='textbox' contenteditable='true'></span></p>
-								<button style={{background: 'none'}} className='white-c'><i class="fas fa-camera-retro"></i></button>
-								<button className='submit blue-bc'>Submit</button>
-					      	</div>
+							<PostCreator firstName={this.props.currentUser.firstName} />
 							<Feed />
 					    </div>
 					</div>

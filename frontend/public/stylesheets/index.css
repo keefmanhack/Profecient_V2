@@ -38,7 +38,7 @@ body{
 }
 
 .muted-c{
-    color: #DFE6F0;
+    color: #9c9c9c;
 }
 
 .gray-c{
@@ -263,7 +263,11 @@ button:hover{
 .post p{
     margin-top: 20px;
     text-align: justify;
-    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.post h4{
+    font-size: 14px;
 }
 
 .post button{
