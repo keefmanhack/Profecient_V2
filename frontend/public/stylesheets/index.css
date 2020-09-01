@@ -80,6 +80,13 @@ button:hover{
     opacity: .7;
 }
 
+h5.error-msg{
+    color: red;
+    margin-top: 10px;
+    font-weight: 400;
+    font-size: 16px;
+}
+
 
 /*End of all page styling*/
 

@@ -9,8 +9,9 @@ let PostSchema = mongoose.Schema({
 	text: String,
 	photos: [{
 		path: String
-	}]
-	//need to add date information
+	}],
+	date: {type: Date, default: Date.now}
+
 })
 
 module.exports = mongoose.model('Post', PostSchema);

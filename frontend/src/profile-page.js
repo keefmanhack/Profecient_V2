@@ -67,7 +67,7 @@ class ProfilePage extends React.Component{
 								<ClassView semesters={this.props.currentUser.semesters} showNewSem={(val) => this.showNewSem(val)} />
 							</div>
 							<div className='col-lg-8'>
-								<PostCreator firstName={this.props.currentUser.firstName}/>
+								<PostCreator currentUser={this.props.currentUser}/>
 								<div className='feed-container'>
 									<Feed feedData={this.props.currentUser.posts} author={this.props.currentUser}/>
 								</div>
