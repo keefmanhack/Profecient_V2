@@ -41,7 +41,11 @@ class ProfilePage extends React.Component{
 						<div className='top white-c'>
 							<div className='row'>
 								<div className='col-lg-8'>
-									<img src="./generic_person.jpg" alt="Can't display image"/>
+									<img 
+										src="https://proficient-assets.s3.us-east-2.amazonaws.com/landing.jpg" 
+										alt="image not found" 
+										onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
+									/>
 									<h1>{this.props.currentUser.firstName} {this.props.currentUser.lastName}</h1>
 
 									<img className='school' src={this.props.currentUser.school.logoUrl} alt="Can't display image"/>
@@ -65,7 +69,6 @@ class ProfilePage extends React.Component{
 							<div className='col-lg-8'>
 								<PostCreator firstName={this.props.currentUser.firstName}/>
 								<div className='feed-container'>
-
 									<Feed feedData={this.props.currentUser.posts} author={this.props.currentUser}/>
 								</div>
 							</div>

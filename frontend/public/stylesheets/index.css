@@ -301,6 +301,34 @@ button:hover{
     margin: 0;
 }
 
+.image-gal{
+    margin-bottom: 10px;
+}
+.image-gal .image-con{
+    width: inherit;
+    position: inherit;
+}
+
+.image-con button{
+    position: absolute;
+    color: white;
+    background: none;
+    right: -16px;
+    top: -18px;
+}
+
+.image-gal img{
+    width: inherit;
+    object-fit: contain;
+}
+
+.overlay{
+    background: rgba(0,0,0,.6);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
 
 /*End of feed container styling*/
 

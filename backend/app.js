@@ -2,11 +2,20 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
+const aws = require('aws-sdk');
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
     console.log('configured');
 }
+
+const s3 = new aws.S3(
+	{
+	 accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+	});
+
+
 
 //MongoDB Models
 let User = require('./models/User');
@@ -44,7 +53,6 @@ app.get('/users/:id', function (req, res) {
 			console.log(err);
 		}else{
 			res.send(foundUser);
-			console.log(foundUser);
 		}
 	});
 });
