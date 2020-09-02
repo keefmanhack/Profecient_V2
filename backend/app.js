@@ -5,7 +5,8 @@ const   express 	= require('express'),
 		aws 		= require('aws-sdk'),
 		bodyParser  = require('body-parser'),
 		multer		= require('multer'),
-		upload 		= multer({storage: multer.memoryStorage(), limits: { fieldSize: 6 * 1024 * 1024 }})
+		upload 		= multer({storage: multer.memoryStorage(), limits: { fieldSize: 6 * 1024 * 1024 }}),
+		async		= require('async');
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
@@ -51,8 +52,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 // app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/users/:id', function (req, res) {
-	console.log('received')
-	User.findById(req.params.id).populate({path: 'semesters', populate: {path: 'classes'}}).populate('posts').exec(function(err, foundUser){
+	User.findById(req.params.id).populate({path: 'semesters', populate: {path: 'classes'}}).exec(function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
@@ -61,41 +61,51 @@ app.get('/users/:id', function (req, res) {
 	});
 });
 
+app.get('/users/:id/posts', function(req, res){
+	User.findById(req.params.id).populate('posts').exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUser.posts);
+		}
+	})
+})
+
+
 app.post('/users/:id/posts', upload.array('images',6), (req, res) => {
 	const images = req.body.images;
 
-	User.findById(req.params.id, (err, foundUser) =>{
-		Posts.create({text: req.body.text}, (err, newPost)=>{
-			if(err){
-				console.log(err);
-			}else{
-				const directory = 'users/' + foundUser._id + '/posts/' + newPost._id +'/';
-				for(let i =0; i <images.length; i++){
-					if(writeImage(directory, images[i], i+'.jpg')){
-						newPost.photos.push(directory+i+'.jpg');
-					}
-				}
-
-				newPost.save();
-				res.send('success');
+	Posts.create({text: req.body.text}, (err, newPost)=>{
+		if(err){
+			console.log(err);
+		}else{
+			const directory = 'users/' + req.params.id + '/posts/' + newPost._id +'/';
+			if(images){
+				uploadImages(images, directory, function(err,returnArr){
+					newPost.photos = returnArr;
+					console.log(newPost);
+					newPost.save();
+				})
 			}
-		})
-	});
-	//find user by id
-	//create new post
-	//get images and text
-	//write images to s3
-	/*
-		Database structure
-		1. Store text
-		2. Time of post
-		3. File extentsions to s3 for each image
-	*/
-
-	// res.send('success');
+			User.updateOne(
+						{"_id": req.params.id},
+						{ 
+							"$push": { "posts": { "$each": [newPost], "$position": 0 }}
+						},
+						function(err, result){
+							if(err){
+								console.log(err);
+							}else{
+								res.send('success');
+							}
+						}
+					);
+		}
+	})
 });
 
 function writeImage(directory, image, imageName){
+	console.log('called');
 	var data = image.replace(/^data:image\/\w+;base64,/, "");
 	var buf = new Buffer.from(data, 'base64');
 
@@ -114,13 +124,49 @@ function writeImage(directory, image, imageName){
             return false;
         }else{
         	console.log('successful upload');
-        	return true;
+        	return path;
         }
     });
 	
 
 }
 
+// WIERD ERROR WHEN ONLY UPLOADING 1 IMAGE
+
+function uploadImages(images, directory, next) {
+	let ct =0;
+	let returnArr =[];
+    async.eachSeries(images, function(image, cb) {
+    	var data = image.replace(/^data:image\/\w+;base64,/, "");
+		var buf = new Buffer.from(data, 'base64');
+
+		var path = directory + ct + '.jpg';
+		ct++;
+		returnArr.push(path);
+
+        const params = {
+	        Bucket: process.env.S3_BUCKET_NAME,
+	        Key: path, // File name you want to save as in S3
+	        Body: buf,
+	        ACL:'public-read'
+	    };
+
+        s3.upload(params, function(err, data) {
+            if (err) {
+              console.log("Error uploading data. ", err);
+              cb(err)
+            } else {
+              console.log("Success uploading data");
+              
+              cb()
+            }
+        })
+    }, function(err) {
+        if (err) console.log('one of the uploads failed')
+        else console.log('all files uploaded')
+        next(err, returnArr)
+    })
+}
 
 
 app.listen(process.env.PORT || 8080);

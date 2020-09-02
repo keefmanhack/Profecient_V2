@@ -10,7 +10,7 @@ let UserSchema = mongoose.Schema({
 		name: String,
 		logoUrl: String,
 	},
-	email: {type: String, unique: true, required: true},
+	email: String, //{type: String, unique: true, required: true}
 	resetPasswordToken: String,
 	resetPasswordExpires: Date,
 	posts: [{

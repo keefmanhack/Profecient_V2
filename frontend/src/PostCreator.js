@@ -2,6 +2,7 @@ import React from 'react';
 import {FadeInOut_HandleState} from './CustomTransition';
 import axios from 'axios';
 import FormData from 'form-data';
+import Loader from './loader';
 
 class PostCreator extends React.Component{
 	constructor(props){
@@ -10,6 +11,8 @@ class PostCreator extends React.Component{
 			images: null,
 			error: false,
 			max_Image_Err: false,
+			sendingData: false,
+			httpError: false,
 		}
 
 		this.fileInput = React.createRef();
@@ -68,6 +71,10 @@ class PostCreator extends React.Component{
 		const checkError = this.checkError();
 
 		if(!checkError){
+			this.setState({
+				sendingData: true,
+			});
+
 			const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/' + 'posts';
 			let data = new FormData();
 
@@ -86,9 +93,17 @@ class PostCreator extends React.Component{
 			  }
 			})
 			.then((response) => {
-				    console.log(response);
+			    this.setState({
+			    	sendingData: false,
+			    	images: null,
+			    	httpError: false,
+			    })
+			    this.textArea.current.innerText = '';
 			}).catch((error) => {
-			    console.log(error);
+			    this.setState({
+			    	sendingData: false,
+			    	httpError: true,
+			    })
 			});
 		}
 	}
@@ -121,9 +136,15 @@ class PostCreator extends React.Component{
 					<i class="fas fa-camera-retro"></i>
 				</button>
 				<button className='submit blue-bc' onClick={() => this.sendData()}>Submit</button>
+
+
 				<FadeInOut_HandleState condition={this.state.max_Image_Err}>
 					<h5 className='error-msg' style={{color: 'red'}}>Maximum of six images</h5>
 				</FadeInOut_HandleState>
+				<FadeInOut_HandleState condition={this.state.httpError}>
+					<h5 className='error-msg' style={{color: 'red'}}>Error while making post</h5>
+				</FadeInOut_HandleState>
+				
 				<input 
 					type="file" 
 					ref={this.fileInput} 
@@ -132,6 +153,7 @@ class PostCreator extends React.Component{
 					multiple={true}
 					onChange={() => this.addImages(this.fileInput.current.files)}
 				/>
+				{this.state.sendingData ? <Loader/> : null}
 	      	</div>
 		);
 	}

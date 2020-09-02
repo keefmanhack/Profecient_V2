@@ -6,6 +6,8 @@ import SemesterCreator from './Semester Creator/SemesterCreator';
 import {FadeInOut_HandleState} from './CustomTransition';
 import Header from './header';
 import PostCreator from './PostCreator';
+import Loader from './loader';
+import axios from 'axios';
 
 class ProfilePage extends React.Component{
 	constructor(props){
@@ -13,7 +15,21 @@ class ProfilePage extends React.Component{
 
 		this.state = {
 			showNewSem: false,
+			postData: null,
 		}
+	}
+
+	componentDidRender(){
+		this.getUserPosts();
+	}
+
+	getUserPosts(){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/posts')
+	    .then(res => {
+			this.setState({
+				postData: res.data,
+			})
+		})
 	}
 
 	showNewSem(val){
@@ -25,7 +41,7 @@ class ProfilePage extends React.Component{
 	render(){
 		if(this.props.currentUser ===null){
 			return(
-				<h1>aklsdjfklasdjflkasdjf</h1>
+				<Loader/>
 			)
 		}else{
 			const classList = this.props.currentUser.semesters[0].classes.map((data, index) =>
@@ -33,6 +49,7 @@ class ProfilePage extends React.Component{
 					<h5 key={data.id}>{data.name}</h5>
 				</div>
 			);
+			this.componentDidRender();
 
 			return (
 				<React.Fragment>
@@ -69,7 +86,7 @@ class ProfilePage extends React.Component{
 							<div className='col-lg-8'>
 								<PostCreator currentUser={this.props.currentUser}/>
 								<div className='feed-container'>
-									<Feed feedData={this.props.currentUser.posts} author={this.props.currentUser}/>
+									<Feed feedData={this.state.postData} author={this.props.currentUser}/>
 								</div>
 							</div>
 						</div>
