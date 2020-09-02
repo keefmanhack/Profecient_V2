@@ -20,7 +20,8 @@ class ProfilePage extends React.Component{
 	}
 
 	componentDidRender(){
-		this.getUserPosts();
+		if(this.state.postData === null)
+			this.getUserPosts();
 	}
 
 	getUserPosts(){
@@ -86,7 +87,10 @@ class ProfilePage extends React.Component{
 							<div className='col-lg-8'>
 								<PostCreator currentUser={this.props.currentUser}/>
 								<div className='feed-container'>
-									<Feed feedData={this.state.postData} author={this.props.currentUser}/>
+									<Feed 
+										feedData={this.state.postData} 
+										currentUser={this.props.currentUser}
+									/>
 								</div>
 							</div>
 						</div>

@@ -28,7 +28,6 @@ class App extends React.Component{
 			this.setState({
 				currentUser: res.data,
 			})
-			console.log(this.state.currentUser);
 		})
 	}
 

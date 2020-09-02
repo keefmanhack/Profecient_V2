@@ -244,6 +244,7 @@ h5.error-msg{
 .feed{
     overflow: scroll;
     height: 500px;
+    overflow-x: hidden;
 }
 
 .feed .post{

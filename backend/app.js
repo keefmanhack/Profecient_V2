@@ -47,7 +47,7 @@ app.use(
 
 app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
-app.use(bodyParser.urlencoded({extended:true}));
+// app.use(bodyParser.urlencoded({extended:true}));
 
 // app.use(express.static(path.join(__dirname, 'build')));
 
@@ -62,7 +62,7 @@ app.get('/users/:id', function (req, res) {
 });
 
 app.get('/users/:id/posts', function(req, res){
-	User.findById(req.params.id).populate('posts').exec(function(err, foundUser){
+	User.findById(req.params.id).populate({path: 'posts', populate:{path:'author'}}).exec(function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
@@ -71,77 +71,78 @@ app.get('/users/:id/posts', function(req, res){
 	})
 })
 
+app.post('/posts/:id/likes', function(req, res){
+	Posts.findById(req.params.id, function(err, foundPost){
+		if(err){
+			console.log(err);
+		}else{
+			const ID = req.body.userID;
+			if(foundPost.likes.includes(ID)){
+				foundPost.likes.pop(ID);
+			}else{
+				foundPost.likes.push(ID);
+			}
+			foundPost.save();
+			res.send('success');
+		}
+	})
+})
+
+app.get('/posts/:id/likes', function(req, res){
+	Posts.findById(req.params.id, function(err, foundPost){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundPost.likes);
+		}
+	})
+})
 
 app.post('/users/:id/posts', upload.array('images',6), (req, res) => {
-	const images = req.body.images;
+	let images = req.body.images;
 
-	Posts.create({text: req.body.text}, (err, newPost)=>{
+	Posts.create({text: req.body.text, author: req.params.id}, (err, newPost)=>{
 		if(err){
 			console.log(err);
 		}else{
 			const directory = 'users/' + req.params.id + '/posts/' + newPost._id +'/';
 			if(images){
+				if(!Array.isArray(images)) //convert to array so it works with eachSeries
+					images = [images];
 				uploadImages(images, directory, function(err,returnArr){
 					newPost.photos = returnArr;
-					console.log(newPost);
 					newPost.save();
 				})
 			}
 			User.updateOne(
-						{"_id": req.params.id},
-						{ 
-							"$push": { "posts": { "$each": [newPost], "$position": 0 }}
-						},
-						function(err, result){
-							if(err){
-								console.log(err);
-							}else{
-								res.send('success');
-							}
-						}
-					);
+			{"_id": req.params.id},
+			{ 
+				"$push": { "posts": { "$each": [newPost], "$position": 0 }} //push to front FILO
+			},
+			function(err, result){
+				if(err){
+					console.log(err);
+				}else{
+					res.send('success');
+				}
+			}
+		);
 		}
 	})
 });
-
-function writeImage(directory, image, imageName){
-	console.log('called');
-	var data = image.replace(/^data:image\/\w+;base64,/, "");
-	var buf = new Buffer.from(data, 'base64');
-
-	var path = directory + imageName;
-
-	const params = {
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: path, // File name you want to save as in S3
-        Body: buf
-    };
-
-	s3.upload(params, function(err, data) {
-        if (err) {
-        	console.log(err);
-            throw err;
-            return false;
-        }else{
-        	console.log('successful upload');
-        	return path;
-        }
-    });
-	
-
-}
-
-// WIERD ERROR WHEN ONLY UPLOADING 1 IMAGE
 
 function uploadImages(images, directory, next) {
 	let ct =0;
 	let returnArr =[];
     async.eachSeries(images, function(image, cb) {
+    	//prep image data
     	var data = image.replace(/^data:image\/\w+;base64,/, "");
 		var buf = new Buffer.from(data, 'base64');
-
+		//set path
 		var path = directory + ct + '.jpg';
 		ct++;
+
+		//add path to array to store in database
 		returnArr.push(path);
 
         const params = {
