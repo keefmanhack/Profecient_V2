@@ -1,11 +1,17 @@
 import React from 'react';
 
 class AssignmentDashboard extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	
+
 	render(){
 		return(
 			<div className='assignment-dashboard sans-font' style={this.props.style}>
 				<h1 className='gray-c '>Upcomming</h1>
-				<button onClick={() => this.props.showNewAssForm(true)} className='add green-bc'>Add</button>
+				<button onClick={() => this.props.showNewAssForm()} className='add green-bc'>Add</button>
 				<hr/>
 				<Assignment backgroundColor={{backgroundColor:'#FFCECE'}} dueDate='Tomorrow' name='Algebra HW'/>
 				<Assignment backgroundColor={{backgroundColor:'#F9E7CD'}} dueDate='Wed.' name='Geometry HW'/>
@@ -36,6 +42,27 @@ class Assignment extends React.Component{
 }
 
 class NewAssignment extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.wrapperRef = React.createRef();
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+
+	componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+            this.props.hideNewAssForm();
+        }
+    }
+
 	render(){
 		const classes = this.props.classes.map((o, index) =>
 				<div key={index} className='col-lg-3'>
@@ -53,8 +80,8 @@ class NewAssignment extends React.Component{
 			)
 
 		return(
-			<div className='new-assignment'>
-				<button onClick={()=> this.props.showNewAssForm(false)} id='X'>X</button>
+			<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
+				<button onClick={()=> this.props.hideNewAssForm()} id='X'>Cancel</button>
 				<div className='row'>
 					{classes}
 				</div>

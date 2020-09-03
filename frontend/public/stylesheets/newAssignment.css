@@ -10,18 +10,15 @@
 }
 
 #X{
-	border: none;
-    background: none;
-    font-weight: 800;
-    font-size: 27px;
+	background: none;
+    border: none;
     position: absolute;
-    top: -4px;
-    color: #F65656;
-    left: 92%;
-    width: 20px;
+    top: 0;
+    right: 0;
+    color: red;
 }
 
-.new-assignment input{
+.new-form input{
 	width: 100%;
 	border: none;
 	font-size: 20px;

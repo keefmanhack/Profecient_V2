@@ -4,6 +4,7 @@
     padding: 5px;
     position: relative;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 .time-container button{

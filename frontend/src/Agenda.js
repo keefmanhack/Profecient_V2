@@ -1,5 +1,6 @@
 import React from 'react';
 import {findTopPosition, findHeightProportion} from './Agenda_Helper'
+import StartEndTime from './Semester Creator/StartEndTimeComp/StartEndTime';
 
 class Agenda extends React.Component{
 	constructor(props){
@@ -41,7 +42,7 @@ class Agenda extends React.Component{
 		return(
 			<div className='agenda sans-font' style={{position: 'relative'}}>
 				<h1 className=' gray-c'>Agenda</h1>
-				<button className='add green-bc'>Add</button>
+				<button onClick={() => this.props.showNewAgForm()} className='add green-bc'>Add</button>
 				<div className='foreground'>
 					{timeHRs}
 					{AgendaItems}
@@ -74,4 +75,78 @@ function TimeHR(props){
 	);
 }
 
+class NewAgendaItem extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state ={
+			time:{
+				start: '2:00PM',
+				end: '4:00PM',
+			}
+		}
+
+		this.wrapperRef = React.createRef();
+		this.name = React.createRef();
+		this.location = React.createRef();
+		this.date = React.createRef();
+		this.description = React.createRef();
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+
+	setTime(key, time){
+		let time_copy = this.state.time;
+		time_copy[key] = time;
+		this.setState({
+			time: time_copy,
+		})
+	}
+
+	// Server interaction
+	submitForm(){
+		//set up error state object
+		//check for errors
+		//if no errors post data to server
+		//going to need to setup a way to see all upcomming events for a week/month/calendar
+		//editing events
+	}
+	// End Of Server Interaction
+
+
+	componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+            this.props.hideNewAgForm();
+        }
+    }
+
+    render(){
+    	return(
+    		<div ref={this.wrapperRef} className='new-ag-it-cont sans-font form-bc new-form'>
+    			<button onClick={() => this.props.hideNewAgForm()} className='cancel'>Cancel</button>
+    			<input ref={this.name} type="text" className='name' placeholder='Event Name'/>
+    			<input ref={this.location} type="text" placeholder='Location'/>
+    			<div className='row'>
+    				<div className='col-lg-6'>
+    					<StartEndTime time={this.state.time} setTime={(key, time) => this.setTime(key, time)}/>
+    				</div>
+    				<div className='col-lg-6'>
+    					<input ref={this.date} type="text" placeholder='Date'/>
+    					<textarea ref={this.description} placeholder='Description'></textarea>
+    				</div>
+    			</div>
+    			<button onClick={() => this.submitForm()} className='blue-bc submit'>Submit</button>
+    		</div>
+    	);
+    }
+}
+
+export {NewAgendaItem};
 export default Agenda;

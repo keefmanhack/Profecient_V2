@@ -37,7 +37,9 @@ class App extends React.Component{
 				<div className="App">
 					<Switch>
 						<Route path='/message' component={MessageCenter}/>
-						<Route path='/home' component={Home}/>
+						<Route path='/home'>
+							<Home currentUser={this.state.currentUser}/>
+						</Route>
 						<Route path='/profilePage'>
 							<ProfilePage currentUser={this.state.currentUser}/>
 						</Route>

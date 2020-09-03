@@ -1,0 +1,57 @@
+.new-ag-it-cont{
+	width: 400px;
+    padding: 10px;
+    padding-top: 30px;
+    position: absolute;
+    border-radius: 5px;
+    top: 0;
+    left: 31%;
+}
+
+.new-ag-it-cont button.submit{
+	margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 32px;
+    width: 100%;
+}
+
+.new-ag-it-cont button.cancel{
+	background: none;
+    border: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: red;
+}
+
+.new-ag-it-cont input.name{
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.new-ag-it-cont textarea{
+	resize: none;
+    width: 100%;
+    border: none;
+    height: 84%;
+    border-radius: 5px;
+}
+
+.new-ag-it-cont .start-end-time-container h5{
+	color: black;
+}
+
+.new-ag-it-cont .start-end-time-container hr{
+	border-color: black;
+}
+
+.new-ag-it-cont .start-end-time-container .time-container .top-con, .bottom-con, .timeDis{
+	position: absolute;
+	left: 13%;
+}
+
+.new-ag-it-cont .time-container .timeDis{
+	left: 13%;
+}

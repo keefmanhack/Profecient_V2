@@ -162,7 +162,7 @@ class StartEndTime extends React.Component{
 					/>
 				</div>
 				<FadeInOut_HandleState condition={this.state.error}>
-					<h5 className='error-message'>The head must come before the tail</h5>
+					<h5 style={{color: 'red'}} className='error-message'>The head must come before the tail</h5>
 				</FadeInOut_HandleState>
 			</div>
 		);
