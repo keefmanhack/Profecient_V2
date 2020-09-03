@@ -352,6 +352,21 @@ h5.error-msg{
     top: 0;
 }
 
+
+/*Comment Styling*/
+    .comments-container{
+        margin: 10px 51px;
+    }
+
+    .comments-container p{
+        margin: 0;
+    }
+
+    p .name{
+        font-weight: 700;
+    }
+/*End of Comment Styling*/
+
 /*End of feed container styling*/
 
 

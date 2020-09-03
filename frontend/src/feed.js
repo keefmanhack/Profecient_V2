@@ -14,6 +14,7 @@ class Feed extends React.Component{
 			<Post 
 				data={data}
 				currentUser={this.props.currentUser}
+				key={index}
 			/>
 		) : <p>Currently No Posts</p>;
 		return(
@@ -30,12 +31,8 @@ class Post extends React.Component{
 
 		this.state={
 			likes: [],
+			comments: [],
 		}
-	}
-
-	componenentDidRender(){
-		if(this.state.likes.length===0)
-			this.getLikes();
 	}
 
 	getLikes(){
@@ -43,6 +40,15 @@ class Post extends React.Component{
 	    .then(res => {
 			this.setState({
 				likes: res.data,
+			})
+		})
+	}
+
+	getComments(){
+		axios.get(`http://localhost:8080/posts/` + this.props.data._id + '/comments')
+	    .then(res => {
+			this.setState({
+				comments: res.data,
 			})
 		})
 	}
@@ -63,12 +69,35 @@ class Post extends React.Component{
 		});
 	}
 
+	newComment(text){
+		const endPoint = 'http://localhost:8080/posts/' + this.props.data._id + '/comments';
+
+		axios.post(endPoint, {
+			text: text,
+			author: this.props.currentUser._id,
+		})
+		.then((response) => {
+		    console.log(response);
+		    this.getComments();
+		}).catch((error) => {
+		    console.log(error);
+		});
+	}
+
+	componentDidMount(){
+		this.getLikes();
+		this.getComments();
+	}
+
 	render(){
 		let imageGal;
 		if(this.props.data.photos){
 			imageGal = <ImageGallary images={this.props.data.photos}/>
 		}
-		this.componenentDidRender();
+
+		const comments = this.state.comments.map((data, index) => 
+			<Comment data={data} key={index}/>
+		)
 
 		return(
 			<div className='post white-c sans-font'>
@@ -87,23 +116,53 @@ class Post extends React.Component{
 				
 				<h4 className='muted-c'>
 					<i class="fas fa-heart"></i> {this.state.likes.length} <span>  </span>
-					<i class="fas fa-comment"></i> 20 
+					<i class="fas fa-comment"></i> {this.state.comments.length}
 				</h4>
 			
 				<InteractionSection 
 					currentUser={this.props.currentUser}
 					liked={this.state.likes.includes(this.props.currentUser._id)}
 					toggleLike={() => this.toggleLike()}
+					newComment={(text) => this.newComment(text)}
 				/>
+
+				<div className='comments-container'>
+					{comments}
+					{this.state.comments.length >0 ?
+						<h4 className='muted-c'>{convertToStdDate(this.state.comments[this.state.comments.length-1].date)}</h4>
+					: null}
+				</div>
 				
 			</div>
 		);
 	}
 }
 
+function Comment(props){
+	return(
+		<div className='comment'>
+			<p><Link to='#' className='name green-c'>{props.data.author.firstName} {props.data.author.lastName}</Link> {props.data.text}</p>
+		</div>
+	);
+}
+
 class InteractionSection extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.textArea = React.createRef();
+	}
+
+	newComment(key){
+		const text = this.textArea.current.innerText.trim();
+
+		if(key === 'Enter' && text !== ''){
+			this.props.newComment(text);
+
+			this.textArea.current.innerText = '';
+		}else if(key==='Enter'){
+			this.textArea.current.innerText = '';
+		}
 	}
 
 	render(){
@@ -118,7 +177,16 @@ class InteractionSection extends React.Component{
 						<i class="fas fa-heart"></i></button>
 					</div>
 					<div className='col-lg-11'>
-						<p className='p-fake'><span className='textarea' role='textbox' contenteditable='true'></span></p>
+						<p 
+							onKeyUp={(e) => this.newComment(e.key)} 
+							className='p-fake'
+						><span 
+							ref={this.textArea}  
+							className='textarea' 
+							role='textbox' 
+							contenteditable='true'
+						></span>
+						</p>
 					</div>
 				</div>
 			</div>
@@ -129,7 +197,7 @@ class InteractionSection extends React.Component{
 function ImageGallary(props){
 	const smallImages = props.images.map((imagePath, index) =>
 		<div className='col-lg-6'>
-			<img className='image' src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + imagePath}/>
+			<img className='image' key={index} src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + imagePath}/>
 		</div>
 	);
 

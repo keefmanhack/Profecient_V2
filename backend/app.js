@@ -25,7 +25,8 @@ const s3 = new aws.S3(
 let User = require('./models/User');
 let Semester = require('./models/Semester');
 let Class = require('./models/Class');
-let Posts = require('./models/Post');
+let Post = require('./models/Post');
+let Comment = require('./models/Comment');
 //End of MongoDB Models
 
 mongoose.set('useNewUrlParser', true);
@@ -72,7 +73,7 @@ app.get('/users/:id/posts', function(req, res){
 })
 
 app.post('/posts/:id/likes', function(req, res){
-	Posts.findById(req.params.id, function(err, foundPost){
+	Post.findById(req.params.id, function(err, foundPost){
 		if(err){
 			console.log(err);
 		}else{
@@ -89,7 +90,7 @@ app.post('/posts/:id/likes', function(req, res){
 })
 
 app.get('/posts/:id/likes', function(req, res){
-	Posts.findById(req.params.id, function(err, foundPost){
+	Post.findById(req.params.id, function(err, foundPost){
 		if(err){
 			console.log(err);
 		}else{
@@ -98,10 +99,38 @@ app.get('/posts/:id/likes', function(req, res){
 	})
 })
 
+app.get('/posts/:id/comments', function(req, res){
+	Post.findById(req.params.id).populate({path: 'comments', populate: {path: 'author'}}).exec(function(err, foundPost){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundPost.comments);
+		}
+	})
+})
+
+app.post('/posts/:id/comments', function(req, res){
+	Comment.create(req.body, function(err, newComment){
+		if(err){
+			console.log(err);
+		}else{
+			Post.findById(req.params.id, function(err, foundPost){
+				if(err){
+					console.log(err);
+				}else{
+					foundPost.comments.push(newComment);
+					foundPost.save();
+					res.send('success');
+				}
+			})
+		}
+	});
+});
+
 app.post('/users/:id/posts', upload.array('images',6), (req, res) => {
 	let images = req.body.images;
 
-	Posts.create({text: req.body.text, author: req.params.id}, (err, newPost)=>{
+	Post.create({text: req.body.text, author: req.params.id}, (err, newPost)=>{
 		if(err){
 			console.log(err);
 		}else{
