@@ -78,7 +78,7 @@ class Post extends React.Component{
 				</Link>
 				
 
-				<h5>{this.props.linkedClasses}</h5>
+				{this.props.linkedClasses ? <h5>{this.props.linkedClasses}</h5> : null}
 				
 
 				<h4 className='muted-c'>{convertToStdDate(this.props.data.date)}</h4>
