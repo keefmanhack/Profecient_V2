@@ -7,6 +7,7 @@ import MessageCenter from './MessageCenter/Message-Center';
 import Home from './Home';
 import ProfilePage from './profile-page';
 import Landing from './landing';
+import Loader from './loader';
 // import SemesterCreator from './SemesterCreator/SemesterCreator';
 
 
@@ -38,7 +39,7 @@ class App extends React.Component{
 					<Switch>
 						<Route path='/message' component={MessageCenter}/>
 						<Route path='/home'>
-							<Home currentUser={this.state.currentUser}/>
+							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
 						<Route path='/profilePage'>
 							<ProfilePage currentUser={this.state.currentUser}/>

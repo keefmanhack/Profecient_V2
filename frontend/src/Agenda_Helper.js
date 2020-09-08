@@ -72,3 +72,30 @@ export function convertToStandard(mtTime){
 		return '10:10AM'
 	}
 }
+
+export function dateObjToStdTime(date){
+	return convertToStandard(convertFromDateObjToMT(date));
+}
+
+export function	convertFromDateObjToMT(date){
+	const hour = date.getHours();
+	const minute = date.getMinutes();
+	const mtTime = hour*100 + minute;
+	return mtTime;
+}
+
+export function convertToStdDate(date){
+	const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	let dateObj = new Date(date);
+
+	const month = months[dateObj.getMonth()];
+	const day = dateObj.getDate();
+	const year = dateObj.getFullYear();
+	const time = dateObj.toLocaleTimeString();
+
+	const reformattedTime = time.substring(0,time.length-6) + time.substring(time.length-3,time.length);
+	
+	// const time = dateObj.toTimeString();
+	return month + ' ' + day + ', ' + year + ' ' + reformattedTime;
+
+}

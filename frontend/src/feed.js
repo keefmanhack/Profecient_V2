@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import axios from 'axios';
+import {convertToStdDate} from './Agenda_Helper';
 
 class Feed extends React.Component{
 	constructor(props){
@@ -210,21 +211,5 @@ function ImageGallary(props){
 	);
 }
 
-
-function convertToStdDate(date){
-	const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-	let dateObj = new Date(date);
-
-	const month = months[dateObj.getMonth()];
-	const day = dateObj.getDate();
-	const year = dateObj.getFullYear();
-	const time = dateObj.toLocaleTimeString();
-
-	const reformattedTime = time.substring(0,time.length-6) + time.substring(time.length-3,time.length);
-	
-	// const time = dateObj.toTimeString();
-	return month + ' ' + day + ', ' + year + ' ' + reformattedTime;
-
-}
 
 export default Feed;

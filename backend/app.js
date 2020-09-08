@@ -8,6 +8,9 @@ const   express 	= require('express'),
 		upload 		= multer({storage: multer.memoryStorage(), limits: { fieldSize: 6 * 1024 * 1024 }}),
 		async		= require('async');
 
+const endOfDay =  require('date-fns/endOfDay');
+const startOfDay = require('date-fns/startOfDay');
+
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
     console.log('configured');
@@ -27,6 +30,7 @@ let Semester = require('./models/Semester');
 let Class = require('./models/Class');
 let Post = require('./models/Post');
 let Comment = require('./models/Comment');
+let Agenda = require('./models/Agenda');
 //End of MongoDB Models
 
 mongoose.set('useNewUrlParser', true);
@@ -68,6 +72,34 @@ app.get('/users/:id/posts', function(req, res){
 			console.log(err);
 		}else{
 			res.send(foundUser.posts);
+		}
+	})
+})
+
+app.get('/users/:id/agenda/today', function(req, res){
+	User.findById(req.params.id).populate({path: 'agenda', match: {date: {$gte: startOfDay(new Date()), $lte: endOfDay(new Date())}}}).exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUser.agenda);
+		}
+	})
+})
+
+app.post('/users/:id/agenda', function(req, res){
+	User.findById(req.params.id, function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			Agenda.create(req.body, function(err, newAgendaItem){
+				if(err){
+					console.log(err);
+				}else{
+					foundUser.agenda.push(newAgendaItem); //need to check that post data is valid!!!!
+					foundUser.save();
+					res.send('success');
+				}
+			})
 		}
 	})
 })

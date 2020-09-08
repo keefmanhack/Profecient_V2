@@ -29,10 +29,10 @@ let UserSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Message"
 	}],
-	agenda: {
+	agenda: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Agenda" //not yet created
-	}
+	}]
 
 
 })

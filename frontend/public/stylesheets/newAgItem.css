@@ -31,6 +31,10 @@
 	font-weight: 600;
 }
 
+.new-ag-it-cont input{
+    font-weight: 200;
+}
+
 .new-ag-it-cont textarea{
 	resize: none;
     width: 100%;
