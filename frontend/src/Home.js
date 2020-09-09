@@ -21,11 +21,26 @@ class Home extends React.Component{
 		this.state = {
 			showNewAssignmentForm: false,
 			showNewAgForm: false,
-			classes: ['Algebra', 'Geometry', 'Geology', 'Philosophy', 'Chemistry', 'Biology', 'English', 'Political Science'],
+			currSemester: {},
 			selectedIndex: null,
 			agendaItems: [],
 			agendaItemSentSuccessful: false,
 		}
+	}
+
+	componentDidMount(){
+		this.getTodaysEvents();
+		this.getClassData();
+	}
+
+	getClassData(){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current')
+	    .then(res => {
+	    	console.log(res.data);
+			this.setState({
+				currSemester: res.data
+			})
+		})
 	}
 
 	getTodaysEvents(){
@@ -50,11 +65,6 @@ class Home extends React.Component{
 			console.log(error);
 		});
 	}
-	componentDidMount(){
-		this.getTodaysEvents();
-	}
-
-
 
 	showNewAssForm(val){
 		this.setState({
@@ -80,10 +90,12 @@ class Home extends React.Component{
 				<div className='page-container black-bc'>
 				  	<div 
 				  		className="row" 
-				  		style={this.state.showNewAssignmentForm || this.state.showNewAgForm ? {opacity: .7, transition: '.3s'} : null}
+				  		style={this.state.showNewAssignmentForm || this.state.showNewAgForm ? {opacity: .3, transition: '.3s'} : {transition: '.3s'}}
 				  	>
 					    <div className='col-lg-4 left'>
-						    <AssignmentDashboard  showNewAssForm={() => this.showNewAssForm(true)}/>
+						    <AssignmentDashboard  
+						    	showNewAssForm={() => this.showNewAssForm(true)}
+						    />
 							<Agenda 
 								showNewAgForm={() => this.showNewAgForm(true)}
 								agendaItems={this.state.agendaItems}
@@ -96,10 +108,10 @@ class Home extends React.Component{
 					</div>
 					<FadeInOut_HandleState condition={this.state.showNewAssignmentForm}>
 						<NewAssignment 
-							selectedIndex={this.props.selectedIndex} 
+							selectedIndex={this.state.selectedIndex} 
 							handleClassClick={(i) => this.handleClassClick(i)} 
 							hideNewAssForm={() => this.showNewAssForm(false)} 
-							classes={this.state.classes}
+							classes={this.state.currSemester.classes}
 						/>
 					</FadeInOut_HandleState>
 					<FadeInOut_HandleState condition={this.state.showNewAgForm}>

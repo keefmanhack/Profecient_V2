@@ -28,9 +28,9 @@
 
 }
 
-.new-assignment .class{
-	background: #74CDEA;
+.new-assignment button.class{
     border: none;
+    transition: .3s;
     font-weight: 600;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -62,11 +62,10 @@
 }
 
 .new-assignment .submit{
-	border: none;
-	background: #3185FC;
-	font-size: 40px;
-	font-weight: 800;
-	border-radius: 10px;
-	color: white;
-	width: 100%;
+	margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 32px;
+    width: 100%;
 }

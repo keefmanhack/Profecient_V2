@@ -1,4 +1,8 @@
 import React from 'react';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+import {SuccessCheck} from './lottie/LottieAnimations';
 
 class AssignmentDashboard extends React.Component{
 	constructor(props){
@@ -24,13 +28,13 @@ class AssignmentDashboard extends React.Component{
 class Assignment extends React.Component{
 	render(){
 		return(
-			<div style={this.props.backgroundColor} className='assignment'>
+			<div style={this.props.backgroundColor} className='assignment sans-font'>
 				<div className='row'>
-					<div className='col-lg-7'>
-						{this.props.name}
+					<div className='col-lg-7 truncate'>
+						<h1>{this.props.name}</h1>
 					</div>
-					<div className='col-lg-3'>
-						{this.props.dueDate}
+					<div className='col-lg-3 truncate'>
+						<h2>{this.props.dueDate}</h2>
 					</div>
 					<div className='col-lg-2'>
 						<button>...</button>
@@ -45,8 +49,15 @@ class NewAssignment extends React.Component{
 	constructor(props){
 		super(props);
 
+		this.state = {
+			date: new Date(),
+		}
+
 		this.wrapperRef = React.createRef();
 		this.handleClickOutside = this.handleClickOutside.bind(this);
+		this.name = React.createRef();
+		this.dueTime = React.createRef();
+		this.description = React.createRef();
 	}
 
 	componentDidMount() {
@@ -58,26 +69,32 @@ class NewAssignment extends React.Component{
     }
 
     handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target) && !this.dueTime.current.contains(event.target)) {
             this.props.hideNewAssForm();
         }
     }
 
+    dateChanged(date){
+		this.setState({
+			date: date
+		})
+	}
+
 	render(){
 		const classes = this.props.classes.map((o, index) =>
-				<div key={index} className='col-lg-3'>
-			       <button 
-			       		className='class' 
-			       		onClick={() => this.props.handleClassClick(index)} 
-			       		key={index}
-			       	>
-			       			<h5 
-			       				className='truncate'
-			       			>{o}
-			       			</h5>
-			       	</button>
-			      </div>
-			)
+			<div key={index} className='col-lg-3'>
+		       <button 
+		       		className={this.props.selectedIndex===index ? 'class green-bc' : 'class off-blue-bc'} 
+		       		onClick={() => this.props.handleClassClick(index)} 
+		       		key={index}
+		       	>
+	       			<h5 
+	       				className='truncate'
+	       			>{o.name}
+	       			</h5>
+		       	</button>
+		    </div>
+		)
 
 		return(
 			<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
@@ -88,22 +105,25 @@ class NewAssignment extends React.Component{
 
 				<div className='row'>
 					<div className='col'>
-						<input placeholder='Assignment Name' className='name' type='text' />
+						<input ref={this.name} placeholder='Assignment Name' className='name' type='text' />
 					</div>
 				</div>
 
 				<div className='row'>
 					<div className='col'>
-						<input placeholder='Date due' type='text' />
+						<DatePicker
+				        	selected={this.state.date}
+				        	onChange={(date) => this.dateChanged(date)}
+				      	/>
 					</div>
 					<div className='col'>
-						<input placeholder='Time due' type='text' />
+						
 					</div>
 				</div>
 				<div className='col textarea-col'>
-					<textarea placeholder='Description'></textarea>
+					<textarea ref={this.description} placeholder='Description'></textarea>
 				</div>
-				<button className='submit'>Submit</button>
+				<button className='submit blue-bc'>Submit</button>
 			</div>
 		);
 	}

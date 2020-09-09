@@ -42,7 +42,7 @@ class App extends React.Component{
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
 						<Route path='/profilePage'>
-							<ProfilePage currentUser={this.state.currentUser}/>
+							{this.state.currentUser ? <ProfilePage currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
 						<Route path='/' component={Landing}/>
 					</Switch>

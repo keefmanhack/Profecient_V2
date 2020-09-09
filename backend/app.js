@@ -57,7 +57,7 @@ app.use(express.json());
 // app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/users/:id', function (req, res) {
-	User.findById(req.params.id).populate({path: 'semesters', populate: {path: 'classes'}}).exec(function(err, foundUser){
+	User.findById(req.params.id, function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
@@ -65,6 +65,16 @@ app.get('/users/:id', function (req, res) {
 		}
 	});
 });
+
+app.get('/users/:id/semesters/current', function(req,res){
+	User.findById(req.params.id).populate({path: 'semesters', match: {current: true}, populate: {path: 'classes'}}).exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUser.semesters[0]);
+		}
+	})
+})
 
 app.get('/users/:id/posts', function(req, res){
 	User.findById(req.params.id).populate({path: 'posts', populate:{path:'author'}}).exec(function(err, foundUser){

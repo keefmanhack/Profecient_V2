@@ -56,6 +56,10 @@ body{
     background: #282828;
 }
 
+.off-blue-bc{
+    background: #74CDEA;
+}
+
 .white-c{
     color: white;
 }
@@ -113,6 +117,10 @@ h5.error-msg{
     top: 0;
     left: 0;
     border-radius: inherit;
+}
+
+.truncate{
+    text-overflow: ellipsis;
 }
 
 
@@ -192,16 +200,30 @@ h5.error-msg{
     padding: 8px 10px 0px 10px;
     border-radius: 5px;
     font-weight: 800;
+    position: relative;
+}
+
+.assignment h1{
+    font-size: 20px;
+    margin: 0;
+    width: inherit;
+}
+
+.assignment h2{
+    font-size: 16px;
+    margin: 0;
+    width: inherit;
+    text-align: left;
 }
 
 .assignment button{
-    background: white;
-    height: 30px;
-    width: 30px;
-    border-radius: 100%;
-    position: relative;
-    top: -5px;
+    background: none;
     border: none;
+    position: absolute;
+    bottom: 15%;
+    right: 10px;
+    font-weight: 800;
+    font-size: 24px;
 }
 
 /*End of Assignment Dashboard Styling*/
