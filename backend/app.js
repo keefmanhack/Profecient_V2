@@ -6,7 +6,8 @@ const   express 	= require('express'),
 		bodyParser  = require('body-parser'),
 		multer		= require('multer'),
 		upload 		= multer({storage: multer.memoryStorage(), limits: { fieldSize: 6 * 1024 * 1024 }}),
-		async		= require('async');
+		async		= require('async'),
+		moment		= require('moment');
 
 const endOfDay =  require('date-fns/endOfDay');
 const startOfDay = require('date-fns/startOfDay');
@@ -31,6 +32,7 @@ let Class = require('./models/Class');
 let Post = require('./models/Post');
 let Comment = require('./models/Comment');
 let Agenda = require('./models/Agenda');
+let Assignment = require('./models/Assignment');
 //End of MongoDB Models
 
 mongoose.set('useNewUrlParser', true);
@@ -66,12 +68,84 @@ app.get('/users/:id', function (req, res) {
 	});
 });
 
+app.get('/users/:id/semesters', function(req, res){
+	User.findById(req.params.id).populate('semesters').exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUser.semesters);
+		}
+	})
+})
+
 app.get('/users/:id/semesters/current', function(req,res){
 	User.findById(req.params.id).populate({path: 'semesters', match: {current: true}, populate: {path: 'classes'}}).exec(function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
 			res.send(foundUser.semesters[0]);
+		}
+	})
+})
+
+app.get('/users/:id/assignment/upcomming', function(req, res){
+	User.findById(req.params.id)
+	.populate(
+		{
+			path: 'semesters', 
+			match: 
+				{
+					current: true
+				}, 
+			populate: 
+				{
+					path: 'classes', 
+					populate: 
+						{
+							path: 'assignments', 
+							match: 
+								{
+									dueDate: 
+										{
+											$lte: new Date(moment().add(1, 'weeks'))
+										}
+								}
+						}
+				}
+		})
+	.exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			let assignments = [];
+
+			foundUser.semesters[0].classes.forEach(function(o){
+				o.assignments.forEach(function(assignment){
+					assignments.push(assignment);
+				})
+			})
+
+			const sortedAssignments = assignments.slice().sort((a,b) => a.dueDate-b.dueDate); //sort by oldest first
+
+			res.send(sortedAssignments);
+		}
+	})
+})
+
+app.post('/classes/:id/assignment', function(req, res){
+	Assignment.create(req.body, function(err, newAss){
+		if(err){
+			console.log(err);
+		}else{
+			Class.findById(req.params.id, function(err, foundClass){
+				if(err){
+					console.log(err);
+				}else{
+					foundClass.assignments.push(newAss);
+					foundClass.save();
+					res.send('success');
+				}
+			})
 		}
 	})
 })

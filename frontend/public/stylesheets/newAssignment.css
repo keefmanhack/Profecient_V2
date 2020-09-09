@@ -4,6 +4,7 @@
     padding: 20px;
     padding-top: 30px;
     width: 400px;
+    height: 295px;
     top: 0;
     left: 31%;
     border-radius: 6px;
@@ -54,7 +55,7 @@
 }
 
 .new-assignment textarea{
-	font-size: 20px;
+	font-size: 16px;
 	width: 100%;
 	resize: none;
 	border: none;
@@ -69,3 +70,26 @@
     font-size: 32px;
     width: 100%;
 }
+
+.new-assignment input{
+    font-weight: 200;
+}
+
+.new-assignment input.name{
+    font-weight: 600;
+}
+
+
+/*Time picker styles*/
+    .react-time-picker{
+        border: none;
+        width: 100%;
+        font-weight: 200;
+    }
+
+    .new-assignment .react-time-picker .react-time-picker__wrapper{
+        border: none;
+        background: white;
+        border-radius: 5px;
+    }
+/*End Of Time picker styles*/

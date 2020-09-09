@@ -16,11 +16,15 @@ class ProfilePage extends React.Component{
 		this.state = {
 			showNewSem: false,
 			postData: null,
+			currSemester: {},
+			semesters: [],
 		}
 	}
 
 	componentDidMount(){
 		this.getUserPosts();
+		this.getClassData();
+		this.getSemesters();
 	}
 
 	getUserPosts(){
@@ -32,6 +36,26 @@ class ProfilePage extends React.Component{
 		})
 	}
 
+	getClassData(){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current')
+	    .then(res => {
+	    	console.log(res.data);
+			this.setState({
+				currSemester: res.data
+			})
+		})
+	}
+
+	getSemesters(){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters')
+	    .then(res => {
+	    	console.log(res.data);
+			this.setState({
+				semesters: res.data
+			})
+		})
+	}
+
 	showNewSem(val){
 		this.setState({
 			showNewSem: val,
@@ -39,11 +63,11 @@ class ProfilePage extends React.Component{
 	}
 
 	render(){
-		const classList = this.props.currentUser.semesters[0].classes.map((data, index) =>
+		const classList = this.state.currSemester.classes ? this.state.currSemester.classes.map((data, index) =>
 			<div className='col-lg-2'>
 				<h5 key={data.id}>{data.name}</h5>
 			</div>
-		);
+		): null;
 
 		return (
 			<React.Fragment>
@@ -75,7 +99,7 @@ class ProfilePage extends React.Component{
 					</div>
 					<div className='row'>
 						<div className='col-lg-4 left'>
-							<ClassView semesters={this.props.currentUser.semesters} showNewSem={(val) => this.showNewSem(val)} />
+							<ClassView semester={this.state.currSemester} semesters={this.state.semesters} showNewSem={(val) => this.showNewSem(val)} />
 						</div>
 						<div className='col-lg-8'>
 							<PostCreator currentUser={this.props.currentUser}/>

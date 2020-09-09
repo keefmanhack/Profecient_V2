@@ -7,6 +7,8 @@ function SuccessCheck(props){
 		<div className='lottie-overlay'>
 			<Lottie 
 			    options={{loop: false, animationData: checkSuccess}}
+			    height={'99%'}
+			    width={'99%'}
 		        eventListeners={[
 		        	{
 			    		eventName: 'complete',

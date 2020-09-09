@@ -64,6 +64,18 @@ body{
     color: white;
 }
 
+.muted-red-bc{
+    background: #FFCECE;
+}
+
+.muted-orange-bc{
+    background: #F9E7CD;
+}
+
+.muted-green-bc{
+    background: #D3E3F6;
+}
+
 .background{
     height: 100%;
     width: 100%;
@@ -193,7 +205,10 @@ h5.error-msg{
     display: inline;
 }
 
-
+.assignments-cont{
+    max-height: 151px;
+    overflow: scroll;
+}
 
 .assignment{
     margin-bottom: 5px;
@@ -204,14 +219,15 @@ h5.error-msg{
 }
 
 .assignment h1{
-    font-size: 20px;
-    margin: 0;
-    width: inherit;
+    font-size: 18px;
+    margin-bottom: 5px;
+    display: block;
+    overflow: hidden;
 }
 
 .assignment h2{
     font-size: 16px;
-    margin: 0;
+    margin-bottom: 5px;
     width: inherit;
     text-align: left;
 }
@@ -224,6 +240,20 @@ h5.error-msg{
     right: 10px;
     font-weight: 800;
     font-size: 24px;
+}
+
+.assignment .more-info{
+    margin: 0 8%;
+}
+
+.assignment .more-info p{
+    margin: 0;
+    font-weight: 400;
+}
+
+.assignment .more-info button{
+    font-size: 16px;
+    position: relative;
 }
 
 /*End of Assignment Dashboard Styling*/

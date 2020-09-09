@@ -70,7 +70,7 @@ class ClassView extends React.Component{
 	}
 
 	render(){
-		const classes = this.props.semesters[0].classes.map((data, index) =>
+		const classes = this.props.semester.classes ? this.props.semester.classes.map((data, index) =>
 			<ClassCon  
 				name={data.name}
 				instructor={data.instructor}
@@ -79,13 +79,13 @@ class ClassView extends React.Component{
 				endTime={data.time.end}
 				assignments={data.assignments}
 				key={index}
-			/>
-		)
+			/> 
+		): null
 
 		return(
 			<div className='class-view-container'>
 				<div className='semester-container white-c'>
-					<h1>{this.props.semesters[0].name}</h1>
+					<h1>{this.props.semester.name}</h1>
 					<button className='white-c' onClick={() => this.showDialog()}>...</button>
 				</div>
 				<h5 className='muted-c'>{this.state.testData.classes.length} Classes</h5>
@@ -108,7 +108,6 @@ class ClassView extends React.Component{
 						</DropDownMain>
 					</MenuDropDown>
 				</FadeInOut_HandleState>
-				
 			</div>
 		);
 	}
@@ -138,7 +137,7 @@ class MenuDropDown extends React.Component{
 
 	render(){
 		return(
-			<div ref={this.wrapperRef} className='edit-sem-con'>
+			<div ref={this.wrapperRef} className='drop-down-con'>
 				{this.props.children}
 			</div>
 		);
@@ -328,4 +327,6 @@ function findColor(dueDate){
 	return 'rgb(210, 244, 219)'; //green
 }
 
+export {MenuDropDown};
+export{DropDownMain};
 export default ClassView;

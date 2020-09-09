@@ -118,34 +118,34 @@
     top: 1px;
 }
 
-.edit-sem-con{
+.drop-down-con{
 	position: absolute;
     top: 10%;
     left: 46%;
     margin-right: 5px;
     border-radius: 5px;
-    
+    width: 170px;
 }
 
-.edit-sem-con .main, .perif{
+.drop-down-con .main, .perif{
 	background: rgb(50,50,50);
 	border-radius: 5px;
 	border: 1px solid white;
 }
 
-.edit-sem-con .perif{
+.drop-down-con .perif{
     position: absolute;
     left: 100%;
     top: 60px;
     z-index: 2;
 }
 
-.edit-sem-con .perif button{
+.drop-down-con .perif button{
 	font-size: 16px;
     font-weight: 200;
 }
 
-.edit-sem-con button{
+.drop-down-con button{
 	display: block;
 	width: 100%;
 	border: none;
@@ -156,6 +156,6 @@
 	border-radius: 5px;
 }
 
-.edit-sem-con button:nth-of-type(2n){
+.drop-down-con button:nth-of-type(2n){
 	background: rgb(35,35,35);
 }

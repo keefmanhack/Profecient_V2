@@ -23,14 +23,17 @@ class Home extends React.Component{
 			showNewAgForm: false,
 			currSemester: {},
 			selectedIndex: null,
+			newAssSentSuccessful: false,
 			agendaItems: [],
 			agendaItemSentSuccessful: false,
+			upcommingAss: [],
 		}
 	}
 
 	componentDidMount(){
 		this.getTodaysEvents();
 		this.getClassData();
+		this.getUpcommingAssignments();
 	}
 
 	getClassData(){
@@ -66,16 +69,51 @@ class Home extends React.Component{
 		});
 	}
 
+	getUpcommingAssignments(){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/assignment/upcomming')
+	    .then(res => {
+			this.setState({
+				upcommingAss: res.data
+			})
+			console.log(res.data);
+		})
+	}
+
+	sendNewAssignment(data){
+		const endPoint = 'http://localhost:8080/classes/' + this.state.currSemester.classes[this.state.selectedIndex]._id + '/assignment';
+
+		axios.post(endPoint, data)
+		.then((response) => {
+			this.setState({
+				newAssSentSuccessful: true,
+			})
+			this.getTodaysEvents();
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+
 	showNewAssForm(val){
 		this.setState({
 			showNewAssignmentForm: val,
+			newAssSentSuccessful: false,
 		})
+
+		if(val===false){
+			this.getUpcommingAssignments();
+		}
 	}
 
 	showNewAgForm(val){
 		this.setState({
 			showNewAgForm: val,
+			agendaItemSentSuccessful: false,
+			selectedIndex: null,
 		})
+
+		if(val===false){
+			this.getTodaysEvents();
+		}
 	}
 
 	handleClassClick(i){
@@ -95,6 +133,7 @@ class Home extends React.Component{
 					    <div className='col-lg-4 left'>
 						    <AssignmentDashboard  
 						    	showNewAssForm={() => this.showNewAssForm(true)}
+						    	assignments={this.state.upcommingAss}
 						    />
 							<Agenda 
 								showNewAgForm={() => this.showNewAgForm(true)}
@@ -112,6 +151,8 @@ class Home extends React.Component{
 							handleClassClick={(i) => this.handleClassClick(i)} 
 							hideNewAssForm={() => this.showNewAssForm(false)} 
 							classes={this.state.currSemester.classes}
+							sendData={(data) => this.sendNewAssignment(data)}
+							success={this.state.newAssSentSuccessful}
 						/>
 					</FadeInOut_HandleState>
 					<FadeInOut_HandleState condition={this.state.showNewAgForm}>

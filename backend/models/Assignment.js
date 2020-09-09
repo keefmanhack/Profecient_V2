@@ -2,7 +2,8 @@ let mongoose = require('mongoose');
 
 let AssignmentSchema = mongoose.Schema({
 	name: String,
-	dueDate: String,
+	dueDate: Date,
+	dueTime: String,
 	description: String,
 })
 
