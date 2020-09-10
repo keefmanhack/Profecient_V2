@@ -19,6 +19,9 @@ class AssignmentDashboard extends React.Component{
 				<Assignment 
 					data={data}
 					key={index}
+					toggleCompleted={(id, isCompleted) => this.props.toggleCompleted(id, isCompleted)}
+					editAssignment={() => this.props.editAssignment(index)}
+					deleteAssignment={() => this.props.deleteAssignment(index)}
 				/>
 		): null;
 		return(
@@ -40,6 +43,8 @@ class Assignment extends React.Component{
 
 		this.state ={
 			showDialog: false,
+			completed: false,
+			mouseOver: false,
 		}
 	}
 
@@ -48,6 +53,16 @@ class Assignment extends React.Component{
 
 		this.setState({
 			showDialog: !showDialog_copy,
+		})
+	}
+
+	toggleComplete(){
+		const completed_copy = this.state.completed;
+
+		this.props.toggleCompleted(this.props.data._id, !completed_copy);
+
+		this.setState({
+			completed: !completed_copy,
 		})
 	}
 
@@ -61,7 +76,7 @@ class Assignment extends React.Component{
 		}
 
 		return(
-			<div className={'assignment sans-font ' + colorClass}>
+			<div onMouseEnter={() => this.setState({mouseOver: true})} onMouseLeave={() => this.setState({mouseOver: false})} className={'assignment sans-font ' + colorClass}>
 				<div className='row'>
 					<div className='col-lg-6'>
 						<h1>{this.props.data.name}</h1>
@@ -70,20 +85,25 @@ class Assignment extends React.Component{
 						<h2 className='truncate'>{moment(this.props.data.dueDate).format('dddd')}</h2>
 					</div>
 					<div className='col-lg-2'>
-						<button onClick={()=> this.toggleDropDown()}>...</button>
+						<button onClick={() => this.toggleComplete()} className={this.state.completed ? 'light-green-bc completed' : 'completed'}>
+							<i class="fas fa-check"></i>
+						</button>
 					</div>
 				</div>
 				<FadeDownUp_HandleState condition={this.state.showDialog}>
 					<div className='more-info'>
 						<p>{this.props.data.description}</p>
-						<h5>Due by: {this.props.data.dueTime}</h5>
-						<button>Completed</button>
-						<button>Edit</button>
-						<button>Delete</button>
-
-						
+						<h5>{moment(this.props.data.dueTime).format('h:mm a')}</h5>
+						<button onClick={() => this.props.editAssignment()}>Edit</button>
+						<button onClick={() => this.props.deleteAssignment()}>Delete</button>
 					</div>
 				</FadeDownUp_HandleState>
+				<FadeInOut_HandleState condition={this.state.mouseOver}>
+					<button className='see-more' onClick={()=> this.toggleDropDown()}>
+						{this.state.showDialog ? <i className='fas fa-chevron-up'></i> : <i className='fas fa-chevron-down'></i>}
+					</button>
+				</FadeInOut_HandleState>
+
 				
 			</div>
 		);
@@ -95,8 +115,8 @@ class NewAssignment extends React.Component{
 		super(props);
 
 		this.state = {
-			date: new Date(),
-			time: new Date(),
+			date: this.props.editData ? new Date(this.props.editData.dueDate) : new Date(),
+			time: this.props.editData ? new Date(this.props.editData.dueTime) : new Date(),
 			errors: {
 				name: false,
 				classPicked: false,
@@ -111,6 +131,12 @@ class NewAssignment extends React.Component{
 	}
 
 	componentDidMount() {
+		const editData = this.props.editData
+		if(editData){
+			this.name.current.value = editData.name;
+			this.description.current.value = editData.description;
+		}
+			
         document.addEventListener('mousedown', this.handleClickOutside);
     }
 
@@ -174,7 +200,7 @@ class NewAssignment extends React.Component{
 			const data = {
 				name: this.name.current.value,
 				dueDate: new Date(this.state.date),
-				dueTime: timePickerFormToStd(this.state.time),
+				dueTime: new Date(this.state.time),
 				description: this.description.current.value,
 			}
 
@@ -243,7 +269,9 @@ class NewAssignment extends React.Component{
 				<div className='col textarea-col'>
 					<textarea ref={this.description} placeholder='Description'></textarea>
 				</div>
-				<button onClick={() => this.submitData()} className='submit blue-bc'>Submit</button>
+				<button onClick={() => this.submitData()} className='submit blue-bc'>
+					{this.props.editData ? 'Update' : 'Submit'}
+				</button>
 			</div>
 		);
 	}

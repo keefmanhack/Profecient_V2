@@ -37,6 +37,10 @@ body{
     background: #28965A;
 }
 
+.light-green-bc{
+    background: lightgreen;
+}
+
 .muted-c{
     color: #9c9c9c;
 }
@@ -216,6 +220,7 @@ h5.error-msg{
     border-radius: 5px;
     font-weight: 800;
     position: relative;
+    transition: .3s;
 }
 
 .assignment h1{
@@ -232,14 +237,36 @@ h5.error-msg{
     text-align: left;
 }
 
-.assignment button{
-    background: none;
+.assignment button.see-more{
     border: none;
-    position: absolute;
-    bottom: 15%;
-    right: 10px;
     font-weight: 800;
-    font-size: 24px;
+    font-size: 14px;
+    width: 100%;
+    background: #fdfdfd;
+    margin-top: 5px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.assignment button.completed{
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    height: 20px;
+    width: 24px;
+    position: relative;
+    top: -3px;
+    transition: .3s;
+    right: -10px;
+}
+
+.assignment input{
+    height: 22px;
+}
+
+.assignment input:after {
+  background: red;
+  border-radius: 100%;
 }
 
 .assignment .more-info{
@@ -251,9 +278,18 @@ h5.error-msg{
     font-weight: 400;
 }
 
+.assignment .more-info h5{
+    font-weight: 200;
+}
+
 .assignment .more-info button{
     font-size: 16px;
     position: relative;
+    background: none;
+    border: none;
+    text-decoration: underline;
+    padding: 0;
+    margin-right: 5px;
 }
 
 /*End of Assignment Dashboard Styling*/

@@ -58,6 +58,7 @@ app.use(express.json());
 
 // app.use(express.static(path.join(__dirname, 'build')));
 
+
 app.get('/users/:id', function (req, res) {
 	User.findById(req.params.id, function(err, foundUser){
 		if(err){
@@ -88,6 +89,25 @@ app.get('/users/:id/semesters/current', function(req,res){
 	})
 })
 
+app.delete('/classes/:class_id/assignment/:ass_id', function(req, res){
+	Class.findById(req.params.class_id, function(err, foundClass){
+		if(err){
+			console.log(err);
+		}else{
+			foundClass.assignments.pull(req.params.ass_id);
+			Assignment.findByIdAndRemove(req.params.ass_id, function(err){
+				if(err){
+					console.log(err);
+				}else{
+					foundClass.save();
+					res.send('success');
+				}
+			})
+			
+		}
+	})
+})
+
 app.get('/users/:id/assignment/upcomming', function(req, res){
 	User.findById(req.params.id)
 	.populate(
@@ -108,7 +128,8 @@ app.get('/users/:id/assignment/upcomming', function(req, res){
 									dueDate: 
 										{
 											$lte: new Date(moment().add(1, 'weeks'))
-										}
+										},
+									complete: false,
 								}
 						}
 				}
@@ -128,6 +149,16 @@ app.get('/users/:id/assignment/upcomming', function(req, res){
 			const sortedAssignments = assignments.slice().sort((a,b) => a.dueDate-b.dueDate); //sort by oldest first
 
 			res.send(sortedAssignments);
+		}
+	})
+})
+
+app.put('/assignment/:id', function(req,res){
+	Assignment.findByIdAndUpdate(req.params.id, req.body, function(err, updatedAssignment){
+		if(err){
+			console.log(err);
+		}else{
+			res.send('success');
 		}
 	})
 })
