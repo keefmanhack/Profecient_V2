@@ -1,16 +1,19 @@
 let mongoose = require('mongoose');
 
 let MessageSchema = mongoose.Schema({
-	to: {
+	communicators: [{
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "User"
-	},
-	unReadMessages: Number,
-	messageData: [{
-		date: Date,
-		fromCorrespondent: Boolean,
+		ref: "User",
+	}],
+	sentMessages: [{
 		message: String,
+		date: {type: Date, default: new Date()},
+		read: {type: Boolean, default: false},
+		sender: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		}
 	}]
 })
 
-module.exports = mongoose.model('Message', MessageSchema);
+module.exports = mongoose.model('MessageStream', MessageSchema);

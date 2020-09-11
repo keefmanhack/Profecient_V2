@@ -25,9 +25,9 @@ let UserSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
 	}],
-	messages: [{
+	messageStreams: [{
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "Message"
+		ref: "MessageStream"
 	}],
 	agenda: [{
 		type: mongoose.Schema.Types.ObjectId,

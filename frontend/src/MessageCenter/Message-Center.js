@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+
 import {FadeInOut, FadeInOut_HandleState} from '../CustomTransition';
 import NewMessage from './NewMessage';
 import {toSingleCharArr, Soundex, findSimilarity, timeDifString} from './helperFunc';
@@ -15,251 +17,48 @@ class MessageCenter extends React.Component{
 			selectedIndex: null,
 			searchString: null,
 			showNew: false,
-			classMates: [
-				{
-					name: 'Sarah Steel',
-					profileImage: 'generic_person.jpg'
-				},
-				{
-					name: 'John Doe',
-					profileImage: 'morganFreeman.jpg'
-				},
-				{
-					name: 'Jason Deurluo',
-					profileImage: 'markWalberg.jpg'
-				},
-				{
-					name: 'Patrick Steel',
-					profileImage: 'generic_person.jpg'
-				},
-				{
-					name: 'Jessica Jack',
-					profileImage: 'markWalberg.jpg'
-				},
-
-			],
-			testData: [
-				{
-					correspondent: {
-						name: 'Sarah Steel',
-						profileImage: 'generic_person.jpg',
-					},
-					unReadMessages: 1,
-					messageData: [
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: false,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(2020, 6, 11, 12, 7, 0),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						}
-
-					]
-
-
-
-				},
-				{
-					correspondent: {
-						name: 'John Doe',
-						profileImage: 'morganFreeman.jpg',
-					},
-					unReadMessages: 6,
-					messageData: [
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: false,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						}
-
-					]
-				},
-				{
-					correspondent: {
-						name: 'Sarah Steel',
-						profileImage: 'generic_person.jpg',
-					},
-					unReadMessages: 1,
-					messageData: [
-						{
-							date: new Date() ,
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: false,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						}
-
-					]
-
-
-
-				},
-				{
-					correspondent: {
-						name: 'John Doe',
-						profileImage: 'morganFreeman.jpg',
-					},
-					unReadMessages: 6,
-					messageData: [
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: false,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						}
-
-					]
-				},
-				{
-					correspondent: {
-						name: 'Sarah Steel',
-						profileImage: 'generic_person.jpg',
-					},
-					unReadMessages: 1,
-					messageData: [
-						{
-							date: new Date() ,
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: false,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						}
-
-					]
-
-
-
-				},
-				{
-					correspondent: {
-						name: 'John Doe',
-						profileImage: 'morganFreeman.jpg',
-					},
-					unReadMessages: 6,
-					messageData: [
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: false,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						}
-
-					]
-				},
-				{
-					correspondent: {
-						name: 'Bartholemu Jankins',
-						profileImage: 'markWalberg.jpg',
-					},
-					unReadMessages: 6,
-					messageData: [
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'ciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: false,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						},
-						{
-							date: new Date(),
-							fromCorrespondent: true,
-							message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat repudiandae unde, error illo hic, delectus? Expedita doloremque, reiciendis odit laboriosam voluptatem nam veritatis obcaecati ullam, eum pariatur aut, repellat hic!'
-										
-						}
-
-					]
-				}
-
-			]
+			messageStreams: [],
 		}
+
+		this.textarea = React.createRef();
+	}
+
+	componentDidMount(){
+		this.getMessages();
+	}
+
+	getMessages(){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/messageStreams')
+	    .then(res => {
+	    	console.log(res.data);
+
+	    	this.setState({
+	    		messageStreams: res.data,
+	    	})
+
+		})
+		.catch((error) => {
+			console.log(error);
+		})
 	}
 
 	messageSelectorClick(i){
-		let testDataCopy = this.state.testData;
-
-		testDataCopy[i].unReadMessages = 0;
-
 		this.setState({
 			selectedIndex: i,
-			testData: testDataCopy
 		})
 
-		this.textarea = React.createRef();
+
+		axios.put(endPoint, data)
+	}
+
+	updateMessage(id, data){
+		axios.put(`http://localhost:8080/messages/` + id, data)
+	    .then(res => {
+	    	console.log(res);
+		})
+		.catch((error) => {
+			console.log(error);
+		})
 	}
 
 	handleTextInput(e){
@@ -286,16 +85,15 @@ class MessageCenter extends React.Component{
 		})
 	}
 
-	closeNew(){
-		this.setState({
-			showNew: false,
-		})
-	}
 
-	showNew(){
+	showNew(val){
 		this.setState({
-			showNew: true,
+			showNew: val,
 		})
+
+		if(!val){ //new message closed
+			this.getMessages();
+		}
 	}
 
 
@@ -304,26 +102,17 @@ class MessageCenter extends React.Component{
 	render(){
 		const showNewStyle = this.state.showNew ? {opacity: .2, transition: '.2s'} : null;
 
-		let testVal, searchLength;
-		if(this.state.searchString){
-			testVal = Soundex(this.state.searchString);
-			searchLength = this.state.searchString.length;
-		}
 
-		const messageSelectors = this.state.testData.map((data, index) =>
-			findSimilarity(searchLength, toSingleCharArr(testVal), toSingleCharArr(Soundex(data.correspondent.name))) > .3 ?	
-				<MessageSelector 
-					name={data.correspondent.name} 
-					profileImage={data.correspondent.profileImage}
-					newMessages={data.unReadMessages}
-					messageData={data.messageData}
-					key={index}
-					i={index}
-					handleClick={(i) => this.messageSelectorClick(i)}
-					selected={index===this.state.selectedIndex}
-				/>
-			: null
-		)
+		const messageSelectors = this.state.messageStreams.map((data, index) =>
+			<MessageSelector 
+				communicator={findCommunicator(data.communicators, this.props.currentUser._id)}
+				messageData={data.sentMessages}
+				currentUser={this.props.currentUser}
+				key={index}
+				handleClick={() => this.messageSelectorClick(index)}
+				selected={index===this.state.selectedIndex}
+			/>
+		);
 
 		return(
 			<React.Fragment>
@@ -341,35 +130,35 @@ class MessageCenter extends React.Component{
 									/>
 								</div>
 								<div className='col-lg-2'>
-									<button onClick={() => this.showNew()}>+</button>
+									<button onClick={() => this.showNew(true)}>+</button>
 								</div>
 							</div>
 							<div className='message-selector-container'>
-								{messageSelectors}
+								<FadeInOut_HandleState condition={this.state.messageStreams.length > 0}>
+									<React.Fragment>
+										{messageSelectors}
+									</React.Fragment>
+								</FadeInOut_HandleState>
+								{this.state.messageStreams.length===0 ? <p className='muted-c'>No Messages</p> : null}
 							</div>
 						</div>
 						<div className='col-lg-8'>
 							<div className='right'>
-								{this.state.selectedIndex || this.state.selectedIndex===0 ? 
-									<div style={{position: 'relative'}}>
-										<FadeInOut condition={this.state.selectedIndex}>
-											<div style={{position: 'absolute'}}>
-												<MessageContainer
-													messageData={this.state.testData[this.state.selectedIndex].messageData}
-													profileImage={this.state.testData[this.state.selectedIndex].correspondent.profileImage}
-													name={this.state.testData[this.state.selectedIndex].correspondent.name}
-													noneSelected={!this.state.selectedIndex}
-													key={this.state.testData[this.state.selectedIndex].messageData.length}
-												/>
-												<div className='reply'>
-													<textarea ref={this.textarea} onKeyUp={(e) => this.handleTextInput(e)}></textarea>
-												</div>
-											</div>
-										</FadeInOut>
-									</div>
-									:
+							{this.state.selectedIndex === null ? 
 									<div className='no-select'>
 										<h2>Start or select a previous conversation</h2>
+									</div>
+								:
+									<div>
+										<MessageContainer
+											messageData={this.state.messageStreams[this.state.selectedIndex].sentMessages}
+											communicator={findCommunicator(this.state.messageStreams[this.state.selectedIndex].communicators, this.props.currentUser._id)}
+											noneSelected={!this.state.selectedIndex}
+											currentUser={this.props.currentUser}
+										/>
+										<div className='reply'>
+											<textarea ref={this.textarea} onKeyUp={(e) => this.handleTextInput(e)}></textarea>
+										</div>
 									</div>
 								}
 							</div>
@@ -377,8 +166,8 @@ class MessageCenter extends React.Component{
 					</div>
 					<FadeInOut_HandleState condition={this.state.showNew}>
 						<NewMessage 
-							classmates={this.state.classMates}
-							closeNew={() => this.closeNew()}
+							closeNew={() => this.showNew(false)}
+							currentUser={this.props.currentUser}
 						/>
 					</FadeInOut_HandleState>
 				</div>
@@ -386,6 +175,20 @@ class MessageCenter extends React.Component{
 			
 		)
 	}
+}
+
+function findCommunicator(communicators, currUserId){
+	let foundUser = null;
+
+	communicators.forEach(function(communicator){
+		if(communicator._id !== currUserId){
+			foundUser= communicator;
+		}
+	});
+	console.log(foundUser);
+	//should add array functionality to get all correspondents
+
+	return foundUser;
 }
 
 
@@ -409,7 +212,7 @@ class MessageContainer extends React.Component{
 			<Message 
 				key={index}
 				date={data.date}
-				fromCorrespondent={data.fromCorrespondent}
+				fromCorrespondent={this.props.currentUser._id !== data.sender}
 				message={data.message}
 			/>
 		)
@@ -417,8 +220,8 @@ class MessageContainer extends React.Component{
 		return(
 			<div className='messages-container'>
 				<div className='header'>
-					<img src={this.props.profileImage} alt="Can't display photo"/>
-					<h1>{this.props.name}</h1>
+					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.communicator.profilePictureURL} alt="Can't display photo"/>
+					<h1>{this.props.communicator.name}</h1>
 				</div>
 				<div className='messages-body'>
 					{messages}
@@ -435,7 +238,7 @@ function Message(props){
 	const receivedOrSent = props.fromCorrespondent ? 'received' : 'sent';
 	return (
 		<div className='messages'>
-			<h5>{props.date.toDateString()}</h5>
+			<h5>{new Date(props.date).toDateString()}</h5>
 			<div className={receivedOrSent}>
 				<p>{props.message}</p>
 			</div>
@@ -445,7 +248,8 @@ function Message(props){
 
 
 function MessageSelector(props){
-	const newMessages = props.newMessages > 0 ? <h2>{props.newMessages} New Message</h2>: null;
+	const unReadMessageCount = findUnReadMessageCount(props.currentUser._id, props.messageData);
+	const newMessages = unReadMessageCount > 0 ? <h2>{unReadMessageCount} New Message</h2>: null;
 	const lastMessage = props.messageData[props.messageData.length-1].message;
 
 	const selected = props.selected ? 'selected': null;
@@ -454,19 +258,30 @@ function MessageSelector(props){
 		<div className={'message-selector ' + selected} onClick={() => props.handleClick(props.i)}>
 			<div className='row'>
 				<div className='col-lg-1'>
-					<img src={props.profileImage} alt="Can't display photo"/>
+					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.communicator.profilePictureURL} alt="Can't display photo"/>
 				</div>
 				<div className='col-lg-7'>
-					<h1>{props.name}</h1>
+					<h1>{props.communicator.name}</h1>
 				</div>
 				<div className='col-lg-4'>
 					{newMessages}
 				</div>
 			</div>
-			<h3>{timeDifString(props.messageData[props.messageData.length-1].date)} ago</h3>
+			<h3>{timeDifString(new Date(props.messageData[props.messageData.length-1].date))} ago</h3>
 			<p>{lastMessage}</p>
 		</div>
 	);
+}
+
+function findUnReadMessageCount(currUserId, messages){
+	let ct =0;
+	messages.forEach(function(message){
+		if(message.sender !== currUserId && !message.read){
+			ct++;
+		}
+	})
+
+	return ct;
 }
 
 export default MessageCenter;

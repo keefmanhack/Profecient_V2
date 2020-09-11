@@ -3,17 +3,26 @@ import axios from 'axios';
 
 import {FadeInOut_HandleState, FadeInOut} from '../CustomTransition';
 import {toSingleCharArr, Soundex, findSimilarity} from './helperFunc';
+import {SentSuccess} from '../lottie/LottieAnimations';
 
 class NewMessage extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.search = React.createRef();
+		
 
 		this.state ={
 			selectedUser: null,
 			searchedUsers: [],
+			errors: {
+				selectedUser: false,
+				message:false,
+			},
+			success: false,
 		}
+
+		this.search = React.createRef();
+		this.message = React.createRef();
 	}
 	
 	handleSearch(){
@@ -51,14 +60,56 @@ class NewMessage extends React.Component{
 		})
 	}
 
+	sendNewMessage(){
+		if(!this.checkErrors()){
+			const endPoint = 'http://localhost:8080/messageStream';
+
+			const data= {
+				communicators: [this.props.currentUser._id, this.state.selectedUser._id],
+				sentMessages: [{
+					message: this.message.current.value,
+					sender: this.props.currentUser._id,
+				}]
+			}
+
+			axios.post(endPoint, data)
+			.then((response) => {
+				this.setState({
+					success: true,
+				})
+			}).catch((error) => {
+				console.log(error);
+			});
+		}
+	}
+
+	checkErrors(){
+		let error_copy = this.state.errors;
+		if(this.state.selectedUser===null){
+			error_copy.searchedUsers = true;
+		}else{
+			error_copy.selectedUser = false;
+		}
+
+		if(this.message.current.value === ''){
+			error_copy.message=true;
+		}else{
+			error_copy.message=false;
+		}
+
+		this.setState({
+			errors: error_copy
+		});
+
+		if(error_copy.searchedUsers || error_copy.message){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 
 	render(){
-		// let testVal, searchLength;
-		// if(this.state.inputText){
-		// 	testVal = Soundex(this.state.inputText);
-		// 	searchLength = this.state.inputText.length;
-		// }
-
 		const searchItems = this.state.searchedUsers.map((data, index) =>
 			<SearchItem 
 				handleClick={(i) => this.searchItemClicked(i)} 
@@ -74,6 +125,9 @@ class NewMessage extends React.Component{
 
 		return(
 			<div className='new-message-container sans-font'>
+				<FadeInOut_HandleState condition={this.state.success}>
+	 				<SentSuccess onCompleted={() =>this.props.closeNew()}/>
+	 			</FadeInOut_HandleState>
 				<div className='new-message'>
 					<button onClick={() => this.props.closeNew()} className='close-new-message'>Cancel</button>
 					<div style={pushDown}>
@@ -85,7 +139,13 @@ class NewMessage extends React.Component{
 							/>
 						:null}
 						<FadeInOut_HandleState condition={this.state.selectedUser === null}>
-							<input style={{position: 'absolute'}} ref={this.search} onKeyUp={() => this.handleSearch()} placeholder='Find classmate' type="text"/>
+							<input 
+								style={this.state.errors.message ? {border: '1px solid red', position: 'absolute'} : {position: 'absolute'}}
+								ref={this.search} 
+								onKeyUp={() => this.handleSearch()} 
+								placeholder='Find classmate' 
+								type="text"
+							/>
 						</FadeInOut_HandleState>
 					</div>
 					<FadeInOut_HandleState condition={this.state.searchedUsers.length>0 && this.state.selectedUser===null}>
@@ -96,9 +156,9 @@ class NewMessage extends React.Component{
 
 					<hr/>
 					
-					<textarea placeholder='Write message'></textarea>
+					<textarea ref={this.message} style={this.state.errors.message ? {border: '1px solid red'} : null} placeholder='Write message'></textarea>
 
-					<button className='send'><i class="fas fa-paper-plane"></i> Send</button>
+					<button onClick={() => this.sendNewMessage()} className='send'><i class="fas fa-paper-plane"></i> Send</button>
 
 				</div>
 			</div>

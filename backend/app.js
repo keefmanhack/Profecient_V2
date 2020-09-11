@@ -22,6 +22,7 @@ if (process.env.NODE_ENV !== 'production') {
 //MongoDB Models
 let User = require('./models/User');
 let Agenda = require('./models/Agenda');
+let MessageStream = require('./models/Message');
 
 //End of MongoDB Models
 
@@ -65,6 +66,44 @@ app.post('/users', function(req, res){
 			res.send(foundUsers);
 		}
 		//need to check in future if current user and not send that user
+	})
+})
+
+app.get('/users/:id/messageStreams', function(req,res){
+	User.findById(req.params.id).populate({path: 'messageStreams', populate: {path: 'communicators'}}).exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUser.messageStreams);
+		}
+	})
+})
+
+app.put('/messages/:id', function(req,res){
+	MessageStream.findByIdAndUpdate(req.params.id, req.body.data, function(err, updatedMessage){
+		if(err){
+			console.log(err);
+		}else{
+			res.send('success');
+		}
+	})
+})
+
+app.post('/messageStream', function(req, res){
+	MessageStream.create(req.body, function(err, newMessageStream){
+		if(err){
+			console.log(err);
+		}else{
+			req.body.communicators.forEach(function(id){
+				User.findById(id, function(err, foundUser){
+					foundUser.messageStreams.push(newMessageStream);
+					foundUser.save();
+				})
+			})
+
+			//still need to add check that message stream doesn't already exist
+			res.send('success');
+		}
 	})
 })
 

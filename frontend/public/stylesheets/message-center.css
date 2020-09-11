@@ -67,12 +67,13 @@
     color: #7B7373;
 }
 
-.message-selector p{
+.message-selector-container .message-selector p{
     margin: 0;
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     height: 25px;
+    text-align: left;
     color: #848484;
 }
 
@@ -148,6 +149,7 @@
 .messages-body{
 	height: 385px;
 	overflow: scroll;
+    background: white;
 }
 
 .message-selector.selected{
@@ -185,16 +187,22 @@
     background: rgb(235,235,235);
     padding: 5px;
     border-radius: 5px;
+    position: relative;
+}
+
+.message-selector-container p{
+    text-align: center;
 }
 
 .new-message-container{
-        position: absolute;
+    position: absolute;
     top: 2%;
     left: 35%;
     background: rgb(235,235,235);
     padding: 10px;
     border-radius: 5px;
     width: 365px;
+    max-height: 275px;
 }
 
 .new-message .close-new-message{

@@ -126,8 +126,8 @@ h5.error-msg{
 
 .lottie-overlay{
     position: absolute;
-    height: inherit;
-    width: inherit;
+    height: 100%;
+    width: 100%;
     z-index: 999;
     background: rgba(0,0,0,.7);
     top: 0;
