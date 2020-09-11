@@ -327,7 +327,7 @@ class MessageCenter extends React.Component{
 
 		return(
 			<React.Fragment>
-				<Header/>
+				<Header currentUser={this.props.currentUser}/>
 				<div className='page-container message-center'>
 					<div className='row' style={showNewStyle}>
 						<div className='col-lg-4 left' style={{borderRight: '1px solid', height: 600}}>

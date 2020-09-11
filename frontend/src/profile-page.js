@@ -71,7 +71,7 @@ class ProfilePage extends React.Component{
 
 		return (
 			<React.Fragment>
-				<Header/>
+				<Header currentUser={this.props.currentUser}/>
 				<div className='page-container profile-page' style={this.state.showNewSem ? {opacity: .7}: null}>
 					<div className='top white-c'>
 						<div className='row'>
@@ -81,7 +81,7 @@ class ProfilePage extends React.Component{
 									alt="image not found" 
 									onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
 								/>
-								<h1>{this.props.currentUser.firstName} {this.props.currentUser.lastName}</h1>
+								<h1>{this.props.currentUser.name}</h1>
 
 								<img className='school' src={this.props.currentUser.school.logoUrl} alt="Can't display image"/>
 								<h2>{this.props.currentUser.school.name}</h2>

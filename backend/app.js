@@ -57,6 +57,37 @@ app.get('/users/:id', function (req, res) {
 	});
 });
 
+app.post('/users', function(req, res){
+	User.find({'name':  { "$regex": req.body.searchString, "$options": "i" }}, function(err, foundUsers){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUsers);
+		}
+		//need to check in future if current user and not send that user
+	})
+})
+
+// app.get('/x', function(req, res){
+// 	const data = {
+// 		firstName: 'Sarah',
+// 		lastName: 'Steel',
+// 		email: 'keefergreg@yahoo.com',
+// 		school: {
+// 			logoUrl: 'https://logo.clearbit.com/gannon.edu',
+// 			name: 'Gannon University'
+// 		}
+// 	}
+// 	User.create(data, function(err, newUser){
+// 		if(err){
+// 			console.log(err);
+// 		}else{
+// 			console.log(newUser);
+// 			res.send('success')
+// 		}
+// 	})
+// })
+
 app.get('/users/:id/agenda/today', function(req, res){
 	User.findById(req.params.id).populate({path: 'agenda', match: {date: {$gte: startOfDay(new Date()), $lte: endOfDay(new Date())}}}).exec(function(err, foundUser){
 		if(err){

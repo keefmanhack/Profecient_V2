@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+
 import {FadeInOut_HandleState, FadeInOut} from '../CustomTransition';
 import {toSingleCharArr, Soundex, findSimilarity} from './helperFunc';
 
@@ -9,78 +11,88 @@ class NewMessage extends React.Component{
 		this.search = React.createRef();
 
 		this.state ={
-			inputText: null,
-			selectedIndex: null
+			selectedUser: null,
+			searchedUsers: [],
 		}
 	}
 	
 	handleSearch(){
-		this.setState({
-			inputText: this.search.current.value,
-		})
+		console.log('b'+this.search.current.innerText+'b');
+		const searchString = this.search.current.value;
+		if(searchString !== ''){
+			axios.post(`http://localhost:8080/users`, {searchString: searchString})
+		    .then(res => {
+				this.setState({
+					searchedUsers: res.data
+				})
+			});
+		}else{
+			this.setState({
+				searchedUsers: []
+			})
+		}
+		
+		// this.setState({
+		// 	inputText: this.search.current.value,
+		// })
 	}
 
-	handleClick(i){
+	searchItemClicked(i){
+		const searchedUsers = this.state.searchedUsers;
 		this.setState({
-			selectedIndex: i,
+			selectedUser: searchedUsers[i],
 		})
 	}
 
 	removeSelected(){
 		this.setState({
-			selectedIndex: null,
-			inputText: null,
+			selectedUser: null,
+			searchedUsers: []
 		})
 	}
 
 
 	render(){
-		let testVal, searchLength;
-		if(this.state.inputText){
-			testVal = Soundex(this.state.inputText);
-			searchLength = this.state.inputText.length;
-		}
+		// let testVal, searchLength;
+		// if(this.state.inputText){
+		// 	testVal = Soundex(this.state.inputText);
+		// 	searchLength = this.state.inputText.length;
+		// }
 
-		const searchItems = this.props.classmates.map((data, index) =>
-			findSimilarity(searchLength, toSingleCharArr(testVal), toSingleCharArr(Soundex(data.name))) > .3 ?
-				<SearchItem 
-					handleClick={(i) => this.handleClick(i)} 
-					key={index} 
-					image={data.profileImage} 
-					text={data.name} 
-					i={index}
-				/>
-			: null
+		const searchItems = this.state.searchedUsers.map((data, index) =>
+			<SearchItem 
+				handleClick={(i) => this.searchItemClicked(i)} 
+				key={index} 
+				image={data.profilePictureURL} 
+				text={data.name} 
+				i={index}
+			/>
 		);
 
-		const searchItemDis = (searchItems.length > 0 && this.state.inputText && this.state.selectedIndex === null) ?
-								<FadeInOut condition={this.state.inputText}>
-									<div className='search-container'>
-										{searchItems}
-									</div>
-								</FadeInOut>
-							: null
+		const pushDown = this.state.selectedUser !== null ? {position: 'relative', height: 65} : {position: 'relative', height: 30};
 
-		const pushDown = this.state.selectedIndex !== null ? {position: 'relative', height: 65} : {position: 'relative', height: 30};
 
 		return(
-			<div className='new-message-container'>
+			<div className='new-message-container sans-font'>
 				<div className='new-message'>
 					<button onClick={() => this.props.closeNew()} className='close-new-message'>Cancel</button>
 					<div style={pushDown}>
-						<FadeInOut condition={this.state.selectedIndex}>
-						{this.state.selectedIndex !== null ? 	
+						{this.state.selectedUser!==null ? 
 							<SelectedClassmate 
-								image={this.props.classmates[this.state.selectedIndex].profileImage}
-								name={this.props.classmates[this.state.selectedIndex].name}
+								image={this.state.selectedUser.profilePictureURL}
+								name={this.state.selectedUser.name}
 								removeSelected={() => this.removeSelected()}
 							/>
-						:
+						:null}
+						<FadeInOut_HandleState condition={this.state.selectedUser === null}>
 							<input style={{position: 'absolute'}} ref={this.search} onKeyUp={() => this.handleSearch()} placeholder='Find classmate' type="text"/>
-						}
-						</FadeInOut>
+						</FadeInOut_HandleState>
 					</div>
-					{searchItemDis}
+					<FadeInOut_HandleState condition={this.state.searchedUsers.length>0 && this.state.selectedUser===null}>
+						<div className='search-container'>
+							{searchItems}
+						</div>
+					</FadeInOut_HandleState>
 
 					<hr/>
 					
@@ -121,9 +133,9 @@ class SelectedClassmate extends React.Component{
 				onMouseOver={() => this.showRemoveBtn()}
 				onMouseLeave={() => this.hideRemoveBtn()} 
 				style={{position: 'absolute'}} 
-				className='selected-classmate-container'
+				className='selected-classmate-container light-green-bc'
 			>
-				<img src={this.props.image} alt="Can't display image"/>
+				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.image} alt="Can't display image"/>
 				<h1>{this.props.name}</h1>
 				<FadeInOut_HandleState condition={this.state.removeBtn} >
 					<button onClick={() => this.props.removeSelected()}>X</button>
@@ -137,8 +149,8 @@ class SelectedClassmate extends React.Component{
 function SearchItem(props){
 
 	return(
-		<div onClick={() => props.handleClick(props.i)} className='search-item'>
-			<img src={props.image} alt="Can't display image"/>
+		<div onClick={() => props.handleClick(props.i)} className='search-item light-green-bc'>
+			<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.image} alt="Can't display image"/>
 			<h1>{props.text}</h1>
 		</div>
 	);

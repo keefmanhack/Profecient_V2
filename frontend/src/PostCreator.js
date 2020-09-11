@@ -114,7 +114,7 @@ class PostCreator extends React.Component{
 			): ' ';
 		return(
 			<div className="make-post mont-font">
-	    		<h5><span style={{fontWeight: 600}}>{this.props.currentUser.firstName}</span>, what happened today in class?</h5>
+	    		<h5><span style={{fontWeight: 600}}>{this.props.currentUser.name.split(' ')[0]}</span>, what happened today in class?</h5>
 		        <p>
 		        	<span 
 		        		className='textarea' 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-function Header(){
+function Header(props){
 	return(
 		<div className='top-bar black-bc' style={style_topBar}>
 			<Link to='/home'>
@@ -19,7 +19,7 @@ function Header(){
 
 			
 			<span className='profile'>
-				<img src="./generic_person.jpg" alt=""/>
+				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.currentUser.profilePictureURL} alt=""/>
 				<Link to='/profilePage'>
 					<button className='blue-c'><i class="fas fa-chevron-down"></i></button>
 				</Link>

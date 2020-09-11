@@ -177,7 +177,7 @@ class Home extends React.Component{
 	render(){
 		return(
 			<React.Fragment>
-				<Header/>
+				<Header currentUser={this.props.currentUser}/>
 				<div className='page-container black-bc'>
 				  	<div 
 				  		className="row" 
