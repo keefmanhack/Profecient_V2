@@ -70,20 +70,43 @@ app.post('/users', function(req, res){
 })
 
 app.get('/users/:id/messageStreams', function(req,res){
-	User.findById(req.params.id).populate({path: 'messageStreams', populate: {path: 'communicators'}}).exec(function(err, foundUser){
+	User.findById(req.params.id)
+	.populate(
+		{
+			path: 'messageStreams',
+			populate: 
+				{
+					path: 'communicators',
+				}
+		}
+	)
+	.exec(function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
-			res.send(foundUser.messageStreams);
+			const sortedMessageStreams = foundUser.messageStreams.slice().sort((a,b) => b.sentMessages[b.sentMessages.length-1].date-a.sentMessages[a.sentMessages.length-1].date);
+			res.send(sortedMessageStreams);
 		}
 	})
 })
 
-app.put('/messages/:id', function(req,res){
-	MessageStream.findByIdAndUpdate(req.params.id, req.body.data, function(err, updatedMessage){
+app.put('/messageStream/:id', function(req,res){
+	MessageStream.findByIdAndUpdate(req.params.id, req.body.messageStream, function(err, updatedMessage){
 		if(err){
 			console.log(err);
 		}else{
+			res.send('success');
+		}
+	})
+})
+
+app.delete('/user/:id/messageStream/:message_id', function(req, res){
+	User.findById(req.params.id, function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			foundUser.messageStreams.pull(req.params.message_id);
+			foundUser.save();
 			res.send('success');
 		}
 	})
@@ -107,25 +130,25 @@ app.post('/messageStream', function(req, res){
 	})
 })
 
-// app.get('/x', function(req, res){
-// 	const data = {
-// 		firstName: 'Sarah',
-// 		lastName: 'Steel',
-// 		email: 'keefergreg@yahoo.com',
-// 		school: {
-// 			logoUrl: 'https://logo.clearbit.com/gannon.edu',
-// 			name: 'Gannon University'
-// 		}
-// 	}
-// 	User.create(data, function(err, newUser){
-// 		if(err){
-// 			console.log(err);
-// 		}else{
-// 			console.log(newUser);
-// 			res.send('success')
-// 		}
-// 	})
-// })
+app.get('/x', function(req, res){
+	const data = {
+		firstName: 'Pat',
+		lastName: 'Mitchell',
+		email: 'keefergeg@yahoo.com',
+		school: {
+			logoUrl: 'https://logo.clearbit.com/gannon.edu',
+			name: 'Gannon University'
+		}
+	}
+	User.create(data, function(err, newUser){
+		if(err){
+			console.log(err);
+		}else{
+			console.log(newUser);
+			res.send('success')
+		}
+	})
+})
 
 app.get('/users/:id/agenda/today', function(req, res){
 	User.findById(req.params.id).populate({path: 'agenda', match: {date: {$gte: startOfDay(new Date()), $lte: endOfDay(new Date())}}}).exec(function(err, foundUser){
