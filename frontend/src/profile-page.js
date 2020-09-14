@@ -14,7 +14,7 @@ class ProfilePage extends React.Component{
 		super(props);
 
 		this.state = {
-			showNewSem: false,
+			showNewSem: true,
 			postData: null,
 			currSemester: {},
 			semesters: [],
@@ -39,7 +39,6 @@ class ProfilePage extends React.Component{
 	getClassData(){
 		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current')
 	    .then(res => {
-	    	console.log(res.data);
 			this.setState({
 				currSemester: res.data
 			})
@@ -49,7 +48,6 @@ class ProfilePage extends React.Component{
 	getSemesters(){
 		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters')
 	    .then(res => {
-	    	console.log(res.data);
 			this.setState({
 				semesters: res.data
 			})
@@ -72,7 +70,7 @@ class ProfilePage extends React.Component{
 		return (
 			<React.Fragment>
 				<Header currentUser={this.props.currentUser}/>
-				<div className='page-container profile-page' style={this.state.showNewSem ? {opacity: .7}: null}>
+				<div className='page-container profile-page' style={this.state.showNewSem ? {opacity: .5}: null}>
 					<div className='top white-c'>
 						<div className='row'>
 							<div className='col-lg-8'>

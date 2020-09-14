@@ -9,9 +9,10 @@ let ClassSchema = mongoose.Schema({
 		end: String
 	},
 	date: {
-		start: String,
-		end: String,
+		start: Date,
+		end: Date,
 	},
+	weekDays: Array,
 	links: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Link"

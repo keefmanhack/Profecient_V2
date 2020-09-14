@@ -1,5 +1,7 @@
 import React from 'react';
-import $ from 'jquery'; 
+import $ from 'jquery';
+import axios from 'axios';
+
 import {BackInOut_HandleState, FadeInOut_HandleState, FadeInOut, FadeRight_HandleState} from '../CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
@@ -11,13 +13,13 @@ class SemesterCreator extends React.Component{
 
 		this.state ={
 			semData: {
-				name: null,
+				name: 'Freshman',
 				classData: [],
 			},
 			currentClass: {
-				name: null,
-				instructor: null,
-				location: null,
+				name: '',
+				instructor: '',
+				location: '',
 				daysOfWeek: [false, false, false, false, false, false, false],
 				time: {
 					start: '2:00PM',
@@ -27,15 +29,17 @@ class SemesterCreator extends React.Component{
 					start: null,
 					end: null,
 				},
+				links: [],
 			},
 			editMode: false,
+			suggestedUserLinks: [],
 			selectedIndex: null,
 		}
 
 		this.currentClass_default = {
-			name: null,
-			instructor: null,
-			location: null,
+			name: '',
+			instructor: '',
+			location: '',
 			daysOfWeek: [false, false, false, false, false, false, false],
 			time: {
 				start: '2:00PM',
@@ -47,6 +51,18 @@ class SemesterCreator extends React.Component{
 			}
 		}
 	}
+
+	// Server Requests
+	getSuggestedLinks(data){
+		const endPoint = `http://localhost:8080/users/classes`;
+		axios.post(endPoint, {classData: data})
+	    .then(res => {
+			this.setState({
+				suggestedUserLinks: res.data,
+			})
+		})
+	}
+	//End of Server Requests
 
 	toggleSelected(i){
 		let currentClass_copy = this.state.currentClass;
@@ -115,6 +131,7 @@ class SemesterCreator extends React.Component{
 		this.setState({
 			currentClass: currentClass_copy,
 		});
+		this.getSuggestedLinks(currentClass_copy);
 	}
 
 	updateCurrent_2Key(key1, key2, text){
@@ -124,6 +141,7 @@ class SemesterCreator extends React.Component{
 		this.setState({
 			currentClass: currentClass_copy,
 		});
+		this.getSuggestedLinks(currentClass_copy);
 	}
 
 	cancelUpdate(){
@@ -179,7 +197,7 @@ class SemesterCreator extends React.Component{
 									</div>
 									<div className='col-lg-6'>
 										<SuggestedLinksContainer 
-											currentClass={this.state.currentClass}
+											suggestedUserLinks={this.state.suggestedUserLinks}
 										/>
 									</div>
 								</div>

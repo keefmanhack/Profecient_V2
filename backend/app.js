@@ -48,6 +48,37 @@ app.use(express.json());
 app.use(feedRoutes);
 app.use(semesterRoutes);
 
+// Semester Creator Routes
+app.post('/users/classes', function(req, res){
+	//need to add future part to make sure not finding current user
+	User.find({})
+	.populate(
+		{
+			path: 'semesters',
+			match: {
+				current: true,
+			},
+			populate: {
+				path: 'classes',
+				match: {
+					name: {"$regex": req.body.classData.name, "$options": "i" },
+					location: {"$regex": req.body.classData.location, "$options": "i" },
+				}
+			}
+		}).exec(function(err, foundUsers){
+			let returnVal =[];
+			if(foundUsers){
+				foundUsers.forEach(function(foundUser){
+					if(foundUser.semesters[0] && foundUser.semesters[0].classes){
+						returnVal.push(foundUser);
+					}
+				})
+			}
+			res.send(returnVal);
+		})
+})
+// End of Semeste Creator Routes
+
 app.get('/users/:id', function (req, res) {
 	User.findById(req.params.id, function(err, foundUser){
 		if(err){

@@ -72,17 +72,23 @@ class SuggestedLinksContainer extends React.Component{
 	}
 
 	render(){
-		const links = this.state.testData.map((data, index) =>
-			this.props.currentClass.name && this.props.currentClass.name===data.name ? <Link data={data} key={index}/> : null
-		)
+		let links = [];
+
+		this.props.suggestedUserLinks.forEach(function(user){
+			links.push(user.semesters[0].classes.map((data, index) =>
+				<Link user={user} data={data}/>
+			))
+		})
+
+		console.log(links);
 		return(
 			<div style={this.props.style} className='suggested-links'>
-				<FadeInOut_HandleState condition={links[0] !== null}> 
+				<FadeInOut_HandleState condition={links.length >0}> 
 					<React.Fragment>
 						{links}
 					</React.Fragment>
 				</FadeInOut_HandleState>
-				<FadeInOut_HandleState condition={links[0] === null}>
+				<FadeInOut_HandleState condition={links.length <1}>
 					<p>No links match this class</p>
 				</FadeInOut_HandleState>
 			</div>
@@ -108,7 +114,7 @@ class Link extends React.Component{
 	}
 
 	render(){
-		const display = this.state.isExpanded ? <ExpandedLink data={this.props.data} toggleExpanded={() => this.toggleExpanded()}/> : <ShortLink data={this.props.data} toggleExpanded={() => this.toggleExpanded()}/>
+		const display = this.state.isExpanded ? <ExpandedLink data={this.props.data} user={this.props.user} toggleExpanded={() => this.toggleExpanded()}/> : <ShortLink data={this.props.data} user={this.props.user} toggleExpanded={() => this.toggleExpanded()}/>
 		return(
 			<React.Fragment>
 				<FlipInOut condition={this.state.isExpanded}>
@@ -123,7 +129,7 @@ function ExpandedLink(props){
 	return(
 		<div className='link'>
 			<h1>{props.data.name}</h1>
-			<h5>{props.data.links} Links</h5>
+			<h5>{props.data.links.length} Links</h5>
 			<h2>{props.data.location}</h2>
 			<h3>{props.data.instructor}</h3>
 			<div className='week-days'>
@@ -136,9 +142,9 @@ function ExpandedLink(props){
 				<span className={props.data.weekDays.sunday ? 'active' : null}>S</span>
 			</div>
 			<div className='user'>
-				<img src={props.data.user.image} alt=""/>
-				<a href=''>{props.data.user.name}</a>
-				<h5>{props.data.user.links} Classmates Link to this Profile</h5>
+				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.user.profilePicturURL} alt=""/>
+				<a href=''>{props.user.name}</a>
+				<h5>{'idk yet'} Classmates Link to this Profile</h5>
 			</div>
 			<button><i class="fas fa-plus-square"></i> Link</button>
 			<button onClick={() => props.toggleExpanded()} className='drop-down'><i class="fas fa-caret-down"></i></button>
@@ -153,7 +159,7 @@ function ShortLink(props){
 				<div className='col-lg-8'>
 					<h1>{props.data.name}</h1>
 					<h5>{props.data.links} Links</h5>
-					<a href=''>{props.data.user.name}</a>
+					<a href=''>{props.user.name}</a>
 				</div>
 				<div className='col-lg-4'>
 					<button><i class="fas fa-plus-square"></i> Link</button>
