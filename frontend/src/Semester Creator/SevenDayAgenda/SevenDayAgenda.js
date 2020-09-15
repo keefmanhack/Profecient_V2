@@ -84,15 +84,18 @@ function AgendaData(props){
 }
 
 function EventItem(props){
-	const tdHeight = 40.0; //equal to 1 half hour
+	const tdHeight = 80.0; //equal to 1 half hour
+	const halfHourHeightInPX = 91;
 	const timeInterval = moment(props.time, 'h:mm a');
 	const startTime = moment(props.data.time.start, 'h:mm a');
 	const endTime = moment(props.data.time.end, 'h:mm a');
 
-	const topDis = startTime.diff(timeInterval, 'minutes') * tdHeight /30.0;
-	const height = endTime.diff(startTime, 'minutes') * tdHeight /30.0 + 150;
+	const topDis = startTime.diff(timeInterval, 'minutes') /30.0 * tdHeight;
+	const height = endTime.diff(startTime, 'minutes') /30.0 * tdHeight;
 
-	console.log(endTime.format("hh:mm a"));
+	console.log(height);
+	console.log(endTime);
+	console.log(startTime);
 
 	const background = props.i % 2 ===0 ? '#fbdbb0ba' : '#b0fbb2ba';
 	const border = props.i === props.selectedIndex ? '2px solid red' : null;

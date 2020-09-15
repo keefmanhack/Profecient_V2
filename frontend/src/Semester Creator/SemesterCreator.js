@@ -22,7 +22,7 @@ class SemesterCreator extends React.Component{
 				location: '',
 				daysOfWeek: [false, false, false, false, false, false, false],
 				time: {
-					start: new Date(),
+					start: new Date(moment()),
 					end: new Date(moment().add(3, 'hours')),
 				},
 				date: {
@@ -34,21 +34,6 @@ class SemesterCreator extends React.Component{
 			editMode: false,
 			suggestedUserLinks: [],
 			selectedIndex: null,
-		}
-
-		this.currentClass_default = {
-			name: '',
-			instructor: '',
-			location: '',
-			daysOfWeek: [false, false, false, false, false, false, false],
-			time: {
-					start: new Date(),
-					end: new Date(moment().add(3, 'hours')),
-			},
-			date: {
-				start: new Date(moment()),
-				end: new Date(moment().add(2, 'months')),
-			}
 		}
 	}
 
@@ -83,11 +68,21 @@ class SemesterCreator extends React.Component{
 
 	addClass(){
 		const semData_copy = this.state.semData;
-		semData_copy.classData.push(this.state.currentClass);
+		const currentClass = this.state.currentClass;
+		const defaultCopy = JSON.parse(JSON.stringify(currentClass_default));
+
+		//problem when stringifiying date object
+		defaultCopy.time.start = new Date(moment());
+		defaultCopy.time.end = new Date(moment().add(3, 'hours'));
+		defaultCopy.date.start = new Date(moment());
+		defaultCopy.date.end = new Date(moment().add(2, 'months'));
+
+
+		semData_copy.classData.push(currentClass);
 
 		this.setState({
 			semData: semData_copy,
-			currentClass: this.currentClass_default,
+			currentClass: defaultCopy,
 		})
 	}
 
@@ -215,6 +210,21 @@ class SemesterCreator extends React.Component{
 				</FadeInOut_HandleState>
 			</div>
 		);
+	}
+}
+
+const currentClass_default = {
+	name: '',
+	instructor: '',
+	location: '',
+	daysOfWeek: [false, false, false, false, false, false, false],
+	time: {
+			start: new Date(moment()),
+			end: new Date(moment().add(3, 'hours')),
+	},
+	date: {
+		start: new Date(moment()),
+		end: new Date(moment().add(2, 'months')),
 	}
 }
 

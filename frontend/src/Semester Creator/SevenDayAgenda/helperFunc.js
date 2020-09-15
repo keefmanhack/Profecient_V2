@@ -6,11 +6,11 @@ export function convertToAgendaFormat(data){
 	if(data.length >0){
 		const sortedData = sortByStartTime(data);
 
-		const intervalDivider = 50;
+		const intervalDivider = 30;
 
 
 		const firstEvent = moment(sortedData[0].time.start).subtract(1, 'hours');
-		const lastEvent = moment(sortedData[sortedData.length-1].time.end).add(2, 'hours');
+		const lastEvent = moment(sortedData[sortedData.length-1].time.end).add(1, 'hours');
 		const timeDif = lastEvent.diff(firstEvent, 'minutes'); //time is already proportioned out of 100
 
 		const intervals = Math.ceil(timeDif/intervalDivider) + 1;
@@ -56,13 +56,13 @@ function sortByStartTime(arr){
 		for(let j =0; j< sortedArr.length; j++){
 			const relTimeVal = moment(sortedArr[j].time.start);
 
-			if(timeVal.isAfter(relTimeVal)){
+			if(relTimeVal.isAfter(timeVal)){
 				const temp = sortedArr[i];
 				sortedArr[i] = sortedArr[j];
 				sortedArr[j] = temp;
 			}
 		}
 	}
-	return sortedArr;
 
+	return sortedArr;
 }

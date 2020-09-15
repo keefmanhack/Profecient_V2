@@ -99,7 +99,7 @@ class ClassEditor extends React.Component{
 			errors.location =false;
 		}
 
-		const time = this.props.currentClass.time;
+		const time = new Date(this.props.currentClass.time);
 
 		if(!moment(time.start).isValid()){
 			errors.time.start = true;
@@ -118,7 +118,7 @@ class ClassEditor extends React.Component{
 			}
 		}
 
-		const date = this.props.currentClass.date;
+		const date = new Date(this.props.currentClass.date);
 
 		if(!moment(date.start).isValid()){
 			errors.date.start = true;
@@ -252,22 +252,24 @@ class ClassEditor extends React.Component{
 					<div className='col-lg-6'>
 						<div style={this.state.errors.time.start ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
 							<TimePicker
-					          onChange={(time) => this.props.updateCurrent_2Key('time', 'start', time)}
+					          onChange={(time) => this.props.updateCurrent_2Key('time', 'start', moment(time, 'hh:mm'))}
 					          clockIcon={null}
 					          disableClock={true}
+					          format={'hh:mm a'}
 					          clearIcon={null}
-					          value={this.props.currentClass.time.start}
+					          value={new Date(this.props.currentClass.time.start)}
 					        />
 						</div>
 					</div>
 					<div className='col-lg-6'>
 						<div style={this.state.errors.time.end ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null}>
 							<TimePicker
-					          onChange={(time) => this.props.updateCurrent_2Key('time', 'end', time)}
+					          onChange={(time) => this.props.updateCurrent_2Key('time', 'end', moment(time, 'hh:mm'))}
 					          clockIcon={null}
 					          clearIcon={null}
+					          format={'hh:mm a'}
 					          disableClock={true}
-					          value={this.props.currentClass.time.end}
+					          value={new Date(this.props.currentClass.time.end)}
 					        />
 						</div>
 					</div>
