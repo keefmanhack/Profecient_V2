@@ -2,94 +2,44 @@ import React from 'react';
 import {FlipInOut, FadeInOut_HandleState} from '../../CustomTransition';
 
 class SuggestedLinksContainer extends React.Component{
-	constructor(props){
-		super(props);
-
-		this.state ={
-			testData: [
-				{
-					name: 'Algebra 1',
-					links: 25,
-					user: {
-						name: 'Sarah Steel',
-						image: './generic_person.jpg',
-						links: 500,
-					},
-					location: 'Zurn 101',
-					instructor: 'Dr. Lee',
-					weekDays: {
-						monday: false,
-						tuesday: false,
-						wednesday: false,
-						thursday: false,
-						friday: false,
-						saturday: false,
-						sunday: false,
-					},
-				},
-				{
-					name: 'Algebra 1',
-					links: 25,
-					user: {
-						name: 'Sarah Steel',
-						image: './generic_person.jpg',
-						links: 500,
-					},
-					location: 'Zurn 101',
-					instructor: 'Dr. Lee',
-					weekDays: {
-						monday: false,
-						tuesday: false,
-						wednesday: false,
-						thursday: false,
-						friday: false,
-						saturday: false,
-						sunday: false,
-					},
-				},
-				{
-					name: 'Algebra 1',
-					links: 25,
-					user: {
-						name: 'Sarah Steel',
-						image: './generic_person.jpg',
-						links: 500,
-					},
-					location: 'Zurn 101',
-					instructor: 'Dr. Lee',
-					weekDays: {
-						monday: false,
-						tuesday: false,
-						wednesday: false,
-						thursday: false,
-						friday: false,
-						saturday: false,
-						sunday: false,
-					},
-				}
-			]
-		}
-	}
 
 	render(){
-		let links = [];
-
+		let suggestedLinks = [];
+		let existingLinks = [];
+		const currLinks = this.props.currentLinks;
+		//creates links
 		this.props.suggestedUserLinks.forEach(function(user){
-			links.push(user.semesters[0].classes.map((data, index) =>
-				<Link user={user} data={data}/>
+			user.semesters[0].classes.map((data, index) => {
+				const isLinked = currLinks.includes(user);
+				if(!isLinked){
+					suggestedLinks.push(<Link toggleLink={() => this.props.addLink(index)} isLinked={isLinked} key={index} user={user} data={data}/>);
+				}
+				// const link = <Link toggleLink={() => this.props.toggleLink(index)} isLinked={isLinked} key={index} user={user} data={data}/>
+				// !isLinked ? suggestedLinks.push(link) : null;
+			})
+		}.bind(this))
+
+		if(currLinks.length>0){
+			existingLinks.push(currLinks.map((user, i) =>
+				user.semesters[0].classes.map((data, j) =>
+					<Link toggleLink={() => this.props.removeLink(i)} isLinked={true} key={i} user={user} data={data}/>
+				)
 			))
-		})
-		
+		}
+
 		return(
 			<div style={this.props.style} className='suggested-links'>
-				<FadeInOut_HandleState condition={links.length >0}> 
+				<FadeInOut_HandleState condition={suggestedLinks.length >0 || existingLinks.length >0}> 
 					<React.Fragment>
 						<h5>Suggested Links</h5>
 						<hr/>
-						{links}
+						{suggestedLinks}
+						<h5>Existing Links</h5>
+						<hr/>
+						{existingLinks}
 					</React.Fragment>
 				</FadeInOut_HandleState>
-				<FadeInOut_HandleState condition={links.length <1}>
+				<FadeInOut_HandleState condition={suggestedLinks.length <1 && existingLinks.length <1}>
 					<p>No links match this class</p>
 				</FadeInOut_HandleState>
 			</div>
@@ -110,12 +60,27 @@ class Link extends React.Component{
 		const isExpandedCopy = this.state.isExpanded;
 
 		this.setState({
-			isExpanded: ! isExpandedCopy
+			isExpanded: !isExpandedCopy
 		})
 	}
 
 	render(){
-		const display = this.state.isExpanded ? <ExpandedLink data={this.props.data} user={this.props.user} toggleExpanded={() => this.toggleExpanded()}/> : <ShortLink data={this.props.data} user={this.props.user} toggleExpanded={() => this.toggleExpanded()}/>
+		const display = this.state.isExpanded ? 
+						<ExpandedLink 
+							data={this.props.data} 
+							user={this.props.user}
+							isLinked={this.props.isLinked}
+							toggleExpanded={() => this.toggleExpanded()}
+							toggleLink={() => this.props.toggleLink()}
+						/> 
+						: 
+						<ShortLink 
+							data={this.props.data} 
+							user={this.props.user}
+							isLinked={this.props.isLinked}
+							toggleExpanded={() => this.toggleExpanded()}
+							toggleLink={() => this.props.toggleLink()}
+						/>
 		return(
 			<React.Fragment>
 				<FlipInOut condition={this.state.isExpanded}>
@@ -147,7 +112,13 @@ function ExpandedLink(props){
 				<a href=''>{props.user.name}</a>
 				<h5>{props.user.totalLinks} Classmates Link to this Profile</h5>
 			</div>
-			<button><i class="fas fa-plus-square"></i> Link</button>
+			<button style={props.isLinked ? {background: 'red'} : null} onClick={() => props.toggleLink()}>
+				{props.isLinked ?
+					<React.Fragment><i class="fas fa-minus-square"></i> <span>Unlink</span> </React.Fragment>
+				:
+					<React.Fragment><i class="fas fa-plus-square"></i> <span>Link</span> </React.Fragment>
+				}
+			</button>
 			<button onClick={() => props.toggleExpanded()} className='drop-down'><i class="fas fa-caret-down"></i></button>
 		</div>
 	)
@@ -164,7 +135,13 @@ function ShortLink(props){
 					<a href=''>{props.user.name}</a>
 				</div>
 				<div className='col-lg-4'>
-					<button><i class="fas fa-plus-square"></i> Link</button>
+					<button style={props.isLinked ? {background: 'red'} : null} onClick={() => props.toggleLink()}>
+						{props.isLinked ?
+							<React.Fragment><i class="fas fa-minus-square"></i> <span>Unlink</span> </React.Fragment>
+						:
+							<React.Fragment><i class="fas fa-plus-square"></i> <span>Link</span> </React.Fragment>
+						}
+					</button>
 				</div>
 			</div>
 			<button onClick={() => props.toggleExpanded()} className='drop-down'><i class="fas fa-caret-up"></i></button>

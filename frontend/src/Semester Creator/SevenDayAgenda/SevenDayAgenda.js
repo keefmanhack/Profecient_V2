@@ -93,12 +93,8 @@ function EventItem(props){
 	const topDis = startTime.diff(timeInterval, 'minutes') /30.0 * tdHeight;
 	const height = endTime.diff(startTime, 'minutes') /30.0 * tdHeight;
 
-	console.log(height);
-	console.log(endTime);
-	console.log(startTime);
-
 	const background = props.i % 2 ===0 ? '#fbdbb0ba' : '#b0fbb2ba';
-	const border = props.i === props.selectedIndex ? '2px solid red' : null;
+	const border = props.i === props.selectedIndex ? '2px solid #4f9af1' : null; //blue border
 
 	return(
 		<div onClick={(i) => props.evItClick(props.i)} className='event-item' style={{position: 'absolute', top: topDis, height: height, backgroundColor: background, zIndex: props.i+1, border: border}}>

@@ -112,7 +112,7 @@ class ProfilePage extends React.Component{
 					
 				</div>
 				<FadeInOut_HandleState condition={this.state.showNewSem}>
-					<SemesterCreator showNewSem={(val) => this.showNewSem(val)}/>
+					<SemesterCreator currentUser={this.props.currentUser} showNewSem={(val) => this.showNewSem(val)}/>
 				</FadeInOut_HandleState>
 			</React.Fragment>
 		);

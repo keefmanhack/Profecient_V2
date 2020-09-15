@@ -48,7 +48,7 @@ class ClassEditor extends React.Component{
 
     handleClickOutside(event) {
 		if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
-            this.cancelUpdate();
+            // this.cancelUpdate();
         }
     }
 
@@ -171,6 +171,7 @@ class ClassEditor extends React.Component{
 		this.props.cancelUpdate();
 	}
 
+
 	render(){
 		const dayButtons = this.days.map((data, index) =>
 			<DayButton 
@@ -182,25 +183,24 @@ class ClassEditor extends React.Component{
 			/>
 		)
 
-		if(this.props.editMode){
-			this.setInputVals(this.props.currentClass);
-		}
-
 		return(
 			<div ref={this.wrapperRef} style={this.props.style} className='class-editor'>
 				<input 
 					ref={this.className} 
-					onKeyUp={() => this.props.updateCurrent('name', this.className.current.value)}  
-					className='class-name' 
-					type="text" 
+					onChange={(value) => this.props.updateCurrent('name', value)} 
+					value={this.props.currentClass.name}
+					className='class-name'
+					type="text"
+					defaultValue={this.props.editMode? this.props.currentClass.name : null}
 					placeholder='Class Name'
 					style={this.state.errors.name ? {border: '2px solid red', transition: '.3s'} : null}
 				/>
 				<div className='row instruct-loc'>
 					<div className='col-lg-6'>
 						<input
-							onKeyUp={() => this.props.updateCurrent('instructor', this.instructor.current.value)}
-							ref={this.instructor} 
+							onChange={(value) => this.props.updateCurrent('instructor', value)}
+							ref={this.instructor}
+							value={this.props.currentClass.instructor}
 							type="text" 
 							placeholder='Instructor'
 							style={this.state.errors.instructor ? {border: '2px solid red', transition: '.3s'} : null}
@@ -209,8 +209,9 @@ class ClassEditor extends React.Component{
 					<div className='col-lg-6'>
 						<input 
 							ref={this.location}
-							onKeyUp={() => this.props.updateCurrent('location', this.location.current.value)}
-							type="text" 
+							onChange={(value) => this.props.updateCurrent('location', value)}
+							type="text"
+							value={this.props.currentClass.location}
 							placeholder='Location'
 							style={this.state.errors.location ? {border: '2px solid red', transition: '.3s'} : null}
 						/>

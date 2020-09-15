@@ -23,6 +23,8 @@ if (process.env.NODE_ENV !== 'production') {
 let User = require('./models/User');
 let Agenda = require('./models/Agenda');
 let MessageStream = require('./models/Message');
+let Class = require('./models/Class');
+let Semester = require('./models/Semester');
 
 //End of MongoDB Models
 
@@ -49,6 +51,41 @@ app.use(feedRoutes);
 app.use(semesterRoutes);
 
 // Semester Creator Routes
+app.post('/users/:id/semester', function(req, res){
+	const data = req.body.semesterData;
+	User.findById(req.params.id, function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			Semester.create({}, function(err, newSem){
+				if(err){
+					console.log(err);
+				}else{
+					newSem.name = data.name;
+					newSem.current = true;
+
+					data.classData.forEach(function(o){
+						Class.create(o, function(err, newClass){
+							if(err){
+								console.log(err);
+							}else{
+								newClass.links = [];
+								//need to figure out how links will work in the future
+								//also need to add to users total link count here
+								newClass.save();
+								newSem.classes.push(newClass);
+							}
+						})
+					})
+					newSem.save();
+					console.log(newSem);
+				}
+			})
+		}
+	})
+})
+
+
 app.post('/users/classes', function(req, res){
 	//need to add future part to make sure not finding current user
 	User.find({})
@@ -63,10 +100,17 @@ app.post('/users/classes', function(req, res){
 				match: {
 					name: {"$regex": req.body.classData.name, "$options": "i" },
 					location: {"$regex": req.body.classData.location, "$options": "i" },
+					instructor: {"$regex": req.body.classData.instructor, "$options": "i" },
+					_id: {'$ne': req.body.currentLinks.length>0 ? req.body.currentLinks.map(function(user){ //filters out links that already exist
+						user.semesters[0].classes.map(function(o){
+							return o._id;
+						})
+					}): null}
 				}
 			}
 		}).exec(function(err, foundUsers){
 			let returnVal =[];
+			//need to build return data
 			if(foundUsers){
 				foundUsers.forEach(function(foundUser){
 					if(foundUser.semesters[0] && foundUser.semesters[0].classes){

@@ -13,7 +13,7 @@ class SemesterCreator extends React.Component{
 
 		this.state ={
 			semData: {
-				name: 'Freshman',
+				name: null,
 				classData: [],
 			},
 			currentClass: {
@@ -37,10 +37,30 @@ class SemesterCreator extends React.Component{
 		}
 	}
 
+	createSemester(){
+		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semester';
+
+		axios.post(endPoint, {semesterData: this.state.semData})
+		.then((res) =>{
+			console.log(res);
+		})
+	}
+
+	createDefaultClass(){
+		const classData_copy = JSON.parse(JSON.stringify(currentClass_default)); //makes deep copy
+
+		classData_copy.time.start = new Date(moment());
+		classData_copy.time.end = new Date(moment().add(3, 'hours'));
+		classData_copy.date.start = new Date(moment());
+		classData_copy.date.end = new Date(moment().add(2, 'months'));
+
+		return classData_copy;
+	}
+
 	// Server Requests
 	getSuggestedLinks(data){
 		const endPoint = `http://localhost:8080/users/classes`;
-		axios.post(endPoint, {classData: data})
+		axios.post(endPoint, {classData: data, currentLinks: this.state.currentClass.links})
 	    .then(res => {
 			this.setState({
 				suggestedUserLinks: res.data,
@@ -69,48 +89,53 @@ class SemesterCreator extends React.Component{
 	addClass(){
 		const semData_copy = this.state.semData;
 		const currentClass = this.state.currentClass;
-		const defaultCopy = JSON.parse(JSON.stringify(currentClass_default));
-
-		//problem when stringifiying date object
-		defaultCopy.time.start = new Date(moment());
-		defaultCopy.time.end = new Date(moment().add(3, 'hours'));
-		defaultCopy.date.start = new Date(moment());
-		defaultCopy.date.end = new Date(moment().add(2, 'months'));
-
+		const defaultCopy = this.createDefaultClass();
 
 		semData_copy.classData.push(currentClass);
 
 		this.setState({
 			semData: semData_copy,
 			currentClass: defaultCopy,
+			suggestedUserLinks: [],
 		})
 	}
 
 	updateClass(){
 		const semData_copy = this.state.semData;
-		semData_copy.classData[this.state.selectedIndex] = this.state.currentClass;
+		const currentClass = this.state.currentClass;
+		const defaultCopy = this.createDefaultClass();
+
+
+		semData_copy.classData[this.state.selectedIndex] = currentClass;
 
 		this.setState({
 			semData: semData_copy,
-			currentClass: this.currentClass_default,
+			currentClass: defaultCopy,
 			selectedIndex: null,
 			editMode: false,
+			suggestedUserLinks: [],
 		})
 	}
 
 	removeClassItem(i){
 		let semData_copy = this.state.semData;
+		const defaultCopy = this.createDefaultClass();
+
 		semData_copy.classData.splice(i, 1);
 		
 		this.setState({
 			semData: semData_copy,
-			currentClass: this.currentClass_default
+			currentClass: defaultCopy,
 		})
 	}
 
 	classItemSelected(i){
-		console.log(i);
 		const classData_copy = JSON.parse(JSON.stringify(this.state.semData.classData[i])); //makes deep copy
+
+		classData_copy.time.start = new Date(moment(this.state.semData.classData[i].time.start));
+		classData_copy.time.end = new Date(moment(this.state.semData.classData[i].time.end));
+		classData_copy.date.start = new Date(moment(this.state.semData.classData[i].date.start));
+		classData_copy.date.end = new Date(moment(this.state.semData.classData[i].date.end));
 
 		this.setState({
 			editMode: true,
@@ -119,9 +144,9 @@ class SemesterCreator extends React.Component{
 		})
 	}
 
-	updateCurrent(key, text){
+	updateCurrent(key, e){
 		const currentClass_copy = this.state.currentClass;
-		currentClass_copy[key] = text;
+		currentClass_copy[key] = e.target.value;
 
 		this.setState({
 			currentClass: currentClass_copy,
@@ -140,10 +165,31 @@ class SemesterCreator extends React.Component{
 	}
 
 	cancelUpdate(){
+		const defaultCopy = this.createDefaultClass();
+
 		this.setState({
-			currentClass: this.currentClass_default,
+			currentClass: defaultCopy,
 			editMode: false,
 			selectedIndex: null,
+			suggestedUserLinks: [],
+		})
+	}
+
+	addLink(i){
+		const currentClass = this.state.currentClass;
+		currentClass.links.push(this.state.suggestedUserLinks[i]);
+
+		this.setState({
+			currentClass: currentClass,
+		})
+	}
+
+	removeLink(i){
+		const currentClass = this.state.currentClass;
+		currentClass.links.splice(i, 1);
+
+		this.setState({
+			currentClass: currentClass,
 		})
 	}
 
@@ -161,6 +207,9 @@ class SemesterCreator extends React.Component{
 		return(
 			<div className='semester-creator-container'>
 				<button onClick={() => this.props.showNewSem(false)} id='exit'>Exit</button>
+				<FadeRight_HandleState condition={this.state.semData.classData.length > 0}>
+					<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
+				</FadeRight_HandleState>
 
 				<BackInOut_HandleState condition={this.state.semData.name === null} >
 					<NameSemester semName={(key, text) => this.semName(key, text)}/>
@@ -193,6 +242,9 @@ class SemesterCreator extends React.Component{
 									<div className='col-lg-6'>
 										<SuggestedLinksContainer 
 											suggestedUserLinks={this.state.suggestedUserLinks}
+											addLink={(i) => this.addLink(i)}
+											removeLink={(i) => this.removeLink(i)}
+											currentLinks={this.state.currentClass.links}
 										/>
 									</div>
 								</div>
@@ -225,7 +277,8 @@ const currentClass_default = {
 	date: {
 		start: new Date(moment()),
 		end: new Date(moment().add(2, 'months')),
-	}
+	},
+	links: [],
 }
 
 class NameSemester extends React.Component{
