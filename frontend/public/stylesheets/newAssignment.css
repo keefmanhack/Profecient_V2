@@ -62,6 +62,10 @@
 
 }
 
+.react-datepicker-wrapper input{
+    font-weight: 200;
+}
+
 .new-assignment .submit{
 	margin-top: 10px;
     border: none;
@@ -87,7 +91,7 @@
         font-weight: 200;
     }
 
-    .new-assignment .react-time-picker .react-time-picker__wrapper{
+     .react-time-picker .react-time-picker__wrapper{
         border: none;
         background: white;
         border-radius: 5px;

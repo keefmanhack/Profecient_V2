@@ -79,12 +79,13 @@ class SuggestedLinksContainer extends React.Component{
 				<Link user={user} data={data}/>
 			))
 		})
-
-		console.log(links);
+		
 		return(
 			<div style={this.props.style} className='suggested-links'>
 				<FadeInOut_HandleState condition={links.length >0}> 
 					<React.Fragment>
+						<h5>Suggested Links</h5>
+						<hr/>
 						{links}
 					</React.Fragment>
 				</FadeInOut_HandleState>
@@ -142,9 +143,9 @@ function ExpandedLink(props){
 				<span className={props.data.weekDays.sunday ? 'active' : null}>S</span>
 			</div>
 			<div className='user'>
-				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.user.profilePicturURL} alt=""/>
+				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.user.profilePictureURL} alt=""/>
 				<a href=''>{props.user.name}</a>
-				<h5>{'idk yet'} Classmates Link to this Profile</h5>
+				<h5>{props.user.totalLinks} Classmates Link to this Profile</h5>
 			</div>
 			<button><i class="fas fa-plus-square"></i> Link</button>
 			<button onClick={() => props.toggleExpanded()} className='drop-down'><i class="fas fa-caret-down"></i></button>
@@ -157,6 +158,7 @@ function ShortLink(props){
 		<div className='short-link link'>
 			<div className='row'>
 				<div className='col-lg-8'>
+
 					<h1>{props.data.name}</h1>
 					<h5>{props.data.links} Links</h5>
 					<a href=''>{props.user.name}</a>

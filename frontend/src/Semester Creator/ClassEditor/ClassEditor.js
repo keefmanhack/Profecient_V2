@@ -1,4 +1,9 @@
 import React from 'react';
+import DatePicker from "react-datepicker";
+import TimePicker from 'react-time-picker';
+import moment from 'moment';
+import "react-datepicker/dist/react-datepicker.css";
+
 import {FadeInOut_HandleState} from '../../CustomTransition';
 import StartEndTime from '../StartEndTimeComp/StartEndTime';
 import CE_Errors from './helperFunc';
@@ -15,6 +20,10 @@ class ClassEditor extends React.Component{
 					start: false,
 					end: false,
 				},
+				time: {
+					start: false,
+					end: false,
+				},
 				daysOfWeek: false,
 			},
 		}
@@ -24,8 +33,6 @@ class ClassEditor extends React.Component{
 		this.className = React.createRef();
 		this.instructor = React.createRef();
 		this.location = React.createRef();
-		this.startDate = React.createRef();
-		this.endDate = React.createRef();
 
 		this.wrapperRef = React.createRef();
         this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -33,7 +40,6 @@ class ClassEditor extends React.Component{
 
 	componentDidMount() {
         document.addEventListener('mousedown', this.handleClickOutside);
-        // $(this.startDate).datepicker();
     }
 
     componentWillUnmount() {
@@ -41,8 +47,7 @@ class ClassEditor extends React.Component{
     }
 
     handleClickOutside(event) {
-    	const datepicker = document.getElementById('ui-datepicker-div');
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target) && datepicker && !datepicker.contains(event.target)) {
+		if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
             this.cancelUpdate();
         }
     }
@@ -71,30 +76,94 @@ class ClassEditor extends React.Component{
 		this.className.current.value = '';
 		this.instructor.current.value = '';
 		this.location.current.value = '';
-		this.startDate.current.value = '';
-		this.endDate.current.value = '';
 	}
 
 	checkErrors(){
-		let error_check = new CE_Errors(this.state.errors, this.props.currentClass);
-		console.log(this.state.errors)
-		error_check.checkInputs('date');
-		error_check.checkDaysOfWeek();
-		error_check.checkStartEndDate();
+		let errors = this.state.errors;
 
+		if(this.className.current.value === ''){
+			errors.name = true;
+		}else{
+			errors.name =false;
+		}
+
+		if(this.instructor.current.value === ''){
+			errors.instructor = true;
+		}else{
+			errors.instructor =false;
+		}
+
+		if(this.location.current.value === ''){
+			errors.location = true;
+		}else{
+			errors.location =false;
+		}
+
+		const time = this.props.currentClass.time;
+
+		if(!moment(time.start).isValid()){
+			errors.time.start = true;
+		}else{
+			errors.time.start = false;
+			if(!moment(time.end).isValid()){
+				errors.time.end = true;
+			}else{
+				errors.time.end = false;
+
+				if(moment(time.start).isAfter(time.end)){
+					errors.time.end = true;
+				}else{
+					errors.time.end = false;
+				}
+			}
+		}
+
+		const date = this.props.currentClass.date;
+
+		if(!moment(date.start).isValid()){
+			errors.date.start = true;
+		}else{
+			errors.date.start = false;
+			if(!moment(date.end).isValid()){
+				errors.date.end = true;
+			}else{
+				errors.date.end = false;
+
+				if(moment(date.start).isAfter(date.end)){
+					errors.date.end = true;
+				}else{
+					errors.date.end = false;
+				}
+			}
+		}
+
+		let ct = 0;
+		this.props.currentClass.daysOfWeek.forEach(function(day){
+			if(day){
+				ct++
+			};
+		})
+
+		if(ct>0){
+			errors.daysOfWeek = false;
+		}else{
+			errors.daysOfWeek = true;
+		}
 
 		this.setState({
-			errors: error_check.getErrorsObject(),
+			errors: errors,
 		})
-		return error_check.getError();
+
+		if(errors.name || errors.location || errors.instructor || errors.daysOfWeek || errors.time.start || errors.time.end || errors.date.start || errors.date.end){
+			return true;
+		}
+		return false;
 	}
 
 	setInputVals(val){
 		this.className.current.value = val.name;
 		this.instructor.current.value = val.instructor;
 		this.location.current.value = val.location;
-		this.startDate.current.value = val.date.start;
-		this.endDate.current.value = val.date.end;
 	}
 
 	cancelUpdate(){
@@ -154,31 +223,56 @@ class ClassEditor extends React.Component{
 
 				<div className='row start-end-date'>
 					<div className='col-lg-6'>
-						<input
-							className='datepicker'
-							ref={this.startDate} 
-							type="text" 
-							placeholder='Start Date'
-							onKeyUp={() => this.props.updateCurrent_2Key('date', 'start', this.startDate.current.value)}
-							style={this.state.errors.date.start ? {border: '2px solid red', transition: '.3s'} : null}
-						/>
+						<div style={this.state.errors.date.start ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null}>
+							<DatePicker
+					        	selected={this.props.currentClass.date.start}
+					        	onChange={(date) => this.props.updateCurrent_2Key('date', 'start', date)}
+					        	selectsStart
+					        	startDate={new Date(this.props.currentClass.time.start)}
+					        	endDate={new Date(this.props.currentClass.time.end)}
+					        	
+					      	/>
+				      	</div>
 					</div>
 					<div className='col-lg-6'>
-						<input 
-							className='datepicker'
-							ref={this.endDate} 
-							type="text" 
-							placeholder='End Date'
-							onKeyUp={() => this.props.updateCurrent_2Key('date', 'end', this.endDate.current.value)}
-							style={this.state.errors.date.end ? {border: '2px solid red', transition: '.3s'} : null}
-						/>
+						<div style={this.state.errors.date.end ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null}>
+								<DatePicker
+					        	selected={this.props.currentClass.date.end}
+					        	onChange={(date) => this.props.updateCurrent_2Key('date', 'end', date)}
+					        	selectsEnd
+					        	startDate={new Date(this.props.currentClass.time.start)}
+					        	endDate={new Date(this.props.currentClass.time.end)}
+					        	style={this.state.errors.date.end ? {border: '2px solid red', transition: '.3s'} : null}
+					      	/>
+						</div>
 					</div>
 				</div>
 
-				<StartEndTime 
-					time={this.props.editMode ? {start: this.props.currentClass.time.start, end: this.props.currentClass.time.end} : this.props.currentClass.time} 
-					setTime={(key, time) => this.props.updateCurrent_2Key('time', key, time)}
-				/>
+				<div className='row start-end-date'>
+					<div className='col-lg-6'>
+						<div style={this.state.errors.time.start ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
+							<TimePicker
+					          onChange={(time) => this.props.updateCurrent_2Key('time', 'start', time)}
+					          clockIcon={null}
+					          disableClock={true}
+					          clearIcon={null}
+					          value={this.props.currentClass.time.start}
+					        />
+						</div>
+					</div>
+					<div className='col-lg-6'>
+						<div style={this.state.errors.time.end ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null}>
+							<TimePicker
+					          onChange={(time) => this.props.updateCurrent_2Key('time', 'end', time)}
+					          clockIcon={null}
+					          clearIcon={null}
+					          disableClock={true}
+					          value={this.props.currentClass.time.end}
+					        />
+						</div>
+					</div>
+				</div>
+
 				<div className='button-container'>
 					<FadeInOut_HandleState condition={!this.props.editMode}>
 						<button onClick={() => this.addClass()} className='add-class'>Add Class</button>

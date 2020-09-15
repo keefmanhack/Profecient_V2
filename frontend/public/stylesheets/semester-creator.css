@@ -83,6 +83,7 @@
     cursor: pointer;
     border: 2px solid transparent;
     transition: .3s;
+    overflow: hidden;
 }
 
 .class-item:hover{
@@ -190,7 +191,6 @@ input{
 .suggested-links .link{
     background: white;
     padding: 5px;
-    height: 270px;
     border-radius: 5px;
     margin-bottom: 5px;
 }
@@ -198,32 +198,31 @@ input{
 .link h1{
     font-size: 28px;
     font-weight: 800;
+    margin: 0;
 }
 
 .link h5{
     font-size: 14px;
-    position: relative;
-    top: -10px;
+    margin: 0;
     color: rgb(144, 141, 141);
 }
 
 .link h2{
     font-size: 20px;
     font-weight: 200;
-    position: relative;
-    top: -20px;
+    text-align: left;
+    margin-bottom: 0;
 }
 
 .link h3{
     font-size: 20px;
     font-weight: 200;
-    position: relative;
-    top: -28px;
+    text-align: left;
+    margin-bottom: 0;
 }
 
 .link .week-days{
-    position: relative;
-    top: -32px;
+    margin-bottom: 5px;
 }
 
 .link button{
@@ -237,11 +236,10 @@ input{
 }
 
 .link .user{
-    position: relative;
-    top: -26px;
     background: #ade6c6;
     border-radius: 5px;
     padding: 5px;
+    margin-bottom: 5px;
 }
 
 .user img{
@@ -264,9 +262,17 @@ input{
     top: 0;
 }
 
+.class-editor .start-end-time-container hr{
+    border-color: black;
+}
+
+.class-editor .start-end-time-container h5{
+    color: black;
+}
+
 .link button{
-    position: relative;
-    top: -20px;
+    /*position: relative;
+    top: -20px;*/
 }
 
 .suggested-links{
@@ -274,14 +280,22 @@ input{
     display: inline-block;
 }
 
-.suggested-links .short-link{
-    height: 112px;
+.suggested-links h5{
+    margin: 0;
+    font-weight: 200;
+    font-size: 16px;
+}
+
+.suggested-links hr{
+    margin: 0;
+    margin-bottom: 5px;
 }
 
 .short-link a{
-        position: relative;
-    top: -24px;
-    font-size: 24px;
+    width: inherit;
+    overflow: hidden;
+    display: block;
+    font-size: 14px;
     font-weight: 600;
     color: #4F9AF1;
 }
@@ -292,15 +306,12 @@ input{
 
 .link button.drop-down{
     background: lightgrey;
-    height: 18px;
-    position: relative;
-    margin-top: 5px;
+    height: 20px;
+    font-size: 9px;
 }
 
 .drop-down i{
-        position: absolute;
-    top: -2px;
-    left: 46%;
+    font-size: 17px;
 }
 
 .name-semester{

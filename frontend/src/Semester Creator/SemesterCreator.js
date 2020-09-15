@@ -1,5 +1,5 @@
 import React from 'react';
-import $ from 'jquery';
+import moment from 'moment';
 import axios from 'axios';
 
 import {BackInOut_HandleState, FadeInOut_HandleState, FadeInOut, FadeRight_HandleState} from '../CustomTransition';
@@ -22,12 +22,12 @@ class SemesterCreator extends React.Component{
 				location: '',
 				daysOfWeek: [false, false, false, false, false, false, false],
 				time: {
-					start: '2:00PM',
-					end: '4:00PM',
+					start: new Date(),
+					end: new Date(moment().add(3, 'hours')),
 				},
 				date: {
-					start: null,
-					end: null,
+					start: new Date(moment()),
+					end: new Date(moment().add(2, 'months')),
 				},
 				links: [],
 			},
@@ -42,12 +42,12 @@ class SemesterCreator extends React.Component{
 			location: '',
 			daysOfWeek: [false, false, false, false, false, false, false],
 			time: {
-				start: '2:00PM',
-				end: '4:00PM',
+					start: new Date(),
+					end: new Date(moment().add(3, 'hours')),
 			},
 			date: {
-				start: null,
-				end: null,
+				start: new Date(moment()),
+				end: new Date(moment().add(2, 'months')),
 			}
 		}
 	}
@@ -81,9 +81,9 @@ class SemesterCreator extends React.Component{
 		});
 	}
 
-	addClass(val){
+	addClass(){
 		const semData_copy = this.state.semData;
-		semData_copy.classData.push(val);
+		semData_copy.classData.push(this.state.currentClass);
 
 		this.setState({
 			semData: semData_copy,
@@ -188,7 +188,7 @@ class SemesterCreator extends React.Component{
 											updateCurrent={(key, text) => this.updateCurrent(key, text)}
 											updateCurrent_2Key={(key1, key2, text) => this.updateCurrent_2Key(key1, key2, text)}
 											currentClass={this.state.currentClass}
-											addClass={(val) => this.addClass(val)}
+											addClass={() => this.addClass()}
 											editMode={this.state.editMode}
 											toggleSelected={(i) => this.toggleSelected(i)}
 											cancelUpdate={() => this.cancelUpdate()}

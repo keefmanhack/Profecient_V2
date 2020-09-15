@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+
 import {convertToAgendaFormat} from './helperFunc';
 import {findProportionalTimeDif} from '../StartEndTimeComp/helperFunc';
 
@@ -56,7 +58,9 @@ function AgendaRow(props){
 	return(
 		<tr>
 			{agendaData}
-			<td className='time-td'><p>{props.time}</p></td>
+			<td className='time-td'>
+				<p>{props.time}</p>
+			</td>
 		</tr>
 	)
 }
@@ -80,9 +84,16 @@ function AgendaData(props){
 }
 
 function EventItem(props){
-	const tdHeight = 40;
-	const topDis = tdHeight * findProportionalTimeDif(props.time, props.data.time.start)/50;
-	const height = tdHeight * findProportionalTimeDif(props.data.time.start, props.data.time.end)/50;
+	const tdHeight = 40.0; //equal to 1 half hour
+	const timeInterval = moment(props.time, 'h:mm a');
+	const startTime = moment(props.data.time.start, 'h:mm a');
+	const endTime = moment(props.data.time.end, 'h:mm a');
+
+	const topDis = startTime.diff(timeInterval, 'minutes') * tdHeight /30.0;
+	const height = endTime.diff(startTime, 'minutes') * tdHeight /30.0 + 150;
+
+	console.log(endTime.format("hh:mm a"));
+
 	const background = props.i % 2 ===0 ? '#fbdbb0ba' : '#b0fbb2ba';
 	const border = props.i === props.selectedIndex ? '2px solid red' : null;
 

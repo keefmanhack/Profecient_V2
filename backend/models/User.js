@@ -13,6 +13,7 @@ let UserSchema = mongoose.Schema({
 	profilePictureURL: String,
 	resetPasswordToken: String,
 	resetPasswordExpires: Date,
+	totalLinks: {type: Number, default: 0},
 	posts: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Post"
