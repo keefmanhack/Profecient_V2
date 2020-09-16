@@ -80,6 +80,10 @@ body{
     background: #D3E3F6;
 }
 
+.light-text{
+    font-weight: 200;
+}
+
 .background{
     height: 100%;
     width: 100%;

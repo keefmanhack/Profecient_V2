@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+
 import {FadeDownUp_HandleState, FadeInOut, FadeInOut_HandleState} from './CustomTransition';
 
 class ClassView extends React.Component{
@@ -70,13 +72,15 @@ class ClassView extends React.Component{
 	}
 
 	render(){
-		const classes = this.props.semester.classes ? this.props.semester.classes.map((data, index) =>
+		
+		const classes =  this.props.currSemExists ? this.props.currSemester.classes.map((data, index) =>
 			<ClassCon  
 				name={data.name}
 				instructor={data.instructor}
 				location={data.location}
-				startTime={data.time.start}
-				endTime={data.time.end}
+				days={data.daysOfWeek}
+				startTime={moment(data.time.start).format('h:mm a')}
+				endTime={moment(data.time.end).format('h:mm a')}
 				assignments={data.assignments}
 				key={index}
 			/> 
@@ -85,10 +89,12 @@ class ClassView extends React.Component{
 		return(
 			<div className='class-view-container'>
 				<div className='semester-container white-c'>
-					<h1>{this.props.semester.name}</h1>
+					<h1 className={!this.props.currSemExists ? 'muted-c': null}>
+						{this.props.currSemExists ? this.props.currSemester.name : 'No Semester Exists'}
+					</h1>
 					<button className='white-c' onClick={() => this.showDialog()}>...</button>
 				</div>
-				<h5 className='muted-c'>{this.state.testData.classes.length} Classes</h5>
+				<h5 className='muted-c'>{this.props.currSemExists ? this.props.currSemester.classes.length + ' Classes' : null}</h5>
 				<hr/>
 				<div style={{minHeight: 150, maxHeight: 250, overflow: 'scroll'}}>
 					{classes}
@@ -100,10 +106,18 @@ class ClassView extends React.Component{
 							<button onClick={() => this.props.showNewSem(true)}> 
 								<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
 							</button>
+							<button onClick={() => this.props.editCurrSem()}> 
+								<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
+							</button>
+							<button onClick={() => this.props.deleteCurrSem()}> 
+								<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
+							</button>
 							<Options 
-								text={'Select Semester'} 
+								text={'Current Semester'} 
 								icon={<i class="fas fa-caret-right"></i>} 
-								options={this.props.semesters} 
+								options={this.props.semesters}
+								selected={this.props.currSemester}
+								clickEvent={(i) => this.props.changeCurrentSem(i)}
 							/>
 						</DropDownMain>
 					</MenuDropDown>
@@ -160,7 +174,6 @@ class Options extends React.Component{
 
 		this.state={
 			showOptions: false,
-			selectedIndex: 0,
 		}
 	}
 
@@ -176,25 +189,19 @@ class Options extends React.Component{
 		})
 	}
 
-	setSelectedIndex(i){
-		this.setState({
-			selectedIndex: i,
-		})
-	}
-
 	render(){
 		let options;
 		if(this.state.showOptions){
 			options = this.props.options.map((data, index) =>
 				<button 
-					onClick={() => this.setSelectedIndex(index)}
-					style={this.state.selectedIndex === index ? {fontWeight: 600}: null}
+					onClick={() => this.props.clickEvent(index)}
+					style={data === this.props.selected ? {fontWeight: 600}: null}
 					key={index}
 				>{data.name}</button>
 			);
 		}
 		return(
-			<div onMouseEnter={() => this.showOptions()} onMouseLeave={() => this.hideOptions()}>
+			<div className='option' onMouseEnter={() => this.showOptions()} onMouseLeave={() => this.hideOptions()}>
 				<button >{this.props.text} {this.props.icon}</button>
 				<FadeInOut condition={this.state.showOptions}>
 					<div className='perif'>
@@ -214,6 +221,8 @@ class ClassCon extends React.Component{
 		this.state={
 			showAssignment: false,
 		}
+
+		this.days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 	}
 
 	toggleShowAssignment(){
@@ -225,6 +234,9 @@ class ClassCon extends React.Component{
 	}
 
 	render(){
+		const daySpans = this.days.map((day, index)=>
+			<span style={this.props.days[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
+		);
 
 		const dropDownDis = this.state.showAssignment ? <i class="fas fa-chevron-up"></i> : <i class="fas fa-chevron-down"></i>;
 		return(
@@ -233,6 +245,7 @@ class ClassCon extends React.Component{
 				<h1>{this.props.name}</h1>
 				<h2>{this.props.instructor}</h2>
 				<h3>{this.props.location}</h3>
+				<h4 style={{marginBottom: 0}}>{daySpans}</h4>
 				<h4>{this.props.startTime} - {this.props.endTime}</h4>
 				<button className='see-assign' onClick={() => this.toggleShowAssignment()}>
 					{dropDownDis} {this.state.showAssignment ? 'Close' : 'See'} Assignments 

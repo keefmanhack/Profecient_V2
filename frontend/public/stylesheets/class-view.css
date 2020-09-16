@@ -133,10 +133,14 @@
 	border: 1px solid white;
 }
 
+.drop-down-con .option{
+    position: relative;
+}
+
 .drop-down-con .perif{
     position: absolute;
-    left: 100%;
-    top: 60px;
+    right: -53%;
+    top: 2px;
     z-index: 2;
 }
 

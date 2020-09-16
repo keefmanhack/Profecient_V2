@@ -14,7 +14,7 @@ class ProfilePage extends React.Component{
 		super(props);
 
 		this.state = {
-			showNewSem: true,
+			showNewSem: false,
 			postData: null,
 			currSemester: {},
 			semesters: [],
@@ -48,20 +48,63 @@ class ProfilePage extends React.Component{
 	getSemesters(){
 		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters')
 	    .then(res => {
+	    	let currentSem = this.setCurrentSemester(res.data);
+	    	
 			this.setState({
-				semesters: res.data
+				semesters: res.data,
+				currSemester: currentSem,
 			})
 		})
+	}
+
+	setCurrentSemester(semesters){
+		let returnVal;
+		if(semesters){
+			semesters.forEach(function(sem){
+				if(sem._id === this.props.currentUser.currentSemesterID){
+	    			returnVal = sem;
+	    		}
+			}.bind(this))
+		}
+
+		return returnVal;
 	}
 
 	showNewSem(val){
 		this.setState({
 			showNewSem: val,
 		})
+
+		if(!val){
+			this.getSemesters();
+			this.getClassData();
+		}
+	}
+
+	editCurrentSem(){
+		alert('clicked');
+	}
+
+	changeCurrentSem(i){
+
+		if(!this.state.semesters[i]._id.equals(this.props.currentUser.currentSemesterID)){
+			const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current';
+
+			axios.post(endPoint, {semID: this.state.semesters[i]._id})
+			.then((res) => {
+				this.props.updateCurrentUser();
+
+				let currentSem = this.setCurrentSemester(this.state.semesters);
+				this.setState({
+					currSemester: currentSem,
+				})
+			})
+		}
 	}
 
 	render(){
-		const classList = this.state.currSemester.classes ? this.state.currSemester.classes.map((data, index) =>
+		let currSemExists = this.state.currSemester && this.state.currSemester.classes;
+		const classList = currSemExists ? this.state.currSemester.classes.map((data, index) =>
 			<div className='col-lg-2'>
 				<h5 key={data.id}>{data.name}</h5>
 			</div>
@@ -97,7 +140,14 @@ class ProfilePage extends React.Component{
 					</div>
 					<div className='row'>
 						<div className='col-lg-4 left'>
-							<ClassView semester={this.state.currSemester} semesters={this.state.semesters} showNewSem={(val) => this.showNewSem(val)} />
+							<ClassView 
+								currSemester={this.state.currSemester} 
+								semesters={this.state.semesters} 
+								showNewSem={() => this.showNewSem(true)}
+								editCurrentSem={() => this.editCurrentSem()}
+								currSemExists={currSemExists}
+								changeCurrentSem={(i) => this.changeCurrentSem(i)}
+							/>
 						</div>
 						<div className='col-lg-8'>
 							<PostCreator currentUser={this.props.currentUser}/>
@@ -112,7 +162,7 @@ class ProfilePage extends React.Component{
 					
 				</div>
 				<FadeInOut_HandleState condition={this.state.showNewSem}>
-					<SemesterCreator currentUser={this.props.currentUser} showNewSem={(val) => this.showNewSem(val)}/>
+					<SemesterCreator currentUser={this.props.currentUser} hideNewSemForm={() => this.showNewSem(false)}/>
 				</FadeInOut_HandleState>
 			</React.Fragment>
 		);

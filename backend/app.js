@@ -53,32 +53,43 @@ app.use(semesterRoutes);
 // Semester Creator Routes
 app.post('/users/:id/semester', function(req, res){
 	const data = req.body.semesterData;
-	User.findById(req.params.id, function(err, foundUser){
+	User.findById(req.params.id).populate('semesters').exec(function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
+			//set all other semesters.current to false
+			if(foundUser.semesters){
+				foundUser.semesters.forEach(function(sem){
+					Semester.findById(sem._id, function(err, foundSem){
+						if(err){
+							console.log(err);
+						}else{
+							foundSem.current = false;
+							foundSem.save();
+						}
+					})
+				})
+			}
+
 			Semester.create({}, function(err, newSem){
 				if(err){
 					console.log(err);
 				}else{
 					newSem.name = data.name;
 					newSem.current = true;
+					Class.create(data.classData, function(err, newClasses){
+						if(err){
+							console.log(err);
+						}else{
+							newSem.classes = newClasses;
+							foundUser.semesters.push(newSem);
 
-					data.classData.forEach(function(o){
-						Class.create(o, function(err, newClass){
-							if(err){
-								console.log(err);
-							}else{
-								newClass.links = [];
-								//need to figure out how links will work in the future
-								//also need to add to users total link count here
-								newClass.save();
-								newSem.classes.push(newClass);
-							}
-						})
+							newSem.save();
+							foundUser.save();
+							res.send('success');
+						}
 					})
-					newSem.save();
-					console.log(newSem);
+					
 				}
 			})
 		}

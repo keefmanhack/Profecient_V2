@@ -18,6 +18,7 @@ let UserSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Post"
 	}],
+	currentSemesterID: mongoose.Schema.Types.ObjectId,
 	semesters: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Semester"

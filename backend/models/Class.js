@@ -5,14 +5,14 @@ let ClassSchema = mongoose.Schema({
 	location: String,
 	instructor: String,
 	time: {
-		start: String,
-		end: String
+		start: Date,
+		end: Date,
 	},
 	date: {
 		start: Date,
 		end: Date,
 	},
-	weekDays: Array,
+	daysOfWeek: Array,
 	links: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Link"

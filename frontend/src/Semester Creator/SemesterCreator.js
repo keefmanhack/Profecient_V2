@@ -6,6 +6,7 @@ import {BackInOut_HandleState, FadeInOut_HandleState, FadeInOut, FadeRight_Handl
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
 import ClassEditor from './ClassEditor/ClassEditor';
+import {SuccessCheck} from '../lottie/LottieAnimations';
 
 class SemesterCreator extends React.Component{
 	constructor(props){
@@ -34,6 +35,7 @@ class SemesterCreator extends React.Component{
 			editMode: false,
 			suggestedUserLinks: [],
 			selectedIndex: null,
+			successfullyCreate: false,
 		}
 	}
 
@@ -42,7 +44,12 @@ class SemesterCreator extends React.Component{
 
 		axios.post(endPoint, {semesterData: this.state.semData})
 		.then((res) =>{
-			console.log(res);
+			this.setState({
+				successfullyCreate: true,
+			})
+		})
+		.catch((err) => {
+			console.log(err);
 		})
 	}
 
@@ -206,7 +213,12 @@ class SemesterCreator extends React.Component{
 		);
 		return(
 			<div className='semester-creator-container'>
-				<button onClick={() => this.props.showNewSem(false)} id='exit'>Exit</button>
+				<FadeInOut_HandleState condition={this.state.successfullyCreate}>
+	 				<SuccessCheck onCompleted={() =>this.props.hideNewSemForm()}/>
+	 			</FadeInOut_HandleState>
+
+
+				<button onClick={() => this.props.hideNewSemForm()} id='exit'>Exit</button>
 				<FadeRight_HandleState condition={this.state.semData.classData.length > 0}>
 					<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
 				</FadeRight_HandleState>

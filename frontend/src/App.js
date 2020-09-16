@@ -24,6 +24,10 @@ class App extends React.Component{
 	}
 
 	componentDidMount(){
+		this.getCurrentUser();
+	}
+
+	getCurrentUser(){
 		axios.get(`http://localhost:8080/users/` + this.testUserId )
 	    .then(res => {
 			this.setState({
@@ -44,7 +48,7 @@ class App extends React.Component{
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
 						<Route path='/profilePage'>
-							{this.state.currentUser ? <ProfilePage currentUser={this.state.currentUser}/> : <Loader/>}
+							{this.state.currentUser ? <ProfilePage updateCurrentUser={() => this.getCurrentUser()} currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
 						<Route path='/' component={Landing}/>
 					</Switch>
