@@ -15,7 +15,8 @@ class SemesterCreator extends React.Component{
 		this.state ={
 			semData: {
 				name: null,
-				classData: [],
+				_id: null, //for edit mode
+				classes: [],
 			},
 			currentClass: {
 				name: '',
@@ -35,7 +36,19 @@ class SemesterCreator extends React.Component{
 			editMode: false,
 			suggestedUserLinks: [],
 			selectedIndex: null,
-			successfullyCreate: false,
+			successful: false,
+		}
+	}
+
+	componentDidMount(){
+		if(this.props.updateData !== null){
+			let semData = this.state.semData;
+			semData.name = this.props.updateData.name;
+			semData.classes = this.props.updateData.classes;
+			semData._id = this.props.updateData._id;
+			this.setState({
+				semData: semData,
+			})
 		}
 	}
 
@@ -45,7 +58,21 @@ class SemesterCreator extends React.Component{
 		axios.post(endPoint, {semesterData: this.state.semData})
 		.then((res) =>{
 			this.setState({
-				successfullyCreate: true,
+				successful: true,
+			})
+		})
+		.catch((err) => {
+			console.log(err);
+		})
+	}
+
+	updateSemester(){
+		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semester';
+
+		axios.put(endPoint, {semesterData: this.state.semData})
+		.then((res) =>{
+			this.setState({
+				successful: true,
 			})
 		})
 		.catch((err) => {
@@ -98,7 +125,7 @@ class SemesterCreator extends React.Component{
 		const currentClass = this.state.currentClass;
 		const defaultCopy = this.createDefaultClass();
 
-		semData_copy.classData.push(currentClass);
+		semData_copy.classes.push(currentClass);
 
 		this.setState({
 			semData: semData_copy,
@@ -113,7 +140,7 @@ class SemesterCreator extends React.Component{
 		const defaultCopy = this.createDefaultClass();
 
 
-		semData_copy.classData[this.state.selectedIndex] = currentClass;
+		semData_copy.classes[this.state.selectedIndex] = currentClass;
 
 		this.setState({
 			semData: semData_copy,
@@ -128,7 +155,7 @@ class SemesterCreator extends React.Component{
 		let semData_copy = this.state.semData;
 		const defaultCopy = this.createDefaultClass();
 
-		semData_copy.classData.splice(i, 1);
+		semData_copy.classes.splice(i, 1);
 		
 		this.setState({
 			semData: semData_copy,
@@ -137,12 +164,12 @@ class SemesterCreator extends React.Component{
 	}
 
 	classItemSelected(i){
-		const classData_copy = JSON.parse(JSON.stringify(this.state.semData.classData[i])); //makes deep copy
+		const classData_copy = JSON.parse(JSON.stringify(this.state.semData.classes[i])); //makes deep copy
 
-		classData_copy.time.start = new Date(moment(this.state.semData.classData[i].time.start));
-		classData_copy.time.end = new Date(moment(this.state.semData.classData[i].time.end));
-		classData_copy.date.start = new Date(moment(this.state.semData.classData[i].date.start));
-		classData_copy.date.end = new Date(moment(this.state.semData.classData[i].date.end));
+		classData_copy.time.start = new Date(moment(this.state.semData.classes[i].time.start));
+		classData_copy.time.end = new Date(moment(this.state.semData.classes[i].time.end));
+		classData_copy.date.start = new Date(moment(this.state.semData.classes[i].date.start));
+		classData_copy.date.end = new Date(moment(this.state.semData.classes[i].date.end));
 
 		this.setState({
 			editMode: true,
@@ -201,7 +228,7 @@ class SemesterCreator extends React.Component{
 	}
 
 	render(){
-		const classItems = this.state.semData.classData.map((data, index) =>
+		const classItems = this.state.semData.classes.map((data, index) =>
 			<ClassItem 
 				key={index}
 				i={index} 
@@ -213,14 +240,18 @@ class SemesterCreator extends React.Component{
 		);
 		return(
 			<div className='semester-creator-container'>
-				<FadeInOut_HandleState condition={this.state.successfullyCreate}>
+				<FadeInOut_HandleState condition={this.state.successful}>
 	 				<SuccessCheck onCompleted={() =>this.props.hideNewSemForm()}/>
 	 			</FadeInOut_HandleState>
 
 
 				<button onClick={() => this.props.hideNewSemForm()} id='exit'>Exit</button>
-				<FadeRight_HandleState condition={this.state.semData.classData.length > 0}>
-					<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
+				<FadeRight_HandleState condition={this.state.semData.classes.length > 0}>
+					{this.props.updateData === null ?
+						<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
+					:
+						<button onClick={() => this.updateSemester()} className='update-semester'>Edit Semester</button>	
+					}
 				</FadeRight_HandleState>
 
 				<BackInOut_HandleState condition={this.state.semData.name === null} >
@@ -232,7 +263,7 @@ class SemesterCreator extends React.Component{
 						<hr/>
 						<div className='row'>
 							<div className='col-lg-6'>
-								<FadeInOut_HandleState condition={this.state.semData.classData.length>0}>
+								<FadeInOut_HandleState condition={this.state.semData.classes.length>0}>
 									<div className='class-item-container'>
 										{classItems}
 									</div>
@@ -262,10 +293,10 @@ class SemesterCreator extends React.Component{
 								</div>
 							</div>
 							<div className='col-lg-6'>
-								{this.state.semData.classData.length > 0 ?
+								{this.state.semData.classes.length > 0 ?
 									<SevenDayAgenda 
 										evItClick={(i) => this.classItemSelected(i)} 
-										data={this.state.semData.classData}
+										data={this.state.semData.classes}
 										selectedIndex={this.state.selectedIndex}
 									/> : null}
 							</div>

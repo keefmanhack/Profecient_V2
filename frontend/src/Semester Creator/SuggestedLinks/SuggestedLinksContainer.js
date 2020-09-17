@@ -5,9 +5,11 @@ class SuggestedLinksContainer extends React.Component{
 
 	render(){
 		//creates links
-		const suggestedLinks = this.props.suggestedUserLinks.map((link, index) => 
-			<Link toggleLink={() => this.props.addLink(index)} isLinked={false} key={index} user={link.user} data={link.class}/>
-		)
+		const suggestedLinks = this.props.suggestedUserLinks.map((link, index) => {
+			if(!this.props.currentLinks.includes(link)){
+				return <Link toggleLink={() => this.props.addLink(index)} isLinked={false} key={index} user={link.user} data={link.class}/>
+			}
+		})
 
 		const existingLinks = this.props.currentLinks.map((link, index) =>
 				<Link toggleLink={() => this.props.removeLink(index)} isLinked={true} key={index} user={link.user} data={link.class}/>
@@ -78,6 +80,12 @@ class Link extends React.Component{
 }
 
 function ExpandedLink(props){
+	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+	const daySpans = days.map((day, index)=>
+		<span style={props.data.daysOfWeek[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
+	);
+
 	return(
 		<div className='link'>
 			<h1>{props.data.name}</h1>
@@ -85,13 +93,7 @@ function ExpandedLink(props){
 			<h2>{props.data.location}</h2>
 			<h3>{props.data.instructor}</h3>
 			<div className='week-days'>
-				<span className={props.data.weekDays.monday ? 'active' : null}>M</span>
-				<span className={props.data.weekDays.tuesday ? 'active' : null}>T</span>
-				<span className={props.data.weekDays.wednesday ? 'active' : null}>W</span>
-				<span className={props.data.weekDays.thursday ? 'active' : null}>T</span>
-				<span className={props.data.weekDays.friday ? 'active' : null}>F</span>
-				<span className={props.data.weekDays.saturday ? 'active' : null}>S</span>
-				<span className={props.data.weekDays.sunday ? 'active' : null}>S</span>
+				{daySpans}
 			</div>
 			<div className='user'>
 				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.user.profilePictureURL} alt=""/>

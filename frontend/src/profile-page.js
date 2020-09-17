@@ -18,6 +18,7 @@ class ProfilePage extends React.Component{
 			postData: null,
 			currSemesterIndex: -1,
 			semesters: [],
+			editSemMode: false,
 		}
 	}
 
@@ -48,18 +49,24 @@ class ProfilePage extends React.Component{
 	}
 
 	showNewSem(val){
-		this.setState({
-			showNewSem: val,
-		})
-
+		let editMode = this.state.editSemMode
 		if(!val){
 			this.getSemesters();
 			this.props.updateCurrentUser();
+			editMode = false;
 		}
+
+		this.setState({
+			showNewSem: val,
+			editSemMode: editMode,
+		})
 	}
 
 	editCurrentSem(){
-		alert('clicked');
+		this.setState({
+			editSemMode: true,
+			showNewSem: true,
+		})
 	}
 
 	deleteCurrentSem(){
@@ -122,7 +129,7 @@ class ProfilePage extends React.Component{
 								currSemesterIndex={this.state.currSemesterIndex} 
 								semesters={this.state.semesters} 
 								showNewSem={() => this.showNewSem(true)}
-								editCurrentSem={() => this.editCurrentSem()}
+								editCurrSem={() => this.editCurrentSem()}
 								deleteCurrSem={() => this.deleteCurrentSem()}
 								currSemExists={currSemExists}
 								changeCurrentSem={(i) => this.changeCurrentSem(i)}
@@ -141,7 +148,11 @@ class ProfilePage extends React.Component{
 					
 				</div>
 				<FadeInOut_HandleState condition={this.state.showNewSem}>
-					<SemesterCreator currentUser={this.props.currentUser} hideNewSemForm={() => this.showNewSem(false)}/>
+					<SemesterCreator
+						currentUser={this.props.currentUser} 
+						hideNewSemForm={() => this.showNewSem(false)}
+						updateData={this.state.editSemMode ? this.state.semesters[this.state.currSemesterIndex] : null}
+					/>
 				</FadeInOut_HandleState>
 			</React.Fragment>
 		);

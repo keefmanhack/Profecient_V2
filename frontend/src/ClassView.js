@@ -105,7 +105,6 @@ class ClassView extends React.Component{
 				<FadeInOut_HandleState condition={this.state.showDialog}>
 					<MenuDropDown hideDropDown={() => this.hideDialog()}>
 						<DropDownMain>
-							<button> <i style={{color: 'lightgreen'}} class="fas fa-plus"></i> Add Class</button>
 							<button onClick={() => this.props.showNewSem(true)}> 
 								<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
 							</button>

@@ -22,7 +22,7 @@ router.post('/users/:id/semester', function(req, res){
 					console.log(err);
 				}else{
 					newSem.name = data.name;
-					Class.create(data.classData, function(err, newClasses){
+					Class.create(data.classes, function(err, newClasses){
 						if(err){
 							console.log(err);
 						}else{
@@ -42,6 +42,42 @@ router.post('/users/:id/semester', function(req, res){
 	})
 })
 
+router.put('/users/:id/semester', function(req, res){
+	//need to check user is signed in
+	let classes = [];
+	req.body.semesterData.classes.forEach(function(o){
+		if(o && o._id){
+			Class.findByIdAndUpdate(o._id, o, function(err, foundClass){
+				if(err){
+					console.log(err);
+				}else{
+					classes.push(foundClass);
+				}
+			})
+		}else{
+			Class.create(o, function(err, newClass){
+				if(err){
+					console.log(err);
+				}else{
+					classes.push(newClass);
+				}
+			})
+		}
+	})
+
+	Semester.findById(req.body.semesterData._id, function(err, foundSemester){
+		if(err){
+			console.log(err)
+		}else{
+			foundSemester.classes = classes;
+			foundSemester.save();
+			res.send('success');
+		}
+	})
+
+	//NEED TO IMPLEMENT WITH ASYNC
+})
+
 
 router.post('/users/classes', function(req, res){
 	//need to add future part to make sure not finding current user
@@ -55,11 +91,8 @@ router.post('/users/classes', function(req, res){
 					name: {"$regex": req.body.classData.name },
 					location: {"$regex": req.body.classData.location, "$options": "i" },
 					instructor: {"$regex": req.body.classData.instructor, "$options": "i" },
-					_id: {'$ne': req.body.currentLinks.length>0 ? req.body.currentLinks.map(function(user){ //filters out links that already exist
-						user.semesters[0].classes.map(function(o){
-							console.log('trig');
-							return o._id;
-						})
+					_id: {'$ne': req.body.currentLinks.length>0 ? req.body.currentLinks.map(function(link){ //filters out links that already exist
+						return link.class._id;
 					}): null}
 				}
 			}
@@ -71,14 +104,17 @@ router.post('/users/classes', function(req, res){
 					// console.log(foundUser.semesters + foundUser.name);
 					let currentSem = foundUser.semesters[foundUser.semesters.length-1]; //current semester
 					if(currentSem && currentSem.classes){ //only get current semesters
-						const linkStruct ={
-							user: {
-								name: foundUser.name,
-								profilePictureURL: foundUser.profilePictureURL,
-							},
-							class: currentSem.classes[0],
-						}
-						returnLinks.push(linkStruct);
+						currentSem.classes.forEach(function(o){
+							const linkStruct ={
+								user: {
+									name: foundUser.name,
+									profilePictureURL: foundUser.profilePictureURL,
+								},
+								class: o,
+							}
+							
+							returnLinks.push(linkStruct);
+						})
 					}
 				})
 			}

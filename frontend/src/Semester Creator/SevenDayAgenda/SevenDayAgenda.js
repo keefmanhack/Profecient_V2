@@ -87,8 +87,8 @@ function EventItem(props){
 	const tdHeight = 80.0; //equal to 1 half hour
 	const halfHourHeightInPX = 91;
 	const timeInterval = moment(props.time, 'h:mm a');
-	const startTime = moment(props.data.time.start, 'h:mm a');
-	const endTime = moment(props.data.time.end, 'h:mm a');
+	const startTime = moment(new Date(props.data.time.start), 'h:mm a');
+	const endTime = moment(new Date(props.data.time.end), 'h:mm a');
 
 	const topDis = startTime.diff(timeInterval, 'minutes') /30.0 * tdHeight;
 	const height = endTime.diff(startTime, 'minutes') /30.0 * tdHeight;
