@@ -18,10 +18,18 @@
 	margin-top: 5px;
 }
 
+
 .semester-container h1{
 	display: inline;
     font-weight: 600;
     font-size: 36px;
+    width: inherit;
+}
+
+.semester-container .sem-title{
+    width: 86%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .semester-container button{
@@ -139,8 +147,8 @@
 
 .drop-down-con .perif{
     position: absolute;
-    right: -53%;
-    top: 2px;
+    left: 100%;
+    top: 0;
     z-index: 2;
 }
 

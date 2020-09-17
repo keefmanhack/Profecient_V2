@@ -4,28 +4,14 @@ import {FlipInOut, FadeInOut_HandleState} from '../../CustomTransition';
 class SuggestedLinksContainer extends React.Component{
 
 	render(){
-		let suggestedLinks = [];
-		let existingLinks = [];
-		const currLinks = this.props.currentLinks;
 		//creates links
-		this.props.suggestedUserLinks.forEach(function(user){
-			user.semesters[0].classes.map((data, index) => {
-				const isLinked = currLinks.includes(user);
-				if(!isLinked){
-					suggestedLinks.push(<Link toggleLink={() => this.props.addLink(index)} isLinked={isLinked} key={index} user={user} data={data}/>);
-				}
-				// const link = <Link toggleLink={() => this.props.toggleLink(index)} isLinked={isLinked} key={index} user={user} data={data}/>
-				// !isLinked ? suggestedLinks.push(link) : null;
-			})
-		}.bind(this))
+		const suggestedLinks = this.props.suggestedUserLinks.map((link, index) => 
+			<Link toggleLink={() => this.props.addLink(index)} isLinked={false} key={index} user={link.user} data={link.class}/>
+		)
 
-		if(currLinks.length>0){
-			existingLinks.push(currLinks.map((user, i) =>
-				user.semesters[0].classes.map((data, j) =>
-					<Link toggleLink={() => this.props.removeLink(i)} isLinked={true} key={i} user={user} data={data}/>
-				)
-			))
-		}
+		const existingLinks = this.props.currentLinks.map((link, index) =>
+				<Link toggleLink={() => this.props.removeLink(index)} isLinked={true} key={index} user={link.user} data={link.class}/>
+			)
 
 		return(
 			<div style={this.props.style} className='suggested-links'>
@@ -110,7 +96,7 @@ function ExpandedLink(props){
 			<div className='user'>
 				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.user.profilePictureURL} alt=""/>
 				<a href=''>{props.user.name}</a>
-				<h5>{props.user.totalLinks} Classmates Link to this Profile</h5>
+				<h5>{0} Classmates Link to this Profile</h5>
 			</div>
 			<button style={props.isLinked ? {background: 'red'} : null} onClick={() => props.toggleLink()}>
 				{props.isLinked ?
@@ -131,7 +117,7 @@ function ShortLink(props){
 				<div className='col-lg-8'>
 
 					<h1>{props.data.name}</h1>
-					<h5>{props.data.links} Links</h5>
+					<h5>{0} Links</h5>
 					<a href=''>{props.user.name}</a>
 				</div>
 				<div className='col-lg-4'>

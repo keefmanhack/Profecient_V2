@@ -23,8 +23,6 @@ if (process.env.NODE_ENV !== 'production') {
 let User = require('./models/User');
 let Agenda = require('./models/Agenda');
 let MessageStream = require('./models/Message');
-let Class = require('./models/Class');
-let Semester = require('./models/Semester');
 
 //End of MongoDB Models
 
@@ -50,89 +48,6 @@ app.use(express.json());
 app.use(feedRoutes);
 app.use(semesterRoutes);
 
-// Semester Creator Routes
-app.post('/users/:id/semester', function(req, res){
-	const data = req.body.semesterData;
-	User.findById(req.params.id).populate('semesters').exec(function(err, foundUser){
-		if(err){
-			console.log(err);
-		}else{
-			//set all other semesters.current to false
-			if(foundUser.semesters){
-				foundUser.semesters.forEach(function(sem){
-					Semester.findById(sem._id, function(err, foundSem){
-						if(err){
-							console.log(err);
-						}else{
-							foundSem.current = false;
-							foundSem.save();
-						}
-					})
-				})
-			}
-
-			Semester.create({}, function(err, newSem){
-				if(err){
-					console.log(err);
-				}else{
-					newSem.name = data.name;
-					newSem.current = true;
-					Class.create(data.classData, function(err, newClasses){
-						if(err){
-							console.log(err);
-						}else{
-							newSem.classes = newClasses;
-							foundUser.semesters.push(newSem);
-
-							newSem.save();
-							foundUser.save();
-							res.send('success');
-						}
-					})
-					
-				}
-			})
-		}
-	})
-})
-
-
-app.post('/users/classes', function(req, res){
-	//need to add future part to make sure not finding current user
-	User.find({})
-	.populate(
-		{
-			path: 'semesters',
-			match: {
-				current: true,
-			},
-			populate: {
-				path: 'classes',
-				match: {
-					name: {"$regex": req.body.classData.name, "$options": "i" },
-					location: {"$regex": req.body.classData.location, "$options": "i" },
-					instructor: {"$regex": req.body.classData.instructor, "$options": "i" },
-					_id: {'$ne': req.body.currentLinks.length>0 ? req.body.currentLinks.map(function(user){ //filters out links that already exist
-						user.semesters[0].classes.map(function(o){
-							return o._id;
-						})
-					}): null}
-				}
-			}
-		}).exec(function(err, foundUsers){
-			let returnVal =[];
-			//need to build return data
-			if(foundUsers){
-				foundUsers.forEach(function(foundUser){
-					if(foundUser.semesters[0] && foundUser.semesters[0].classes){
-						returnVal.push(foundUser);
-					}
-				})
-			}
-			res.send(returnVal);
-		})
-})
-// End of Semeste Creator Routes
 
 app.get('/users/:id', function (req, res) {
 	User.findById(req.params.id, function(err, foundUser){

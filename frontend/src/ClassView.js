@@ -72,8 +72,9 @@ class ClassView extends React.Component{
 	}
 
 	render(){
-		
-		const classes =  this.props.currSemExists ? this.props.currSemester.classes.map((data, index) =>
+		let currSem = this.props.currSemExists ? this.props.semesters[this.props.currSemesterIndex] : null;
+
+		const classes =  this.props.currSemExists ? currSem.classes.map((data, index) =>
 			<ClassCon  
 				name={data.name}
 				instructor={data.instructor}
@@ -89,12 +90,14 @@ class ClassView extends React.Component{
 		return(
 			<div className='class-view-container'>
 				<div className='semester-container white-c'>
-					<h1 className={!this.props.currSemExists ? 'muted-c': null}>
-						{this.props.currSemExists ? this.props.currSemester.name : 'No Semester Exists'}
-					</h1>
+					<div className='sem-title'>
+						<h1 className={!this.props.currSemExists ? 'muted-c': null}>
+							{this.props.currSemExists ? currSem.name : 'No Semester Exists'}
+						</h1>
+					</div>
 					<button className='white-c' onClick={() => this.showDialog()}>...</button>
 				</div>
-				<h5 className='muted-c'>{this.props.currSemExists ? this.props.currSemester.classes.length + ' Classes' : null}</h5>
+				<h5 className='muted-c'>{this.props.currSemExists ? currSem.classes.length + ' Classes' : null}</h5>
 				<hr/>
 				<div style={{minHeight: 150, maxHeight: 250, overflow: 'scroll'}}>
 					{classes}
@@ -106,19 +109,23 @@ class ClassView extends React.Component{
 							<button onClick={() => this.props.showNewSem(true)}> 
 								<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
 							</button>
-							<button onClick={() => this.props.editCurrSem()}> 
-								<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
-							</button>
-							<button onClick={() => this.props.deleteCurrSem()}> 
-								<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
-							</button>
-							<Options 
-								text={'Current Semester'} 
-								icon={<i class="fas fa-caret-right"></i>} 
-								options={this.props.semesters}
-								selected={this.props.currSemester}
-								clickEvent={(i) => this.props.changeCurrentSem(i)}
-							/>
+							{this.props.semesters.length>0 ?
+								<React.Fragment>
+									<button onClick={() => this.props.editCurrSem()}> 
+										<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
+									</button>
+									<button onClick={() => this.props.deleteCurrSem()}> 
+										<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
+									</button>
+									<Options 
+										text={'Current Semester'} 
+										icon={<i class="fas fa-caret-right"></i>} 
+										options={this.props.semesters}
+										selected={currSem}
+										clickEvent={(i) => this.props.changeCurrentSem(i)}
+									/>
+								</React.Fragment>
+							: null}
 						</DropDownMain>
 					</MenuDropDown>
 				</FadeInOut_HandleState>

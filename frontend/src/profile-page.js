@@ -16,14 +16,13 @@ class ProfilePage extends React.Component{
 		this.state = {
 			showNewSem: false,
 			postData: null,
-			currSemester: {},
+			currSemesterIndex: -1,
 			semesters: [],
 		}
 	}
 
 	componentDidMount(){
 		this.getUserPosts();
-		this.getClassData();
 		this.getSemesters();
 	}
 
@@ -36,38 +35,16 @@ class ProfilePage extends React.Component{
 		})
 	}
 
-	getClassData(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current')
-	    .then(res => {
-			this.setState({
-				currSemester: res.data
-			})
-		})
-	}
 
 	getSemesters(){
 		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters')
 	    .then(res => {
-	    	let currentSem = this.setCurrentSemester(res.data);
-	    	
 			this.setState({
 				semesters: res.data,
-				currSemester: currentSem,
+				currSemesterIndex: res.data.length-1,
 			})
 		})
-	}
 
-	setCurrentSemester(semesters){
-		let returnVal;
-		if(semesters){
-			semesters.forEach(function(sem){
-				if(sem._id === this.props.currentUser.currentSemesterID){
-	    			returnVal = sem;
-	    		}
-			}.bind(this))
-		}
-
-		return returnVal;
 	}
 
 	showNewSem(val){
@@ -77,7 +54,7 @@ class ProfilePage extends React.Component{
 
 		if(!val){
 			this.getSemesters();
-			this.getClassData();
+			this.props.updateCurrentUser();
 		}
 	}
 
@@ -85,26 +62,27 @@ class ProfilePage extends React.Component{
 		alert('clicked');
 	}
 
+	deleteCurrentSem(){
+		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/' + this.state.semesters[this.state.currSemesterIndex]._id;
+		axios.delete(endPoint)
+	    .then(res => {
+			this.getSemesters();
+			this.props.updateCurrentUser();
+		})
+		.catch((err) =>{
+			console.log(err);
+		})
+	}
+
 	changeCurrentSem(i){
-
-		if(!this.state.semesters[i]._id.equals(this.props.currentUser.currentSemesterID)){
-			const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current';
-
-			axios.post(endPoint, {semID: this.state.semesters[i]._id})
-			.then((res) => {
-				this.props.updateCurrentUser();
-
-				let currentSem = this.setCurrentSemester(this.state.semesters);
-				this.setState({
-					currSemester: currentSem,
-				})
-			})
-		}
+		this.setState({
+			currSemesterIndex: i,
+		})
 	}
 
 	render(){
-		let currSemExists = this.state.currSemester && this.state.currSemester.classes;
-		const classList = currSemExists ? this.state.currSemester.classes.map((data, index) =>
+		let currSemExists = this.state.currSemesterIndex >-1;
+		const classList = currSemExists ? this.state.semesters[this.state.currSemesterIndex].classes.map((data, index) =>
 			<div className='col-lg-2'>
 				<h5 key={data.id}>{data.name}</h5>
 			</div>
@@ -141,10 +119,11 @@ class ProfilePage extends React.Component{
 					<div className='row'>
 						<div className='col-lg-4 left'>
 							<ClassView 
-								currSemester={this.state.currSemester} 
+								currSemesterIndex={this.state.currSemesterIndex} 
 								semesters={this.state.semesters} 
 								showNewSem={() => this.showNewSem(true)}
 								editCurrentSem={() => this.editCurrentSem()}
+								deleteCurrSem={() => this.deleteCurrentSem()}
 								currSemExists={currSemExists}
 								changeCurrentSem={(i) => this.changeCurrentSem(i)}
 							/>
