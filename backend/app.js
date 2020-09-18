@@ -4,12 +4,10 @@ const   express 	= require('express'),
 		mongoose 	= require('mongoose'),
 		bodyParser  = require('body-parser');
 
-const endOfDay =  require('date-fns/endOfDay');
-const startOfDay = require('date-fns/startOfDay');
-
 //Routes
 let feedRoutes	     = require("./Routes/Posts"),
-	semesterRoutes   = require('./Routes/Semester');
+	semesterRoutes   = require('./Routes/Semester'),
+	agendaRoutes	 = require("./Routes/Agenda");
 
 // End of Routes
 
@@ -21,7 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 //MongoDB Models
 let User = require('./models/User');
-let Agenda = require('./models/Agenda');
+
 let MessageStream = require('./models/Message');
 
 //End of MongoDB Models
@@ -47,6 +45,7 @@ app.use(express.json());
 
 app.use(feedRoutes);
 app.use(semesterRoutes);
+app.use(agendaRoutes.router);
 
 
 app.get('/users/:id', function (req, res) {
@@ -150,34 +149,5 @@ app.get('/x', function(req, res){
 		}
 	})
 })
-
-app.get('/users/:id/agenda/today', function(req, res){
-	User.findById(req.params.id).populate({path: 'agenda', match: {date: {$gte: startOfDay(new Date()), $lte: endOfDay(new Date())}}}).exec(function(err, foundUser){
-		if(err){
-			console.log(err);
-		}else{
-			res.send(foundUser.agenda);
-		}
-	})
-})
-
-app.post('/users/:id/agenda', function(req, res){
-	User.findById(req.params.id, function(err, foundUser){
-		if(err){
-			console.log(err);
-		}else{
-			Agenda.create(req.body, function(err, newAgendaItem){
-				if(err){
-					console.log(err);
-				}else{
-					foundUser.agenda.push(newAgendaItem); //need to check that post data is valid!!!!
-					foundUser.save();
-					res.send('success');
-				}
-			})
-		}
-	})
-})
-
 
 app.listen(process.env.PORT || 8080);

@@ -99,7 +99,7 @@ class ClassView extends React.Component{
 				</div>
 				<h5 className='muted-c'>{this.props.currSemExists ? currSem.classes.length + ' Classes' : null}</h5>
 				<hr/>
-				<div style={{minHeight: 150, maxHeight: 250, overflow: 'scroll'}}>
+				<div style={{minHeight: 150, maxHeight: 350, overflow: 'scroll'}}>
 					{classes}
 				</div>
 				<FadeInOut_HandleState condition={this.state.showDialog}>

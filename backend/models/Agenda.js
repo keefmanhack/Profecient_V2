@@ -5,11 +5,10 @@ let AgendaSchema = mongoose.Schema({
 	location: String,
 	description: String,
 	time: {
-		start: String,
-		end: String,
+		start: Date,
+		end: Date,
 	},
 	date: Date,
-
 })
 
 module.exports = mongoose.model('Agenda', AgendaSchema);

@@ -1,6 +1,9 @@
 const express = require("express"),
 	  router  = express.Router(),
-	  moment  = require('moment');
+	  moment  = require('moment'),
+	  async   = require('async');
+
+let Agenda = require('./Agenda');
 
 //Mongo Schemas
 let User       = require('../models/User'),
@@ -42,9 +45,12 @@ router.post('/users/:id/semester', function(req, res){
 	})
 })
 
+
 router.put('/users/:id/semester', function(req, res){
-	//need to check user is signed in
+	//THIS ROUTE DOES NOT WORK YET
+
 	let classes = [];
+	
 	req.body.semesterData.classes.forEach(function(o){
 		if(o && o._id){
 			Class.findByIdAndUpdate(o._id, o, function(err, foundClass){
@@ -53,6 +59,15 @@ router.put('/users/:id/semester', function(req, res){
 				}else{
 					classes.push(foundClass);
 				}
+			}).then(function(doc) {
+				Semester.findById(req.body.semesterData._id, function(err, foundSemester){
+					if(err){
+						console.log(err)
+					}else{
+						foundSemester.classes = classes;
+						foundSemester.save()
+					}
+				})
 			})
 		}else{
 			Class.create(o, function(err, newClass){
@@ -60,22 +75,22 @@ router.put('/users/:id/semester', function(req, res){
 					console.log(err);
 				}else{
 					classes.push(newClass);
+					console.log(classes);
 				}
+			}).then(function(doc){
+				Semester.findById(req.body.semesterData._id, function(err, foundSemester){
+					if(err){
+						console.log(err)
+					}else{
+						foundSemester.classes = classes;
+						foundSemester.save()
+						res.send('success');
+					}
+				})
 			})
 		}
 	})
-
-	Semester.findById(req.body.semesterData._id, function(err, foundSemester){
-		if(err){
-			console.log(err)
-		}else{
-			foundSemester.classes = classes;
-			foundSemester.save();
-			res.send('success');
-		}
-	})
-
-	//NEED TO IMPLEMENT WITH ASYNC
+	
 })
 
 
@@ -109,6 +124,7 @@ router.post('/users/classes', function(req, res){
 								user: {
 									name: foundUser.name,
 									profilePictureURL: foundUser.profilePictureURL,
+									_id: foundUser._id,
 								},
 								class: o,
 							}
@@ -134,17 +150,17 @@ router.get('/users/:id/semesters', function(req, res){
 })
 
 router.get('/users/:id/semesters/current', function(req,res){
-	User.findById(req.params.id).populate({path: 'semesters', match: {current: true}, populate: {path: 'classes'}}).exec(function(err, foundUser){
+	User.findById(req.params.id).populate({path: 'semesters', populate: {path: 'classes'}}).exec(function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
-			res.send(foundUser.semesters[0]);
+			res.send(foundUser.semesters[foundUser.semesters.length-1]);
 		}
 	})
 })
 
 // router.post('/users/:id/semesters/current', function(req,res){
-// 	User.findById(req.params.id, function(err, foundUser){
+// 	User.findById(req.params.id).populate({path: 'semesters', populate: {path: 'classes'}}).exec(function(err, foundUser){
 // 		if(err){
 // 			console.log(err);
 // 		}else{
@@ -186,12 +202,25 @@ router.delete('/users/:id/semesters/:sem_id', function(req, res){
 			Semester.findByIdAndRemove(req.params.sem_id, function(err){
 				if(err){
 					console.log(err);
+				}
+			})
+		}
+	});
+
+	User.findById(req.params.id, function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			foundUser.semesters.pull(req.params.sem_id);
+			foundUser.save(function(err){
+				if(err){
+					console.log(err);
 				}else{
 					res.send('success');
 				}
 			})
 		}
-	});
+	})
 })
 
 function removeLink(id){
@@ -233,11 +262,7 @@ router.get('/users/:id/assignment/upcomming', function(req, res){
 	User.findById(req.params.id)
 	.populate(
 		{
-			path: 'semesters', 
-			match: 
-				{
-					current: true
-				}, 
+			path: 'semesters',
 			populate: 
 				{
 					path: 'classes', 
