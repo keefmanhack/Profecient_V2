@@ -29,16 +29,21 @@ class Agenda extends React.Component{
 			<TimeHR time={time} spacing={index*25} key={index}/>
 		);
 
-		const AgendaItems = this.props.agendaItems.map((data, index) =>
-			<AgendaItem 
+		const AgendaItems = this.props.agendaItems.map((data, index) => {
+			const startTime = moment(data.time.start);
+			const endTime = moment(data.time.end);
+
+			const topDis = startTime.diff(moment().startOf('Day'), 'minutes') /30.0 * 25;
+			const height = endTime.diff(startTime, 'minutes') /30.0 * 25;
+			return <AgendaItem 
 				key={index}
-				height={findHeightProportion(data.time.start, data.time.end)} 
-				top={findTopPosition(data.time.end)} 
+				height={height} 
+				top={topDis} 
 				name={data.name} 
 				location={data.location}
 				zIndex={index}
 			/>
-		);
+		});
 
 		return(
 			<div className='agenda sans-font' style={{position: 'relative'}}>
@@ -72,7 +77,7 @@ class AgendaItem extends React.Component{
 				onMouseEnter={() => this.setState({mouseOver:true})} 
 				onMouseLeave={() => this.setState({mouseOver:false})} 
 				style={{height: this.props.height, top: this.props.top, zIndex: this.props.zIndex}} 
-				className='item-container'
+				className={this.props.isClass ? 'blue-bc item-container' : 'light-green-bc item-container'}
 			>
 				<h2>{this.props.name}</h2>
 				<h3>{this.props.location}</h3>

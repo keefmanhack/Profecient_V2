@@ -378,7 +378,7 @@ class ClassItem extends React.Component{
 			mouseOver: false
 		}
 
-		this.days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+		this.days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 	}
 
 	toggleMouseOver(isMouseOver){

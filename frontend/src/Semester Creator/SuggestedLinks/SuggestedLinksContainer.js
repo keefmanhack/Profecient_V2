@@ -80,7 +80,7 @@ class Link extends React.Component{
 }
 
 function ExpandedLink(props){
-	const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+	const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 	const daySpans = days.map((day, index)=>
 		<span style={props.data.daysOfWeek[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>

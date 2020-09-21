@@ -228,7 +228,7 @@ class ClassCon extends React.Component{
 			showAssignment: false,
 		}
 
-		this.days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+		this.days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 	}
 
 	toggleShowAssignment(){

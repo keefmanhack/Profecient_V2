@@ -26,10 +26,12 @@ router.get('/users/:id/agenda/today', function(req, res){
 			console.log(err);
 		}else{
 			let agendaData =foundUser.agenda;
-			const foundClasses = foundUser.semesters[foundUser.semesters.length-1].classes
+			const foundClasses = foundUser.semesters[foundUser.semesters.length-1].classes;
+
 
 			foundClasses.forEach(function(o){
 				const now = moment();
+
 				if(now.isAfter(o.date.start) && now.isBefore(o.date.end) && o.daysOfWeek[now.day()]){
 					const classRestruct = {
 						name: o.name,
@@ -37,13 +39,14 @@ router.get('/users/:id/agenda/today', function(req, res){
 						description: o.instructor,
 						time: o.time,
 						date: new Date(),
+						_id: o._id,
 					}
 
 					agendaData.push(classRestruct);
 				}
 			})
-
 			res.send(agendaData);
+			console.log('sent');
 		}
 	})
 })

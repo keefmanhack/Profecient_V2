@@ -28,7 +28,7 @@ class ClassEditor extends React.Component{
 			},
 		}
 
-		this.days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+		this.days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 		
 		this.className = React.createRef();
 		this.instructor = React.createRef();

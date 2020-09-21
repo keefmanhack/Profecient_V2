@@ -25,13 +25,13 @@ class SevenDayAgenda extends React.Component{
 				<table>
 					<thead>
 						<tr>
+							<th>Sun.</th>
 							<th>Mon.</th>
 							<th>Tue.</th>
 							<th>Wed.</th>
 							<th>Thu.</th>
 							<th>Fri.</th>
 							<th>Sat.</th>
-							<th>Sun.</th>
 							<th></th>
 						</tr>
 					</thead>

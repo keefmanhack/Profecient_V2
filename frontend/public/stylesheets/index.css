@@ -553,10 +553,9 @@ h5.error-msg{
 }
 
 .agenda .item-container{
-    background: #BFF2A7;
     position: absolute;
     opacity: .8;
-    width: fit-content;
+    max-width: 33%;
     padding: 10px;
     left: 10px;
     top: 10px;
