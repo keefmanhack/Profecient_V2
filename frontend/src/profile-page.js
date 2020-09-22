@@ -103,7 +103,7 @@ class ProfilePage extends React.Component{
 						<div className='row'>
 							<div className='col-lg-8'>
 								<img 
-									src="https://proficient-assets.s3.us-east-2.amazonaws.com/landing.jpg" 
+									src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.currentUser.profilePictureURL}
 									alt="image not found" 
 									onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
 								/>
@@ -136,7 +136,7 @@ class ProfilePage extends React.Component{
 							/>
 						</div>
 						<div className='col-lg-8'>
-							<PostCreator currentUser={this.props.currentUser}/>
+							<PostCreator reloadFeed={() => this.getUserPosts()} currentUser={this.props.currentUser}/>
 							<div className='feed-container'>
 								<Feed 
 									feedData={this.state.postData} 

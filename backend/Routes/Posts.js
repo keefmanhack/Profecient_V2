@@ -18,6 +18,18 @@ const s3 = new aws.S3(
 	 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 	});
 
+router.get('/users/:id/friends/posts', function(req, res){
+	User.findById(req.params.id, function(err, foundUser){
+		Post.find({author: foundUser.friends}).sort('-date').populate('author').exec(function(err, foundPosts){
+			if(err){
+				console.log(err);
+			}else{
+				res.send(foundPosts);
+			}
+		})
+	})
+})
+
 router.get('/users/:id/posts', function(req, res){
 	User.findById(req.params.id).populate({path: 'posts', populate:{path:'author'}}).exec(function(err, foundUser){
 		if(err){

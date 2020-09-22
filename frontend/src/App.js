@@ -21,6 +21,10 @@ class App extends React.Component{
 
 
 		this.testUserId = '5f4aa6042c0c8f715ae71d97';
+
+		//Keefer - 5f4aa6042c0c8f715ae71d97
+		//Sarah  - 5f5aab5a6f1dda2b82855985
+		//Pat    - 5f5d3bea7c33842654ec2efb
 	}
 
 	componentDidMount(){

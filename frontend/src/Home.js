@@ -28,6 +28,7 @@ class Home extends React.Component{
 			agendaItemSentSuccessful: false,
 			upcommingAss: [],
 			editIndex: null,
+			postData: [],
 		}
 	}
 
@@ -35,6 +36,7 @@ class Home extends React.Component{
 		this.getTodaysEvents();
 		this.getClassData();
 		this.getUpcommingAssignments();
+		this.getFriendsPosts();
 	}
 
 	getClassData(){
@@ -51,6 +53,15 @@ class Home extends React.Component{
 	    .then(res => {
 			this.setState({
 				agendaItems: res.data
+			})
+		})
+	}
+
+	getFriendsPosts(){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/friends/posts')
+	    .then(res => {
+			this.setState({
+				postData: res.data,
 			})
 		})
 	}
@@ -198,7 +209,7 @@ class Home extends React.Component{
 					    </div>
 					    <div className='col-lg-8 right'>
 							<PostCreator currentUser={this.props.currentUser}/>
-							<Feed />
+							<Feed feedData={this.state.postData} currentUser={this.props.currentUser}/>
 					    </div>
 					</div>
 					<FadeInOut_HandleState condition={this.state.showNewAssignmentForm}>
