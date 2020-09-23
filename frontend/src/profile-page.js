@@ -19,16 +19,25 @@ class ProfilePage extends React.Component{
 			currSemesterIndex: -1,
 			semesters: [],
 			editSemMode: false,
+			foundUser: null,
 		}
 	}
 
 	componentDidMount(){
+		this.setState(function(state, props){
+			return {
+				foundUser: props.match.params.id,
+			}
+		})
+
+		console.log(this.state.foundUser);
+
 		this.getUserPosts();
 		this.getSemesters();
 	}
 
 	getUserPosts(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/posts')
+		axios.get(`http://localhost:8080/users/` + this.state.foundUser + '/posts')
 	    .then(res => {
 			this.setState({
 				postData: res.data,
@@ -38,7 +47,7 @@ class ProfilePage extends React.Component{
 
 
 	getSemesters(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters')
+		axios.get(`http://localhost:8080/users/` + this.props.foundUser + '/semesters')
 	    .then(res => {
 			this.setState({
 				semesters: res.data,
@@ -158,6 +167,7 @@ class ProfilePage extends React.Component{
 		);
 	}
 }
+
 
 
 export default ProfilePage;

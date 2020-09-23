@@ -19,6 +19,7 @@ class App extends React.Component{
 			currentUser: null,
 		}
 
+		this.profileIDRef = React.createRef();
 
 		this.testUserId = '5f4aa6042c0c8f715ae71d97';
 
@@ -40,6 +41,11 @@ class App extends React.Component{
 		})
 	}
 
+	handleChange(){
+		console.log(this.profileIDRef);
+		alert('changed')
+	}
+
 	render(){
 		return(	
 			<Router>
@@ -51,9 +57,8 @@ class App extends React.Component{
 						<Route path='/home'>
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
-						<Route path='/profilePage'>
-							{this.state.currentUser ? <ProfilePage updateCurrentUser={() => this.getCurrentUser()} currentUser={this.state.currentUser}/> : <Loader/>}
-						</Route>
+						<Route path='/profile/:id' children={({match}) => this.state.currentUser ? <ProfilePage match={match} updateCurrentUser={() => this.getCurrentUser()} currentUser={this.state.currentUser}/> : <Loader/>} />
+		
 						<Route path='/' component={Landing}/>
 					</Switch>
 				</div>

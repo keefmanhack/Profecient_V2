@@ -20,7 +20,7 @@ function Header(props){
 			
 			<span className='profile'>
 				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.currentUser.profilePictureURL} alt=""/>
-				<Link to='/profilePage'>
+				<Link to={'/profile/' + props.currentUser._id}>
 					<button className='blue-c'><i class="fas fa-chevron-down"></i></button>
 				</Link>
 			</span>

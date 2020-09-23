@@ -102,7 +102,7 @@ class Post extends React.Component{
 
 		return(
 			<div className='post white-c sans-font'>
-				<Link to='#'>
+				<Link to={'/profile/' + this.props.data.author._id} id={this.props.data.author._id}>
 					<img className='profile-photo' src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.data.author.profilePictureURL}/>
 					<h1 className='white-c'>{this.props.data.author.name}</h1>
 				</Link>
