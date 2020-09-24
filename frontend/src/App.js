@@ -17,6 +17,7 @@ class App extends React.Component{
 
 		this.state={
 			currentUser: null,
+			foundUser: null,
 		}
 
 		this.profileIDRef = React.createRef();
@@ -30,6 +31,17 @@ class App extends React.Component{
 
 	componentDidMount(){
 		this.getCurrentUser();
+	}
+
+	getRequestedUser(id){
+		// alert(id);
+		console.log(id);
+		axios.get(`http://localhost:8080/users/` + id)
+	    .then(res => {
+			this.setState({
+				foundUser: res.data,
+			})
+		})
 	}
 
 	getCurrentUser(){
@@ -57,7 +69,24 @@ class App extends React.Component{
 						<Route path='/home'>
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
-						<Route path='/profile/:id' children={({match}) => this.state.currentUser ? <ProfilePage match={match} updateCurrentUser={() => this.getCurrentUser()} currentUser={this.state.currentUser}/> : <Loader/>} />
+						<Route path='/profile/:id' children={({match}) => {
+							this.getRequestedUser(match.params.id);
+							// // () => alert('called');
+							// console.log(match);
+							// alert(match);
+							if(this.state.currentUser && this.state.foundUser){
+								return (<ProfilePage 
+									foundUser={this.state.foundUser} 
+									updateCurrentUser={() => this.getCurrentUser()} 
+									currentUser={this.state.currentUser}
+								/> )
+							}else{
+								// this.getRequestedUser(match.params.id);
+							
+								// console.log(match);
+								return (<Loader/>)
+							}
+						}}/>
 		
 						<Route path='/' component={Landing}/>
 					</Switch>

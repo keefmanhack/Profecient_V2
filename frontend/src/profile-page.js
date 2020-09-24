@@ -19,25 +19,16 @@ class ProfilePage extends React.Component{
 			currSemesterIndex: -1,
 			semesters: [],
 			editSemMode: false,
-			foundUser: null,
 		}
 	}
 
 	componentDidMount(){
-		this.setState(function(state, props){
-			return {
-				foundUser: props.match.params.id,
-			}
-		})
-
-		console.log(this.state.foundUser);
-
 		this.getUserPosts();
 		this.getSemesters();
 	}
 
 	getUserPosts(){
-		axios.get(`http://localhost:8080/users/` + this.state.foundUser + '/posts')
+		axios.get(`http://localhost:8080/users/` + this.props.foundUser._id + '/posts')
 	    .then(res => {
 			this.setState({
 				postData: res.data,
@@ -47,7 +38,7 @@ class ProfilePage extends React.Component{
 
 
 	getSemesters(){
-		axios.get(`http://localhost:8080/users/` + this.props.foundUser + '/semesters')
+		axios.get(`http://localhost:8080/users/` + this.props.foundUser._id + '/semesters')
 	    .then(res => {
 			this.setState({
 				semesters: res.data,
@@ -112,14 +103,14 @@ class ProfilePage extends React.Component{
 						<div className='row'>
 							<div className='col-lg-8'>
 								<img 
-									src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.currentUser.profilePictureURL}
+									src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.foundUser.profilePictureURL}
 									alt="image not found" 
 									onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
 								/>
-								<h1>{this.props.currentUser.name}</h1>
+								<h1>{this.props.foundUser.name}</h1>
 
-								<img className='school' src={this.props.currentUser.school.logoUrl} alt="Can't display image"/>
-								<h2>{this.props.currentUser.school.name}</h2>
+								<img className='school' src={this.props.foundUser.school.logoUrl} alt="Can't display image"/>
+								<h2>{this.props.foundUser.school.name}</h2>
 							</div>
 							<div className='col-lg-4'>
 								<div style={{margin: '0 55px'}}>
@@ -145,7 +136,10 @@ class ProfilePage extends React.Component{
 							/>
 						</div>
 						<div className='col-lg-8'>
-							<PostCreator reloadFeed={() => this.getUserPosts()} currentUser={this.props.currentUser}/>
+							{this.props.currentUser ==  this.props.foundUser ? 
+								<PostCreator reloadFeed={() => this.getUserPosts()} currentUser={this.props.currentUser}/>
+								: null
+							}
 							<div className='feed-container'>
 								<Feed 
 									feedData={this.state.postData} 
