@@ -2,11 +2,14 @@ import React from 'react';
 import moment from 'moment';
 import axios from 'axios';
 
-import {BackInOut_HandleState, FadeInOut_HandleState, FadeInOut, FadeRight_HandleState} from '../CustomTransition';
+import {BackInOut_HandleState, FadeInOut_HandleState, FadeInOut, FadeRight_HandleState} from '../../Shared Resources/Effects/CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
 import ClassEditor from './ClassEditor/ClassEditor';
-import {SuccessCheck} from '../lottie/LottieAnimations';
+import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
+
+import './semester-creator.css';
+
 
 class SemesterCreator extends React.Component{
 	constructor(props){

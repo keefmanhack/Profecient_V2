@@ -1,9 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 
-import {FadeInOut_HandleState, FadeInOut} from '../CustomTransition';
-import {toSingleCharArr, Soundex, findSimilarity} from './helperFunc';
-import {SentSuccess} from '../lottie/LottieAnimations';
+import {FadeInOut_HandleState, FadeInOut} from '../Shared Resources/Effects/CustomTransition';
+// import {toSingleCharArr, Soundex, findSimilarity} from './helperFunc';
+import {SentSuccess} from '../Shared Resources/Effects/lottie/LottieAnimations';
 
 class NewMessage extends React.Component{
 	constructor(props){

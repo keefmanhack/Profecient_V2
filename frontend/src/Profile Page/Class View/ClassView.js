@@ -1,7 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 
-import {FadeDownUp_HandleState, FadeInOut, FadeInOut_HandleState} from './CustomTransition';
+import {FadeDownUp_HandleState, FadeInOut, FadeInOut_HandleState} from '../../Shared Resources/Effects/CustomTransition';
+
+import './class-view.css';
 
 class ClassView extends React.Component{
 	constructor(props){

@@ -1,6 +1,6 @@
 import React from 'react';
-import {convertToMilitary, convertToStandard} from '../../Agenda_Helper';
-import {TimeHR} from './StartEndTime';
+// import {convertToMilitary, convertToStandard} from '../../Agenda_Helper';
+// import {TimeHR} from './StartEndTime';
 
 export function createTimeHRs(stdStartTime, stdEndTime){
 	let timeHRs;

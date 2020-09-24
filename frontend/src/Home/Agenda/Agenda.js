@@ -3,10 +3,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 
-import {SuccessCheck} from './lottie/LottieAnimations';
-import {findTopPosition, findHeightProportion, dateObjToStdTime, convertToStdDate} from './Agenda_Helper';
-import StartEndTime from './Semester Creator/StartEndTimeComp/StartEndTime';
-import {FadeInOut_HandleState} from './CustomTransition';
+import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
+import {findTopPosition, dateObjToStdTime, convertToStdDate} from './Agenda_Helper';
+// import StartEndTime from './Semester Creator/StartEndTimeComp/StartEndTime';
+import {FadeInOut_HandleState} from '../../Shared Resources/Effects/CustomTransition';
+
+import './newAgItem.css';
 
 class Agenda extends React.Component{
 	constructor(props){
@@ -216,7 +218,7 @@ class NewAgendaItem extends React.Component{
     			<input ref={this.location} type="text" placeholder='Location'/>
     			<div className='row'>
     				<div className='col-lg-6'>
-    					<StartEndTime time={this.state.time} setTime={(key, time) => this.setTime(key, time)}/>
+    					
     				</div>
     				<div className='col-lg-6'>
 	    				<DatePicker

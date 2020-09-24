@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 
 import {convertToAgendaFormat} from './helperFunc';
-import {findProportionalTimeDif} from '../StartEndTimeComp/helperFunc';
+// import {findProportionalTimeDif} from '../StartEndTimeComp/helperFunc';
 
 class SevenDayAgenda extends React.Component{
 

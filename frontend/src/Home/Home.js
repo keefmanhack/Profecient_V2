@@ -2,14 +2,14 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import axios from 'axios';
 
-import Header from './header';
-import {FadeInOut_HandleState} from './CustomTransition';
+import Header from '../Shared Resources/header';
+import {FadeInOut_HandleState} from '../Shared Resources/Effects/CustomTransition';
 import AssignmentDashboard from './AssignmentDashboard';
 import {NewAssignment} from './AssignmentDashboard';
-import Agenda from './Agenda';
-import {NewAgendaItem} from './Agenda';
-import Feed from './feed';
-import PostCreator from './PostCreator';
+import Agenda from './Agenda/Agenda';
+import {NewAgendaItem} from './Agenda/Agenda';
+import Feed from '../Shared Resources/feed';
+import PostCreator from '../Shared Resources/PostCreator';
 
 
 class Home extends React.Component{

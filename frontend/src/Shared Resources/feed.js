@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import axios from 'axios';
-import {convertToStdDate} from './Agenda_Helper';
+import {convertToStdDate} from '../Home/Agenda/Agenda_Helper';
 
 class Feed extends React.Component{
 	constructor(props){
@@ -10,8 +10,7 @@ class Feed extends React.Component{
 	}
 
 	render(){
-
-		const posts = this.props.feedData ? this.props.feedData.map((data, index) =>
+		const posts = this.props.feedData!==null ? this.props.feedData.map((data, index) =>
 			<Post 
 				data={data}
 				currentUser={this.props.currentUser}

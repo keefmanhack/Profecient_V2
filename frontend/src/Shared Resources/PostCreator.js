@@ -1,8 +1,8 @@
 import React from 'react';
-import {FadeInOut_HandleState} from './CustomTransition';
+import {FadeInOut_HandleState} from './Effects/CustomTransition';
 import axios from 'axios';
 import FormData from 'form-data';
-import Loader from './loader';
+import Loader from './Effects/loader';
 
 class PostCreator extends React.Component{
 	constructor(props){

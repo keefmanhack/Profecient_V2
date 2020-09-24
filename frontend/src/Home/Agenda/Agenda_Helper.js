@@ -15,12 +15,12 @@ export function findTopPosition(start){
 	}
 }
 
-export function findHeightProportion(start, end){
-	const startMT = convertToMilitary(start);
-	const endMT = convertToMilitary(end);
+// export function findHeightProportion(start, end){
+// 	const startMT = convertToMilitary(start);
+// 	const endMT = convertToMilitary(end);
 
-	return (endMT - startMT)/100 * 50;
-}
+// 	return (endMT - startMT)/100 * 50;
+// }
 
 export function convertToMilitary(stdTime){
 	const minute = parseInt(stdTime.substring(stdTime.length-4 ,stdTime.length-2));

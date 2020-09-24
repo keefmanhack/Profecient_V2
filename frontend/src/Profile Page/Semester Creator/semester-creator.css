@@ -15,6 +15,18 @@
     overflow: hidden;
 }
 
+.react-time-picker .react-time-picker__wrapper {
+    border: none;
+    background: white;
+    border-radius: 5px;
+}
+
+.react-time-picker {
+    border: none;
+    width: 100%;
+    font-weight: 200;
+}
+
 .semester-creator-container button.create-semester{
     position: absolute;
     right: 17px;

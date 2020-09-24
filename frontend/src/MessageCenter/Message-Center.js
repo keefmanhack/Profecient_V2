@@ -1,10 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 
-import {FadeInOut, FadeInOut_HandleState, FadeRight_HandleState} from '../CustomTransition';
+import {FadeInOut, FadeInOut_HandleState, FadeRight_HandleState} from '../Shared Resources/Effects/CustomTransition';
 import NewMessage from './NewMessage';
-import {toSingleCharArr, Soundex, findSimilarity, timeDifString} from './helperFunc';
-import Header from '../header';
+import {timeDifString} from './helperFunc';
+import Header from '../Shared Resources/header';
+
+import './message-center.css';
+
 
 class MessageCenter extends React.Component{
 	constructor(props){

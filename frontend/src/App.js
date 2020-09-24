@@ -2,13 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import axios from 'axios';
 
-import Login from './LandingSignUpLogin/Login';
+import Login from './Login Landing/Login';
+import Landing from './Login Landing/landing';
 import MessageCenter from './MessageCenter/Message-Center';
-import Home from './Home';
-import ProfilePage from './profile-page';
-import Landing from './landing';
-import Loader from './loader';
-// import SemesterCreator from './SemesterCreator/SemesterCreator';
+import Home from './Home/Home';
+import ProfilePage from './Profile Page/profile-page';
+
+import Loader from './Shared Resources/Effects/loader';
+
+import './Shared Resources/index.css';
 
 
 class App extends React.Component{
@@ -70,20 +72,13 @@ class App extends React.Component{
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
 						<Route path='/profile/:id' children={({match}) => {
-							this.getRequestedUser(match.params.id);
-							// // () => alert('called');
-							// console.log(match);
-							// alert(match);
-							if(this.state.currentUser && this.state.foundUser){
+							if(this.state.currentUser){
 								return (<ProfilePage 
-									foundUser={this.state.foundUser} 
+									foundUser={match.params.id} 
 									updateCurrentUser={() => this.getCurrentUser()} 
 									currentUser={this.state.currentUser}
 								/> )
 							}else{
-								// this.getRequestedUser(match.params.id);
-							
-								// console.log(match);
 								return (<Loader/>)
 							}
 						}}/>

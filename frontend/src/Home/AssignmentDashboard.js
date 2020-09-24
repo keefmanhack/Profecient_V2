@@ -3,9 +3,11 @@ import DatePicker from "react-datepicker";
 import TimePicker from 'react-time-picker';
 import moment from 'moment';
 
-import {SuccessCheck} from './lottie/LottieAnimations';
-import {dateObjToStdTime, convertToStandard} from './Agenda_Helper';
-import {FadeInOut_HandleState, FadeDownUp_HandleState} from './CustomTransition';
+import {SuccessCheck} from '../Shared Resources/Effects/lottie/LottieAnimations';
+import {dateObjToStdTime, convertToStandard} from './Agenda/Agenda_Helper';
+import {FadeInOut_HandleState, FadeDownUp_HandleState} from '../Shared Resources/Effects/CustomTransition';
+
+import './newAssignment.css';
 
 class AssignmentDashboard extends React.Component{
 	constructor(props){

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Link, BrowserRouter as Router} from "react-router-dom";
 
+import './login.css';
+
 class Login extends React.Component{
 	render(){
 		return(
