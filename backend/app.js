@@ -71,6 +71,33 @@ app.post('/users', function(req, res){
 	})
 })
 
+app.post('/users/:id/friends', function(req,res){
+	User.findById(req.body.userID, function(err, foundUser){ //make sure other user exists
+		if(err){
+			console.log(err);
+		}else{
+			User.findById(req.params.id, function(err, currUser){
+				if(err){
+					console.log(err);
+				}else{
+					if(req.body.isFriend){
+						currUser.friends.pull(req.body.userID);
+					}else{
+						currUser.friends.push(req.body.userID);
+					}
+					currUser.save(function(err){
+						if(err){
+							console.log(err);
+						}else{
+							res.send('Success');
+						}
+					});
+				}
+			})
+		}
+	})
+})
+
 app.get('/users/:id/messageStreams', function(req,res){
 	User.findById(req.params.id)
 	.populate(

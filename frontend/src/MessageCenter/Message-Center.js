@@ -18,6 +18,7 @@ class MessageCenter extends React.Component{
 			searchString: '',
 			showNew: false,
 			messageStreams: [],
+			preSelectedUserID: null,
 		}
 
 		this.textarea = React.createRef();
@@ -25,7 +26,12 @@ class MessageCenter extends React.Component{
 	}
 
 	componentDidMount(){
-		this.getMessages();
+		if(this.props.selectedID){
+			this.getMessagesSelected(this.props.selectedID);
+		}else{
+			this.getMessages();
+		}
+		
 	}
 
 	getMessages(){
@@ -41,6 +47,41 @@ class MessageCenter extends React.Component{
 		})
 	}
 
+	getMessagesSelected(selectedID){
+		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/messageStreams')
+	    .then(res => {
+	    	let temp = null;
+	    	let showNew = false;
+	    	let preSelectedUserID = null;
+	    	if(selectedID !== this.props.currentUser._id){
+		    	for(let i =0; i<res.data.length; i++){
+		    		res.data[i].communicators.forEach(function(communicator){
+		    			if(communicator._id==selectedID && communicator._id !== this.props.currentUser._id){
+		    				temp =i;
+		    				i=res.data.length;
+		    			}
+		    		}.bind(this))
+		    	}
+		    }
+
+		    if(temp===null){
+		    	showNew = true;
+		    	preSelectedUserID = selectedID;
+		    }
+
+	    	this.setState((state, props) => ({
+	    		messageStreams: res.data,
+	    		selectedIndex: temp,
+	    		showNew: showNew,
+	    		preSelectedUserID: preSelectedUserID,
+	    	}))
+
+		})
+		.catch((error) => {
+			console.log(error);
+		})
+	}
+
 	messageSelectorClick(i){
 		let messageStreams = this.state.messageStreams;
 
@@ -49,8 +90,6 @@ class MessageCenter extends React.Component{
 				sentMessage.read = true;
 			}
 		}.bind(this));
-
-		console.log(messageStreams[i]);
 
 		this.updateMessageStreams(messageStreams[i]);
 
@@ -78,6 +117,7 @@ class MessageCenter extends React.Component{
 	    	console.log(res);
 	    	this.setState({
 	    		selectedIndex: null,
+	    		preSelectedUserID: null,
 	    	})
 	    	this.getMessages();
 		})
@@ -121,6 +161,9 @@ class MessageCenter extends React.Component{
 
 		if(!val){ //new message closed
 			this.getMessages();
+			this.setState({
+				preSelectedUserID: null,
+			})
 		}
 	}
 
@@ -199,6 +242,8 @@ class MessageCenter extends React.Component{
 						<NewMessage 
 							closeNew={() => this.showNew(false)}
 							currentUser={this.props.currentUser}
+							preSelectedUserID={this.state.preSelectedUserID}
+							removePreSelectedUserID={() => this.setState({preSelectedUserID: null})}
 						/>
 					</FadeInOut_HandleState>
 				</div>

@@ -92,7 +92,6 @@ class Home extends React.Component{
 	deleteAssignment(i){
 		const assID = this.state.upcommingAss[i]._id;
 		const classIndex = findClassIndex(assID, this.state.currSemester.classes);
-		alert('item being deleted');
 
 		const endPoint = 'http://localhost:8080/classes/' + this.state.currSemester.classes[classIndex]._id + '/assignment/' + assID;
 
@@ -113,7 +112,6 @@ class Home extends React.Component{
 		if(this.state.editIndex || this.state.editIndex===0){
 			this.deleteAssignment(this.state.editIndex);
 		}
-		alert('item being created');
 
 		const endPoint = 'http://localhost:8080/classes/' + this.state.currSemester.classes[this.state.selectedIndex]._id + '/assignment';
 
@@ -124,6 +122,7 @@ class Home extends React.Component{
 				selectedIndex: null,
 			})
 			this.getClassData();
+			this.getUpcommingAssignments();
 		}).catch((error) => {
 			console.log(error);
 		});
@@ -208,7 +207,7 @@ class Home extends React.Component{
 							/>
 					    </div>
 					    <div className='col-lg-8 right'>
-							<PostCreator currentUser={this.props.currentUser}/>
+							<PostCreator reloadFeed={() => this.getFriendsPosts()} currentUser={this.props.currentUser}/>
 							<Feed feedData={this.state.postData} currentUser={this.props.currentUser}/>
 					    </div>
 					</div>

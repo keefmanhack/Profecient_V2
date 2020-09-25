@@ -33,6 +33,14 @@ body{
     color: #28965A;
 }
 
+.red-c{
+    color: red;
+}
+
+.red-bc{
+    background: red;
+}
+
 .green-bc{
     background: #28965A;
 }

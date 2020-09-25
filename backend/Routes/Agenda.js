@@ -26,7 +26,7 @@ router.get('/users/:id/agenda/today', function(req, res){
 			console.log(err);
 		}else{
 			let agendaData =foundUser.agenda;
-			if(agendaData){
+			if(foundUser.semesters.length >0 && foundUser.semesters[foundUser.semesters.length-1].classes){
 				const foundClasses = foundUser.semesters[foundUser.semesters.length-1].classes;
 
 

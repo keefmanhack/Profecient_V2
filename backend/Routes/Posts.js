@@ -51,8 +51,13 @@ router.post('/posts/:id/likes', function(req, res){
 			}else{
 				foundPost.likes.push(ID);
 			}
-			foundPost.save();
-			res.send('success');
+			foundPost.save(function(err){
+				if(err){
+					console.log(err);
+				}else{
+					res.send('success');
+				}
+			});	
 		}
 	})
 })
@@ -87,8 +92,13 @@ router.post('/posts/:id/comments', function(req, res){
 					console.log(err);
 				}else{
 					foundPost.comments.push(newComment);
-					foundPost.save();
-					res.send('success');
+					foundPost.save(function(err){
+						if(err){
+							console.log(err)
+						}else{
+							res.send('success');
+						}
+					});
 				}
 			})
 		}

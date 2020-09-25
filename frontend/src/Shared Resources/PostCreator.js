@@ -101,6 +101,7 @@ class PostCreator extends React.Component{
 			    this.textArea.current.innerText = '';
 			    this.props.reloadFeed();
 			}).catch((error) => {
+				console.log(error);
 			    this.setState({
 			    	sendingData: false,
 			    	httpError: true,

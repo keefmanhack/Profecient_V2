@@ -285,13 +285,15 @@ router.get('/users/:id/assignment/upcomming', function(req, res){
 			console.log(err);
 		}else{
 			let assignments = [];
-
-			if(foundUser.semesters[0] && foundUser.semesters[0].classes){
-				foundUser.semesters[0].classes.forEach(function(o){
-					o.assignments.forEach(function(assignment){
-						assignments.push(assignment);
+			if(foundUser.semesters.length >0){
+				const lastSem = foundUser.semesters.length-1;
+				if(foundUser.semesters[lastSem] && foundUser.semesters[lastSem].classes){
+					foundUser.semesters[lastSem].classes.forEach(function(o){
+						o.assignments.forEach(function(assignment){
+							assignments.push(assignment);
+						})
 					})
-				})
+				}
 			}
 
 			const sortedAssignments = assignments.slice().sort((a,b) => a.dueDate-b.dueDate); //sort by oldest first

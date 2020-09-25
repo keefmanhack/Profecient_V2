@@ -10,7 +10,6 @@ class NewMessage extends React.Component{
 		super(props);
 
 		
-
 		this.state ={
 			selectedUser: null,
 			searchedUsers: [],
@@ -24,9 +23,19 @@ class NewMessage extends React.Component{
 		this.search = React.createRef();
 		this.message = React.createRef();
 	}
+
+	componentDidMount(){
+		if(this.props.preSelectedUserID !== null){
+			axios.get(`http://localhost:8080/users/` + this.props.preSelectedUserID)
+			.then(res => {
+				this.setState({
+					selectedUser: res.data,
+				})
+			})
+		}
+	}
 	
 	handleSearch(){
-		console.log('b'+this.search.current.innerText+'b');
 		const searchString = this.search.current.value;
 		if(searchString !== ''){
 			axios.post(`http://localhost:8080/users`, {searchString: searchString})
@@ -40,10 +49,6 @@ class NewMessage extends React.Component{
 				searchedUsers: []
 			})
 		}
-		
-		// this.setState({
-		// 	inputText: this.search.current.value,
-		// })
 	}
 
 	searchItemClicked(i){
@@ -77,6 +82,9 @@ class NewMessage extends React.Component{
 				this.setState({
 					success: true,
 				})
+				if(this.props.preSelecteUserID){
+					this.props.removePreSelectedUserID();
+				}
 			}).catch((error) => {
 				console.log(error);
 			});

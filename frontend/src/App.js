@@ -22,8 +22,6 @@ class App extends React.Component{
 			foundID: null,
 		}
 
-		this.profileIDRef = React.createRef();
-
 		this.testUserId = '5f4aa6042c0c8f715ae71d97';
 
 		//Keefer - 5f4aa6042c0c8f715ae71d97
@@ -55,9 +53,16 @@ class App extends React.Component{
 		})
 	}
 
-	handleChange(){
-		console.log(this.profileIDRef);
-		alert('changed')
+	toggleFriend(isFriend, userID){
+		const endPoint = `http://localhost:8080/users/` + this.state.currentUser._id + '/friends';
+
+		axios.post(endPoint, {
+			isFriend: isFriend,
+			userID: userID,
+		})
+		.then(res => {
+			this.getCurrentUser();
+		})
 	}
 
 	render(){
@@ -65,9 +70,20 @@ class App extends React.Component{
 			<Router>
 				<div className="App">
 					<Switch>
+						<Route path='/message/:id' component={({match}) => {
+							if(this.state.currentUser){
+								return(
+									<MessageCenter selectedID={match.params.id} currentUser={this.state.currentUser}	/>
+								)
+							}else{
+								return (<Loader/>)
+							}
+						}}/>
 						<Route path='/message'>
 							{this.state.currentUser ? <MessageCenter currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
+
+							
 						<Route path='/home'>
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
@@ -82,6 +98,7 @@ class App extends React.Component{
 									foundUser={this.state.foundID} 
 									updateCurrentUser={() => this.getCurrentUser()} 
 									currentUser={this.state.currentUser}
+									toggleFriend={(isFriend, userID) => this.toggleFriend(isFriend, userID)}
 								/> )
 							}else{
 								return (<Loader/>)

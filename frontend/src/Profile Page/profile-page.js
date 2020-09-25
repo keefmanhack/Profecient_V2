@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import {Link} from "react-router-dom";
 
 import Feed from '../Shared Resources/feed';
 import ClassView from './Class View/ClassView';
@@ -133,8 +134,16 @@ class ProfilePage extends React.Component{
 								<div className='col-lg-4'>
 									<FadeInOut_HandleState condition={this.state.profile!==null && this.props.currentUser!==null && this.state.profile._id !== this.props.currentUser._id}>
 										<div style={{margin: '0 55px'}}>
-											<button style={{marginRight: 30}} className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
-											<button className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
+											<Link to={'/message/' + this.state.profile._id}>
+												<button className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
+											</Link>
+											{this.props.currentUser.friends.includes(this.state.profile._id) ?
+												<button onClick={() => this.props.toggleFriend(true, this.state.profile._id)} 
+													className='white-bc red-c'><i class="fas fa-minus"></i> UnFollow</button>
+											:
+												<button onClick={() => this.props.toggleFriend(false, this.state.profile._id)} 
+													className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
+											}
 										</div>
 									</FadeInOut_HandleState>
 								</div>

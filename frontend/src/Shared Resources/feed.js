@@ -62,7 +62,6 @@ class Post extends React.Component{
 			userID: this.props.currentUser._id,
 		})
 		.then((response) => {
-		    console.log(response);
 		    this.getLikes();
 		}).catch((error) => {
 			console.log(error);
@@ -77,7 +76,6 @@ class Post extends React.Component{
 			author: this.props.currentUser._id,
 		})
 		.then((response) => {
-		    console.log(response);
 		    this.getComments();
 		}).catch((error) => {
 		    console.log(error);
