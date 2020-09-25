@@ -26,6 +26,10 @@ class ProfilePage extends React.Component{
 	}
 
 	componentDidMount(){
+		this.getProfileData();
+	}
+
+	getProfileData(){
 		this.getUserPosts();
 		this.getSemesters();
 		this.getRequestedUser();
@@ -164,7 +168,7 @@ class ProfilePage extends React.Component{
 						</div>
 						
 					</div>
-				: null}
+				: this.getProfileData()}
 				<FadeInOut_HandleState condition={this.state.showNewSem}>
 					<SemesterCreator
 						currentUser={this.props.currentUser} 

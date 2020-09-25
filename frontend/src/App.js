@@ -19,7 +19,7 @@ class App extends React.Component{
 
 		this.state={
 			currentUser: null,
-			foundUser: null,
+			foundID: null,
 		}
 
 		this.profileIDRef = React.createRef();
@@ -71,10 +71,15 @@ class App extends React.Component{
 						<Route path='/home'>
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
-						<Route path='/profile/:id' children={({match}) => {
+						<Route path='/profile/:id' component={({match}) => {
+							if(this.state.foundID != match.params.id){
+								this.setState((state, props) => ({
+									foundID: match.params.id,
+								}))
+							}
 							if(this.state.currentUser){
 								return (<ProfilePage 
-									foundUser={match.params.id} 
+									foundUser={this.state.foundID} 
 									updateCurrentUser={() => this.getCurrentUser()} 
 									currentUser={this.state.currentUser}
 								/> )
