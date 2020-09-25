@@ -131,10 +131,12 @@ class ProfilePage extends React.Component{
 									<h2>{this.state.profile.school.name}</h2>
 								</div>
 								<div className='col-lg-4'>
-									<div style={{margin: '0 55px'}}>
-										<button style={{marginRight: 30}} className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
-										<button className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
-									</div>
+									<FadeInOut_HandleState condition={this.state.profile!==null && this.props.currentUser!==null && this.state.profile._id !== this.props.currentUser._id}>
+										<div style={{margin: '0 55px'}}>
+											<button style={{marginRight: 30}} className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
+											<button className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
+										</div>
+									</FadeInOut_HandleState>
 								</div>
 							</div>
 							<div className='classes row' style={{marginTop: 30}}>
@@ -151,10 +153,11 @@ class ProfilePage extends React.Component{
 									deleteCurrSem={() => this.deleteCurrentSem()}
 									currSemExists={currSemExists}
 									changeCurrentSem={(i) => this.changeCurrentSem(i)}
+									isCurrentUserViewing={this.props.currentUser !==null && this.state.profile._id === this.props.currentUser._id}
 								/>
 							</div>
 							<div className='col-lg-8'>
-								{this.props.currentUser ==  this.state.profile ? 
+								{this.props.currentUser._id ==  this.state.profile._id ? 
 									<PostCreator reloadFeed={() => this.getUserPosts()} currentUser={this.props.currentUser}/>
 									: null
 								}

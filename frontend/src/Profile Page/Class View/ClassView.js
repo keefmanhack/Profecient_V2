@@ -97,7 +97,9 @@ class ClassView extends React.Component{
 							{this.props.currSemExists ? currSem.name : 'No Semester Exists'}
 						</h1>
 					</div>
-					<button className='white-c' onClick={() => this.showDialog()}>...</button>
+					<FadeInOut_HandleState condition={this.props.isCurrentUserViewing || this.props.semesters.length>0}>
+						<button className='white-c' onClick={() => this.showDialog()}>...</button>
+					</FadeInOut_HandleState>
 				</div>
 				<h5 className='muted-c'>{this.props.currSemExists ? currSem.classes.length + ' Classes' : null}</h5>
 				<hr/>
@@ -107,17 +109,23 @@ class ClassView extends React.Component{
 				<FadeInOut_HandleState condition={this.state.showDialog}>
 					<MenuDropDown hideDropDown={() => this.hideDialog()}>
 						<DropDownMain>
-							<button onClick={() => this.props.showNewSem(true)}> 
-								<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
-							</button>
+							{this.props.isCurrentUserViewing ?
+								<button onClick={() => this.props.showNewSem(true)}> 
+									<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
+								</button>
+							: null}
 							{this.props.semesters.length>0 ?
 								<React.Fragment>
-									<button onClick={() => this.props.editCurrSem()}> 
-										<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
-									</button>
-									<button onClick={() => this.props.deleteCurrSem()}> 
-										<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
-									</button>
+									{this.props.isCurrentUserViewing ?
+										<React.Fragment>
+											<button onClick={() => this.props.editCurrSem()}> 
+												<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
+											</button>
+											<button onClick={() => this.props.deleteCurrSem()}> 
+												<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
+											</button>
+										</React.Fragment>
+									:null}
 									<Options 
 										text={'Current Semester'} 
 										icon={<i class="fas fa-caret-right"></i>} 

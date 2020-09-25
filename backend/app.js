@@ -49,13 +49,15 @@ app.use(agendaRoutes.router);
 
 
 app.get('/users/:id', function (req, res) {
-	User.findById(req.params.id, function(err, foundUser){
-		if(err){
-			console.log(err);
-		}else{
-			res.send(foundUser);
-		}
-	});
+	if(req.params.id !==null){
+		User.findById(req.params.id, function(err, foundUser){
+			if(err){
+				console.log(err);
+			}else{
+				res.send(foundUser);
+			}
+		});
+	}
 });
 
 app.post('/users', function(req, res){
