@@ -86,6 +86,7 @@ class ClassView extends React.Component{
 				endTime={moment(data.time.end).format('h:mm a')}
 				assignments={data.assignments}
 				key={index}
+				isCurrentUserViewing={this.props.isCurrentUserViewing}
 			/> 
 		): null
 
@@ -257,7 +258,9 @@ class ClassCon extends React.Component{
 		const dropDownDis = this.state.showAssignment ? <i class="fas fa-chevron-up"></i> : <i class="fas fa-chevron-down"></i>;
 		return(
 			<div className='class-container'>
-				<button className='link' >Link</button>
+				{this.props.isCurrentUserViewing ? null :
+					<button className='link' >Link</button>
+				}
 				<h1>{this.props.name}</h1>
 				<h2>{this.props.instructor}</h2>
 				<h3>{this.props.location}</h3>
@@ -316,8 +319,8 @@ function Assign(props){
 	return(
 		<div style={props.style} className='assign'>
 			<h1>{props.name}</h1>
-			<h2>{dueDateString(props.dueDate)}</h2>
-			<button>...</button>
+			<h2>{moment(props.dueDate).format('LL')}</h2>
+			
 			<p>{props.description}</p>
 		</div>
 	);
@@ -341,18 +344,28 @@ function dueDateString(dueDate){
 	return dueDate.toDateString();
 }
 
-function findColor(dueDate){
-	const today = new Date();
+function findColor(date){
+	const today = moment();
+	const dueDate = moment(date);
+	const dayDiff = today.diff(dueDate, 'days');
 
-	if(today.getFullYear() === dueDate.getFullYear()){
-		if(today.getMonth() === dueDate.getMonth()){
-			if(today.getDate()-dueDate.getDate() === 0){
-				return 'rgb(255, 206, 206)'; //red
-			}else if(today.getDate()-dueDate.getDate() < 7){
-				return 'rgb(249, 231, 205)'; //orange
-			}
-		}
+	// if(today.getFullYear() === dueDate.getFullYear()){
+	// 	if(today.getMonth() === dueDate.getMonth()){
+	// 		if(today.getDate()-dueDate.getDate() === 0){
+	// 			return 'rgb(255, 206, 206)'; //red
+	// 		}else if(today.getDate()-dueDate.getDate() < 7){
+	// 			return 'rgb(249, 231, 205)'; //orange
+	// 		}
+	// 	}
+	// }
+
+	console.log(dayDiff);
+	if(dayDiff === 0){
+		return 'rgb(255, 206, 206)'; //red
+	}else if(dayDiff <7){
+		return 'rgb(249, 231, 205)'; //orange
 	}
+
 	return 'rgb(210, 244, 219)'; //green
 }
 
