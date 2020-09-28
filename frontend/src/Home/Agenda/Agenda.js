@@ -1,14 +1,15 @@
 import React from 'react';
+import TimePicker from 'react-time-picker';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 
 import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 import {findTopPosition, dateObjToStdTime, convertToStdDate} from './Agenda_Helper';
-// import StartEndTime from './Semester Creator/StartEndTimeComp/StartEndTime';
 import {FadeInOut_HandleState} from '../../Shared Resources/Effects/CustomTransition';
 
 import './newAgItem.css';
+import './agenda.css';
 
 class Agenda extends React.Component{
 	constructor(props){
@@ -39,14 +40,16 @@ class Agenda extends React.Component{
 			const height = endTime.diff(startTime, 'minutes') /30.0 * 25;
 			return <AgendaItem 
 				key={index}
-				height={height} 
+				height={height >10 ? height: 10} 
 				top={topDis} 
 				name={data.name} 
 				location={data.location}
 				zIndex={index}
+				itemClicked={() => this.props.handleAgendaItemClick(index)}
 			/>
 		});
 
+		//NEED TO ADD UPCOMMING NEXT PART TO SHOW DATE-TIME INFO
 		return(
 			<div className='agenda sans-font' style={{position: 'relative'}}>
 				<h1 className='gray-c'>Agenda</h1>
@@ -65,30 +68,15 @@ class Agenda extends React.Component{
 
 
 class AgendaItem extends React.Component{
-	constructor(props){
-		super(props);
-
-		this.state={
-			mouseOver: false,
-		}
-	}
-
 	render(){
 		return(
 			<div 
-				onMouseEnter={() => this.setState({mouseOver:true})} 
-				onMouseLeave={() => this.setState({mouseOver:false})} 
+				onClick={() => this.props.itemClicked()}
 				style={{height: this.props.height, top: this.props.top, zIndex: this.props.zIndex}} 
 				className={this.props.isClass ? 'blue-bc item-container' : 'light-green-bc item-container'}
 			>
 				<h2>{this.props.name}</h2>
 				<h3>{this.props.location}</h3>
-				<FadeInOut_HandleState condition={this.state.mouseOver}>
-					<div>
-						<button className='edit'>Edit</button>
-						<button className='delete'>Delete</button>	
-					</div>
-				</FadeInOut_HandleState>
 			</div>
 		);
 	}
@@ -110,14 +98,18 @@ class NewAgendaItem extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.state ={
+		this.state = {
 			time:{
-				start: '2:00PM',
-				end: '4:00PM',
+				start: this.props.updateItem ? new Date(this.props.updateItem.time.start) : new Date(moment()),
+				end: this.props.updateItem ? new Date(this.props.updateItem.time.end) : new Date(moment().add(1, 'hours')),
 			},
-			date: new Date(),
+			date: this.props.updateItem ? new Date(this.props.updateItem.date) : new Date(),
 			errors: {
 				name: false,
+				time: {
+					start: false,
+					end: false,
+				}
 			},
 			success: false,
 		}
@@ -129,14 +121,21 @@ class NewAgendaItem extends React.Component{
 		this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
 
-	setTime(key, time){
-		let time_copy = this.state.time;
-		time_copy[key] = time;
-		this.setState({
-			time: time_copy,
-		})
-	}
+	componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
 
+        if(this.props.updateItem){
+        	const updateItem = this.props.updateItem;
+
+        	this.name.current.value = updateItem.name;
+        	this.location.current.value = updateItem.location;
+        	this.description.current.value = updateItem.description;
+        }
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
 
 
 	// Server interaction
@@ -154,29 +153,61 @@ class NewAgendaItem extends React.Component{
 
 			this.props.sendData(data);
 		}
+	}
 
-		//if no errors post data to server
-		//going to need to setup a way to see all upcomming events for a week/month/calendar
-		//editing events and deleting
+	update(){
+		if(!this.checkErrors()){
+			const data = {
+				name: this.name.current.value,
+				location: this.location.current.value,
+				description: this.description.current.value,
+				time: this.state.time,
+				date: this.state.date,
+			}
+			this.props.update(data);
+		}
 	}
 
 	checkErrors(){
-		let error = false;
-		let error_copy = this.state.errors;
+		let errors = this.state.errors;
 
 		if(this.name.current.value === ''){
-			error=true;
-			error_copy.name = true;
+			errors.name = true;
 		}else{
-			error_copy.name = false;
+			errors.name = false;
 		}
 
+		const startTime = moment(new Date(this.state.time.start));
+		const endTime = moment(new Date(this.state.time.end));
+		if(!startTime.isValid()){
+			errors.time.start = true;
+		}else{
+			errors.time.start = false;
+			if(!endTime.isValid()){
+				errors.time.end = true;
+			}else{
+				errors.time.end = false;
+
+				if(startTime.isAfter(endTime)){
+					errors.time.end = true;
+				}else{
+					errors.time.end = false;
+				}
+			}
+		}
+
+
+
 		this.setState({
-			errors: error_copy,
+			errors: errors,
 		})
 
 
-		return error;
+		if(errors.name || errors.time.start || errors.time.end){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	dateChanged(date){
@@ -184,16 +215,15 @@ class NewAgendaItem extends React.Component{
 			date: date
 		})
 	}
+
+	timeChanged(startOrEnd, newTime){
+		let time =  this.state.time;
+		time[startOrEnd] = newTime;
+		this.setState({
+			time: time,
+		})
+	}
 	// End Of Server Interaction
-
-
-	componentDidMount() {
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    }
 
     handleClickOutside(event) {
         if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
@@ -218,7 +248,28 @@ class NewAgendaItem extends React.Component{
     			<input ref={this.location} type="text" placeholder='Location'/>
     			<div className='row'>
     				<div className='col-lg-6'>
-    					
+    					<div style={this.state.errors.time.start ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
+	    					<label  htmlFor="">Start</label>
+	    					<TimePicker
+						          onChange={(time) => this.timeChanged('start', moment(time, 'hh:mm'))}
+						          clockIcon={null}
+						          disableClock={true}
+						          format={'hh:mm a'}
+						          clearIcon={null}
+						          value={new Date(this.state.time.start)}
+						    />
+						</div>
+						<div style={this.state.errors.time.end ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
+	    					<label htmlFor="">End</label>
+	    					<TimePicker
+						          onChange={(time) => this.timeChanged('end', moment(time, 'hh:mm'))}
+						          clockIcon={null}
+						          disableClock={true}
+						          format={'hh:mm a'}
+						          clearIcon={null}
+						          value={new Date(this.state.time.end)}
+						    />
+						</div>
     				</div>
     				<div className='col-lg-6'>
 	    				<DatePicker
@@ -228,7 +279,20 @@ class NewAgendaItem extends React.Component{
     					<textarea ref={this.description} placeholder='Description'></textarea>
     				</div>
     			</div>
-    			<button onClick={() => this.submitForm()} className='blue-bc submit'>Submit</button>
+    			{this.props.updateItem ===null ? 
+    				<button onClick={() => this.submitForm()} className='blue-bc submit'>Submit</button>
+    			:
+    				<div className='row'>
+    					<div className='col-lg-6'>
+    						<button onClick={() => this.props.delete()} className='red-bc delete'>Delete</button>
+    					</div>
+    					<div className='col-lg-6'>
+    						<button onClick={() => this.update()} className='orange-bc update'>Update</button>
+    					</div>
+    				</div>
+
+    			}
+    			
     		</div>
     	);
     }

@@ -67,12 +67,43 @@ class Home extends React.Component{
 	}
 
 	sendNewAgendaItem(data){
-		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/' + 'agenda';
+		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/agenda';
 
 		axios.post(endPoint, data)
 		.then((response) => {
 			this.setState({
 				agendaItemSentSuccessful: true,
+				selectedAgendaIndex: null,
+			})
+			this.getTodaysEvents();
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+
+	updateAgItem(data){
+		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/agenda/' + this.state.agendaItems[this.state.selectedAgendaIndex]._id;
+
+		axios.put(endPoint, data)
+		.then((response) => {
+			this.setState({
+				agendaItemSentSuccessful: true,
+				selectedAgendaIndex: null,
+			})
+			this.getTodaysEvents();
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+
+	deleteAgItem(){
+		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/agenda/' + this.state.agendaItems[this.state.selectedAgendaIndex]._id;
+
+		axios.delete(endPoint)
+		.then((response) => {
+			this.setState({
+				agendaItemSentSuccessful: true,
+				selectedAgendaIndex: null,
 			})
 			this.getTodaysEvents();
 		}).catch((error) => {
@@ -169,16 +200,23 @@ class Home extends React.Component{
 	handleClassClick(i){
 		this.setState({
 			selectedIndex: i,
+			showNewAssignmentForm: true,
 		})
 	}
 
 	editAssignment(i){
 		const classIndex = findClassIndex(this.state.upcommingAss[i]._id, this.state.currSemester.classes)
-		console.log(classIndex)
 		this.setState({
 			editIndex: i,
 			showNewAssignmentForm: true,
 			selectedIndex: classIndex,
+		})
+	}
+
+	agendaItemClicked(i){
+		this.setState({
+			selectedAgendaIndex: i,
+			showNewAgForm: true
 		})
 	}
 
@@ -204,6 +242,7 @@ class Home extends React.Component{
 							<Agenda 
 								showNewAgForm={() => this.showNewAgForm(true)}
 								agendaItems={this.state.agendaItems}
+								handleAgendaItemClick={(i) => this.agendaItemClicked(i)}
 							/>
 					    </div>
 					    <div className='col-lg-8 right'>
@@ -227,7 +266,10 @@ class Home extends React.Component{
 							hideNewAgForm={() => this.showNewAgForm(false)}
 							currentUser={this.props.currentUser}
 							sendData={(data) => this.sendNewAgendaItem(data)}
+							update={(data) => this.updateAgItem(data)}
+							delete={() => this.deleteAgItem()}
 							success={this.state.agendaItemSentSuccessful}
+							updateItem={this.state.selectedAgendaIndex !==null ? this.state.agendaItems[this.state.selectedAgendaIndex] : null}
 						/>
 					</FadeInOut_HandleState>
 					

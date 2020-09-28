@@ -70,6 +70,45 @@ router.post('/users/:id/agenda', function(req, res){
 	})
 })
 
+router.put('/users/:id/agenda/:ag', function(req, res){
+	Agenda.findByIdAndUpdate(req.params.ag, req.body, function(err, updatedAgItem){
+		if(err){
+			console.log(err);
+		}else{
+			updatedAgItem.save(function(err){
+				if(err){
+					console.log(err);
+				}else{
+					res.send('success');
+				}
+			})
+		}
+	})
+})
+
+router.delete('/users/:id/agenda/:ag', function(req, res){
+	User.findById(req.params.id, function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			Agenda.findByIdAndRemove(req.params.ag, function(err){
+				if(err){
+					console.log(err);
+				}else{
+					foundUser.agenda.pull(req.params.ag);
+					foundUser.save(function(err){
+						if(err){
+							console.log(err);
+						}else{
+							res.send('success');
+						}
+					})
+				}
+			})
+		}
+	})
+})
+
 function createClassAgendaItems(classes, userID){
 	User.findById(userID).populate('agenda').exec(function(err, foundUser){
 		if(err){

@@ -8,7 +8,12 @@
     left: 31%;
 }
 
-.new-ag-it-cont button.submit{
+.new-ag-it-cont label{
+    margin: 0;
+    margin-top: 5px;
+}
+
+.new-ag-it-cont button.submit, button.update, button.delete{
 	margin-top: 10px;
     border: none;
     border-radius: 5px;
@@ -39,7 +44,7 @@
 	resize: none;
     width: 100%;
     border: none;
-    height: 84%;
+    height: 92px;
     border-radius: 5px;
 }
 

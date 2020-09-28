@@ -115,7 +115,7 @@ class Assignment extends React.Component{
 class NewAssignment extends React.Component{
 	constructor(props){
 		super(props);
-
+		
 		this.state = {
 			date: this.props.editData ? new Date(this.props.editData.dueDate) : new Date(),
 			time: this.props.editData ? new Date(this.props.editData.dueTime) : new Date(),

@@ -118,25 +118,37 @@ router.post('/users/:id/posts', upload.array('images',6), (req, res) => {
 					images = [images];
 				uploadImages(images, directory, function(err,returnArr){
 					newPost.photos = returnArr;
-					newPost.save();
+					newPost.save(function(err){
+						if(err){
+							console.log(err);
+						}else{
+							addUserPost(req.params.id, newPost, res);
+						}
+					});
 				})
+			}else{
+				addUserPost(req.params.id, newPost, res)
 			}
-			User.updateOne(
-			{"_id": req.params.id},
-			{ 
-				"$push": { "posts": { "$each": [newPost], "$position": 0 }} //push to front FILO
-			},
-			function(err, result){
+		}
+	})
+});
+
+function addUserPost(id, newPost, res){
+	User.findById(id, function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			foundUser.posts.unshift(newPost);
+			foundUser.save(function(err){
 				if(err){
 					console.log(err);
 				}else{
 					res.send('success');
 				}
-			}
-		);
+			})
 		}
 	})
-});
+}
 
 function uploadImages(images, directory, next) {
 	let ct =0;

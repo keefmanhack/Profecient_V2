@@ -41,6 +41,10 @@ body{
     background: red;
 }
 
+.orange-bc{
+    background: orange;
+}
+
 .green-bc{
     background: #28965A;
 }
@@ -311,54 +315,6 @@ h5.error-msg{
 
 /*End of Assignment Dashboard Styling*/
 
-/*Agenda Styling*/
-.agenda h1{
-    font-weight: bold;
-    font-size: 36px;
-    margin-bottom: 2px;
-}
-
-.agenda h4{
-    font-size: 16px;
-    margin: 0;
-    display: inline-block;
-}
-
-.agenda button.see-more{
-    background: none;
-    position: absolute;
-    right: -5px;
-    border: none;
-    display: inline-block;
-    font-weight: 600;
-}
-
-.agenda button.edit, button.delete{
-    background: none;
-    padding: 0;
-    margin-right: 5px;
-    border: none;
-    font-weight: 600;
-    text-decoration: underline;
-}
-
-.agenda .foreground{
-    /*background: white;*/
-    height: 400px;
-    overflow: scroll;
-    position: relative;
-}
-
-.time-hr{
-    /*border-color: white;*/
-    color: white;
-}
-
-.time-hr hr{
-    border-color: white;
-}
-
-/*End of Agenda Styling*/
 
 /*Feed container styling*/
 .make-post{
@@ -558,40 +514,6 @@ h5.error-msg{
 .time-hr{
     position: absolute;
     width: 100%;
-}
-
-.agenda .item-container{
-    position: absolute;
-    opacity: .8;
-    max-width: 33%;
-    padding: 10px;
-    left: 10px;
-    top: 10px;
-    border-radius: 11px;
-}
-
-.item-container h2{
-        display: inline-block;
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.item-container h3{
-    font-size: 14px;
-    display: inline-block;
-    margin-left: 10px;
-    font-weight: 200;
-}
-
-#add-agenda-item{
-    background: none;
-    border: none;
-    color: #A3CCF1;
-    font-weight: 800;
-    position: absolute;
-    font-size: 42px;
-    top: -3%;
-    left: 89%;
 }
 
 .make-post .textarea{
