@@ -33,7 +33,30 @@ let UserSchema = mongoose.Schema({
 	agenda: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Agenda" //not yet created
-	}]
+	}],
+	notifications: {
+		academic: {
+			unDismissed: Number,
+			class_data: {
+				data: [{
+					myClass: {
+						type: mongoose.Schema.Types.ObjectId,
+						ref: "Class"
+					},
+					otherUser: {
+						name: String,
+						profilePictureURL: String,
+					},
+					assignment: {
+						type: mongoose.Schema.Types.ObjectId,
+						ref: "Assignment"
+					},
+					type: String, //options: 'New Ass, Edited, Deleted'
+				}]
+			}
+			
+		}
+	}
 
 
 })

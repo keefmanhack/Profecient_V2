@@ -12,6 +12,68 @@ let User       = require('../models/User'),
     Assignment = require('../models/Assignment'),
     Link       = require('../models/Link');
 
+
+// Connection Routes
+
+router.post('/users/:id/class/connection', function(req, res){
+	async.waterfall([
+		function(cb){
+			User.findById(req.params.id, function(err, currUser){
+				if(err){
+					console.log(err);
+				}else{
+					cb(null, currUser);
+				}
+			})
+		},
+		function(currUser, cb){
+			User.findById(req.body.otherUser, function(err, otherUser){
+				if(err){
+					console.log(err);
+				}else{
+					cb(null);
+				}
+			})
+		},
+		function(cb){
+			Class.findById(req.body.currUserClass, function(err, foundClass){
+				if(err){
+					console.log(err);
+				}else{
+					const newConnect = {
+						user: req.body.otherUser,
+						class_data: req.body.otherUserClass,
+					}
+					foundClass.connectionsTo.push(newConnect, 0);
+					foundClass.save();
+					cb(null);
+				}
+			})
+		},
+		function(cb){
+			Class.findById(req.body.otherUserClass, function(err, foundClass){
+				if(err){
+					console.log(err);
+				}else{
+					const newConnect = {
+						user: req.params.id,
+						class_data: req.body.currUserClass,
+					}
+					foundClass.connectionsFrom.push(newConnect, 0);
+					foundClass.save();
+					cb(null);
+				}
+			})
+		}
+	], function(err){
+		if(err){
+			console.log(err);
+		}else{
+			res.send('success');
+		}
+	})
+})
+
 // Semester Creator Routes
 router.post('/users/:id/semester', function(req, res){
 	const data = req.body.semesterData;

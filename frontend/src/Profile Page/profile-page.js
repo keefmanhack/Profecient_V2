@@ -9,6 +9,7 @@ import {FadeInOut_HandleState} from '../Shared Resources/Effects/CustomTransitio
 import Header from '../Shared Resources/header';
 import PostCreator from '../Shared Resources/PostCreator';
 import Loader from '../Shared Resources/Effects/loader';
+import LinkSelector from '../Shared Resources/LinkSelector';
 
 import './profile-page.css';
 
@@ -178,7 +179,14 @@ class ProfilePage extends React.Component{
 								</div>
 							</div>
 						</div>
-						
+						{this.state.semesters && this.state.semesters[this.state.currSemesterIndex] && this.state.semesters[this.state.currSemesterIndex].classes  ?
+							<LinkSelector
+								otherUserId={this.state.profile._id}
+								linkClass={this.state.semesters[this.state.currSemesterIndex].classes[0]}
+								currentUser={this.props.currentUser}
+							/>
+						: null
+						}
 					</div>
 				: this.getProfileData()}
 				<FadeInOut_HandleState condition={this.state.showNewSem}>
@@ -188,6 +196,7 @@ class ProfilePage extends React.Component{
 						updateData={this.state.editSemMode ? this.state.semesters[this.state.currSemesterIndex] : null}
 					/>
 				</FadeInOut_HandleState>
+
 			</React.Fragment>
 		);
 	}
