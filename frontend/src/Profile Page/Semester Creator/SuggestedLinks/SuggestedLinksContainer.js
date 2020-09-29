@@ -89,7 +89,7 @@ function ExpandedLink(props){
 	return(
 		<div className='link'>
 			<h1>{props.data.name}</h1>
-			<h5>{props.data.links.length} Links</h5>
+			<h5>{props.data.connectionsFrom.length} Links</h5>
 			<h2>{props.data.location}</h2>
 			<h3>{props.data.instructor}</h3>
 			<div className='week-days'>

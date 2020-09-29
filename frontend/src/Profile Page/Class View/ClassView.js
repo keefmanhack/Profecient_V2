@@ -77,16 +77,12 @@ class ClassView extends React.Component{
 		let currSem = this.props.currSemExists ? this.props.semesters[this.props.currSemesterIndex] : null;
 
 		const classes =  this.props.currSemExists ? currSem.classes.map((data, index) =>
-			<ClassCon  
-				name={data.name}
-				instructor={data.instructor}
-				location={data.location}
-				days={data.daysOfWeek}
-				startTime={moment(data.time.start).format('h:mm a')}
-				endTime={moment(data.time.end).format('h:mm a')}
-				assignments={data.assignments}
+			<ClassCon
+				data={data}
 				key={index}
 				isCurrentUserViewing={this.props.isCurrentUserViewing}
+				currentUser={this.props.currentUser}
+				linkClicked={() => this.props.linkClicked(index)}
 			/> 
 		): null
 
@@ -250,28 +246,50 @@ class ClassCon extends React.Component{
 		})
 	}
 
+
 	render(){
 		const daySpans = this.days.map((day, index)=>
-			<span style={this.props.days[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
+			<span style={this.props.data.daysOfWeek[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
 		);
+
+		const startTime = moment(this.props.data.time.start).format('h:mm a');
+		const endTime = moment(this.props.data.time.end).format('h:mm a');
+
+		let connectedTo = false;
+
+		this.props.data.connectionsFrom.forEach(function(connection){
+			if(connection.user === this.props.currentUser._id){
+				connectedTo = true;
+			}
+		}.bind(this))
+
+		let linkBtn;
+
+		if(connectedTo){
+			linkBtn = <button onClick={() => this.props.linkClicked()} className='link' >UnLink</button>
+		}else{
+			linkBtn = <button className='link' >Link</button>
+		}
 
 		const dropDownDis = this.state.showAssignment ? <i class="fas fa-chevron-up"></i> : <i class="fas fa-chevron-down"></i>;
 		return(
 			<div className='class-container'>
 				{this.props.isCurrentUserViewing ? null :
-					<button className='link' >Link</button>
+					<React.Fragment>
+					{linkBtn}
+					</React.Fragment>
 				}
-				<h1>{this.props.name}</h1>
-				<h2>{this.props.instructor}</h2>
-				<h3>{this.props.location}</h3>
+				<h1>{this.props.data.name}</h1>
+				<h2>{this.props.data.instructor}</h2>
+				<h3>{this.props.data.location}</h3>
 				<h4 style={{marginBottom: 0}}>{daySpans}</h4>
-				<h4>{this.props.startTime} - {this.props.endTime}</h4>
+				<h4>{startTime} - {endTime}</h4>
 				<button className='see-assign' onClick={() => this.toggleShowAssignment()}>
 					{dropDownDis} {this.state.showAssignment ? 'Close' : 'See'} Assignments 
 				</button>
 				<div style={{position: 'relative'}}>
 					<FadeDownUp_HandleState condition={this.state.showAssignment}>
-						<AssignContainer assignments={this.props.assignments}/>
+						<AssignContainer assignments={this.props.data.assignments}/>
 					</FadeDownUp_HandleState>
 				</div>
 			</div>

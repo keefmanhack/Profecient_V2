@@ -23,7 +23,7 @@ let ClassSchema = mongoose.Schema({
 			ref: "Class"
 		}
 	}],
-	conectionsFrom: [{
+	connectionsFrom: [{
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User"

@@ -9,7 +9,7 @@ import {FadeInOut_HandleState} from '../Shared Resources/Effects/CustomTransitio
 import Header from '../Shared Resources/header';
 import PostCreator from '../Shared Resources/PostCreator';
 import Loader from '../Shared Resources/Effects/loader';
-import LinkSelector from '../Shared Resources/LinkSelector';
+import LinkSelector from '../Shared Resources/Link Selector/LinkSelector';
 
 import './profile-page.css';
 
@@ -24,6 +24,8 @@ class ProfilePage extends React.Component{
 			semesters: [],
 			editSemMode: false,
 			profile: null,
+			showNewLinkForm: false,
+			selectedClass: null,
 		}
 	}
 
@@ -106,6 +108,17 @@ class ProfilePage extends React.Component{
 		})
 	}
 
+	linkClicked(i){
+		this.setState({
+			selectedClass: i,
+		})
+		this.showLinkSelector(true);
+	}
+
+	showLinkSelector(val){
+		this.setState({showNewLinkForm: val})
+	}
+
 	render(){
 		let currSemExists = this.state.currSemesterIndex >-1;
 		const classList = currSemExists ? this.state.semesters[this.state.currSemesterIndex].classes.map((data, index) =>
@@ -164,6 +177,8 @@ class ProfilePage extends React.Component{
 									currSemExists={currSemExists}
 									changeCurrentSem={(i) => this.changeCurrentSem(i)}
 									isCurrentUserViewing={this.props.currentUser !==null && this.state.profile._id === this.props.currentUser._id}
+									linkClicked={(i) => this.linkClicked(i)}
+									currentUser={this.props.currentUser}
 								/>
 							</div>
 							<div className='col-lg-8'>
@@ -179,11 +194,12 @@ class ProfilePage extends React.Component{
 								</div>
 							</div>
 						</div>
-						{this.state.semesters && this.state.semesters[this.state.currSemesterIndex] && this.state.semesters[this.state.currSemesterIndex].classes  ?
+						{this.state.showLinkSelector  ?
 							<LinkSelector
-								otherUserId={this.state.profile._id}
-								linkClass={this.state.semesters[this.state.currSemesterIndex].classes[0]}
+								otherUserID={this.state.profile._id}
+								linkClass={this.state.semesters[this.state.currSemesterIndex].classes[this.state.selectedClass]}
 								currentUser={this.props.currentUser}
+								hideForm={() => this.showLinkSelector(false)}
 							/>
 						: null
 						}
