@@ -4,7 +4,7 @@ import TimePicker from 'react-time-picker';
 import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 
-import {FadeInOut_HandleState} from '../../../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
 // import StartEndTime from '../StartEndTimeComp/StartEndTime';
 // import CE_Errors from './helperFunc';
 class ClassEditor extends React.Component{
@@ -277,10 +277,10 @@ class ClassEditor extends React.Component{
 				</div>
 
 				<div className='button-container'>
-					<FadeInOut_HandleState condition={!this.props.editMode}>
+					<FadeInOutHandleState condition={!this.props.editMode}>
 						<button onClick={() => this.addClass()} className='add-class'>Add Class</button>
-					</FadeInOut_HandleState>
-					<FadeInOut_HandleState condition={this.props.editMode}>
+					</FadeInOutHandleState>
+					<FadeInOutHandleState condition={this.props.editMode}>
 						<div className='row'>
 							<div className='col-lg-6'>
 								<button onClick={() => this.cancelUpdate()} className='cancel-update'>Cancel</button>
@@ -289,7 +289,7 @@ class ClassEditor extends React.Component{
 								<button onClick={() => this.updateClass()} className='update'>Update</button>
 							</div>
 						</div>
-					</FadeInOut_HandleState>
+					</FadeInOutHandleState>
 				</div>
 			</div>
 		);

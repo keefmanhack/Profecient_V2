@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import {FadeDownUp_HandleState, FadeInOut, FadeInOut_HandleState} from '../../Shared Resources/Effects/CustomTransition';
+import {FadeDownUpHandleState, FadeInOut, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 
 import './class-view.css';
 
@@ -10,54 +10,7 @@ class ClassView extends React.Component{
 		super(props);
 
 		this.state={
-			testData: {
-				name: 'Freshman 1st Semester',
-				showDialog: false,
-				classes: [
-					{
-						name: 'Algebra',
-						instructor: 'Dr. Lee',
-						location: 'Zurn 101',
-						startTime: '10:15AM',
-						endTime: '11:05AM',
-						assignments: [
-							{
-								name: 'Hw1',
-								dueDate: new Date(2020, 5, 10),
-								description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint cum iure, velit soluta. Sapiente sint unde quasi sequi reiciendis, eaque molestias, similique saepe doloribus consequatur, ratione doloremque odio rerum tempora!',
-								completed: false,
-							},
-							{
-								name: 'Hw1',
-								dueDate: new Date(),
-								description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint cum iure, velit soluta. Sapiente sint unde quasi sequi reiciendis, eaque molestias, similique saepe doloribus consequatur, ratione doloremque odio rerum tempora!',
-								completed: true,
-							}
-						]
-					},
-					{
-						name: 'Algebra',
-						instructor: 'Dr. Lee',
-						location: 'Zurn 101',
-						startTime: '10:15AM',
-						endTime: '11:05AM',
-						assignments: [
-							{
-								name: 'Hw1',
-								dueDate: new Date(),
-								description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint cum iure, velit soluta. Sapiente sint unde quasi sequi reiciendis, eaque molestias, similique saepe doloribus consequatur, ratione doloremque odio rerum tempora!',
-								completed: false,
-							},
-							{
-								name: 'Hw1',
-								dueDate: new Date(),
-								description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint cum iure, velit soluta. Sapiente sint unde quasi sequi reiciendis, eaque molestias, similique saepe doloribus consequatur, ratione doloremque odio rerum tempora!',
-								completed: true,
-							}
-						]
-					}
-				]
-			}
+			showDialog: false,
 		}
 	}
 
@@ -82,7 +35,8 @@ class ClassView extends React.Component{
 				key={index}
 				isCurrentUserViewing={this.props.isCurrentUserViewing}
 				currentUser={this.props.currentUser}
-				linkClicked={() => this.props.linkClicked(index)}
+				addLink={() => this.props.addLink(data._id)}
+				removeLink={() => this.props.removeLink(data._id)}
 			/> 
 		): null
 
@@ -94,16 +48,16 @@ class ClassView extends React.Component{
 							{this.props.currSemExists ? currSem.name : 'No Semester Exists'}
 						</h1>
 					</div>
-					<FadeInOut_HandleState condition={this.props.isCurrentUserViewing || this.props.semesters.length>0}>
+					<FadeInOutHandleState condition={this.props.isCurrentUserViewing || this.props.semesters.length>0}>
 						<button className='white-c' onClick={() => this.showDialog()}>...</button>
-					</FadeInOut_HandleState>
+					</FadeInOutHandleState>
 				</div>
 				<h5 className='muted-c'>{this.props.currSemExists ? currSem.classes.length + ' Classes' : null}</h5>
 				<hr/>
 				<div style={{minHeight: 150, maxHeight: 350, overflow: 'scroll'}}>
 					{classes}
 				</div>
-				<FadeInOut_HandleState condition={this.state.showDialog}>
+				<FadeInOutHandleState condition={this.state.showDialog}>
 					<MenuDropDown hideDropDown={() => this.hideDialog()}>
 						<DropDownMain>
 							{this.props.isCurrentUserViewing ?
@@ -134,7 +88,7 @@ class ClassView extends React.Component{
 							: null}
 						</DropDownMain>
 					</MenuDropDown>
-				</FadeInOut_HandleState>
+				</FadeInOutHandleState>
 			</div>
 		);
 	}
@@ -266,12 +220,12 @@ class ClassCon extends React.Component{
 		let linkBtn;
 
 		if(connectedTo){
-			linkBtn = <button onClick={() => this.props.linkClicked()} className='link' >UnLink</button>
+			linkBtn = <button onClick={() => this.props.removeLink()} className='link orange-bc white-c' >UnLink</button>
 		}else{
-			linkBtn = <button className='link' >Link</button>
+			linkBtn = <button onClick={() => this.props.addLink()} className='link blue-bc'>Link</button>
 		}
 
-		const dropDownDis = this.state.showAssignment ? <i class="fas fa-chevron-up"></i> : <i class="fas fa-chevron-down"></i>;
+		const dropDownDis = this.state.showAssignment ? <i className="fas fa-chevron-up"></i> : <i className="fas fa-chevron-down"></i>;
 		return(
 			<div className='class-container'>
 				{this.props.isCurrentUserViewing ? null :
@@ -288,9 +242,9 @@ class ClassCon extends React.Component{
 					{dropDownDis} {this.state.showAssignment ? 'Close' : 'See'} Assignments 
 				</button>
 				<div style={{position: 'relative'}}>
-					<FadeDownUp_HandleState condition={this.state.showAssignment}>
+					<FadeDownUpHandleState condition={this.state.showAssignment}>
 						<AssignContainer assignments={this.props.data.assignments}/>
-					</FadeDownUp_HandleState>
+					</FadeDownUpHandleState>
 				</div>
 			</div>
 		);
@@ -344,23 +298,6 @@ function Assign(props){
 	);
 }
 
-function dueDateString(dueDate){
-	const today = new Date();
-
-	if(today.getFullYear() === dueDate.getFullYear()){
-		if(today.getMonth() === dueDate.getMonth()){
-			if(today.getDate()-dueDate.getDate() === 0){
-				return 'Today';
-			}else if(today.getDate()-dueDate.getDate() === 1){
-				return 'Tomorrow';
-			}else if(today.getDate()-dueDate.getDate() < 7){
-				return today.getDate()-dueDate.getDate() + 'days';
-			}
-		}
-	}
-
-	return dueDate.toDateString();
-}
 
 function findColor(date){
 	const today = moment();

@@ -8,7 +8,7 @@ class SevenDayAgenda extends React.Component{
 
 	render(){
 		const agendaData = convertToAgendaFormat(this.props.data);
-		const heightOfTable = 588;
+		// const heightOfTable = 588;
 
 		const agenda = agendaData.map((data, index) =>
 			<AgendaRow 
@@ -85,7 +85,6 @@ function AgendaData(props){
 
 function EventItem(props){
 	const tdHeight = 80.0; //equal to 1 half hour
-	const halfHourHeightInPX = 91;
 	const timeInterval = moment(props.time, 'h:mm a');
 	const startTime = moment(new Date(props.data.time.start), 'h:mm a');
 	const endTime = moment(new Date(props.data.time.end), 'h:mm a');

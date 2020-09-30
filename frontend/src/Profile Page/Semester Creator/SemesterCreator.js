@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import axios from 'axios';
 
-import {BackInOut_HandleState, FadeInOut_HandleState, FadeInOut, FadeRight_HandleState} from '../../Shared Resources/Effects/CustomTransition';
+import {BackInOutHandleState, FadeInOutHandleState, FadeRightHandleState} from '../../Shared Resources/Effects/CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
 import ClassEditor from './ClassEditor/ClassEditor';
@@ -243,34 +243,34 @@ class SemesterCreator extends React.Component{
 		);
 		return(
 			<div className='semester-creator-container'>
-				<FadeInOut_HandleState condition={this.state.successful}>
+				<FadeInOutHandleState condition={this.state.successful}>
 	 				<SuccessCheck onCompleted={() =>this.props.hideNewSemForm()}/>
-	 			</FadeInOut_HandleState>
+	 			</FadeInOutHandleState>
 
 
 				<button onClick={() => this.props.hideNewSemForm()} id='exit'>Exit</button>
-				<FadeRight_HandleState condition={this.state.semData.classes.length > 0}>
+				<FadeRightHandleState condition={this.state.semData.classes.length > 0}>
 					{this.props.updateData === null ?
 						<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
 					:
 						<button onClick={() => this.updateSemester()} className='update-semester'>Edit Semester</button>	
 					}
-				</FadeRight_HandleState>
+				</FadeRightHandleState>
 
-				<BackInOut_HandleState condition={this.state.semData.name === null} >
+				<BackInOutHandleState condition={this.state.semData.name === null} >
 					<NameSemester semName={(key, text) => this.semName(key, text)}/>
-				</BackInOut_HandleState>
-				<FadeInOut_HandleState condition={this.state.semData.name !== null}>
+				</BackInOutHandleState>
+				<FadeInOutHandleState condition={this.state.semData.name !== null}>
 					<div>
 						<h1>{this.state.semData.name}</h1>
 						<hr/>
 						<div className='row'>
 							<div className='col-lg-6'>
-								<FadeInOut_HandleState condition={this.state.semData.classes.length>0}>
+								<FadeInOutHandleState condition={this.state.semData.classes.length>0}>
 									<div className='class-item-container'>
 										{classItems}
 									</div>
-								</FadeInOut_HandleState>
+								</FadeInOutHandleState>
 
 								<div className='row'>
 									<div className='col-lg-6'>
@@ -305,7 +305,7 @@ class SemesterCreator extends React.Component{
 							</div>
 						</div>
 					</div>
-				</FadeInOut_HandleState>
+				</FadeInOutHandleState>
 			</div>
 		);
 	}
@@ -417,9 +417,9 @@ class ClassItem extends React.Component{
 						
 					</div>
 				</div>
-				<FadeRight_HandleState condition={this.state.mouseOver}>
+				<FadeRightHandleState condition={this.state.mouseOver}>
 					<button onClick={() => this.props.removeClassItem(this.props.i)}><i class="fas fa-trash"></i></button>
-				</FadeRight_HandleState>
+				</FadeRightHandleState>
 			</div>
 		)
 	}

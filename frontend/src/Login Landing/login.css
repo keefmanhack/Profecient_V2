@@ -8,6 +8,7 @@
     font-weight: bold;
     font-size: 64px;
     line-height: 78px;
+    transition: .3s;
 }
 
 #login h2{

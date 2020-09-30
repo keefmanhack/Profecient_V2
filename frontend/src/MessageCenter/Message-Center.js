@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-import {FadeInOut, FadeInOut_HandleState, FadeRight_HandleState} from '../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState, FadeRightHandleState} from '../Shared Resources/Effects/CustomTransition';
 import NewMessage from './NewMessage';
 import {timeDifString} from './helperFunc';
 import Header from '../Shared Resources/header';
@@ -55,12 +55,14 @@ class MessageCenter extends React.Component{
 	    	let preSelectedUserID = null;
 	    	if(selectedID !== this.props.currentUser._id){
 		    	for(let i =0; i<res.data.length; i++){
-		    		res.data[i].communicators.forEach(function(communicator){
-		    			if(communicator._id==selectedID && communicator._id !== this.props.currentUser._id){
+		    		for(let j =0; j<res.data[i].communicators.length; j++){
+		    			const communicator = res.data[i].communicators[j];
+		    			if(communicator._id===selectedID && communicator._id !== this.props.currentUser._id){
 		    				temp =i;
 		    				i=res.data.length;
+		    				j=res.data[i].communicators.length;
 		    			}
-		    		}.bind(this))
+		    		}
 		    	}
 		    }
 
@@ -186,6 +188,7 @@ class MessageCenter extends React.Component{
 					delete={() => this.deleteMessageStream(index)}
 				/>
 			}
+			return null;
 		});
 
 		return(
@@ -208,11 +211,11 @@ class MessageCenter extends React.Component{
 								</div>
 							</div>
 							<div className='message-selector-container'>
-								<FadeInOut_HandleState condition={this.state.messageStreams.length > 0}>
+								<FadeInOutHandleState condition={this.state.messageStreams.length > 0}>
 									<React.Fragment>
 										{messageSelectors}
 									</React.Fragment>
-								</FadeInOut_HandleState>
+								</FadeInOutHandleState>
 								{this.state.messageStreams.length===0 ? <p className='muted-c'>No Messages</p> : null}
 							</div>
 						</div>
@@ -238,14 +241,14 @@ class MessageCenter extends React.Component{
 							</div>
 						</div>
 					</div>
-					<FadeInOut_HandleState condition={this.state.showNew}>
+					<FadeInOutHandleState condition={this.state.showNew}>
 						<NewMessage 
 							closeNew={() => this.showNew(false)}
 							currentUser={this.props.currentUser}
 							preSelectedUserID={this.state.preSelectedUserID}
 							removePreSelectedUserID={() => this.setState({preSelectedUserID: null})}
 						/>
-					</FadeInOut_HandleState>
+					</FadeInOutHandleState>
 				</div>
 			</React.Fragment>
 			
@@ -295,7 +298,7 @@ class MessageContainer extends React.Component{
 		return(
 			<div className='messages-container'>
 				<div className='header'>
-					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.communicator.profilePictureURL} alt="Can't display photo"/>
+					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.communicator.profilePictureURL} alt="Can't display"/>
 					<h1>{this.props.communicator.name}</h1>
 				</div>
 				<div className='messages-body'>
@@ -342,7 +345,7 @@ class MessageSelector extends React.Component{
 			<div className={'message-selector ' + selected}>
 				<div className='row'>
 					<div className='col-lg-1'>
-						<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.communicator.profilePictureURL} alt="Can't display photo"/>
+						<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.communicator.profilePictureURL} alt="Can't display"/>
 					</div>
 					<div className='col-lg-7'>
 						<h1>{this.props.communicator.name}</h1>
@@ -355,11 +358,11 @@ class MessageSelector extends React.Component{
 				<p>{lastMessage}</p>
 				<div className='selector' onClick={() => this.props.handleClick(this.props.i)}/>
 				<div className='delete' onMouseEnter={() => this.setState({mouseOver:true})} onMouseLeave={() => this.setState({mouseOver:false})}>
-					<FadeRight_HandleState condition={this.state.mouseOver === true}>
+					<FadeRightHandleState condition={this.state.mouseOver === true}>
 						<button onClick={() => this.props.delete()}>
 							<i className='fas fa-trash'></i>
 						</button>
-					</FadeRight_HandleState>
+					</FadeRightHandleState>
 				</div>
 			</div>
 		);

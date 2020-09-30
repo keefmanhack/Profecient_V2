@@ -2,7 +2,7 @@ import React from "react";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 
-function FlipInOut_HandleState(props){
+export function FlipInOutHandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -20,7 +20,7 @@ function FlipInOut_HandleState(props){
 	);
 }
 
-function FlipInOut(props){
+export function FlipInOut(props){
 	return(
 		<TransitionGroup component={null}>
 			<CSSTransition
@@ -39,7 +39,7 @@ function FlipInOut(props){
 	);
 }
 
-function RotateInOutLeft_HandleState(props){
+export function RotateInOutLeftHandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -57,7 +57,7 @@ function RotateInOutLeft_HandleState(props){
 	);
 }
 
-function RotateInOutRight_HandleState(props){
+export function RotateInOutRightHandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -75,7 +75,7 @@ function RotateInOutRight_HandleState(props){
 	);
 }
 
-function FadeInOut_HandleState(props){
+export function FadeInOutHandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -93,7 +93,7 @@ function FadeInOut_HandleState(props){
 	);
 }
 
-function FadeDownUp_HandleState(props){
+export function FadeDownUpHandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -111,7 +111,7 @@ function FadeDownUp_HandleState(props){
 	);
 }
 
-function FadeInOut(props){
+export function FadeInOut(props){
 	return(
 		<TransitionGroup component={null}>
 			<CSSTransition
@@ -131,7 +131,7 @@ function FadeInOut(props){
 	);
 }
 
-function BackInOut_HandleState(props){
+export function BackInOutHandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -149,7 +149,7 @@ function BackInOut_HandleState(props){
 	);
 }
 
-function FadeRight_HandleState(props){
+export function FadeRightHandleState(props){
 	return(
 		<CSSTransition
 			in={props.condition}
@@ -166,13 +166,3 @@ function FadeRight_HandleState(props){
 		</CSSTransition>
 	);
 }
-
-export {RotateInOutLeft_HandleState};
-export {RotateInOutRight_HandleState};
-export {FadeInOut};
-export {FlipInOut};
-export {FlipInOut_HandleState};
-export {FadeInOut_HandleState};
-export {FadeDownUp_HandleState};
-export {BackInOut_HandleState};
-export {FadeRight_HandleState};

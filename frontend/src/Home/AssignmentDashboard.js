@@ -4,39 +4,31 @@ import TimePicker from 'react-time-picker';
 import moment from 'moment';
 
 import {SuccessCheck} from '../Shared Resources/Effects/lottie/LottieAnimations';
-import {dateObjToStdTime, convertToStandard} from './Agenda/Agenda_Helper';
-import {FadeInOut_HandleState, FadeDownUp_HandleState} from '../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState, FadeDownUpHandleState} from '../Shared Resources/Effects/CustomTransition';
 
 import './newAssignment.css';
 
-class AssignmentDashboard extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
+function AssignmentDashboard(props){
+	const assignments = props.assignments ? props.assignments.map((data, index) =>
+		<Assignment 
+			data={data}
+			key={index}
+			toggleCompleted={(id, isCompleted) => props.toggleCompleted(id, isCompleted)}
+			editAssignment={() => props.editAssignment(index)}
+			deleteAssignment={() => props.deleteAssignment(index)}
+		/>
+	): null;
 	
-
-	render(){
-		const assignments = this.props.assignments ? this.props.assignments.map((data, index) =>
-				<Assignment 
-					data={data}
-					key={index}
-					toggleCompleted={(id, isCompleted) => this.props.toggleCompleted(id, isCompleted)}
-					editAssignment={() => this.props.editAssignment(index)}
-					deleteAssignment={() => this.props.deleteAssignment(index)}
-				/>
-		): null;
-		return(
-			<div className='assignment-dashboard sans-font' style={this.props.style}>
-				<h1 className='gray-c '>Upcomming</h1>
-				<button onClick={() => this.props.showNewAssForm()} className='add green-bc'>Add</button>
-				<hr/>
-				<div className='assignments-cont'>
-					{assignments}
-				</div>
-			</div>	
-		);
-	}
+	return(
+		<div className='assignment-dashboard sans-font' style={props.style}>
+			<h1 className='gray-c '>Upcoming</h1>
+			<button onClick={() => this.props.showNewAssForm()} className='add green-bc'>Add</button>
+			<hr/>
+			<div className='assignments-cont'>
+				{assignments}
+			</div>
+		</div>	
+	);
 }
 
 class Assignment extends React.Component{
@@ -92,19 +84,19 @@ class Assignment extends React.Component{
 						</button>
 					</div>
 				</div>
-				<FadeDownUp_HandleState condition={this.state.showDialog}>
+				<FadeDownUpHandleState condition={this.state.showDialog}>
 					<div className='more-info'>
 						<p>{this.props.data.description}</p>
 						<h5>{moment(this.props.data.dueTime).format('h:mm a')}</h5>
 						<button onClick={() => this.props.editAssignment()}>Edit</button>
 						<button onClick={() => this.props.deleteAssignment()}>Delete</button>
 					</div>
-				</FadeDownUp_HandleState>
-				<FadeInOut_HandleState condition={this.state.mouseOver}>
+				</FadeDownUpHandleState>
+				<FadeInOutHandleState condition={this.state.mouseOver}>
 					<button className='see-more' onClick={()=> this.toggleDropDown()}>
 						{this.state.showDialog ? <i className='fas fa-chevron-up'></i> : <i className='fas fa-chevron-down'></i>}
 					</button>
-				</FadeInOut_HandleState>
+				</FadeInOutHandleState>
 
 				
 			</div>
@@ -229,9 +221,9 @@ class NewAssignment extends React.Component{
 
 		return(
 			<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
-				<FadeInOut_HandleState condition={this.props.success}>
+				<FadeInOutHandleState condition={this.props.success}>
 	 				<SuccessCheck onCompleted={() =>this.props.hideNewAssForm()}/>
-	 			</FadeInOut_HandleState>
+	 			</FadeInOutHandleState>
 				<button onClick={()=> this.props.hideNewAssForm()} id='X'>Cancel</button>
 				<div 
 					className='row'
@@ -279,23 +271,14 @@ class NewAssignment extends React.Component{
 	}
 }
 
-class ToDo extends React.Component{
-	render(){
-		return(
-			<div className='to-do'>
-				<button>{this.props.text}</button>
-			</div>
-		);
-	}
-}
+// function ToDo(props){
+// 	return(
+// 		<div className='to-do'>
+// 			<button>{props.text}</button>
+// 		</div>
+// 	);
+// }
 
-function timePickerFormToStd(date){
-	const dateStr = date + '';
-	const removedColon = dateStr.substring(0, dateStr.length-3) + dateStr.substring(dateStr.length-2, dateStr.length);
-
-	return convertToStandard(removedColon)
-
-}
 
 export {NewAssignment};
 export default AssignmentDashboard;

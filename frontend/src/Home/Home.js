@@ -1,9 +1,9 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+// import {Link} from "react-router-dom";
 import axios from 'axios';
 
 import Header from '../Shared Resources/header';
-import {FadeInOut_HandleState} from '../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 import AssignmentDashboard from './AssignmentDashboard';
 import {NewAssignment} from './AssignmentDashboard';
 import Agenda from './Agenda/Agenda';
@@ -250,7 +250,7 @@ class Home extends React.Component{
 							<Feed feedData={this.state.postData} currentUser={this.props.currentUser}/>
 					    </div>
 					</div>
-					<FadeInOut_HandleState condition={this.state.showNewAssignmentForm}>
+					<FadeInOutHandleState condition={this.state.showNewAssignmentForm}>
 						<NewAssignment 
 							selectedIndex={this.state.selectedIndex} 
 							handleClassClick={(i) => this.handleClassClick(i)} 
@@ -260,8 +260,8 @@ class Home extends React.Component{
 							success={this.state.newAssSentSuccessful}
 							editData={this.state.upcommingAss[this.state.editIndex]}
 						/>
-					</FadeInOut_HandleState>
-					<FadeInOut_HandleState condition={this.state.showNewAgForm}>
+					</FadeInOutHandleState>
+					<FadeInOutHandleState condition={this.state.showNewAgForm}>
 						<NewAgendaItem
 							hideNewAgForm={() => this.showNewAgForm(false)}
 							currentUser={this.props.currentUser}
@@ -271,7 +271,7 @@ class Home extends React.Component{
 							success={this.state.agendaItemSentSuccessful}
 							updateItem={this.state.selectedAgendaIndex !==null ? this.state.agendaItems[this.state.selectedAgendaIndex] : null}
 						/>
-					</FadeInOut_HandleState>
+					</FadeInOutHandleState>
 					
 				</div>
 			</React.Fragment>
@@ -281,17 +281,16 @@ class Home extends React.Component{
 
 	
 function findClassIndex(id, classes){
-	let returnVal = null;
-
 	for(let i =0; i< classes.length; i++){
-		classes[i].assignments.forEach(function(ass){
+		for(let j =0; j<classes[i].assignments.length; j++){
+			const ass = classes[i].assignments[j];
 			if(ass === id){
-				returnVal = i;
+				return i;
 			}
-		})
+		}
 	}
 
-	return returnVal;
+	return -1;
 }
 
 export default Home;

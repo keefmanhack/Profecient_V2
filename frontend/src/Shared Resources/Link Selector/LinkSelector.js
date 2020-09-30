@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import Loader from '../Effects/loader';
-import {FadeRight_HandleState, FadeInOut_HandleState} from '../Effects/CustomTransition';
+import {FadeRightHandleState, FadeInOutHandleState} from '../Effects/CustomTransition';
 import {SuccessCheck} from '../Effects/lottie/LottieAnimations';
 
 import './LinkSelector.css';
@@ -74,13 +74,13 @@ class LinkSelector extends React.Component{
 		const endTime = moment(linkClass.time.end).format('h:mm a');
 		return(
 			<div className='link-selector form-bc sans-font'>
-				<FadeInOut_HandleState condition={this.state.success}>
+				<FadeInOutHandleState condition={this.state.success}>
 	 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>
-	 			</FadeInOut_HandleState>
+	 			</FadeInOutHandleState>
 				<button onClick={() => this.props.hideForm()} className='cancel red-c'>Cancel</button>
-				<FadeRight_HandleState condition={this.state.selectedIndex>-1}>
+				<FadeRightHandleState condition={this.state.selectedIndex>-1}>
 					<button onClick={() => this.addNewLink()} className='add blue-bc'>Add Link</button>
-				</FadeRight_HandleState>
+				</FadeRightHandleState>
 				{this.state.currSemester ?
 					<React.Fragment>	
 						<h1 className='bold-text'>{this.state.currSemester.name}</h1>

@@ -51,7 +51,7 @@ export function findSimilarity(testLength, testVal, dataString){
 	if(testLength && testLength >0){
 		let ct =0;
 		for(let i =0; i<testLength; i++){
-			if(testVal[i] == dataString[i] && testVal[i] !== '0'){
+			if(testVal[i] === dataString[i] && testVal[i] !== '0'){
 				ct++;
 			}
 		}

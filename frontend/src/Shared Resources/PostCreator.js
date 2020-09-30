@@ -1,5 +1,5 @@
 import React from 'react';
-import {FadeInOut_HandleState} from './Effects/CustomTransition';
+import {FadeInOutHandleState} from './Effects/CustomTransition';
 import axios from 'axios';
 import FormData from 'form-data';
 import Loader from './Effects/loader';
@@ -75,7 +75,7 @@ class PostCreator extends React.Component{
 				sendingData: true,
 			});
 
-			const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/' + 'posts';
+			const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/posts';
 			let data = new FormData();
 
 			data.append('text', this.textArea.current.innerText);
@@ -121,31 +121,31 @@ class PostCreator extends React.Component{
 		        	<span 
 		        		className='textarea' 
 		        		role='textbox' 
-		        		contenteditable='true'
+		        		contentEditable='true'
 		        		style={this.state.error ? {border: '1px solid red', transition: '.3s'} : null}
 		        		ref={this.textArea}
 		        	></span>
 		        </p>
-		        <FadeInOut_HandleState condition={this.state.images !== null}>
+		        <FadeInOutHandleState condition={this.state.images !== null}>
 			        <div className='row image-gal'>
 						{images}
 			        </div>
-			    </FadeInOut_HandleState>
+			    </FadeInOutHandleState>
 				<button 
 					onClick={() => this.fileInput.current.click()} 
 					style={{background: 'none'}} 
 					className='white-c'>
-					<i class="fas fa-camera-retro"></i>
+					<i className="fas fa-camera-retro"></i>
 				</button>
 				<button className='submit blue-bc' onClick={() => this.sendData()}>Submit</button>
 
 
-				<FadeInOut_HandleState condition={this.state.max_Image_Err}>
+				<FadeInOutHandleState condition={this.state.max_Image_Err}>
 					<h5 className='error-msg' style={{color: 'red'}}>Maximum of six images</h5>
-				</FadeInOut_HandleState>
-				<FadeInOut_HandleState condition={this.state.httpError}>
+				</FadeInOutHandleState>
+				<FadeInOutHandleState condition={this.state.httpError}>
 					<h5 className='error-msg' style={{color: 'red'}}>Error while making post</h5>
-				</FadeInOut_HandleState>
+				</FadeInOutHandleState>
 				
 				<input 
 					type="file" 
@@ -173,11 +173,11 @@ class ImagePreviewer extends React.Component{
 			<div className='col-lg-4'>
 				<div onMouseEnter={() => this.setState({mouseOver: true})} onMouseLeave={() => this.setState({mouseOver: false})} className='image-con'>
 					<img src={this.props.data} alt=""/>
-					<FadeInOut_HandleState condition={this.state.mouseOver}>
+					<FadeInOutHandleState condition={this.state.mouseOver}>
 							<div className='overlay'>
-								<button onClick={() => this.props.remove()}><i class="fas fa-times-circle"></i></button>
+								<button onClick={() => this.props.remove()}><i className="fas fa-times-circle"></i></button>
 							</div>
-					</FadeInOut_HandleState>
+					</FadeInOutHandleState>
 				</div>
 			</div>
 		)

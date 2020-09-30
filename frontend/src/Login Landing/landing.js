@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import axios from 'axios';
+// import axios from 'axios';
 
 import './landing.css';
 
@@ -8,7 +8,7 @@ class Landing extends React.Component{
 	render(){
 		return(
 			<div className='background' id='landing'>
-				<a className='mont-font blue-c' id='header-tag' href="#">Profecient</a>
+				<Link className='mont-font blue-c' id='header-tag' to="/">Profecient</Link>
 				<Link to='/home'>
 					<button className='blue-bc mont-font login white-c'>Login</button>
 				</Link>
@@ -22,13 +22,13 @@ class Landing extends React.Component{
 
 						<ul className='white-c'>
 							<li>
-								<h5><i class="fas fa-comments black-c"></i>    Message your peers and connect outside the classroom</h5>
+								<h5><i className="fas fa-comments black-c"></i>    Message your peers and connect outside the classroom</h5>
 							</li>
 							<li>
-								<h5><i class="fas fa-tasks black-c"></i>    Manage your entire academic schedule</h5>
+								<h5><i className="fas fa-tasks black-c"></i>    Manage your entire academic schedule</h5>
 							</li>
 							<li>
-								<h5><i class="fas fa-bell black-c"></i>    Automatically get assignment notifications from your peers</h5>
+								<h5><i className="fas fa-bell black-c"></i>    Automatically get assignment notifications from your peers</h5>
 							</li>
 						</ul>
 
@@ -46,7 +46,7 @@ class Landing extends React.Component{
 						<button className='sign-up mont-font blue-bc white-c'>Sign Up</button>
 					</div>
 				</div>
-				<a id='footer-tag'>A Gregoire Design Production</a>
+				<Link id='footer-tag'>A Gregoire Design Production</Link>
 			</div>
 		);
 	}

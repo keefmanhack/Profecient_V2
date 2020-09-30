@@ -3,26 +3,20 @@ import {Link} from "react-router-dom";
 import axios from 'axios';
 import {convertToStdDate} from '../Home/Agenda/Agenda_Helper';
 
-class Feed extends React.Component{
-	constructor(props){
-		super(props);
+function Feed(props){
+	const posts = props.feedData!==null ? props.feedData.map((data, index) =>
+		<Post 
+			data={data}
+			currentUser={props.currentUser}
+			key={index}
+		/>
+	) : <p>Currently No Posts</p>;
 
-	}
-
-	render(){
-		const posts = this.props.feedData!==null ? this.props.feedData.map((data, index) =>
-			<Post 
-				data={data}
-				currentUser={this.props.currentUser}
-				key={index}
-			/>
-		) : <p>Currently No Posts</p>;
-		return(
-			<div className='feed white-c'>
-				{posts}
-			</div>
-		);
-	}
+	return(
+		<div className='feed white-c'>
+			{posts}
+		</div>
+	);
 }
 
 class Post extends React.Component{
@@ -100,7 +94,7 @@ class Post extends React.Component{
 		return(
 			<div className='post white-c sans-font'>
 				<Link to={'/profile/' + this.props.data.author._id} id={this.props.data.author._id}>
-					<img className='profile-photo' src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.data.author.profilePictureURL}/>
+					<img className='profile-photo' alt='Not found' src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.data.author.profilePictureURL}/>
 					<h1 className='white-c'>{this.props.data.author.name}</h1>
 				</Link>
 				
@@ -113,8 +107,8 @@ class Post extends React.Component{
 				{imageGal}
 				
 				<h4 className='muted-c'>
-					<i class="fas fa-heart"></i> {this.state.likes.length} <span>  </span>
-					<i class="fas fa-comment"></i> {this.state.comments.length}
+					<i className="fas fa-heart"></i> {this.state.likes.length} <span>  </span>
+					<i className="fas fa-comment"></i> {this.state.comments.length}
 				</h4>
 			
 				<InteractionSection 
@@ -172,7 +166,7 @@ class InteractionSection extends React.Component{
 							onClick={() => this.props.toggleLike()} 
 							className={this.props.liked ? 'blue-c' : 'white-c'}
 						>
-						<i class="fas fa-heart"></i></button>
+						<i className="fas fa-heart"></i></button>
 					</div>
 					<div className='col-lg-11'>
 						<p 
@@ -182,7 +176,7 @@ class InteractionSection extends React.Component{
 							ref={this.textArea}  
 							className='textarea' 
 							role='textbox' 
-							contenteditable='true'
+							contentEditable='true'
 						></span>
 						</p>
 					</div>
@@ -194,8 +188,8 @@ class InteractionSection extends React.Component{
 
 function ImageGallary(props){
 	const smallImages = props.images.map((imagePath, index) =>
-		<div className='col-lg-6'>
-			<img className='image' key={index} src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + imagePath}/>
+		<div key={index} className='col-lg-6'>
+			<img className='image' alt='Not found' key={index} src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + imagePath}/>
 		</div>
 	);
 

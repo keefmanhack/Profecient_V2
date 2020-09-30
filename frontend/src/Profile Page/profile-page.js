@@ -5,10 +5,10 @@ import {Link} from "react-router-dom";
 import Feed from '../Shared Resources/feed';
 import ClassView from './Class View/ClassView';
 import SemesterCreator from './Semester Creator/SemesterCreator';
-import {FadeInOut_HandleState} from '../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 import Header from '../Shared Resources/header';
 import PostCreator from '../Shared Resources/PostCreator';
-import Loader from '../Shared Resources/Effects/loader';
+// import Loader from '../Shared Resources/Effects/loader';
 import LinkSelector from '../Shared Resources/Link Selector/LinkSelector';
 
 import './profile-page.css';
@@ -25,7 +25,7 @@ class ProfilePage extends React.Component{
 			editSemMode: false,
 			profile: null,
 			showNewLinkForm: false,
-			selectedClass: null,
+			selectedClassIndex: null,
 		}
 	}
 
@@ -108,11 +108,35 @@ class ProfilePage extends React.Component{
 		})
 	}
 
-	linkClicked(i){
-		this.setState({
-			selectedClass: i,
-		})
+	findClassIndex(classID){
+		let i =0;
+		const classes = this.state.semesters[this.state.currSemesterIndex].classes;
+		for(;i<classes.length; i++){
+			if(classID === classes[i]._id){
+				break;
+			}
+		}
+		return i;
+	}
+
+	addLink(classID){
+		this.setState({selectedClassIndex: this.findClassIndex(classID)});
 		this.showLinkSelector(true);
+	}
+
+	removeLink(classID){
+		const endPoint =  `http://localhost:8080/users/` + this.props.currentUser._id + '/class/connection/delete';
+
+		const data={
+			otherUser: this.state.profile._id,
+			otherUserClass: this.state.semesters[this.state.currSemesterIndex].classes[this.findClassIndex(classID)],
+		}
+
+		axios.post(endPoint, data)
+	    .then(res => {
+			this.getSemesters();
+
+		})
 	}
 
 	showLinkSelector(val){
@@ -122,7 +146,7 @@ class ProfilePage extends React.Component{
 	render(){
 		let currSemExists = this.state.currSemesterIndex >-1;
 		const classList = currSemExists ? this.state.semesters[this.state.currSemesterIndex].classes.map((data, index) =>
-			<div className='col-lg-2'>
+			<div key={index} className='col-lg-2'>
 				<h5 key={data.id}>{data.name}</h5>
 			</div>
 		): null;
@@ -137,29 +161,29 @@ class ProfilePage extends React.Component{
 								<div className='col-lg-8'>
 									<img 
 										src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.state.profile.profilePictureURL}
-										alt="image not found" 
+										alt="Not found" 
 										onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
 									/>
 									<h1>{this.state.profile.name}</h1>
 
-									<img className='school' src={this.state.profile.school.logoUrl} alt="Can't display image"/>
+									<img className='school' src={this.state.profile.school.logoUrl} alt="Can't display"/>
 									<h2>{this.state.profile.school.name}</h2>
 								</div>
 								<div className='col-lg-4'>
-									<FadeInOut_HandleState condition={this.state.profile!==null && this.props.currentUser!==null && this.state.profile._id !== this.props.currentUser._id}>
+									<FadeInOutHandleState condition={this.state.profile!==null && this.props.currentUser!==null && this.state.profile._id !== this.props.currentUser._id}>
 										<div style={{margin: '0 55px'}}>
 											<Link to={'/message/' + this.state.profile._id}>
-												<button className='white-bc black-c'><i class="far fa-comment"></i> Message</button>
+												<button className='white-bc black-c'><i className="far fa-comment"></i> Message</button>
 											</Link>
 											{this.props.currentUser.friends.includes(this.state.profile._id) ?
 												<button onClick={() => this.props.toggleFriend(true, this.state.profile._id)} 
-													className='white-bc red-c'><i class="fas fa-minus"></i> UnFollow</button>
+													className='white-bc red-c'><i className="fas fa-minus"></i> UnFollow</button>
 											:
 												<button onClick={() => this.props.toggleFriend(false, this.state.profile._id)} 
-													className='blue-bc black-c'><i class="fas fa-plus"></i> Follow</button>
+													className='blue-bc black-c'><i className="fas fa-plus"></i> Follow</button>
 											}
 										</div>
-									</FadeInOut_HandleState>
+									</FadeInOutHandleState>
 								</div>
 							</div>
 							<div className='classes row' style={{marginTop: 30}}>
@@ -177,12 +201,13 @@ class ProfilePage extends React.Component{
 									currSemExists={currSemExists}
 									changeCurrentSem={(i) => this.changeCurrentSem(i)}
 									isCurrentUserViewing={this.props.currentUser !==null && this.state.profile._id === this.props.currentUser._id}
-									linkClicked={(i) => this.linkClicked(i)}
 									currentUser={this.props.currentUser}
+									addLink={(classID) => this.addLink(classID)}
+									removeLink={(classID) => this.removeLink(classID)}
 								/>
 							</div>
 							<div className='col-lg-8'>
-								{this.props.currentUser._id ==  this.state.profile._id ? 
+								{this.props.currentUser._id === this.state.profile._id ? 
 									<PostCreator reloadFeed={() => this.getUserPosts()} currentUser={this.props.currentUser}/>
 									: null
 								}
@@ -194,10 +219,10 @@ class ProfilePage extends React.Component{
 								</div>
 							</div>
 						</div>
-						{this.state.showLinkSelector  ?
+						{this.state.showNewLinkForm  ?
 							<LinkSelector
 								otherUserID={this.state.profile._id}
-								linkClass={this.state.semesters[this.state.currSemesterIndex].classes[this.state.selectedClass]}
+								linkClass={this.state.semesters[this.state.currSemesterIndex].classes[this.state.selectedClassIndex]}
 								currentUser={this.props.currentUser}
 								hideForm={() => this.showLinkSelector(false)}
 							/>
@@ -205,13 +230,13 @@ class ProfilePage extends React.Component{
 						}
 					</div>
 				: this.getProfileData()}
-				<FadeInOut_HandleState condition={this.state.showNewSem}>
+				<FadeInOutHandleState condition={this.state.showNewSem}>
 					<SemesterCreator
 						currentUser={this.props.currentUser} 
 						hideNewSemForm={() => this.showNewSem(false)}
 						updateData={this.state.editSemMode ? this.state.semesters[this.state.currSemesterIndex] : null}
 					/>
-				</FadeInOut_HandleState>
+				</FadeInOutHandleState>
 
 			</React.Fragment>
 		);

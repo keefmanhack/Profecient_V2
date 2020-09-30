@@ -16,7 +16,6 @@ let User       = require('../models/User'),
 // Connection Routes
 
 router.post('/users/:id/class/connection', function(req, res){
-	console.log(req.body);
 	try{
 		async.waterfall([
 			function(cb){
@@ -66,7 +65,9 @@ router.post('/users/:id/class/connection', function(req, res){
 							user: req.params.id,
 							class_data: req.body.currUserClass,
 						}
+						console.log(newConnect);
 						foundClass.connectionsFrom.push(newConnect);
+						console.log(foundClass);
 						foundClass.save(function(err){
 							if(err){
 								console.log(err);
@@ -81,6 +82,87 @@ router.post('/users/:id/class/connection', function(req, res){
 			if(err){
 				console.log(err);
 			}else{
+				res.send('success');
+			}
+		})
+	}catch(e){
+		console.log(e);
+	}
+})
+
+router.post('/users/:id/class/connection/delete', function(req, res){
+	//find otheruser class
+	//remove connection from other user class and pass Object ID of other user's class and previously connected currUser class
+	//remove connected to from currUser class 
+	try{
+		async.waterfall([
+			function(cb){
+				User.findById(req.body.otherUser, function(err, otherUser){
+					if(err){
+						console.log(err);
+					}else{
+						cb(null);
+					}
+				})
+			},
+			function(cb){
+				User.findById(req.params.id, function(err, currUser){
+					if(err){
+						console.log(err);
+					}else{
+						cb(null, currUser);
+					}
+				})
+			},
+			function(currUser, cb){
+				Class.findById(req.body.otherUserClass, function(err, foundClass){
+					if(err){
+						console.log(err);
+					}else{
+						for(let i =0; i< foundClass.connectionsFrom.length; i++){
+							if(foundClass.connectionsFrom[i].user + "" === currUser._id + ""){
+								let connection = foundClass.connectionsFrom.splice(i, i+1);
+								foundClass.save(function(err){
+									if(err){
+										console.log(err);
+									}else{
+										cb(null, connection.class_data)
+									}
+								})
+							}
+						}
+						res.send('No Connection');
+					}
+				})
+			},
+			function(currUserClassID, cb){
+				Class.findById(currUserClassID, function(err, foundClass){
+					if(err){
+						console.log(err);
+					}else{
+						console.log(currUserClassID)
+						console.log(foundClass);
+						for(let i =0; i<foundClass.connectionsTo.length; i++){
+							if(foundClass.connectionsTo[i].class == req.body.otherUserClass._id){
+								foundClass.connectionsTo.splice(i, i+1);
+								foundClass.save(function(err){
+									if(err){
+										console.log(err);
+									}else{
+										console.log(foundClass);
+										cb(null);
+									}
+								})
+							}
+						}
+					}
+				})
+			}
+		], function(err){
+			if(err){
+				console.log(err);
+			}else{
+				console.log('success');
 				res.send('success');
 			}
 		})

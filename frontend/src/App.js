@@ -65,6 +65,12 @@ class App extends React.Component{
 		})
 	}
 
+	setFoundUser(id){
+		this.setState((state, props) => ({
+			foundID: id,
+		}))
+	}
+
 	render(){
 		return(	
 			<Router>
@@ -88,10 +94,8 @@ class App extends React.Component{
 							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
 						<Route path='/profile/:id' component={({match}) => {
-							if(this.state.foundID != match.params.id){
-								this.setState((state, props) => ({
-									foundID: match.params.id,
-								}))
+							if(this.state.foundID !== match.params.id){
+								this.setFoundUser(match.params.id);
 							}
 							if(this.state.currentUser){
 								return (<ProfilePage 
@@ -104,7 +108,9 @@ class App extends React.Component{
 								return (<Loader/>)
 							}
 						}}/>
-		
+						<Route path='/login'>
+							<Login/>
+						</Route>
 						<Route path='/' component={Landing}/>
 					</Switch>
 				</div>

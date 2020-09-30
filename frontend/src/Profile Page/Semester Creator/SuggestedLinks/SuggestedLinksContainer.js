@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlipInOut, FadeInOut_HandleState} from '../../../Shared Resources/Effects/CustomTransition';
+import {FlipInOut, FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
 
 class SuggestedLinksContainer extends React.Component{
 
@@ -9,6 +9,7 @@ class SuggestedLinksContainer extends React.Component{
 			if(!this.props.currentLinks.includes(link)){
 				return <Link toggleLink={() => this.props.addLink(index)} isLinked={false} key={index} user={link.user} data={link.class}/>
 			}
+			return null;
 		})
 
 		const existingLinks = this.props.currentLinks.map((link, index) =>
@@ -17,7 +18,7 @@ class SuggestedLinksContainer extends React.Component{
 
 		return(
 			<div style={this.props.style} className='suggested-links'>
-				<FadeInOut_HandleState condition={suggestedLinks.length >0 || existingLinks.length >0}> 
+				<FadeInOutHandleState condition={suggestedLinks.length >0 || existingLinks.length >0}> 
 					<React.Fragment>
 						<h5>Suggested Links</h5>
 						<hr/>
@@ -26,10 +27,10 @@ class SuggestedLinksContainer extends React.Component{
 						<hr/>
 						{existingLinks}
 					</React.Fragment>
-				</FadeInOut_HandleState>
-				<FadeInOut_HandleState condition={suggestedLinks.length <1 && existingLinks.length <1}>
+				</FadeInOutHandleState>
+				<FadeInOutHandleState condition={suggestedLinks.length <1 && existingLinks.length <1}>
 					<p>No links match this class</p>
-				</FadeInOut_HandleState>
+				</FadeInOutHandleState>
 			</div>
 		)
 	}
@@ -97,7 +98,7 @@ function ExpandedLink(props){
 			</div>
 			<div className='user'>
 				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.user.profilePictureURL} alt=""/>
-				<a href=''>{props.user.name}</a>
+				<h5>{props.user.name}</h5>
 				<h5>{0} Classmates Link to this Profile</h5>
 			</div>
 			<button style={props.isLinked ? {background: 'red'} : null} onClick={() => props.toggleLink()}>
@@ -120,7 +121,7 @@ function ShortLink(props){
 
 					<h1>{props.data.name}</h1>
 					<h5>{0} Links</h5>
-					<a href=''>{props.user.name}</a>
+					<h5>{props.user.name}</h5>
 				</div>
 				<div className='col-lg-4'>
 					<button style={props.isLinked ? {background: 'red'} : null} onClick={() => props.toggleLink()}>

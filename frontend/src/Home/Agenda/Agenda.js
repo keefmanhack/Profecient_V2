@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 import {findTopPosition, dateObjToStdTime, convertToStdDate} from './Agenda_Helper';
-import {FadeInOut_HandleState} from '../../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 
 import './newAgItem.css';
 import './agenda.css';
@@ -234,9 +234,9 @@ class NewAgendaItem extends React.Component{
     render(){
     	return(
     		<div ref={this.wrapperRef} className='new-ag-it-cont sans-font form-bc new-form'>
-    			<FadeInOut_HandleState condition={this.props.success}>
+    			<FadeInOutHandleState condition={this.props.success}>
 	 				<SuccessCheck onCompleted={() =>this.props.hideNewAgForm()}/>
-	 			</FadeInOut_HandleState>
+	 			</FadeInOutHandleState>
     			<button onClick={() => this.props.hideNewAgForm()} className='cancel'>Cancel</button>
     			<input
     				style={this.state.errors.name ? {border: '1px solid red'} : null}

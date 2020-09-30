@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-import {FadeInOut_HandleState, FadeInOut} from '../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 // import {toSingleCharArr, Soundex, findSimilarity} from './helperFunc';
 import {SentSuccess} from '../Shared Resources/Effects/lottie/LottieAnimations';
 
@@ -133,9 +133,9 @@ class NewMessage extends React.Component{
 
 		return(
 			<div className='new-message-container sans-font'>
-				<FadeInOut_HandleState condition={this.state.success}>
+				<FadeInOutHandleState condition={this.state.success}>
 	 				<SentSuccess onCompleted={() =>this.props.closeNew()}/>
-	 			</FadeInOut_HandleState>
+	 			</FadeInOutHandleState>
 				<div className='new-message'>
 					<button onClick={() => this.props.closeNew()} className='close-new-message'>Cancel</button>
 					<div style={pushDown}>
@@ -146,7 +146,7 @@ class NewMessage extends React.Component{
 								removeSelected={() => this.removeSelected()}
 							/>
 						:null}
-						<FadeInOut_HandleState condition={this.state.selectedUser === null}>
+						<FadeInOutHandleState condition={this.state.selectedUser === null}>
 							<input 
 								style={this.state.errors.message ? {border: '1px solid red', position: 'absolute'} : {position: 'absolute'}}
 								ref={this.search} 
@@ -154,13 +154,13 @@ class NewMessage extends React.Component{
 								placeholder='Find classmate' 
 								type="text"
 							/>
-						</FadeInOut_HandleState>
+						</FadeInOutHandleState>
 					</div>
-					<FadeInOut_HandleState condition={this.state.searchedUsers.length>0 && this.state.selectedUser===null}>
+					<FadeInOutHandleState condition={this.state.searchedUsers.length>0 && this.state.selectedUser===null}>
 						<div className='search-container'>
 							{searchItems}
 						</div>
-					</FadeInOut_HandleState>
+					</FadeInOutHandleState>
 
 					<hr/>
 					
@@ -203,11 +203,11 @@ class SelectedClassmate extends React.Component{
 				style={{position: 'absolute'}} 
 				className='selected-classmate-container light-green-bc'
 			>
-				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.image} alt="Can't display image"/>
+				<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.image} alt="Can't display"/>
 				<h1>{this.props.name}</h1>
-				<FadeInOut_HandleState condition={this.state.removeBtn} >
+				<FadeInOutHandleState condition={this.state.removeBtn} >
 					<button onClick={() => this.props.removeSelected()}>X</button>
-				</FadeInOut_HandleState>
+				</FadeInOutHandleState>
 			</div>
 		);
 	}
@@ -218,7 +218,7 @@ function SearchItem(props){
 
 	return(
 		<div onClick={() => props.handleClick(props.i)} className='search-item light-green-bc'>
-			<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.image} alt="Can't display image"/>
+			<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.image} alt="Can't display"/>
 			<h1>{props.text}</h1>
 		</div>
 	);

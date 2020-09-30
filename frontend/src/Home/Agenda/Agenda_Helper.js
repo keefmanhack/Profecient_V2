@@ -3,7 +3,7 @@ export function findTopPosition(start){
 	const startHour = parseInt((startMT+ '').substring(0, (startMT+'').length-2)) * 100;
 	const startMinute = parseInt((startMT+ '').substring((startMT+ '').length-2, (startMT + '').length));
 
-	const timeInDay = 2400;
+	// const timeInDay = 2400;
 	const agendaLength = 48 * 25;
 	const convertMin = (startMinute/60)*100
 
@@ -50,7 +50,7 @@ export function convertToStandard(mtTime){
 				const hour = mtTimeStr.substring(0, 2);
 				return hour + ':'  + minute + 'AM'; 
 			}else if(mtTime<1300){
-				return '12' + ':'  + minute + 'PM';
+				return '12:' + minute + 'PM';
 			}else if(mtTime < 2200){
 				const hour = ((mtTime-1200) + '').substring(0,1);
 				return hour + ':'  + minute + 'PM';
@@ -65,7 +65,7 @@ export function convertToStandard(mtTime){
 		}else if(mtTimeStr.length>1){
 			return '12:' + mtTimeStr + 'AM';
 		}else if(mtTimeStr.length>0){
-			return '12:' + '0' + mtTimeStr + 'AM'; 
+			return '12:0' + mtTimeStr + 'AM'; 
 		}else{
 			return null;
 		}
