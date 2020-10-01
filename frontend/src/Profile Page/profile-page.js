@@ -25,6 +25,7 @@ class ProfilePage extends React.Component{
 			editSemMode: false,
 			profile: null,
 			showNewLinkForm: false,
+			newLinkSuccess: false,
 			selectedClassIndex: null,
 		}
 	}
@@ -34,9 +35,11 @@ class ProfilePage extends React.Component{
 	}
 
 	getProfileData(){
-		this.getUserPosts();
-		this.getSemesters();
-		this.getRequestedUser();
+		if(this.props.foundUser !== null){
+			this.getUserPosts();
+			this.getSemesters();
+			this.getRequestedUser();
+		}
 	}
 
 	getRequestedUser(){
@@ -129,7 +132,7 @@ class ProfilePage extends React.Component{
 
 		const data={
 			otherUser: this.state.profile._id,
-			otherUserClass: this.state.semesters[this.state.currSemesterIndex].classes[this.findClassIndex(classID)],
+			otherUserClassID: this.state.semesters[this.state.currSemesterIndex].classes[this.findClassIndex(classID)]._id,
 		}
 
 		axios.post(endPoint, data)
@@ -138,9 +141,24 @@ class ProfilePage extends React.Component{
 
 		})
 	}
+	addNewLink(data){
+		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/class/connection';
+
+		axios.post(endPoint, data)
+	    .then(res => {
+			this.setState({newLinkSuccess: true})
+			this.getSemesters();
+		})
+	}
 
 	showLinkSelector(val){
 		this.setState({showNewLinkForm: val})
+
+		if(!val){
+			this.setState({
+				newLinkSuccess: false,
+			})
+		}
 	}
 
 	render(){
@@ -155,7 +173,7 @@ class ProfilePage extends React.Component{
 			<React.Fragment>
 				<Header currentUser={this.props.currentUser}/>
 				{this.state.profile !== null ? 
-					<div className='page-container profile-page' style={this.state.showNewSem ? {opacity: .5}: null}>
+					<div className='page-container profile-page' style={this.state.showNewSem || this.state.showNewLinkForm ? {opacity: .5}: null}>
 						<div className='top white-c'>
 							<div className='row'>
 								<div className='col-lg-8'>
@@ -219,15 +237,6 @@ class ProfilePage extends React.Component{
 								</div>
 							</div>
 						</div>
-						{this.state.showNewLinkForm  ?
-							<LinkSelector
-								otherUserID={this.state.profile._id}
-								linkClass={this.state.semesters[this.state.currSemesterIndex].classes[this.state.selectedClassIndex]}
-								currentUser={this.props.currentUser}
-								hideForm={() => this.showLinkSelector(false)}
-							/>
-						: null
-						}
 					</div>
 				: this.getProfileData()}
 				<FadeInOutHandleState condition={this.state.showNewSem}>
@@ -237,7 +246,17 @@ class ProfilePage extends React.Component{
 						updateData={this.state.editSemMode ? this.state.semesters[this.state.currSemesterIndex] : null}
 					/>
 				</FadeInOutHandleState>
-
+				{this.state.showNewLinkForm  ?
+					<LinkSelector
+						otherUserID={this.state.profile._id}
+						linkClass={this.state.semesters[this.state.currSemesterIndex].classes[this.state.selectedClassIndex]}
+						currentUser={this.props.currentUser}
+						addNewLink={(data) => this.addNewLink(data)}
+						success={this.state.newLinkSuccess}
+						hideForm={() => this.showLinkSelector(false)}
+					/>
+				: null
+				}
 			</React.Fragment>
 		);
 	}

@@ -1,6 +1,7 @@
 const express = require("express"),
 	  router  = express.Router(),
 	  moment  = require('moment'),
+	  mongoose = require('mongoose')
 	  async   = require('async');
 
 let Agenda = require('./Agenda');
@@ -32,11 +33,11 @@ router.post('/users/:id/class/connection', function(req, res){
 					if(err){
 						console.log(err);
 					}else{
-						cb(null);
+						cb(null, currUser);
 					}
 				})
 			},
-			function(cb){
+			function(currUser, cb){
 				Class.findById(req.body.currUserClass, function(err, foundClass){
 					if(err){
 						console.log(err);
@@ -45,34 +46,52 @@ router.post('/users/:id/class/connection', function(req, res){
 							user: req.body.otherUser,
 							class_data: req.body.otherUserClass,
 						}
-						foundClass.connectionsTo.push(newConnect);
-						foundClass.save(function(err){
-							if(err){
-								console.log(err);
-							}else{
-								cb(null);
+
+						for(let i =0; i<foundClass.connectionsTo.length; i++){
+							const connection = foundClass.connectionsTo[i];
+							if(connection.user == newConnect.user && connection.class_data == newConnect.class_data){
+								res.send('Exists');
+								return;
 							}
-						});
+
+						}
+
+						foundClass.connectionsTo.push(newConnect);
+						cb(null, currUser, foundClass);
 					}
 				})
 			},
-			function(cb){
+			function(currUser, currUserClass, cb){
 				Class.findById(req.body.otherUserClass, function(err, foundClass){
 					if(err){
 						console.log(err);
 					}else{
 						const newConnect = {
-							user: req.params.id,
+							user: currUser._id,
 							class_data: req.body.currUserClass,
 						}
-						console.log(newConnect);
+
+
+						for(let i =0; i<foundClass.connectionsFrom.length; i++){
+							const connection = foundClass.connectionsFrom[i];
+							if(connection.user == newConnect.user && connection.class_data == newConnect.class_data){
+								res.send('Exists');
+								return;
+							}
+						}
+
 						foundClass.connectionsFrom.push(newConnect);
-						console.log(foundClass);
 						foundClass.save(function(err){
 							if(err){
 								console.log(err);
 							}else{
-								cb(null);
+								currUserClass.save(function(err){
+									if(err){
+										console.log(err);
+									}else{
+										cb(null);
+									}
+								});
 							}
 						});
 					}
@@ -115,42 +134,41 @@ router.post('/users/:id/class/connection/delete', function(req, res){
 				})
 			},
 			function(currUser, cb){
-				Class.findById(req.body.otherUserClass, function(err, foundClass){
+				Class.findById(req.body.otherUserClassID, function(err, foundClass){
 					if(err){
 						console.log(err);
 					}else{
 						for(let i =0; i< foundClass.connectionsFrom.length; i++){
 							if(foundClass.connectionsFrom[i].user + "" === currUser._id + ""){
-								let connection = foundClass.connectionsFrom.splice(i, i+1);
-								foundClass.save(function(err){
-									if(err){
-										console.log(err);
-									}else{
-										cb(null, connection.class_data)
-									}
-								})
+								let connection = foundClass.connectionsFrom[i];
+								foundClass.connectionsFrom.splice(i, i+1);
+								cb(null, connection.class_data, foundClass);
 							}
 						}
-						res.send('No Connection');
 					}
 				})
 			},
-			function(currUserClassID, cb){
+			function(currUserClassID, otherUserClass, cb){
 				Class.findById(currUserClassID, function(err, foundClass){
 					if(err){
 						console.log(err);
 					}else{
-						console.log(currUserClassID)
-						console.log(foundClass);
 						for(let i =0; i<foundClass.connectionsTo.length; i++){
-							if(foundClass.connectionsTo[i].class == req.body.otherUserClass._id){
+
+							if(foundClass.connectionsTo[i].class_data + '' == otherUserClass._id + ''){
 								foundClass.connectionsTo.splice(i, i+1);
 								foundClass.save(function(err){
 									if(err){
 										console.log(err);
 									}else{
-										console.log(foundClass);
-										cb(null);
+										otherUserClass.save(function(err){
+											if(err){
+												console.log(err);
+											}else{
+												cb(null);
+											}
+										})
+										
 									}
 								})
 							}
@@ -162,7 +180,7 @@ router.post('/users/:id/class/connection/delete', function(req, res){
 			if(err){
 				console.log(err);
 			}else{
-				console.log('success');
+				console.log('Link removed');
 				res.send('success');
 			}
 		})

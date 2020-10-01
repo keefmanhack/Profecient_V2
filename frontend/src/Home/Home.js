@@ -29,6 +29,7 @@ class Home extends React.Component{
 			upcommingAss: [],
 			editIndex: null,
 			postData: [],
+			selectedAgendaIndex: null,
 		}
 	}
 

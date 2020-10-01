@@ -33,17 +33,13 @@ class LinkSelector extends React.Component{
 	}
 
 	addNewLink(){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/class/connection';
 		const data={
 			otherUser: this.props.otherUserID,
 			otherUserClass: this.props.linkClass._id,
 			currUserClass: this.state.currSemester.classes[this.state.selectedIndex]._id,
 		}
 
-		axios.post(endPoint, data)
-	    .then(res => {
-			this.setState({success: true})
-		})
+		this.props.addNewLink(data);
 	}
 
 
@@ -74,7 +70,7 @@ class LinkSelector extends React.Component{
 		const endTime = moment(linkClass.time.end).format('h:mm a');
 		return(
 			<div className='link-selector form-bc sans-font'>
-				<FadeInOutHandleState condition={this.state.success}>
+				<FadeInOutHandleState condition={this.props.success}>
 	 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>
 	 			</FadeInOutHandleState>
 				<button onClick={() => this.props.hideForm()} className='cancel red-c'>Cancel</button>

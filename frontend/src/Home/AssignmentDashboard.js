@@ -22,7 +22,7 @@ function AssignmentDashboard(props){
 	return(
 		<div className='assignment-dashboard sans-font' style={props.style}>
 			<h1 className='gray-c '>Upcoming</h1>
-			<button onClick={() => this.props.showNewAssForm()} className='add green-bc'>Add</button>
+			<button onClick={() => props.showNewAssForm()} className='add green-bc'>Add</button>
 			<hr/>
 			<div className='assignments-cont'>
 				{assignments}

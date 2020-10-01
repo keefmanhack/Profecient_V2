@@ -31,13 +31,15 @@ router.get('/users/:id/friends/posts', function(req, res){
 })
 
 router.get('/users/:id/posts', function(req, res){
-	User.findById(req.params.id).populate({path: 'posts', populate:{path:'author'}}).exec(function(err, foundUser){
-		if(err){
-			console.log(err);
-		}else{
-			res.send(foundUser.posts);
-		}
-	})
+	if(req.params.id !== null){
+		User.findById(req.params.id).populate({path: 'posts', populate:{path:'author'}}).exec(function(err, foundUser){
+			if(err){
+				console.log(err);
+			}else{
+				res.send(foundUser.posts);
+			}
+		})
+	}
 })
 
 router.post('/posts/:id/likes', function(req, res){
