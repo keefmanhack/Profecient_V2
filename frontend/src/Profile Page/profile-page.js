@@ -35,11 +35,9 @@ class ProfilePage extends React.Component{
 	}
 
 	getProfileData(){
-		if(this.props.foundUser !== null){
-			this.getUserPosts();
-			this.getSemesters();
-			this.getRequestedUser();
-		}
+		this.getUserPosts();
+		this.getSemesters();
+		this.getRequestedUser();
 	}
 
 	getRequestedUser(){

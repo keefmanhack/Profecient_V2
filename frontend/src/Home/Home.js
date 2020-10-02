@@ -145,7 +145,7 @@ class Home extends React.Component{
 			this.deleteAssignment(this.state.editIndex);
 		}
 
-		const endPoint = 'http://localhost:8080/classes/' + this.state.currSemester.classes[this.state.selectedIndex]._id + '/assignment';
+		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id +'/classes/' + this.state.currSemester.classes[this.state.selectedIndex]._id + '/assignment';
 
 		axios.post(endPoint, data)
 		.then((response) => {

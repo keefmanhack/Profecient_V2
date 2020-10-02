@@ -10,8 +10,8 @@ let Agenda = require('./Agenda');
 let User       = require('../models/User'),
     Semester   = require('../models/Semester'),
     Class      = require('../models/Class'),
-    Assignment = require('../models/Assignment'),
-    Link       = require('../models/Link');
+    Assignment = require('../models/Assignment');
+    ClassNote = require('../models/ClassNote');
 
 
 // Connection Routes
@@ -490,22 +490,73 @@ router.put('/assignment/:id', function(req,res){
 	})
 })
 
-router.post('/classes/:id/assignment', function(req, res){
-	Assignment.create(req.body, function(err, newAss){
+router.post('/users/:userID/classes/:id/assignment', function(req, res){
+	User.findById(req.params.userID, function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
-			Class.findById(req.params.id, function(err, foundClass){
+			Assignment.create(req.body, function(err, newAss){
 				if(err){
 					console.log(err);
 				}else{
-					foundClass.assignments.push(newAss);
-					foundClass.save();
-					res.send('success');
+					Class.findById(req.params.id, function(err, foundClass){
+						if(err){
+							console.log(err);
+						}else{
+							foundClass.assignments.push(newAss);
+							foundClass.save(function(err){
+								if(err){
+									console.log(err);
+								}else{
+									res.send('success');
+									sendNewAssNotifications(foundUser._id, foundClass._id, newAss._id);
+								}
+							});
+						}
+					})
 				}
 			})
 		}
 	})
 })
+
+function sendNewAssNotifications(otherUserID, otherUserClassID, otherUserAssignmentID){
+	Class.findById(otherUserClassID, function(err, otherUserClass){
+		if(err){
+			console.log(err);
+		}else{
+
+			for(let i =0; i<otherUserClass.connectionsFrom.length; i++){
+				let connection = otherUserClass.connectionsFrom[i];
+				User.findById(connection.user).populate('notifications').exec(function(err, foundUser){
+					if(err){
+						console.log(err);
+					}else{
+						foundUser.notifications.academic.unDismissed++;
+
+						const note = {
+							note_Data: "Ass Added",
+							otherUserClassID: otherUserClassID,
+							assignmentID: otherUserAssignmentID,
+							myClassID: connection.class_data,
+							otherUserID: otherUserID,
+						}
+
+						ClassNote.create(note, function(err, newNote){
+							if(err){
+								console.log(err);
+							}else{
+								foundUser.notifications.academic.classNote.unshift(newNote);
+								foundUser.save();
+							}
+						})
+
+
+					}
+				})
+			}
+		}
+	})
+}
 
 module.exports = router;

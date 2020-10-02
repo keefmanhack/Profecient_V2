@@ -5,7 +5,8 @@ let AssignmentSchema = mongoose.Schema({
 	dueDate: Date,
 	dueTime: Date,
 	description: String,
-	complete: {type: Boolean, default: false}
+	complete: {type: Boolean, default: false},
+	created: {type: Date, default: new Date()}
 })
 
 module.exports = mongoose.model('Assignment', AssignmentSchema);

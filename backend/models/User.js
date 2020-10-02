@@ -36,25 +36,11 @@ let UserSchema = mongoose.Schema({
 	}],
 	notifications: {
 		academic: {
-			unDismissed: Number,
-			class_data: {
-				data: [{
-					myClass: {
-						type: mongoose.Schema.Types.ObjectId,
-						ref: "Class"
-					},
-					otherUser: {
-						name: String,
-						profilePictureURL: String,
-					},
-					assignment: {
-						type: mongoose.Schema.Types.ObjectId,
-						ref: "Assignment"
-					},
-					type: String, //options: 'New Ass, Edited, Deleted'
-				}]
-			}
-			
+			unDismissed: {type: Number, default: 0},
+			classNote: [{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "ClassNote"
+			}]
 		}
 	}
 

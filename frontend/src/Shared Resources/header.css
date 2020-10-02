@@ -1,0 +1,42 @@
+.not button.drop-down{
+	position: absolute;
+    right: -6px;
+    bottom: -11px;
+    color: white;
+    font-size: 5px;
+    padding: 2px;
+    height: 15px;
+    width: 15px;
+    border-radius: 100%;
+}
+
+.drop-down i.fas{
+	font-size: 13px;
+}
+
+.top-bar span{
+	position: relative;
+}
+
+.top-bar h5{
+	background: radial-gradient( 5px -9px, circle, white 8%, red 26px );
+    background-color: red;
+    border: 2px solid white;
+    border-radius: 12px;
+    box-shadow: 1px 1px 1px black;
+    color: white;
+    font: bold 13px/8px Helvetica, Verdana, Tahoma;
+    height: 18px;
+    min-width: 14px;
+    padding: 4px 3px 0 3px;
+    text-align: center;
+    display: inline;
+    position: absolute;
+    top: -15px;
+    right: 0;
+}
+
+/*.top-bar h5 span{
+	left: -4%;
+    top: -1px;
+}*/

@@ -45,6 +45,10 @@ body{
     background: orange;
 }
 
+.off-black-bc{
+    background: #313131;
+}
+
 .green-bc{
     background: #28965A;
 }
@@ -130,6 +134,11 @@ body{
 
 button:hover{
     opacity: .7;
+    transition: .3s;
+}
+
+a:hover{
+    transition: .3s;
 }
 
 h5.error-msg{
@@ -204,7 +213,7 @@ h5.error-msg{
     margin: 0 10px;
     font-size: 20px;
     border-radius: 5px;
-    background: none;
+    /*background: none;*/
 }
 
 .top-bar .profile{
