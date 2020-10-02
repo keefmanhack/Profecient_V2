@@ -19,6 +19,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 //MongoDB Models
 let User = require('./models/User');
+let ClassNote = require('./models/ClassNote');
+let Class = require('./models/Class');
+let Assignment = require('./models/Assignment');
 
 let MessageStream = require('./models/Message');
 
@@ -97,6 +100,97 @@ app.post('/users/:id/friends', function(req,res){
 		}
 	})
 })
+
+// Notiication Routes
+app.get('/users/:id/notifications/academic', function(req, res){
+	User.findById(req.params.id).populate(
+	{	path: 'notifications', 
+		populate: {
+			path: 'academic', 
+			populate: {
+				path: 'classNote',
+				populate: {
+					path: 'assignment',
+				}
+			}
+		}
+	}).exec(function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			res.send(foundUser.notifications.academic.classNote);
+		}
+	})
+})
+
+app.post('/users/:id/notifications/academic/:noteID', function(req, res){
+	Assignment.findById(req.body.otherUserAssID, function(err, foundAss){
+		if(err){
+			console.log(err);
+		}else{
+			Class.findById(req.body.myClassID, function(err, foundClass){
+				if(err){
+					console.log(err);
+				}else{
+					Assignment.create(foundAss, function(err, newAss){
+						if(err){
+							console.log(err);
+						}else{
+							newAss.complete = false;
+							foundClass.assignments.push(newAss);
+							newAss.save(function(err){
+								if(err){
+									console.log(err)
+								}else{
+									foundClass.save(function(err){
+										if(err){
+											console.log(err)
+										}else{
+											removeNotification(req.params.id, req.params.noteID, function(){
+												res.send('success');
+											})
+										}
+									})
+								}
+							})
+						}
+					})
+				}
+			})
+		}
+	})
+})
+
+app.delete('/users/:id/notifications/academic/:noteID', function(req, res){
+	removeNotification(req.params.id, req.params.noteID, function(){
+		res.send('success');
+	})
+})
+
+function removeNotification(userID, noteID, cb){
+	User.findById(userID, function(err, foundUser){
+		if(err){
+			console.log(err);
+		}else{
+			ClassNote.findByIdAndRemove(noteID, function(err){
+				if(err){
+					console.log(err);
+				}else{
+					foundUser.notifications.academic.classNote.pull(noteID);
+					foundUser.notifications.academic.unDismissed--;
+					foundUser.save(function(err){
+						if(err){
+							console.log(err);
+						}else{
+							cb();
+						}
+					})
+				}
+			})
+		}
+	})
+}
+// End of Notification Routes
 
 app.get('/users/:id/messageStreams', function(req,res){
 	User.findById(req.params.id)

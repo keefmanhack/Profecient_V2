@@ -15,7 +15,7 @@ function AssignmentDashboard(props){
 			key={index}
 			toggleCompleted={(id, isCompleted) => props.toggleCompleted(id, isCompleted)}
 			editAssignment={() => props.editAssignment(index)}
-			deleteAssignment={() => props.deleteAssignment(index)}
+			deleteAssignment={() => props.deleteAssignment(data._id)}
 		/>
 	): null;
 	
@@ -139,7 +139,7 @@ class NewAssignment extends React.Component{
     }
 
     handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target) && !this.dueTime.current.contains(event.target)) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
             this.props.hideNewAssForm();
         }
     }

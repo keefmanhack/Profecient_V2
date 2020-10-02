@@ -36,6 +36,116 @@
     right: 0;
 }
 
+.note-container{
+	-webkit-box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
+	box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
+	background: white;
+    position: absolute;
+    z-index: 1;
+    width: 300px;
+    padding: 5px;
+    min-height: 78px;
+    overflow: hidden;
+    border-radius: 5px;
+    top: 28px;
+    right: 0px;
+    max-height: 301px;
+    overflow: scroll;
+}
+
+.note-container .ass-added{
+	background: #d3ecd1;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.top-bar .ass-added h1{
+	font-size: 14px;
+    font-weight: 400;
+}
+
+.ass-added img{
+	height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.ass-added button.remove{
+	position: absolute;
+    font-size: 12px;
+    background: none;
+    top: 9px;
+    right: 0px;
+    margin: 0;
+}
+
+.ass-added hr{
+	margin: 0;
+}
+
+.ass-added h1.class-name{
+	font-weight: 800;
+    font-size: 20px;
+}
+
+.top-bar .ass-added h2{
+	font-size: 14px;
+    text-align: left;
+    margin-left: 5px;
+}
+
+h2 .other-user img{
+	margin: 0 10px;
+}
+
+h2 .other-user{
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.ass-added .ass-info{
+	background: white;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+.ass-added h4{
+	font-size: 14px;
+	font-weight: 200;
+	margin: 0;
+}
+
+.ass-added h4 span{
+	font-weight: 600;
+}
+
+.ass-added div.add{
+	position: relative;
+    height: 15px;
+    margin: 0;
+}
+
+.ass-added div.add button{
+	font-size: 14px;
+    position: absolute;
+    right: 0;
+    bottom: 8px;
+    margin: 0;
+}
+
+.ass-info p{
+	margin: 0;
+    font-size: 12px;
+    font-weight: 300;
+    margin-left: 10px;
+    overflow: auto;
+    margin-bottom: 6px;
+}
+
 /*.top-bar h5 span{
 	left: -4%;
     top: -1px;

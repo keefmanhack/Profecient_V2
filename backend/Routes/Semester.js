@@ -509,7 +509,7 @@ router.post('/users/:userID/classes/:id/assignment', function(req, res){
 									console.log(err);
 								}else{
 									res.send('success');
-									sendNewAssNotifications(foundUser._id, foundClass._id, newAss._id);
+									sendNewAssNotifications(foundUser, foundClass, newAss._id);
 								}
 							});
 						}
@@ -520,26 +520,37 @@ router.post('/users/:userID/classes/:id/assignment', function(req, res){
 	})
 })
 
-function sendNewAssNotifications(otherUserID, otherUserClassID, otherUserAssignmentID){
-	Class.findById(otherUserClassID, function(err, otherUserClass){
-		if(err){
-			console.log(err);
-		}else{
-
-			for(let i =0; i<otherUserClass.connectionsFrom.length; i++){
-				let connection = otherUserClass.connectionsFrom[i];
-				User.findById(connection.user).populate('notifications').exec(function(err, foundUser){
+function sendNewAssNotifications(otherUser, otherUserClass, otherUserAssignmentID){
+	for(let i =0; i<otherUserClass.connectionsFrom.length; i++){
+		let connection = otherUserClass.connectionsFrom[i];
+		User.findById(connection.user, function(err, foundUser){
+			if(err){
+				console.log(err);
+			}else{
+				foundUser.notifications.academic.unDismissed++;
+				Class.findById(connection.class_data, function(err, foundClass){
 					if(err){
 						console.log(err);
 					}else{
-						foundUser.notifications.academic.unDismissed++;
-
 						const note = {
 							note_Data: "Ass Added",
-							otherUserClassID: otherUserClassID,
-							assignmentID: otherUserAssignmentID,
-							myClassID: connection.class_data,
-							otherUserID: otherUserID,
+							otherUserClass: {
+								class_id: otherUserClass._id,
+								class_name: otherUserClass.name
+							},
+							myClass: {
+								class_id: foundClass._id,
+								class_name: foundClass.name,
+							},
+							otherUser: {
+								user_id: otherUser._id,
+								user_information: {
+									name: otherUser.name,
+									school: otherUser.school,
+									profilePictureURL: otherUser.profilePictureURL,
+								}
+							},
+							assignment: otherUserAssignmentID,
 						}
 
 						ClassNote.create(note, function(err, newNote){
@@ -550,13 +561,11 @@ function sendNewAssNotifications(otherUserID, otherUserClassID, otherUserAssignm
 								foundUser.save();
 							}
 						})
-
-
 					}
 				})
 			}
-		}
-	})
+		})
+	}
 }
 
 module.exports = router;

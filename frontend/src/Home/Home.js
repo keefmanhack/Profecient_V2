@@ -115,14 +115,14 @@ class Home extends React.Component{
 	getUpcommingAssignments(){
 		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/assignment/upcomming')
 	    .then(res => {
+	    	console.log(res.data);
 			this.setState({
 				upcommingAss: res.data
 			})
 		})
 	}
 
-	deleteAssignment(i){
-		const assID = this.state.upcommingAss[i]._id;
+	deleteAssignment(assID){
 		const classIndex = findClassIndex(assID, this.state.currSemester.classes);
 
 		const endPoint = 'http://localhost:8080/classes/' + this.state.currSemester.classes[classIndex]._id + '/assignment/' + assID;
@@ -226,7 +226,7 @@ class Home extends React.Component{
 	render(){
 		return(
 			<React.Fragment>
-				<Header currentUser={this.props.currentUser}/>
+				<Header updateCurrentUser={() => this.props.updateCurrentUser()} getUpcommingAssignments={() => this.getUpcommingAssignments()} currentUser={this.props.currentUser}/>
 				<div className='page-container black-bc'>
 				  	<div 
 				  		className="row" 
@@ -238,7 +238,7 @@ class Home extends React.Component{
 						    	assignments={this.state.upcommingAss}
 						    	toggleCompleted={(id, isCompleted) => this.toggleAssCompleted(id, isCompleted)}
 						    	editAssignment={(i) => this.editAssignment(i)}
-						    	deleteAssignment={(i) => this.deleteAssignment(i)}
+						    	deleteAssignment={(assID) => this.deleteAssignment(assID)}
 						    />
 							<Agenda 
 								showNewAgForm={() => this.showNewAgForm(true)}

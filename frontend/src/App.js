@@ -91,7 +91,11 @@ class App extends React.Component{
 
 							
 						<Route path='/home'>
-							{this.state.currentUser ? <Home currentUser={this.state.currentUser}/> : <Loader/>}
+							{this.state.currentUser ? 
+								<Home updateCurrentUser={() => this.getCurrentUser()} currentUser={this.state.currentUser}/> 
+							: 
+								<Loader/>
+							}
 						</Route>
 						<Route path='/profile/:id' component={({match}) => {
 							if(this.state.foundID !== match.params.id){

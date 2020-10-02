@@ -27,19 +27,32 @@ let mongoose = require('mongoose');
 let ClassNotification = mongoose.Schema({
 	wasDismissed: {type: Boolean, default: false},
 	note_Data: String, //can either be 'Ass Added', 'Class Edited', 'Class Deleted', 'Class Added'
-	otherUserClassID: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "Class"
+	otherUserClass: {
+		class_id:{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Class"
+		},
+		class_name: String,
 	},
-	myClassID: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "Class"
+	myClass: {
+		class_id:{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Class"
+		},
+		class_name: String,
 	},
-	otherUserID: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "User"
+	otherUser: {
+		user_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User"
+		},
+		user_information:{
+			name: String,
+			school: Object,
+			profilePictureURL: String,
+		}
 	},
-	assignmentID: { //only for 'Ass Added'
+	assignment: { //only for 'Ass Added'
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Assignment"
 	}
