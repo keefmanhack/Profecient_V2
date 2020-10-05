@@ -22,7 +22,7 @@ class App extends React.Component{
 			foundID: null,
 		}
 
-		this.testUserId = '5f4aa6042c0c8f715ae71d97';
+		this.testUserId = '5f5aab5a6f1dda2b82855985';
 
 		//Keefer - 5f4aa6042c0c8f715ae71d97
 		//Sarah  - 5f5aab5a6f1dda2b82855985
@@ -101,7 +101,7 @@ class App extends React.Component{
 							if(this.state.foundID !== match.params.id){
 								this.setFoundUser(match.params.id);
 							}
-							if(this.state.currentUser){
+							if(this.state.currentUser && this.state.foundID !==null){
 								return (<ProfilePage 
 									foundUser={this.state.foundID} 
 									updateCurrentUser={() => this.getCurrentUser()} 

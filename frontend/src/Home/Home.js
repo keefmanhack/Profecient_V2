@@ -35,7 +35,7 @@ class Home extends React.Component{
 
 	componentDidMount(){
 		this.getTodaysEvents();
-		this.getClassData();
+		// this.getClassData();
 		this.getUpcommingAssignments();
 		this.getFriendsPosts();
 	}
@@ -115,7 +115,7 @@ class Home extends React.Component{
 	getUpcommingAssignments(){
 		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/assignment/upcomming')
 	    .then(res => {
-	    	console.log(res.data);
+	    	this.getClassData();
 			this.setState({
 				upcommingAss: res.data
 			})
@@ -165,7 +165,7 @@ class Home extends React.Component{
 
 		axios.put(endPoint, {complete: isCompleted})
 		.then((response) => {
-			console.log(response);
+			// console.log(response);
 		}).catch((error) => {
 			console.log(error);
 		});

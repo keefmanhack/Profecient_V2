@@ -67,7 +67,7 @@ class NewMessage extends React.Component{
 
 	sendNewMessage(){
 		if(!this.checkErrors()){
-			const endPoint = 'http://localhost:8080/messageStream';
+			const endPoint = 'http://localhost:8080/users/'+ this.props.currentUser._id + 'messageStream';
 
 			const data= {
 				communicators: [this.props.currentUser._id, this.state.selectedUser._id],

@@ -151,9 +151,12 @@ h5.error-msg{
 .loader{
     position: absolute;
     top: 0;
+    left: 0;
     height: 100%;
+    border-radius: inherit;
     width: 100%;
     background: rgba(0,0,0,.9);
+    z-index: 10;
 }
 
 .loader ul{

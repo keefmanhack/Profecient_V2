@@ -52,15 +52,13 @@ app.use(agendaRoutes.router);
 
 
 app.get('/users/:id', function (req, res) {
-	if(req.params.id !==null){
-		User.findById(req.params.id, function(err, foundUser){
-			if(err){
-				console.log(err);
-			}else{
-				res.send(foundUser);
-			}
-		});
-	}
+	User.findById(req.params.id, function(err, foundUser){
+		if(err){
+			// console.log(err);
+		}else{
+			res.send(foundUser);
+		}
+	});
 });
 
 app.post('/users', function(req, res){
@@ -235,23 +233,51 @@ app.delete('/user/:id/messageStream/:message_id', function(req, res){
 	})
 })
 
-app.post('/messageStream', function(req, res){
-	MessageStream.create(req.body, function(err, newMessageStream){
+app.post('/users/:id/messageStream').populate('messageStreams').exec(function(req, res){
+	User.findById(req.params.id, function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
-			req.body.communicators.forEach(function(id){
-				User.findById(id, function(err, foundUser){
-					foundUser.messageStreams.push(newMessageStream);
-					foundUser.save();
+			let previousStream = doesStreamExist(foundUser.messageStreams, req.body.communicators);
+			if(previousStream===null){
+				MessageStream.create(req.body, function(err, newMessageStream){
+				if(err){
+					console.log(err);
+				}else{
+					req.body.communicators.forEach(function(id){
+						User.findById(id, function(err, foundUser){
+							foundUser.messageStreams.push(newMessageStream);
+							foundUser.save();
+						})
 				})
-			})
+					// THIS IS VERY VERY VERY BROKE
 
 			//still need to add check that message stream doesn't already exist
 			res.send('success');
 		}
 	})
+			}else{
+
+			}
+		}
+	})
+	
 })
+
+function doesStreamExist(messageStreams, communicators){
+	const communs_copy = communicators;
+	Array.sort(communs_copy);
+	for(let i = 0; i< messageStreams.length; i++){
+		const myMessageComms = Array.sort(messageStreams[i].communicators);
+		for(int j =0; j< messageStreams[i].communicators.length; j++){
+			if(communs_copy[j] !== myMessageComms[j]){
+				return messageStream[i]._id;
+			}
+		}
+	}
+
+	return null;
+}
 
 app.get('/x', function(req, res){
 	const data = {

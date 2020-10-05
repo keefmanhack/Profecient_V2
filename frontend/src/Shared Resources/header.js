@@ -4,7 +4,8 @@ import axios from 'axios';
 import moment from 'moment';
 
 import Loader from './Effects/loader';
-import {FadeInOutHandleState} from './Effects/CustomTransition';
+import {FadeInOutHandleState, FadeRightHandleState} from './Effects/CustomTransition';
+import {SuccessCheck, FailedSent} from './Effects/lottie/LottieAnimations';
 
 import './header.css';
 
@@ -79,6 +80,10 @@ class AcademicNotifications extends React.Component{
 
 		this.state={
 			notifications: null,
+			adds: {
+				successes: [],
+				fails: [],
+			},
 		}
 
 		this.wrapperRef = React.createRef();
@@ -90,7 +95,7 @@ class AcademicNotifications extends React.Component{
 		this.getAcademicNotificiations();
 	}
 
-	 componentWillUnmount() {
+	componentWillUnmount() {
         document.removeEventListener('mousedown', this.handleClickOutside);
     }
 
@@ -116,14 +121,21 @@ class AcademicNotifications extends React.Component{
 
 		axios.post(endPoint, {otherUserAssID: otherUserAssID, myClassID: myClassID})
 		.then((res) =>{
-			if(this.props.updateCurrentUser){
-				this.props.updateCurrentUser();
-			}
-			if(this.props.getUpcommingAssignments){
-				this.props.getUpcommingAssignments();
-			}
-			this.getAcademicNotificiations();
+			const adds = this.state.adds;
+			adds.successes.push(noteID);
+			this.setState({
+				adds: adds,
+			});
 		})
+		.catch((err) => {
+			const adds = this.state.adds;
+			adds.fails.push(noteID);
+			this.setState({
+				adds: adds,
+			});
+		})
+
+		
 	}
 
 	removeNote(noteID){
@@ -131,12 +143,34 @@ class AcademicNotifications extends React.Component{
 
 		axios.delete(endPoint)
 		.then((res) =>{
-			if(this.props.updateCurrentUser){
-				this.props.updateCurrentUser();
-			}
-			this.getAcademicNotificiations();
+			this.getData();
+		})
+		.catch((err) => {
+			console.log(err);
 		})
 
+	}
+
+	getData(){
+		this.getAcademicNotificiations();
+		if(this.props.updateCurrentUser){
+			this.props.updateCurrentUser();
+		}
+		if(this.props.getUpcommingAssignments){
+			this.props.getUpcommingAssignments();
+		}
+	}
+
+	removeElement(id){
+		let adds = this.state.adds;
+
+		adds.successes.pop(id);
+		adds.fails.pop(id);
+
+		this.setState({
+			adds: adds,
+		})
+		this.getData();
 	}
 
 	render(){
@@ -145,7 +179,17 @@ class AcademicNotifications extends React.Component{
 			for(let i =0; i< this.state.notifications.length; i++){
 				const note = this.state.notifications[i];			
 				if(note.note_Data === 'Ass Added'){
-					assAddedNotes.push(<AssAddedNote removeAssNote={() => this.removeNote(note._id)} addAss={() => this.addNewAss(note.assignment._id, note.myClass.class_id, note._id)} key={i} data={note}/>);
+					assAddedNotes.push(
+						<AssAddedNote 
+							removeAssNote={() => this.removeNote(note._id)} 
+							addAss={() => this.addNewAss(note.assignment._id, note.myClass.class_id, note._id)}
+							addedSuccess={this.state.adds.successes.includes(note._id)}
+							addedFail={this.state.adds.fails.includes(note._id)}
+							removeElement={() => this.removeElement(note._id)}
+							key={i} 
+							data={note}
+						/>
+					);
 				}
 			}
 		}
@@ -169,35 +213,72 @@ class AcademicNotifications extends React.Component{
 	}
 }
 
-function AssAddedNote(props){
-	return(
-		<div className='ass-added sans-font'>
-			<button onClick={() => props.removeAssNote()} className='remove red-c'>Remove</button>
-			<h1>New Assignment</h1>
-			<hr/>
-			<h1 className='class-name'>{props.data.myClass.class_name}</h1>
-			<h2>From
-				<Link to={'/profile/' + props.data.otherUser.user_id}>
-					<span className='other-user'>
-						<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.data.otherUser.user_information.profilePictureURL} alt="Can't display"/>
-						{props.data.otherUser.user_information.name}
-					</span>
-				</Link>
-			</h2>
-			<div className='ass-info'>
-				<h4>Name: <span>{props.data.assignment.name}</span></h4>
-				<h4>Due: <span>{moment(props.data.assignment.dueDate).format('dddd MMM Do')}</span></h4>
-				{props.data.assignment.description !== "" ?
-					<p>{props.data.assignment.description}</p>
-				:
-					null
-				}
-				<div className='add'>
-					<button onClick={() => props.addAss()} className='green-c'>Add</button>
+class AssAddedNote extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state={
+			event: false,
+		}
+	}
+
+	addAss(){
+		this.setState({event: true,});
+		this.props.addAss();
+	}
+
+	removeAss(){
+		this.setState({event: true,});
+		this.props.removeAssNote();
+	}
+
+	removeElement(){
+		this.setState({
+			event: false,
+		})
+		this.props.removeElement();
+	}
+
+	render(){
+		return(
+			<div className='ass-added sans-font'>
+				<FadeInOutHandleState condition={this.state.event && !(this.props.addedFail || this.props.addedSuccess)}>
+					<Loader/>
+				</FadeInOutHandleState>
+				<FadeInOutHandleState condition={this.props.addedSuccess}>
+		 			<SuccessCheck onCompleted={() =>this.removeElement()}/>
+	 			</FadeInOutHandleState>
+	 			<FadeInOutHandleState condition={this.props.addedFail}>
+	 				<FailedSent onCompleted={() =>this.removeElement()}/>
+	 			</FadeInOutHandleState>
+
+				<button onClick={() => this.removeAss()} className='remove red-c'>Remove</button>
+				<h1>New Assignment</h1>
+				<hr/>
+				<h1 className='class-name'>{this.props.data.myClass.class_name}</h1>
+				<h2>From
+					<Link to={'/profile/' + this.props.data.otherUser.user_id}>
+						<span className='other-user'>
+							<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.data.otherUser.user_information.profilePictureURL} alt="Can't display"/>
+							{this.props.data.otherUser.user_information.name}
+						</span>
+					</Link>
+				</h2>
+				<div className='ass-info'>
+					<h4>Name: <span>{this.props.data.assignment.name}</span></h4>
+					<h4>Due: <span>{moment(this.props.data.assignment.dueDate).format('dddd MMM Do')}</span></h4>
+					{this.props.data.assignment.description !== "" ?
+						<p>{this.props.data.assignment.description}</p>
+					:
+						null
+					}
+					<div className='add'>
+						<button onClick={() => this.addAss()} className='green-c'>Add</button>
+					</div>
 				</div>
 			</div>
-		</div>
-	)
+		)
+	}
 }
 
 export default Header;

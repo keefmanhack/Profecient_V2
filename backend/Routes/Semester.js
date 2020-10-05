@@ -363,14 +363,7 @@ router.delete('/users/:id/semesters/:sem_id', function(req, res){
 			foundSemester.classes.forEach(function(foundClass){
 				if(foundClass.assignments){
 					foundClass.assignments.forEach(function(foundAssignment){
-						removeAssignment(foundAssignment._id);
-					})
-				}
-
-				if(foundClass.links){
-					foundClass.links.forEach(function(foundLink){
-						//need to define function still
-						removeLink(foundLink._id)
+						removeAssignment(foundAssignment._id, null);
 					})
 				}
 
@@ -404,10 +397,13 @@ function removeLink(id){
 
 }
 
-function removeAssignment(id){
+function removeAssignment(id, cb){
 	Assignment.findByIdAndRemove(id, function(err){
 		if(err){
 			console.log(err);
+		}else{
+			console.log("Assignment Deleted")
+			cb();
 		}
 	})
 }
@@ -427,9 +423,16 @@ router.delete('/classes/:class_id/assignment/:ass_id', function(req, res){
 		}else{
 			foundClass.assignments.pull(req.params.ass_id);
 
-			removeAssignment(req.params.add_id);
-			foundClass.save();
-			res.send('success')
+			removeAssignment(req.params.add_id, function(){
+				foundClass.save(function(err){
+					if(err){
+						console.log(err);
+					}else{
+						res.send('success');
+					}
+				});
+			});
+			
 			
 		}
 	})
