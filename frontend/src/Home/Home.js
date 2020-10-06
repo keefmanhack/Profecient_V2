@@ -125,7 +125,7 @@ class Home extends React.Component{
 	deleteAssignment(assID){
 		const classIndex = findClassIndex(assID, this.state.currSemester.classes);
 
-		const endPoint = 'http://localhost:8080/classes/' + this.state.currSemester.classes[classIndex]._id + '/assignment/' + assID;
+		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id +'/classes/' + this.state.currSemester.classes[classIndex]._id + '/assignment/' + assID;
 
 		axios.delete(endPoint)
 		.then((response) => {

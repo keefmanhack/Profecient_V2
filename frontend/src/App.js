@@ -34,7 +34,6 @@ class App extends React.Component{
 	}
 
 	getRequestedUser(id){
-		// alert(id);
 		console.log(id);
 		axios.get(`http://localhost:8080/users/` + id)
 	    .then(res => {
@@ -77,9 +76,12 @@ class App extends React.Component{
 				<div className="App">
 					<Switch>
 						<Route path='/message/:id' component={({match}) => {
-							if(this.state.currentUser){
+							if(this.state.foundID !== match.params.id){
+								this.setFoundUser(match.params.id);
+							}
+							if(this.state.currentUser && this.state.foundID !==null){
 								return(
-									<MessageCenter selectedID={match.params.id} currentUser={this.state.currentUser}	/>
+									<MessageCenter foundUser={this.state.foundID} currentUser={this.state.currentUser}	/>
 								)
 							}else{
 								return (<Loader/>)

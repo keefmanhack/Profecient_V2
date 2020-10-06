@@ -117,9 +117,9 @@ class AcademicNotifications extends React.Component{
 	}
 
 	addNewAss(otherUserAssID, myClassID, noteID){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUserID +`/notifications/academic/` + noteID;
+		const endPoint = `http://localhost:8080/users/` + this.props.currentUserID +`/classes/` + myClassID + '/assignment/fromConnection';
 
-		axios.post(endPoint, {otherUserAssID: otherUserAssID, myClassID: myClassID})
+		axios.post(endPoint, {otherUserAssID: otherUserAssID, noteID: noteID})
 		.then((res) =>{
 			const adds = this.state.adds;
 			adds.successes.push(noteID);
@@ -176,18 +176,18 @@ class AcademicNotifications extends React.Component{
 	render(){
 		let assAddedNotes = [];
 		if(this.state.notifications !==null){
-			for(let i =0; i< this.state.notifications.length; i++){
-				const note = this.state.notifications[i];			
-				if(note.note_Data === 'Ass Added'){
+			for(let i =0; i< this.state.notifications.classNote.length; i++){
+				const classNote = this.state.notifications.classNote[i];			
+				if(classNote.note_Data === 'Ass Added'){
 					assAddedNotes.push(
 						<AssAddedNote 
-							removeAssNote={() => this.removeNote(note._id)} 
-							addAss={() => this.addNewAss(note.assignment._id, note.myClass.class_id, note._id)}
-							addedSuccess={this.state.adds.successes.includes(note._id)}
-							addedFail={this.state.adds.fails.includes(note._id)}
-							removeElement={() => this.removeElement(note._id)}
+							removeAssNote={() => this.removeNote(classNote._id)} 
+							addAss={() => this.addNewAss(classNote.assignment._id, classNote.myClass.class_id, classNote._id)}
+							addedSuccess={this.state.adds.successes.includes(classNote._id)}
+							addedFail={this.state.adds.fails.includes(classNote._id)}
+							removeElement={() => this.removeElement(classNote._id)}
 							key={i} 
-							data={note}
+							data={classNote}
 						/>
 					);
 				}

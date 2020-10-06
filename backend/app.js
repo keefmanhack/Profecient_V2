@@ -4,6 +4,8 @@ const   express 	= require('express'),
 		mongoose 	= require('mongoose'),
 		bodyParser  = require('body-parser');
 
+const NotificationHandler = require('./Helper Classes/NotificationHandler');
+
 //Routes
 let feedRoutes	     = require("./Routes/Posts"),
 	semesterRoutes   = require('./Routes/Semester'),
@@ -116,78 +118,20 @@ app.get('/users/:id/notifications/academic', function(req, res){
 		if(err){
 			console.log(err);
 		}else{
-			res.send(foundUser.notifications.academic.classNote);
+			console.log(foundUser.notifications.academic)
+			res.send(foundUser.notifications.academic);
 		}
 	})
 })
 
-app.post('/users/:id/notifications/academic/:noteID', function(req, res){
-	Assignment.findById(req.body.otherUserAssID, function(err, foundAss){
-		if(err){
-			console.log(err);
-		}else{
-			Class.findById(req.body.myClassID, function(err, foundClass){
-				if(err){
-					console.log(err);
-				}else{
-					Assignment.create(foundAss, function(err, newAss){
-						if(err){
-							console.log(err);
-						}else{
-							newAss.complete = false;
-							foundClass.assignments.push(newAss);
-							newAss.save(function(err){
-								if(err){
-									console.log(err)
-								}else{
-									foundClass.save(function(err){
-										if(err){
-											console.log(err)
-										}else{
-											removeNotification(req.params.id, req.params.noteID, function(){
-												res.send('success');
-											})
-										}
-									})
-								}
-							})
-						}
-					})
-				}
-			})
-		}
-	})
-})
+
 
 app.delete('/users/:id/notifications/academic/:noteID', function(req, res){
-	removeNotification(req.params.id, req.params.noteID, function(){
+	NotificationHandler.deleteNewAssNotification(req.params.id, req.params.noteID, function(){
 		res.send('success');
 	})
 })
 
-function removeNotification(userID, noteID, cb){
-	User.findById(userID, function(err, foundUser){
-		if(err){
-			console.log(err);
-		}else{
-			ClassNote.findByIdAndRemove(noteID, function(err){
-				if(err){
-					console.log(err);
-				}else{
-					foundUser.notifications.academic.classNote.pull(noteID);
-					foundUser.notifications.academic.unDismissed--;
-					foundUser.save(function(err){
-						if(err){
-							console.log(err);
-						}else{
-							cb();
-						}
-					})
-				}
-			})
-		}
-	})
-}
 // End of Notification Routes
 
 app.get('/users/:id/messageStreams', function(req,res){

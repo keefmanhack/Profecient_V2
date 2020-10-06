@@ -4,6 +4,8 @@ const express = require("express"),
 	  mongoose = require('mongoose')
 	  async   = require('async');
 
+const NotificationHandler = require('../Helper Classes/NotificationHandler');
+
 let Agenda = require('./Agenda');
 
 //Mongo Schemas
@@ -416,14 +418,21 @@ function removeClass(id){
 	})
 }
 
-router.delete('/classes/:class_id/assignment/:ass_id', function(req, res){
+router.delete('/users/:id/classes/:class_id/assignment/:ass_id', function(req, res){
+	//go through list of linked Users
+	//if they still have a notification linked to this assignment then remove it
+	//send all linked users a notification that this assignment has been deleted
+
 	Class.findById(req.params.class_id, function(err, foundClass){
 		if(err){
 			console.log(err);
 		}else{
 			foundClass.assignments.pull(req.params.ass_id);
 
-			removeAssignment(req.params.add_id, function(){
+			// removeLinkedUserNotifications(foundClass, req.params.ass_id);
+			// sendLinkedUsersAssDeletedNotification()
+
+			removeAssignment(req.params.ass_id, function(){
 				foundClass.save(function(err){
 					if(err){
 						console.log(err);
@@ -432,11 +441,40 @@ router.delete('/classes/:class_id/assignment/:ass_id', function(req, res){
 					}
 				});
 			});
-			
-			
 		}
 	})
 })
+
+// function removeLinkedUserNotifications(linkedClass, assID){
+// 	if(linkedClass.connectionsFrom.length >0){
+// 		linkedClass.connectionsFrom.forEach(function(connection){
+// 			User.findById(req.params.id).populate(
+// 			{	path: 'notifications', 
+// 				populate: {
+// 					path: 'academic', 
+// 					populate: {
+// 						path: 'classNote',
+// 						populate: {
+// 							path: 'assignment',
+// 						}
+// 					}
+// 				}
+// 			}).exec(function(err, foundUser){
+// 				if(err){
+// 					console.log(err);
+// 				}else{
+// 					if(foundUser.notifications.academic.classNote.length>0){
+// 						foundUser.notifications.academic.classNote.forEach(function(note){
+// 							if(note.assignment === assID){
+// 								removeNotification(foundUser._id, note._id, function(){});
+// 							}
+// 						})
+// 					}
+// 				}
+// 			});
+// 		})
+// 	}
+// }
 
 router.get('/users/:id/assignment/upcomming', function(req, res){
 	User.findById(req.params.id)
@@ -493,26 +531,43 @@ router.put('/assignment/:id', function(req,res){
 	})
 })
 
-router.post('/users/:userID/classes/:id/assignment', function(req, res){
-	User.findById(req.params.userID, function(err, foundUser){
+router.post('/users/:id/classes/:classID/assignment', function(req, res){
+	createAssignment(req.params.id, req.params.classID, req.body, function(){
+		res.send('success');
+	})
+})
+
+router.post('/users/:id/classes/:classID/assignment/fromConnection', function(req, res){
+	getAssignment(req.body.otherUserAssID, function(foundAss){
+		createAssignment(req.params.id, req.params.classID, foundAss, function(){
+			NotificationHandler.deleteNewAssNotification(req.params.id, req.body.noteID, function(){
+				res.send('success');
+			})
+		})
+	})
+})
+
+function createAssignment(userID, classID, assingmentData, cb){
+	User.findById(userID, function(err, foundUser){
 		if(err){
 			console.log(err);
 		}else{
-			Assignment.create(req.body, function(err, newAss){
+			Assignment.create(assingmentData, function(err, newAss){
 				if(err){
 					console.log(err);
 				}else{
-					Class.findById(req.params.id, function(err, foundClass){
+					Class.findById(classID, function(err, foundClass){
 						if(err){
 							console.log(err);
 						}else{
+							newAss.complete = false;
 							foundClass.assignments.push(newAss);
 							foundClass.save(function(err){
 								if(err){
 									console.log(err);
 								}else{
-									res.send('success');
-									sendNewAssNotifications(foundUser, foundClass, newAss._id);
+									sendConnectionsFromNewAssNotification(foundClass, foundUser, newAss._id);
+									cb();
 								}
 							});
 						}
@@ -521,54 +576,36 @@ router.post('/users/:userID/classes/:id/assignment', function(req, res){
 			})
 		}
 	})
-})
+}
 
-function sendNewAssNotifications(otherUser, otherUserClass, otherUserAssignmentID){
-	for(let i =0; i<otherUserClass.connectionsFrom.length; i++){
-		let connection = otherUserClass.connectionsFrom[i];
-		User.findById(connection.user, function(err, foundUser){
-			if(err){
-				console.log(err);
-			}else{
-				foundUser.notifications.academic.unDismissed++;
-				Class.findById(connection.class_data, function(err, foundClass){
-					if(err){
-						console.log(err);
-					}else{
-						const note = {
-							note_Data: "Ass Added",
-							otherUserClass: {
-								class_id: otherUserClass._id,
-								class_name: otherUserClass.name
-							},
-							myClass: {
-								class_id: foundClass._id,
-								class_name: foundClass.name,
-							},
-							otherUser: {
-								user_id: otherUser._id,
-								user_information: {
-									name: otherUser.name,
-									school: otherUser.school,
-									profilePictureURL: otherUser.profilePictureURL,
-								}
-							},
-							assignment: otherUserAssignmentID,
-						}
-
-						ClassNote.create(note, function(err, newNote){
-							if(err){
-								console.log(err);
-							}else{
-								foundUser.notifications.academic.classNote.unshift(newNote);
-								foundUser.save();
-							}
-						})
-					}
-				})
-			}
+function sendConnectionsFromNewAssNotification(userClass, user, assID){
+	if(userClass.connectionsFrom.length>0){
+		userClass.connectionsFrom.forEach(function(connection){
+			Class.findById(connection.class_data, function(err, usersClassToBeNotified){
+				if(err){
+					console.log(err);
+				}else{
+					NotificationHandler.createNewAssNotification(usersClassToBeNotified, user, userClass, assID, function(newNote){
+						NotificationHandler.sendNewAssNotification(connection.user, newNote._id);
+					})
+				}
+			})
 		})
 	}
 }
+
+function getAssignment(id, cb){
+	Assignment.findById(id, function(err, foundAss){
+		if(err){
+			console.log(err);
+		}else{
+			cb(foundAss);
+		}
+	})
+}
+
+
+
+
 
 module.exports = router;

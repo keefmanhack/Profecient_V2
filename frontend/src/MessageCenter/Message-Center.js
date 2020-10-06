@@ -26,8 +26,8 @@ class MessageCenter extends React.Component{
 	}
 
 	componentDidMount(){
-		if(this.props.selectedID){
-			this.getMessagesSelected(this.props.selectedID);
+		if(this.props.foundUser){
+			this.getMessagesSelected(this.props.foundUser);
 		}else{
 			this.getMessages();
 		}
@@ -59,8 +59,7 @@ class MessageCenter extends React.Component{
 		    			const communicator = res.data[i].communicators[j];
 		    			if(communicator._id===selectedID && communicator._id !== this.props.currentUser._id){
 		    				temp =i;
-		    				i=res.data.length;
-		    				j=res.data[i].communicators.length;
+		    				break;
 		    			}
 		    		}
 		    	}
