@@ -16,10 +16,12 @@ const UserService = require('../lib/User/index');
 
 let NotificationRoutes = require('./Routes/Notifications');
 let MessageRoutes = require('./Routes/Messages');
+let AgendaRoutes = require('./Routes/Agenda');
 
 
 app.use(NotificationRoutes);
 app.use(MessageRoutes);
+app.use(AgendaRoutes);
 
 
 app.get('/users/:id', async (req, res) => {

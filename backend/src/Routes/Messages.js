@@ -17,97 +17,90 @@ router.get('/users/:id/messageStreams', async (req,res) =>{
 router.put('/messageStream/:id', async (req,res) =>{
 	try{
 		await MessageService.updateStream(req.params.id, req.body.messageStream);
-		res.send('success');
+		res.send();
 	}catch(err){
 		console.log(err);
 	}
 })
 
-// app.delete('/user/:id/messageStream/:message_id', function(req, res){
-// 	User.findById(req.params.id, function(err, foundUser){
-// 		if(err){
-// 			console.log(err);
-// 		}else{
-// 			foundUser.messageStreams.pull(req.params.message_id);
-// 			foundUser.save();
-// 			res.send('success');
-// 			// Should add function to check if other user has delete the messageStream, if so the messageStream it's self can be deleted
-// 		}
-// 	})
-// })
+router.delete('/user/:id/messageStream/:message_id', async (req, res) =>{
+	try{
+		const user = await UserService.findById(req.params.id);
+		user.messageStreams.pull(req.params.message_id);
+		await user.save();
+		res.send();
+	}catch(err){
+		console.log(err);
+	}
+})
 
-// app.post('/users/:id/messageStream', function(req, res){
-// 	for(let i =0; i<req.body.communicators.length; i++){
-// 		const id = req.body.communicators[i];
-// 		User.findById(id).populate('messageStreams').exec(function(err, foundUser){
-// 			if(err){
-// 				console.log(err);
-// 			}else{
-// 				let previousStream = doesStreamExist(foundUser.messageStreams, req.body.communicators);
-// 				if(previousStream === null){
-// 					MessageStream.create(req.body, function(err, newMessageStream){
-// 						if(err){
-// 							console.log(err);
-// 						}else{
-// 							foundUser.messageStreams.push(newMessageStream);
-// 							foundUser.save(function(err){
-// 								if(err){
-// 									console.log(err);
-// 								}else{
-// 									if(i===req.body.communicators.length-1){
-// 										res.send('success');
-// 									}
-// 								}
-// 							});
-// 							console.log('Created a new stream for ' + foundUser.name);
-// 						}
-// 					})
-// 				}else{
-// 					MessageStream.findById(previousStream, function(err, foundStream){
-// 						if(err){
-// 							console.log(err);
-// 						}else{
-// 							foundStream.sentMessages.push(req.body.sentMessages[0]);
-// 							foundStream.save(function(err){
-// 								if(err){
-// 									console.log(err);
-// 								}else{
-// 									if(i===req.body.communicators.length-1){
-// 										res.send('success');
-// 									}
-// 								}
-// 							});
-// 							console.log('Found Stream updated')
-// 						}
-// 					})
-// 				}
-// 			}
-// 		})
-// 	}
-// })
+router.post('/users/:id/messageStream', async (req, res) =>{
+	//get all user's in req.body.communicators
+	//get all of these user's streams
+	//make list of user's who don't have the stream
+	//if list length is greator than zero
+	//create a new stream
+	//add the stream to each user in list
 
-// function doesStreamExist(messageStreams, communicators){
-// 	const newComms = communicators;
-// 	newComms.sort();
 
-// 	for(let i =0; i< messageStreams.length; i++){
-// 		if(messageStreams[i].communicators.length === newComms.length){
-// 			let found = true;
-// 			const prevComms = messageStreams[i].communicators.sort();
+	//THIS DOESN'T WORK AT THE MOMENT
 
-// 			for(let j =0; j< prevComms.length; j++){
-// 				if(prevComms[j] != newComms[j]){
-// 					found=false;
-// 				}
-// 			}
-// 			if(found){
-// 				return messageStreams[i]._id;
-// 			}
-// 		}
-// 	}
+	
+	try{
+		const communs = await UserService.findMultiple(req.body.communicators);
+		let eachUsersStream = [];
+		let usersWithOutStream = [];
+		let streamID;
 
-// 	return null
-// }
+		communs.forEach(async function(comm){
+			const commStreams = MessageService.getUserStreams(comm.messageStreams);
+			streamID = doesStreamExist(commStreams, req.body.communicators);
+			if(streamID){
+				const foundStream = await MessageService.findStream(streamID);
+				foundStream.sentMessages.push(req.body.sentMessages[0]);
+				foundStream.save();
+			}else{
+				usersWithOutStream.push(comm);
+			}
+		})
+
+		if(usersWithOutStream.length > 0){
+			const newStream = await MessageService.createNewStream(req.body);
+			usersWithOutStream.forEach(async function(user){
+				user.messageStreams.push(newStream);
+				await user.save();
+			})
+		}
+		console.log(usersWithOutStream);
+		res.send();
+
+	}catch(err){
+		console.log(err);
+	}
+})
+
+function doesStreamExist(messageStreams, communicators){
+	const newComms = communicators;
+	newComms.sort();
+
+	for(let i =0; i< messageStreams.length; i++){
+		if(messageStreams[i].communicators.length === newComms.length){
+			let found = true;
+			const prevComms = messageStreams[i].communicators.sort();
+
+			for(let j =0; j< prevComms.length; j++){
+				if(prevComms[j] != newComms[j]){
+					found=false;
+				}
+			}
+			if(found){
+				return messageStreams[i]._id;
+			}
+		}
+	}
+
+	return null
+}
 
 
 

@@ -45,6 +45,14 @@ const deleteAcNotif = User => async (userID, noteID) =>{
 	await user.save();
 }
 
+const findMultiple = User => async (ids) => {
+	if(!ids){
+		throw new Error('No ids');
+	}
+	return await User.find({_id: ids});
+}
+
+
 
 module.exports = User => {
 	return {
@@ -53,6 +61,7 @@ module.exports = User => {
 		findUsersByName: findUsersByName(User),
 		toggleUserFriend: toggleUserFriend(User),
 		deleteAcNotif : deleteAcNotif(User),
+		findMultiple: findMultiple(User),
 	}
 }
 

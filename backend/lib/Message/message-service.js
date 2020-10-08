@@ -14,9 +14,17 @@ const updateStream = Message => async (streamID, updatedStream) => {
 	await Message.findByIdAndUpdate(streamID, updateStream);
 }
 
+const findStream = Message => async id => {
+	if(!id){
+		throw new Error('No message id');
+	}
+	return await Message.findById(id);
+}
+
 module.exports = Message => {
 	return {
 		getUserStreams: getUserStreams(Message),
 		updateStream: updateStream(Message),
+		findStream: findStream(Message),
 	}
 }
