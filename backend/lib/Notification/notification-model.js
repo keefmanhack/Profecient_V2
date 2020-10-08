@@ -1,27 +1,3 @@
-/*
-Notification Design
-	Notifications
-		Academic
-			Class
-				Edited
-				Deleted
-				New class linked
-				Assignment Added
-			Assignment
-				Edited
-				Deleted
-				Completed?
-		Friends
-		Messages
-Class Notifications Walk through
-	-What happens if Assignment was added to a linked class
-		-Data needed:
-				-Other user
-				-Other user class???
-				-Current user's class
-				-Other user Assignment Data
-*/
-
 let mongoose = require('mongoose');
 
 let ClassNotification = mongoose.Schema({
