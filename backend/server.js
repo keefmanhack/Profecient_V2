@@ -1,5 +1,4 @@
-const mongoose = require('mongoose'),
-	  cors 	   = require('cors');
+const mongoose = require('mongoose');
 
 const app = require('./src/app.js');
 
@@ -16,14 +15,6 @@ mongoose.set('useUnifiedTopology', true);
 let mongoUrl = process.env.PROF_MONGO_DB;
 
 mongoose.connect(mongoUrl);
-
-//use cors to allow cross origin resource sharing
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
-);
 
 
 app.listen(process.env.PORT || 8080, () => {
