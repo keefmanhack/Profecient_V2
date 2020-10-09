@@ -48,13 +48,9 @@ class Post extends React.Component{
 	}
 
 	toggleLike(){
-		const endPoint = 'http://localhost:8080/posts/' + this.props.data._id +'/likes';
-		let data = new FormData();
-		data.append('userID', this.props.currentUser._id);
+		const endPoint = 'http://localhost:8080/users/'+ this.props.currentUser._id + '/posts/' + this.props.data._id +'/likes';
 
-		axios.post(endPoint, {
-			userID: this.props.currentUser._id,
-		})
+		axios.post(endPoint, {})
 		.then((response) => {
 		    this.getLikes();
 		}).catch((error) => {
