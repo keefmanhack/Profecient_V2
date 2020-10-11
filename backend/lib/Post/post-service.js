@@ -53,55 +53,47 @@ const create = Post => async (text, authorID, images) => {
 
 	let imgPaths = [];
 	if(images){
-		console.log('called');
 		const directory = 'users/' + authorID + '/posts/' + post._id +'/';
 		if(!Array.isArray(images)){ //convert to array so it works with eachSeries
 			images = [images];
 		}
-		imgPaths = await uploadImages(images, directory);
-		post.photos = imgPaths;
-		await post.save();
+		await uploadImages(images, directory, async function(imgPaths){
+			post.photos = imgPaths;
+			await post.save();
+			return post;
+		});
+	}else{
+		return post;
 	}
-	console.log(post);
-	return post;
 }
 
-async function uploadImages(images, directory) {
+async function uploadImages(images, directory, cb) {
 	let ct =0;
 	let returnArr =[];
-    async.eachSeries(images, function(image, cb) {
-    	//prep image data
-    	var data = image.replace(/^data:image\/\w+;base64,/, "");
+	for(let i =0; i< images.length; i++){
+		const image = images[i];
+		var data = image.replace(/^data:image\/\w+;base64,/, "");
 		var buf = new Buffer.from(data, 'base64');
-		//set path
 		var path = directory + ct + '.jpg';
 		ct++;
-
-		//add path to array to store in database
 		returnArr.push(path);
-
-        const params = {
+		const params = {
 	        Bucket: process.env.S3_BUCKET_NAME,
 	        Key: path, // File name you want to save as in S3
 	        Body: buf,
 	        ACL:'public-read'
 	    };
-
-        s3.upload(params, function(err, data) {
-            if (err) {
-              console.log("Error uploading data. ", err);
-              cb(err)
-            } else {
-              console.log("Success uploading data");
-              
-              cb()
-            }
-        })
-    }, function(err) {
-        if (err) console.log('one of the uploads failed')
-        else console.log('all files uploaded')
-        return returnArr;
-    })
+	    s3.upload(params, function(err, data){
+	   		if(err){
+	   			console.log(err);
+	   		}else{
+	   			console.log('FILE UPLAODED');
+	   			if(i===images.length-1){
+	   				cb(returnArr);
+	   			}
+	   		}
+	   	});
+	}
 }
 
 module.exports = Post => {

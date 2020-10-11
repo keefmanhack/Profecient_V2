@@ -77,32 +77,6 @@ router.post('/users/:id/posts', upload.array('images',6), async (req, res) => {
 	}catch(err){
 		console.log(err);
 	}
-
-	// let images = req.body.images;
-
-	// Post.create({text: req.body.text, author: req.params.id}, (err, newPost)=>{
-	// 	if(err){
-	// 		console.log(err);
-	// 	}else{
-	// 		if(images){
-	// 			const directory = 'users/' + req.params.id + '/posts/' + newPost._id +'/';
-	// 			if(!Array.isArray(images)) //convert to array so it works with eachSeries
-	// 				images = [images];
-	// 			uploadImages(images, directory, function(err,returnArr){
-	// 				newPost.photos = returnArr;
-	// 				newPost.save(function(err){
-	// 					if(err){
-	// 						console.log(err);
-	// 					}else{
-	// 						addUserPost(req.params.id, newPost, res);
-	// 					}
-	// 				});
-	// 			})
-	// 		}else{
-	// 			addUserPost(req.params.id, newPost, res)
-	// 		}
-	// 	}
-	// })
 });
 
 

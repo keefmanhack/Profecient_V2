@@ -1,113 +1,17 @@
 const express = require("express"),
-	  router  = express.Router(),
-	  moment  = require('moment'),
-	  mongoose = require('mongoose')
-	  async   = require('async');
-
-const NotificationHandler = require('../Helper Classes/NotificationHandler');
-
-let Agenda = require('./Agenda');
-
-//Mongo Schemas
-let User       = require('../models/User'),
-    Semester   = require('../models/Semester'),
-    Class      = require('../models/Class'),
-    Assignment = require('../models/Assignment');
-    ClassNote = require('../models/ClassNote');
-
+	  router  = express.Router();
 
 // Connection Routes
 
-router.post('/users/:id/class/connection', function(req, res){
+router.post('/users/:id/class/connection', async (req, res) =>{
 	try{
-		async.waterfall([
-			function(cb){
-				User.findById(req.params.id, function(err, currUser){
-					if(err){
-						console.log(err);
-					}else{
-						cb(null, currUser);
-					}
-				})
-			},
-			function(currUser, cb){
-				User.findById(req.body.otherUser, function(err, otherUser){
-					if(err){
-						console.log(err);
-					}else{
-						cb(null, currUser);
-					}
-				})
-			},
-			function(currUser, cb){
-				Class.findById(req.body.currUserClass, function(err, foundClass){
-					if(err){
-						console.log(err);
-					}else{
-						const newConnect = {
-							user: req.body.otherUser,
-							class_data: req.body.otherUserClass,
-						}
-
-						for(let i =0; i<foundClass.connectionsTo.length; i++){
-							const connection = foundClass.connectionsTo[i];
-							if(connection.user == newConnect.user && connection.class_data == newConnect.class_data){
-								res.send('Exists');
-								return;
-							}
-
-						}
-
-						foundClass.connectionsTo.push(newConnect);
-						cb(null, currUser, foundClass);
-					}
-				})
-			},
-			function(currUser, currUserClass, cb){
-				Class.findById(req.body.otherUserClass, function(err, foundClass){
-					if(err){
-						console.log(err);
-					}else{
-						const newConnect = {
-							user: currUser._id,
-							class_data: req.body.currUserClass,
-						}
-
-
-						for(let i =0; i<foundClass.connectionsFrom.length; i++){
-							const connection = foundClass.connectionsFrom[i];
-							if(connection.user == newConnect.user && connection.class_data == newConnect.class_data){
-								res.send('Exists');
-								return;
-							}
-						}
-
-						foundClass.connectionsFrom.push(newConnect);
-						foundClass.save(function(err){
-							if(err){
-								console.log(err);
-							}else{
-								currUserClass.save(function(err){
-									if(err){
-										console.log(err);
-									}else{
-										cb(null);
-									}
-								});
-							}
-						});
-					}
-				})
-			}
-		], function(err){
-			if(err){
-				console.log(err);
-			}else{
-				res.send('success');
-			}
-		})
-	}catch(e){
-		console.log(e);
+		const currUser = await UserService.findById(req.params.id);
+		const otherUser = await UserService.findById(req.body.otherUser);
+		await ClassService.toggleConnectionTo(req.body.currUserClass, otheruser._id, req.body.otherUserClass);
+		await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
+		res.send();
+	}catch(err){
+		console.log(err);
 	}
 })
 
