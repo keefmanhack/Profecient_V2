@@ -60,14 +60,13 @@ class ProfilePage extends React.Component{
 
 
 	getSemesters(){
-		axios.get(`http://localhost:8080/users/` + this.props.foundUser + '/semesters')
+		axios.get(`http://localhost:8080/users/` + this.props.foundUser + '/semesters/classes/assignments')
 	    .then(res => {
 			this.setState({
 				semesters: res.data,
 				currSemesterIndex: res.data.length-1,
 			})
 		})
-
 	}
 
 	showNewSem(val){

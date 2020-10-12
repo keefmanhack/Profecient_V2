@@ -123,6 +123,8 @@ class Home extends React.Component{
 	}
 
 	deleteAssignment(assID){
+		console.log(assID);
+		console.log(this.state.currSemester);
 		const classIndex = findClassIndex(assID, this.state.currSemester.classes);
 
 		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id +'/classes/' + this.state.currSemester.classes[classIndex]._id + '/assignment/' + assID;
@@ -142,7 +144,8 @@ class Home extends React.Component{
 
 	sendAssignment(data){
 		if(this.state.editIndex || this.state.editIndex===0){
-			this.deleteAssignment(this.state.editIndex);
+			this.deleteAssignment(this.state.currSemester.classes[this.state.selectedIndex].assignments[this.state.editIndex]._id);
+
 		}
 
 		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id +'/classes/' + this.state.currSemester.classes[this.state.selectedIndex]._id + '/assignment';

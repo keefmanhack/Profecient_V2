@@ -24,7 +24,7 @@ const toggleConnectionTo = ClassModel => async (myClassID, otherUserID, otherUse
 	for(let i =0; i< foundClass.connectionsTo.length; i++){
 		const connection = foundClass.connectionsTo[i];
 		if(connection.user == otherUserID && connection.class_data == otherUserClassID){
-			foundClass.connectionsTo.pull(i);
+			foundClass.connectionsTo.splice(i, i+1);
 			await foundClass.save();
 			return;
 		}
@@ -41,7 +41,7 @@ const toggleConnectionFrom = ClassModel => async (myClassID, otherUserID, otherU
 	for(let i =0; i< foundClass.connectionsFrom.length; i++){
 		const connection = foundClass.connectionsFrom[i];
 		if(connection.user == otherUserID && connection.class_data == otherUserClassID){
-			foundClass.connectionsFrom.pull(i);
+			foundClass.connectionsFrom.splice(i, i+1);
 			await foundClass.save();
 			return;
 		}
@@ -50,9 +50,68 @@ const toggleConnectionFrom = ClassModel => async (myClassID, otherUserID, otherU
 	await foundClass.save();
 }
 
+const create = ClassModel => async data =>{
+	if(!data){
+		throw new Error('No class Data');
+	}
+	return await ClassModel.create(data);
+}
+
+const updateClasses = ClassModel => async data=> {
+	if(!data){
+		throw new Error('No Data');
+	}
+	let returnArr = [];
+	for(let i =0; i< data.length; i++){
+		const classData = data[i];
+		if(classData && classData._id){
+			returnArr.push(await ClassModel.findByIdAndUpdate(classData._id, classData));
+		}else{
+			returnArr.push(await ClassModel.create(classData));
+		}
+	}
+	return returnArr;
+}
+
+const deleteMultiple = ClassModel => async ids =>{
+	if(!ids){
+		throw new Error("No class ids");
+	}
+
+	for(let i =0; i<ids.length; i++){
+		await ClassModel.findByIdAndRemove(ids[i]);
+	}
+}
+
+const findById = ClassModel => async id => {
+	if(!id){
+		throw new Error('No id given');
+	}
+	return await ClassModel.findById(id);
+}
+
+const getAllClassAssIDs = ClassModel => async ids => {
+	if(!ids){
+		throw new Error('No ids supplied');
+	}
+	let ass = [];
+	classes =  await ClassModel.find({_id: ids});
+	for(let i =0; i< classes.length; i++){
+		if(classes[i].assignments.length >0){
+			ass = ass.concat(classes[i].assignments);
+		}
+	}
+	return ass;
+}
+
 module.exports = ClassModel => {
 	return {
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
-		toggleConnectionTo: toggleConnectionTo(ClassModel)
+		toggleConnectionTo: toggleConnectionTo(ClassModel),
+		create: create(ClassModel),
+		updateClasses: updateClasses(ClassModel),
+		deleteMultiple: deleteMultiple(ClassModel),
+		findById: findById(ClassModel),
+		getAllClassAssIDs: getAllClassAssIDs(ClassModel),
 	}
 }
