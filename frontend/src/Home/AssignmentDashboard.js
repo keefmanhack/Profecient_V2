@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import DatePicker from "react-datepicker";
 import TimePicker from 'react-time-picker';
 import moment from 'moment';
+
+import SemesterRequests   from '../APIRequests/Semester';
+import AssignmentRequests from '../APIRequests/Assignment';
 
 import {SuccessCheck} from '../Shared Resources/Effects/lottie/LottieAnimations';
 import {FadeInOutHandleState, FadeDownUpHandleState} from '../Shared Resources/Effects/CustomTransition';
@@ -9,7 +12,36 @@ import {FadeInOutHandleState, FadeDownUpHandleState} from '../Shared Resources/E
 import './newAssignment.css';
 
 function AssignmentDashboard(props){
-	const assignments = props.assignments ? props.assignments.map((data, index) =>
+	const semReq = new SemesterRequests(props.currentUserID);
+	const assReq = new AssignmentRequests(props.currentUserID);
+
+	const [shouldShowNewForm, setShouldShowNewForm] = useState(false);
+	const [currSemester, setCurrSemester]           = useState([]);
+	const [selectedAssIndex, setSelectedAssIndex]   = useState(null);
+	const [sentSuccessful, setSentSuccessful]       = useState(false);
+	const [upCommingAss, setUpcommingAss]           = useState([]); 
+	const [editIndex, setEditIndex]                 = useState(null);//idk if i need this var
+
+	useEffect(() => {
+		async function fetchData(){
+			setUpcommingAss(await assReq.getUpcomming());
+		}
+		fetchData();
+
+		return () => {}
+	}, [sentSuccessful]);
+
+	useEffect(() => {
+		async function fetchData(){
+			setCurrSemester(await semReq.getCurrSemWClasses());
+		}
+		fetchData();
+
+		return () => {}
+	}, [sentSuccessful]);
+
+
+	const assignments = upCommingAss ? upCommingAss.map((data, index) =>
 		<Assignment 
 			data={data}
 			key={index}
@@ -20,14 +52,16 @@ function AssignmentDashboard(props){
 	): null;
 	
 	return(
-		<div className='assignment-dashboard sans-font' style={props.style}>
-			<h1 className='gray-c '>Upcoming</h1>
-			<button onClick={() => props.showNewAssForm()} className='add green-bc'>Add</button>
-			<hr/>
-			<div className='assignments-cont'>
-				{assignments}
-			</div>
-		</div>	
+		<React.Fragment>
+			<div className='assignment-dashboard sans-font' style={props.style}>
+				<h1 className='gray-c '>Upcoming</h1>
+				<button onClick={() => props.showNewAssForm()} className='add green-bc'>Add</button>
+				<hr/>
+				<div className='assignments-cont'>
+					{assignments}
+				</div>
+			</div>	
+		</React.Fragment>
 	);
 }
 
@@ -96,9 +130,7 @@ class Assignment extends React.Component{
 					<button className='see-more' onClick={()=> this.toggleDropDown()}>
 						{this.state.showDialog ? <i className='fas fa-chevron-up'></i> : <i className='fas fa-chevron-down'></i>}
 					</button>
-				</FadeInOutHandleState>
-
-				
+				</FadeInOutHandleState>	
 			</div>
 		);
 	}
@@ -220,64 +252,60 @@ class NewAssignment extends React.Component{
 		)
 
 		return(
-			<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
-				<FadeInOutHandleState condition={this.props.success}>
-	 				<SuccessCheck onCompleted={() =>this.props.hideNewAssForm()}/>
-	 			</FadeInOutHandleState>
-				<button onClick={()=> this.props.hideNewAssForm()} id='X'>Cancel</button>
-				<div 
-					className='row'
-				>
-					{classes}
-				</div>
+			<React.Fragment>
+				<div className='background-shader'/>
+				<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
+					<FadeInOutHandleState condition={this.props.success}>
+		 				<SuccessCheck onCompleted={() =>this.props.hideNewAssForm()}/>
+		 			</FadeInOutHandleState>
+					<button onClick={()=> this.props.hideNewAssForm()} id='X'>Cancel</button>
+					<div 
+						className='row'
+					>
+						{classes}
+					</div>
 
-				<div className='row'>
-					<div className='col'>
-						<input 
-							style={this.state.errors.name ? {border: '1px solid red'} : null}
-							ref={this.name} 
-							placeholder='Assignment Name' 
-							className='name' 
-							type='text' 
-						/>
+					<div className='row'>
+						<div className='col'>
+							<input 
+								style={this.state.errors.name ? {border: '1px solid red'} : null}
+								ref={this.name} 
+								placeholder='Assignment Name' 
+								className='name' 
+								type='text' 
+							/>
+						</div>
 					</div>
-				</div>
 
-				<div className='row'>
-					<div className='col'>
-						<DatePicker
-				        	selected={this.state.date}
-				        	onChange={(date) => this.dateChanged(date)}
-				        	style={this.state.errors.dueDate ? {border: '1px solid red'} : null}
-				      	/>
+					<div className='row'>
+						<div className='col'>
+							<DatePicker
+					        	selected={this.state.date}
+					        	onChange={(date) => this.dateChanged(date)}
+					        	style={this.state.errors.dueDate ? {border: '1px solid red'} : null}
+					      	/>
+						</div>
+						<div className='col'>
+							<TimePicker
+					          onChange={(time) => this.timeChanged(time)}
+					          clockIcon={null}
+					          disableClock={true}
+					          value={this.state.time}
+					        />
+						</div>
 					</div>
-					<div className='col'>
-						<TimePicker
-				          onChange={(time) => this.timeChanged(time)}
-				          clockIcon={null}
-				          disableClock={true}
-				          value={this.state.time}
-				        />
+					<div className='col textarea-col'>
+						<textarea ref={this.description} placeholder='Description'></textarea>
 					</div>
+					<button onClick={() => this.submitData()} className='submit blue-bc'>
+						{this.props.editData ? 'Update' : 'Submit'}
+					</button>
 				</div>
-				<div className='col textarea-col'>
-					<textarea ref={this.description} placeholder='Description'></textarea>
-				</div>
-				<button onClick={() => this.submitData()} className='submit blue-bc'>
-					{this.props.editData ? 'Update' : 'Submit'}
-				</button>
-			</div>
+			</React.Fragment>
 		);
 	}
 }
 
-// function ToDo(props){
-// 	return(
-// 		<div className='to-do'>
-// 			<button>{props.text}</button>
-// 		</div>
-// 	);
-// }
 
 
 export {NewAssignment};

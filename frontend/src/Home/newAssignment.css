@@ -1,13 +1,14 @@
 .new-assignment{
-	position: absolute;
     background: #F3F3F3;
     padding: 20px;
     padding-top: 30px;
     width: 400px;
     height: 295px;
-    top: 0;
     left: 31%;
+    top: 18%;
+    position: fixed;
     border-radius: 6px;
+    z-index: 2;
 }
 
 #X{

@@ -11,170 +11,120 @@ import {NewAgendaItem} from './Agenda/Agenda';
 import Feed from '../Shared Resources/feed';
 import PostCreator from '../Shared Resources/PostCreator';
 
+import UserRequests       from '../APIRequests/User';
+import AgendaRequests     from '../APIRequests/Agenda';
+import PostRequests       from '../APIRequests/Post';
+
+
 
 class Home extends React.Component{
 	constructor(props){
 		super(props);
 
+		//setUpAPIRequests
+		this.userReq   = new UserRequests();
+		this.agendaReq = new AgendaRequests(this.props.currentUser._id);
+		this.postReq   = new PostRequests(this.props.currentUser._id);
+
 		this.showNewAssForm = this.showNewAssForm.bind(this);
 
 		this.state = {
-			showNewAssignmentForm: false,
 			showNewAgForm: false,
-			currSemester: {},
-			selectedIndex: null,
-			newAssSentSuccessful: false,
 			agendaItems: [],
 			agendaItemSentSuccessful: false,
-			upcommingAss: [],
-			editIndex: null,
 			postData: [],
 			selectedAgendaIndex: null,
 		}
 	}
 
-	componentDidMount(){
-		this.getTodaysEvents();
-		// this.getClassData();
-		this.getUpcommingAssignments();
-		this.getFriendsPosts();
-	}
+	async componentDidMount(){
+		const todaysEvents = await this.agendaReq.getTodaysEvents();
+		const friendsPosts = await this.postReq.getFriendsPost();
 
-	getClassData(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current')
-	    .then(res => {
-			this.setState({
-				currSemester: res.data
-			})
+		this.setState({
+			agendaItems: todaysEvents,
+			postData: friendsPosts,
 		})
 	}
 
-	getTodaysEvents(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/agenda/today')
-	    .then(res => {
-			this.setState({
-				agendaItems: res.data
-			})
+	async sendNewAgendaItem(data){
+		const response = await this.agendaReq.postNewItem(data);
+		if(response){
+			this.resetAgendaState();
+			await this.agendaReq.getTodaysEvents();
+		}
+	}
+
+	async updateAgItem(data){
+		const agItemID = this.state.agendaItems[this.state.selectedAgendaIndex]._id;
+		const response = await this.agendaReq.updateItem(agItemID, data);
+		if(response){
+			this.resetAgendaState();
+			await this.agendaReq.getTodaysEvents();
+		}
+	}
+
+	resetAgendaState(){
+		this.setState({
+			agendaItemSentSuccessful: true,
+			selectedAgendaIndex: null,
 		})
 	}
 
-	getFriendsPosts(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/friends/posts')
-	    .then(res => {
-			this.setState({
-				postData: res.data,
-			})
-		})
+	async deleteAgItem(){
+		const agItemID = this.state.agendaItems[this.state.selectedAgendaIndex]._id;
+		const response = await this.agendaReq.deleteItem(agItemID);
+		if(response){
+			this.resetAgendaState();
+			await this.agendaReq.getTodaysEvents();
+		}
 	}
 
-	sendNewAgendaItem(data){
-		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/agenda';
-
-		axios.post(endPoint, data)
-		.then((response) => {
-			this.setState({
-				agendaItemSentSuccessful: true,
-				selectedAgendaIndex: null,
-			})
-			this.getTodaysEvents();
-		}).catch((error) => {
-			console.log(error);
-		});
-	}
-
-	updateAgItem(data){
-		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/agenda/' + this.state.agendaItems[this.state.selectedAgendaIndex]._id;
-
-		axios.put(endPoint, data)
-		.then((response) => {
-			this.setState({
-				agendaItemSentSuccessful: true,
-				selectedAgendaIndex: null,
-			})
-			this.getTodaysEvents();
-		}).catch((error) => {
-			console.log(error);
-		});
-	}
-
-	deleteAgItem(){
-		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/agenda/' + this.state.agendaItems[this.state.selectedAgendaIndex]._id;
-
-		axios.delete(endPoint)
-		.then((response) => {
-			this.setState({
-				agendaItemSentSuccessful: true,
-				selectedAgendaIndex: null,
-			})
-			this.getTodaysEvents();
-		}).catch((error) => {
-			console.log(error);
-		});
-	}
-
-	getUpcommingAssignments(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/assignment/upcomming')
-	    .then(res => {
-	    	this.getClassData();
-			this.setState({
-				upcommingAss: res.data
-			})
-		})
-	}
-
-	deleteAssignment(assID){
-		console.log(assID);
-		console.log(this.state.currSemester);
+	async deleteAssignment(assID){
 		const classIndex = findClassIndex(assID, this.state.currSemester.classes);
+		const classID = this.state.currSemester.classes[classIndex]._id;
 
-		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id +'/classes/' + this.state.currSemester.classes[classIndex]._id + '/assignment/' + assID;
-
-		axios.delete(endPoint)
-		.then((response) => {
-			this.setState({
-				editIndex: null,
-				selectedIndex: null,
-			})
-			this.getClassData();
-			this.getUpcommingAssignments();
-		}).catch((error) => {
-			console.log(error);
-		});
+		const response = await this.assReq.delete(classID, assID);
+		if(response){
+			await this.resetSemDataState();
+		}
 	}
 
-	sendAssignment(data){
-		if(this.state.editIndex || this.state.editIndex===0){
-			this.deleteAssignment(this.state.currSemester.classes[this.state.selectedIndex].assignments[this.state.editIndex]._id);
+	async resetSemDataState(){
+		const currSemWClasses = await this.semReq.getCurrSemWClasses();
+		const upCommingAss = await this.assReq.getUpcomming();
+		this.setState({
+			editIndex: null,
+			selectedIndex: null,
+			currSemester: currSemWClasses,
+			upcommingAss: upCommingAss,
 
+		})
+	}
+
+
+	async sendAssignment(data){
+		if(this.state.editIndex || this.state.editIndex===0){
+			const IDNOTYETDEFINED = 0;
+			await this.deleteAssignment(IDNOTYETDEFINED);
 		}
 
-		const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id +'/classes/' + this.state.currSemester.classes[this.state.selectedIndex]._id + '/assignment';
+		const classID = this.state.currSemester.classes[this.state.selectedIndex]._id;
 
-		axios.post(endPoint, data)
-		.then((response) => {
+		const response = await this.assReq.create(classID, data);
+		if(response){
 			this.setState({
 				newAssSentSuccessful: true,
-				selectedIndex: null,
 			})
-			this.getClassData();
-			this.getUpcommingAssignments();
-		}).catch((error) => {
-			console.log(error);
-		});
+			await this.resetSemDataState();
+		}
 	}
 
-	toggleAssCompleted(id, isCompleted){
-		const endPoint = 'http://localhost:8080/assignment/' + id;
-
-		axios.put(endPoint, {complete: isCompleted})
-		.then((response) => {
-			// console.log(response);
-		}).catch((error) => {
-			console.log(error);
-		});
+	async toggleAssCompleted(id, isCompleted){
+		await this.assReq.toggleCompleted(id, {complete: isCompleted});
 	}
 
-	showNewAssForm(val){
+	async showNewAssForm(val){
 		this.setState({
 			showNewAssignmentForm: val,
 			newAssSentSuccessful: false,
@@ -182,14 +132,14 @@ class Home extends React.Component{
 		})
 
 		if(val===false){
-			this.getUpcommingAssignments();
+			await this.assReq.getUpcomming();
 			this.setState({
 				editIndex: null,
 			})
 		}
 	}
 
-	showNewAgForm(val){
+	async showNewAgForm(val){
 		this.setState({
 			showNewAgForm: val,
 			agendaItemSentSuccessful: false,
@@ -197,7 +147,7 @@ class Home extends React.Component{
 		})
 
 		if(val===false){
-			this.getTodaysEvents();
+			await this.agendaReq.getTodaysEvents();
 		}
 	}
 
@@ -236,7 +186,8 @@ class Home extends React.Component{
 				  		style={this.state.showNewAssignmentForm || this.state.showNewAgForm ? {opacity: .3, transition: '.3s'} : {transition: '.3s'}}
 				  	>
 					    <div className='col-lg-4 left'>
-						    <AssignmentDashboard  
+						    <AssignmentDashboard
+						    	currentUserID={this.props.currentUser._id}
 						    	showNewAssForm={() => this.showNewAssForm(true)}
 						    	assignments={this.state.upcommingAss}
 						    	toggleCompleted={(id, isCompleted) => this.toggleAssCompleted(id, isCompleted)}
@@ -255,15 +206,7 @@ class Home extends React.Component{
 					    </div>
 					</div>
 					<FadeInOutHandleState condition={this.state.showNewAssignmentForm}>
-						<NewAssignment 
-							selectedIndex={this.state.selectedIndex} 
-							handleClassClick={(i) => this.handleClassClick(i)} 
-							hideNewAssForm={() => this.showNewAssForm(false)} 
-							classes={this.state.currSemester.classes}
-							sendData={(data) => this.sendAssignment(data)}
-							success={this.state.newAssSentSuccessful}
-							editData={this.state.upcommingAss[this.state.editIndex]}
-						/>
+						
 					</FadeInOutHandleState>
 					<FadeInOutHandleState condition={this.state.showNewAgForm}>
 						<NewAgendaItem
