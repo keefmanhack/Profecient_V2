@@ -276,6 +276,7 @@ h5.error-msg{
     font-weight: 800;
     position: relative;
     transition: .3s;
+    overflow: hidden;
 }
 
 .assignment h1{

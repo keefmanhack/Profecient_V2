@@ -155,8 +155,8 @@ router.get('/users/:id/assignment/upcomming', async (req, res) => {
 		const foundUser = await UserService.findById(req.params.id);
 		if(foundUser.semesters.length>0){
 			const sem = await SemesterService.findById(foundUser.semesters[foundUser.semesters.length-1]);
-			const assIDs =  await ClassService.getAllClassAssIDs(sem.classes);
-			res.json(await AssignmentService.getAssesDueInAWeekSortedByDate(assIDs));
+			const asses =  await ClassService.getClassAssignmentsDueInAWeekSortedByDate(sem.classes);
+			res.json(asses);
 		}else{
 			res.send();
 		}

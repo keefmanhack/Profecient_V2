@@ -95,13 +95,29 @@ const getAllClassAssIDs = ClassModel => async ids => {
 		throw new Error('No ids supplied');
 	}
 	let ass = [];
-	classes =  await ClassModel.find({_id: ids});
+	const classes =  await ClassModel.find({_id: ids});
 	for(let i =0; i< classes.length; i++){
 		if(classes[i].assignments.length >0){
 			ass = ass.concat(classes[i].assignments);
 		}
 	}
 	return ass;
+}
+
+const getClassAssignmentsDueInAWeekSortedByDate = ClassModel => async ids =>{
+	if(!ids){
+		throw new Error('No ids supplied');
+	}
+	const classes = await ClassModel.find({_id: ids}).populate({path: 'assignments', match: {dueDate: {$lte: new Date(moment().add(1, 'weeks'))},complete: false,}});
+	let returnArr =[];
+	for(let i =0; i<classes.length;i++){
+		for(let j =0; j<classes[i].assignments.length; j++){
+			const ass = classes[i].assignments[j];
+			const newData = {ass: ass, parentClassID: classes[i]._id}
+			returnArr = returnArr.concat(newData);
+		}
+	}
+	return returnArr.slice().sort((a,b) => a.ass.dueDate-b.ass.dueDate);
 }
 
 module.exports = ClassModel => {
@@ -113,5 +129,6 @@ module.exports = ClassModel => {
 		deleteMultiple: deleteMultiple(ClassModel),
 		findById: findById(ClassModel),
 		getAllClassAssIDs: getAllClassAssIDs(ClassModel),
+		getClassAssignmentsDueInAWeekSortedByDate: getClassAssignmentsDueInAWeekSortedByDate(ClassModel),
 	}
 }

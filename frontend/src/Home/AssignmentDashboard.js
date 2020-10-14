@@ -6,8 +6,9 @@ import moment from 'moment';
 import SemesterRequests   from '../APIRequests/Semester';
 import AssignmentRequests from '../APIRequests/Assignment';
 
-import {SuccessCheck} from '../Shared Resources/Effects/lottie/LottieAnimations';
+import {SuccessCheck, FailedSent} from '../Shared Resources/Effects/lottie/LottieAnimations';
 import {FadeInOutHandleState, FadeDownUpHandleState} from '../Shared Resources/Effects/CustomTransition';
+import Loader from '../Shared Resources/Effects/loader';
 
 import './newAssignment.css';
 
@@ -15,12 +16,11 @@ function AssignmentDashboard(props){
 	const semReq = new SemesterRequests(props.currentUserID);
 	const assReq = new AssignmentRequests(props.currentUserID);
 
-	const [shouldShowNewForm, setShouldShowNewForm] = useState(false);
-	const [currSemester, setCurrSemester]           = useState([]);
-	const [selectedAssIndex, setSelectedAssIndex]   = useState(null);
-	const [sentSuccessful, setSentSuccessful]       = useState(false);
-	const [upCommingAss, setUpcommingAss]           = useState([]); 
-	const [editIndex, setEditIndex]                 = useState(null);//idk if i need this var
+	const [shouldShowNewForm, setShouldShowNewForm]     = useState(false);
+	const [currSemester, setCurrSemester]               = useState([]);
+	const [upCommingAss, setUpcommingAss]               = useState([]); 
+	const [editClassIndex, setEditClassIndex]           = useState(null);
+	const [editCount, setEditCount]                     = useState(0);
 
 	useEffect(() => {
 		async function fetchData(){
@@ -29,7 +29,7 @@ function AssignmentDashboard(props){
 		fetchData();
 
 		return () => {}
-	}, [sentSuccessful]);
+	}, [shouldShowNewForm, editCount, editClassIndex]);
 
 	useEffect(() => {
 		async function fetchData(){
@@ -38,16 +38,16 @@ function AssignmentDashboard(props){
 		fetchData();
 
 		return () => {}
-	}, [sentSuccessful]);
+	}, [shouldShowNewForm, editCount, editClassIndex]);
 
 
 	const assignments = upCommingAss ? upCommingAss.map((data, index) =>
 		<Assignment 
-			data={data}
+			data={data.ass}
 			key={index}
-			toggleCompleted={(id, isCompleted) => props.toggleCompleted(id, isCompleted)}
-			editAssignment={() => props.editAssignment(index)}
-			deleteAssignment={() => props.deleteAssignment(data._id)}
+			toggleCompleted={(id, isCompleted) => assReq.toggleCompleted(id, {complete: isCompleted})}
+			editAssignment={() => {setEditClassIndex(index);}}
+			deleteAssignment={() => {assReq.delete(data.parentClassID, data.ass._id); setEditCount(editCount++)}}
 		/>
 	): null;
 	
@@ -55,12 +55,20 @@ function AssignmentDashboard(props){
 		<React.Fragment>
 			<div className='assignment-dashboard sans-font' style={props.style}>
 				<h1 className='gray-c '>Upcoming</h1>
-				<button onClick={() => props.showNewAssForm()} className='add green-bc'>Add</button>
+				<button onClick={() => setShouldShowNewForm(true)} className='add green-bc'>Add</button>
 				<hr/>
 				<div className='assignments-cont'>
 					{assignments}
 				</div>
-			</div>	
+			</div>
+			<FadeInOutHandleState condition={shouldShowNewForm || editClassIndex !==null}>
+				<NewAssignment 
+					hideForm={() => {setShouldShowNewForm(false); setEditClassIndex(null)}}
+					classes={currSemester.classes}
+					currentUserID={props.currentUserID}
+					editData={editClassIndex !==null ? upCommingAss[editClassIndex] : null}
+				/>
+			</FadeInOutHandleState>
 		</React.Fragment>
 	);
 }
@@ -73,6 +81,7 @@ class Assignment extends React.Component{
 			showDialog: false,
 			completed: false,
 			mouseOver: false,
+			deleting: false,
 		}
 	}
 
@@ -105,6 +114,7 @@ class Assignment extends React.Component{
 
 		return(
 			<div onMouseEnter={() => this.setState({mouseOver: true})} onMouseLeave={() => this.setState({mouseOver: false})} className={'assignment sans-font ' + colorClass}>
+				{this.state.deleting ? <Loader/>: null}
 				<div className='row'>
 					<div className='col-lg-6'>
 						<h1>{this.props.data.name}</h1>
@@ -123,7 +133,7 @@ class Assignment extends React.Component{
 						<p>{this.props.data.description}</p>
 						<h5>{moment(this.props.data.dueTime).format('h:mm a')}</h5>
 						<button onClick={() => this.props.editAssignment()}>Edit</button>
-						<button onClick={() => this.props.deleteAssignment()}>Delete</button>
+						<button onClick={() => {this.setState({deleting: true}); this.props.deleteAssignment()}}>Delete</button>
 					</div>
 				</FadeDownUpHandleState>
 				<FadeInOutHandleState condition={this.state.mouseOver}>
@@ -141,14 +151,19 @@ class NewAssignment extends React.Component{
 		super(props);
 		
 		this.state = {
-			date: this.props.editData ? new Date(this.props.editData.dueDate) : new Date(),
-			time: this.props.editData ? new Date(this.props.editData.dueTime) : new Date(),
+			date: this.props.editData ? new Date(this.props.editData.ass.dueDate) : new Date(),
+			time: this.props.editData ? new Date(this.props.editData.ass.dueTime) : new Date(),
 			errors: {
 				name: false,
 				classPicked: false,
 				dueDate: false,
-			}
+			},
+			selectedClassID: this.props.editData ? this.props.editData.parentClassID : null,
+			success: false,
+			error: false,
 		}
+
+		this.assReq = new AssignmentRequests(this.props.currentUserID);
 
 		this.wrapperRef = React.createRef();
 		this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -159,8 +174,8 @@ class NewAssignment extends React.Component{
 	componentDidMount() {
 		const editData = this.props.editData
 		if(editData){
-			this.name.current.value = editData.name;
-			this.description.current.value = editData.description;
+			this.name.current.value = editData.ass.name;
+			this.description.current.value = editData.ass.description;
 		}
 			
         document.addEventListener('mousedown', this.handleClickOutside);
@@ -172,21 +187,9 @@ class NewAssignment extends React.Component{
 
     handleClickOutside(event) {
         if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
-            this.props.hideNewAssForm();
+            this.props.hideForm();
         }
     }
-
-    dateChanged(date){
-		this.setState({
-			date: date,
-		})
-	}
-
-	timeChanged(time){
-		this.setState({
-			time: time,
-		})
-	}
 
 	checkErrors(){
 		let error_copy = this.state.errors;
@@ -197,7 +200,7 @@ class NewAssignment extends React.Component{
 			error_copy.name = false;
 		}
 
-		if(this.props.selectedIndex === null){
+		if(this.state.selectedClassID === null){
 			error_copy.classPicked = true;
 		}else{
 			error_copy.classPicked = false;
@@ -221,7 +224,7 @@ class NewAssignment extends React.Component{
 
 	}
 
-	submitData(){
+	async submitData(){
 		if(!this.checkErrors()){
 			const data = {
 				name: this.name.current.value,
@@ -229,8 +232,11 @@ class NewAssignment extends React.Component{
 				dueTime: new Date(this.state.time),
 				description: this.description.current.value,
 			}
+			const editData = this.props.editData;
+			let res = editData ? await this.assReq.update(editData.parentClassID, editData.ass._id, this.state.selectedClassID, data) 
+				: await this.assReq.create(this.state.selectedClassID, data);
 
-			this.props.sendData(data);
+			res ? this.setState({success: true}) : this.setState({error: true});
 		}
 	}
 
@@ -238,8 +244,8 @@ class NewAssignment extends React.Component{
 		const classes = this.props.classes.map((o, index) =>
 			<div key={index} className='col-lg-3'>
 		       <button 
-		       		className={this.props.selectedIndex===index ? 'class green-bc' : 'class off-blue-bc'} 
-		       		onClick={() => this.props.handleClassClick(index)} 
+		       		className={this.state.selectedClassID===o._id ? 'class green-bc' : 'class off-blue-bc'} 
+		       		onClick={() => this.setState({selectedClassID: o._id})} 
 		       		key={index}
 		       		style={this.state.errors.classPicked ? {border: '1px solid red'} : null}
 		       	>
@@ -255,10 +261,13 @@ class NewAssignment extends React.Component{
 			<React.Fragment>
 				<div className='background-shader'/>
 				<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
-					<FadeInOutHandleState condition={this.props.success}>
-		 				<SuccessCheck onCompleted={() =>this.props.hideNewAssForm()}/>
+					<FadeInOutHandleState condition={this.state.success}>
+		 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>
 		 			</FadeInOutHandleState>
-					<button onClick={()=> this.props.hideNewAssForm()} id='X'>Cancel</button>
+		 			<FadeInOutHandleState condition={this.state.error}>
+		 				<FailedSent onCompleted={() =>this.props.hideForm()}/>
+		 			</FadeInOutHandleState>
+					<button onClick={()=> this.props.hideForm()} id='X'>Cancel</button>
 					<div 
 						className='row'
 					>
@@ -281,13 +290,13 @@ class NewAssignment extends React.Component{
 						<div className='col'>
 							<DatePicker
 					        	selected={this.state.date}
-					        	onChange={(date) => this.dateChanged(date)}
+					        	onChange={(date) => this.setState({date: date})}
 					        	style={this.state.errors.dueDate ? {border: '1px solid red'} : null}
 					      	/>
 						</div>
 						<div className='col'>
 							<TimePicker
-					          onChange={(time) => this.timeChanged(time)}
+					          onChange={(time) => this.setState({time: time})}
 					          clockIcon={null}
 					          disableClock={true}
 					          value={this.state.time}

@@ -206,7 +206,7 @@ class Home extends React.Component{
 					    </div>
 					</div>
 					<FadeInOutHandleState condition={this.state.showNewAssignmentForm}>
-						
+					
 					</FadeInOutHandleState>
 					<FadeInOutHandleState condition={this.state.showNewAgForm}>
 						<NewAgendaItem

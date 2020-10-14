@@ -33,6 +33,15 @@ class AssignmentRequests{
 		}
 	}
 
+	update = async(classID, assID, newClassID, data) => {
+		try{
+			await this.delete(classID, assID);
+			return await this.create(newClassID, data);
+		}catch(err){
+			console.log(err);
+		}
+	}
+
 	toggleCompleted = async (assID, data) => {
 		try{
 			const endPoint = '/assignment/' + assID
