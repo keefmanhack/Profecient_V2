@@ -47,7 +47,7 @@ function AssignmentDashboard(props){
 			key={index}
 			toggleCompleted={(id, isCompleted) => assReq.toggleCompleted(id, {complete: isCompleted})}
 			editAssignment={() => {setEditClassIndex(index);}}
-			deleteAssignment={() => {assReq.delete(data.parentClassID, data.ass._id); setEditCount(editCount++)}}
+			deleteAssignment={() => {assReq.delete(data.parentClassID, data.ass._id); let ct = editCount;setEditCount(++ct)}}
 		/>
 	): null;
 	
@@ -306,7 +306,7 @@ class NewAssignment extends React.Component{
 					<div className='col textarea-col'>
 						<textarea ref={this.description} placeholder='Description'></textarea>
 					</div>
-					<button onClick={() => this.submitData()} className='submit blue-bc'>
+					<button onClick={() => this.submitData()} className={this.props.editData ? 'submit orange-bc' : 'submit blue-bc'}>
 						{this.props.editData ? 'Update' : 'Submit'}
 					</button>
 				</div>

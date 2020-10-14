@@ -26,8 +26,6 @@ class Home extends React.Component{
 		this.agendaReq = new AgendaRequests(this.props.currentUser._id);
 		this.postReq   = new PostRequests(this.props.currentUser._id);
 
-		this.showNewAssForm = this.showNewAssForm.bind(this);
-
 		this.state = {
 			showNewAgForm: false,
 			agendaItems: [],
@@ -80,65 +78,6 @@ class Home extends React.Component{
 		}
 	}
 
-	async deleteAssignment(assID){
-		const classIndex = findClassIndex(assID, this.state.currSemester.classes);
-		const classID = this.state.currSemester.classes[classIndex]._id;
-
-		const response = await this.assReq.delete(classID, assID);
-		if(response){
-			await this.resetSemDataState();
-		}
-	}
-
-	async resetSemDataState(){
-		const currSemWClasses = await this.semReq.getCurrSemWClasses();
-		const upCommingAss = await this.assReq.getUpcomming();
-		this.setState({
-			editIndex: null,
-			selectedIndex: null,
-			currSemester: currSemWClasses,
-			upcommingAss: upCommingAss,
-
-		})
-	}
-
-
-	async sendAssignment(data){
-		if(this.state.editIndex || this.state.editIndex===0){
-			const IDNOTYETDEFINED = 0;
-			await this.deleteAssignment(IDNOTYETDEFINED);
-		}
-
-		const classID = this.state.currSemester.classes[this.state.selectedIndex]._id;
-
-		const response = await this.assReq.create(classID, data);
-		if(response){
-			this.setState({
-				newAssSentSuccessful: true,
-			})
-			await this.resetSemDataState();
-		}
-	}
-
-	async toggleAssCompleted(id, isCompleted){
-		await this.assReq.toggleCompleted(id, {complete: isCompleted});
-	}
-
-	async showNewAssForm(val){
-		this.setState({
-			showNewAssignmentForm: val,
-			newAssSentSuccessful: false,
-			selectedIndex: null,
-		})
-
-		if(val===false){
-			await this.assReq.getUpcomming();
-			this.setState({
-				editIndex: null,
-			})
-		}
-	}
-
 	async showNewAgForm(val){
 		this.setState({
 			showNewAgForm: val,
@@ -149,22 +88,6 @@ class Home extends React.Component{
 		if(val===false){
 			await this.agendaReq.getTodaysEvents();
 		}
-	}
-
-	handleClassClick(i){
-		this.setState({
-			selectedIndex: i,
-			showNewAssignmentForm: true,
-		})
-	}
-
-	editAssignment(i){
-		const classIndex = findClassIndex(this.state.upcommingAss[i]._id, this.state.currSemester.classes)
-		this.setState({
-			editIndex: i,
-			showNewAssignmentForm: true,
-			selectedIndex: classIndex,
-		})
 	}
 
 	agendaItemClicked(i){
@@ -224,20 +147,6 @@ class Home extends React.Component{
 			</React.Fragment>
 		);
 	}
-}
-
-	
-function findClassIndex(id, classes){
-	for(let i =0; i< classes.length; i++){
-		for(let j =0; j<classes[i].assignments.length; j++){
-			const ass = classes[i].assignments[j];
-			if(ass === id){
-				return i;
-			}
-		}
-	}
-
-	return -1;
 }
 
 export default Home;
