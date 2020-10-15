@@ -101,7 +101,7 @@ class MessageCenter extends React.Component{
 	}
 
 	updateMessageStreams(messageStream){
-		axios.put(`http://localhost:8080/messageStream/` + messageStream._id, {messageStream: messageStream})
+		axios.put(`http://localhost:8080/users/` + this.props.currentUser._id + `/messageStream/` + messageStream._id, {messageStream: messageStream})
 	    .then(res => {
 	    	console.log(res);
 		})

@@ -41,6 +41,13 @@ let UserSchema = mongoose.Schema({
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "ClassNote"
 			}]
+		},
+		messages: {
+			unDismissed: {type: Number, default: 0},
+			messageNote: [{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "MessageNote",
+			}]
 		}
 	}
 

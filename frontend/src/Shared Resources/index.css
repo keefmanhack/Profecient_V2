@@ -64,7 +64,7 @@ body{
 }
 
 .light-green-bc{
-    background: lightgreen;
+    background: #d3ecd1;
 }
 
 .muted-c{
@@ -92,6 +92,10 @@ body{
 
 .off-blue-bc{
     background: #74CDEA;
+}
+
+.translucent-blue-bc{
+    background: #007bff36;
 }
 
 .white-c{

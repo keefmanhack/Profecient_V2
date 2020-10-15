@@ -7,11 +7,18 @@ const getUserStreams = Message => async streamIds => {
 	return sortedMessageStreams;
 }
 
+const getStreamsWOutPopComms = Message => async streamIds =>{
+	if(!streamIds){
+		return [];
+	}
+	return await Message.find({_id: streamIds});
+}
+
 const updateStream = Message => async (streamID, updatedStream) => {
 	if(!streamID){
 		throw new Error('No streamID');
 	}
-	await Message.findByIdAndUpdate(streamID, updateStream);
+	await Message.findByIdAndUpdate(streamID, updatedStream);
 }
 
 const findStream = Message => async id => {
@@ -21,10 +28,19 @@ const findStream = Message => async id => {
 	return await Message.findById(id);
 }
 
+const createNewStream = Message => async data =>{
+	if(!data){
+		throw new Error("no data supplied to create a new message");
+	}
+	return await Message.create(data);
+}
+
 module.exports = Message => {
 	return {
 		getUserStreams: getUserStreams(Message),
 		updateStream: updateStream(Message),
 		findStream: findStream(Message),
+		createNewStream: createNewStream(Message),
+		getStreamsWOutPopComms: getStreamsWOutPopComms(Message),
 	}
 }

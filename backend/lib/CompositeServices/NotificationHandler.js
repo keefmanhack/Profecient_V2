@@ -1,5 +1,5 @@
 const ClassService        = require('../Class/index'),
-	  NotificationService = require('../Notification/index'),
+	  ClassNoteService    = require('../Notification/Class/index'),
 	  UserService         = require('../User/index');
 
 class NotificationHandler{
@@ -16,7 +16,7 @@ class NotificationHandler{
 			for(let i =0; i<userClass.connectionsFrom.length; i++){
 				const connection = userClass.connectionsFrom[i];
 				const foundClass = await ClassService.findById(connection.class_data);
-				const newNote = await NotificationService.createNewAssNotification(foundClass, user, userClass, assID);
+				const newNote = await ClassNoteService.createNewAssNotification(foundClass, user, userClass, assID);
 				await UserService.postNewNotification(connection.user, newNote._id);
 			}
 		}catch(err){
@@ -29,7 +29,7 @@ class NotificationHandler{
 			if(!userID || !noteID){
 				throw new Error('Missing userID or noteID for deleting notification');
 			}
-			NotificationService.deleteNewAssNotification(noteID);
+			ClassNoteService.deleteNewAssNotification(noteID);
 			const user = await UserService.findById(userID);
 			foundUser.notifications.academic.classNote.pull(noteID);
 			foundUser.notifications.academic.unDismissed--;

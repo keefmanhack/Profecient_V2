@@ -36,7 +36,6 @@ class Header extends React.Component{
 				<span className='not'>
 					<span>
 						<button onClick={() => this.toggleAcademicNotifications(true)} className='green-c off-black-bc'><i className="fas fa-pencil-alt"></i></button>
-						<button className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
 						{acNotes > 0 ? <h5>{acNotes}</h5> : null}
 						<FadeInOutHandleState condition={this.state.showACNotes}>
 							<AcademicNotifications 
@@ -49,9 +48,15 @@ class Header extends React.Component{
 					</span>
 					
 					<button className='green-c off-black-bc'><i className="fas fa-user-friends"></i></button>
-					<Link to='/message'>
-						<button className='green-c off-black-bc'><i className="fas fa-comments"></i></button>
-					</Link>
+
+					<span>
+						<Link to='/message'>
+							<button className='green-c off-black-bc'><i className="fas fa-comments"></i></button>
+						</Link>
+						<button className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
+						{100 > 0 ? <h5>{100}</h5> : null}
+						<MessageNotifications currentUser={this.props.currentUser}/>
+					</span>
 				</span>
 
 				
@@ -71,6 +76,37 @@ const style_topBar = {
 	paddingTop: 10,
 	paddingLeft: 40,
 	paddingRight: 40
+}
+
+class MessageNotifications extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.wrapperRef = React.createRef();
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+
+	componentDidMount(){
+		document.addEventListener('mousedown', this.handleClickOutside);
+	}
+
+	componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+            // this.props.hideForm();
+        }
+    }
+
+	render(){
+		return(
+			<div className='note-container' ref={this.wrapperRef}>
+				<NewMessageNote currentUser={this.props.currentUser}/>
+			</div>
+		)
+	}
 }
 
 
@@ -213,6 +249,22 @@ class AcademicNotifications extends React.Component{
 	}
 }
 
+function NewMessageNote(props){
+
+	return(
+		<div className='sans-font translucent-blue-bc note message'>
+			<Link to={'/profile/' + 'props'}>
+				<span className='other-user'>
+					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.currentUser.profilePictureURL} alt="Can't display"/>
+					Sarah Steel
+				</span>
+			</Link>
+			<h4 className='count'>5</h4>
+			<p className='gray-c'>This is a peice of text</p>
+		</div>
+	);
+}
+
 class AssAddedNote extends React.Component{
 	constructor(props){
 		super(props);
@@ -241,7 +293,7 @@ class AssAddedNote extends React.Component{
 
 	render(){
 		return(
-			<div className='ass-added sans-font'>
+			<div className='note light-green-bc sans-font'>
 				<FadeInOutHandleState condition={this.state.event && !(this.props.addedFail || this.props.addedSuccess)}>
 					<Loader/>
 				</FadeInOutHandleState>

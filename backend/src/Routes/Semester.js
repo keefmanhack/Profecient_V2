@@ -4,7 +4,7 @@ const express = require("express"),
 const UserService         = require('../../lib/User/index'),
 	  ClassService        = require('../../lib/Class/index'),
 	  SemesterService     = require('../../lib/Semester/index'),
-	  NotificationService = require('../../lib/Notification/index'),
+	  ClassNoteService    = require('../../lib/Notification/Class/index'), //this needs to be here so that it is registered to mongoDB
 	  AssignmentService   = require('../../lib/Assignment/index');
 
 const NotificationHandler = require('../../lib/CompositeServices/NotificationHandler');
