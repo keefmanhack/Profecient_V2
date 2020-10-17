@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 
 let MessageNotification = mongoose.Schema({
-	unReadMessages: Number,
+	unReadMessages: {type: Number, default: 1},
 	messageStreamID: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "MessageStream"

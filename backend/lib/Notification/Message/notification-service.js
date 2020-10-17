@@ -3,7 +3,7 @@ const getMultiple = Notification => async ids =>{
 		throw new Error(`No ID: ${notifcationIDs}`);
 	}
 
-	const notifs = await Notification.findById(notifcationIDs);
+	const notifs = await Notification.find({_id: ids});
 	return notifs;
 }
 
@@ -34,6 +34,7 @@ const incrementNote = Notification => async (id, lastMessage) => {
 	}
 	const note = await Notification.findById(id);
 	note.lastMessage = lastMessage;
+	note.unReadMessages++;
 	return await note.save();
 }
 
@@ -41,5 +42,9 @@ const incrementNote = Notification => async (id, lastMessage) => {
 module.exports = Notification => {
 	return{
 		getMultiple: getMultiple(Notification),
+		create: create(Notification),
+		incrementNote: incrementNote(Notification),
+		update: update(Notification),
+		remove: remove(Notification),
 	}
 }

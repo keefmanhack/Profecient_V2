@@ -1,8 +1,9 @@
 const express = require("express"),
 	  router  = express.Router();
 
-const ClassNoteService = require('../../lib/Notification/Class/index');
-const UserService = require('../../lib/User/index');
+const ClassNoteService   = require('../../lib/Notification/Class/index'),
+      UserService        = require('../../lib/User/index'),
+      MessageNoteService = require('../../lib/Notification/Message/index');
 
 router.get('/users/:id/notifications/academic', async (req, res) => {
 	try{
@@ -21,6 +22,16 @@ router.delete('/users/:id/notifications/academic/:noteID', async (req, res) => {
 		ClassNoteService.deleteNotification(req.params.noteID);
 		await UserService.deleteAcNotif(req.params.id, req.params.noteID);
 		res.send();
+	}catch(err){
+		console.log(err);
+	}
+})
+
+router.get('/users/:id/notifications/message', async (req,res) => {
+	try{
+		const user = await UserService.findById(req.params.id);
+		const notifs = await MessageNoteService.getMultiple(user.notifications.messages.messageNote);
+		res.json(notifs);
 	}catch(err){
 		console.log(err);
 	}

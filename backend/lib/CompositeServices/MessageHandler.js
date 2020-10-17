@@ -17,39 +17,36 @@ class MessageHandler{
 		const stream = await MessageService.findStream(mostRecentStreamID);
 		for(let i =0; i< stream.communicators.length; i++){
 			let comm = stream.communicators[i];
-			if(comm !== myId){
-				const streamID = await this.findStreamsToNotify(stream.communicators, comm);
+			if(comm + "" !== myId + ""){
 				const userToBeNotified =  await UserService.findById(comm);
+				const streamID = await this.findStreamToNotify(stream.communicators, userToBeNotified);
 				const noteID = otherUserHasNotification(userToBeNotified, streamID);
+				let note;
 				if(noteID){
-					MsgNoteService.incrementNote(noteID, stream.sentMessages[0]);
+					note = await MsgNoteService.incrementNote(noteID, stream.sentMessages[stream.sentMessages.length-1].message);
 				}else{
 					const data = {
-						unReadMessages: 1,
 						messageStreamID: streamID,
-						lastMessage: stream.sentMessages[0],
+						lastMessage: stream.sentMessages[stream.sentMessages.length-1].message,
 						otherUser: {
 							user_id: user._id,
 							user_information: {
 								name: user.name,
 								school: user.school,
-								profilePictureURL: name.profilePictureURL,
+								profilePictureURL: user.profilePictureURL,
 							}
 						}
 					}
-					const newNote = await MsgNoteService.create(data);
-					userToBeNotified.notifications.messages.push(newNote);
-					userToBeNotified.save();
+					note = await MsgNoteService.create(data);
+					userToBeNotified.notifications.messages.messageNote.push(note);
 				}
+
+				userToBeNotified.notifications.messages.unDismissed++;
+				userToBeNotified.save();
+				return note;
 			}
 		}
 	}
-
-
-
-
-
-
 
 
 	//private functions
@@ -62,24 +59,13 @@ class MessageHandler{
 		}
 	}
 
-	static async findStreamsToNotify(myId, stream){
-		let returnStreams =[];
-		const mySortedComms = stream.communicators.sort();
-		for(let i =0; i< stream.communicators.length; i++){
-			if(stream.communicators[i] != myId){
-				const comm = await UserService.findById(stream.communicators[i]);
-				const otherUserStreams = await MessageService.getStreamsWOutPopComms(comm.messageStreams);
-				for(let j =0; j<otherUserStreams.length; j++){
-					const otherUserStream = otherUserStreams[j];
-					const otherUserSortedComms = otherUserStream.communicators.sort();
-					if(mySortedComms + "" === otherUserSortedComms + ""){
-						returnStreams.push(otherUserStream._id);
-						break;
-					}
-				}
+	static async findStreamToNotify(myStreamCommunicatorIDs, currCommunicator){
+		for(let i =0; i<currCommunicator.messageStreams.length; i++){
+			const stream = await MessageService.findStream(currCommunicator.messageStreams[i]);
+			if(sameCommunicators(myStreamCommunicatorIDs.sort(), stream.communicators)){
+				return currCommunicator.messageStreams[i];
 			}
 		}
-		return returnStreams;
 	}
 
 	static async handleUsersWithStream(communs, msgData, communsIDs){
@@ -110,23 +96,48 @@ class MessageHandler{
 }
 
 function doesStreamExist(messageStreams, communicators){
-		const newComms = communicators;
-		newComms.sort();
-		for(let i =0; i< messageStreams.length; i++){
-			if(messageStreams[i].communicators.length === newComms.length){
-				let found = true;
-				const prevComms = messageStreams[i].communicators.sort();
-				for(let j =0; j< prevComms.length; j++){
-					if(prevComms[j] != newComms[j]){
-						found=false;
-					}
-				}
-				if(found){
-					return messageStreams[i]._id;
+	const newComms = communicators;
+	newComms.sort();
+	for(let i =0; i< messageStreams.length; i++){
+		if(messageStreams[i].communicators.length === newComms.length){
+			let found = true;
+			const prevComms = messageStreams[i].communicators.sort();
+			for(let j =0; j< prevComms.length; j++){
+				if(prevComms[j] != newComms[j]){
+					found=false;
 				}
 			}
+			if(found){
+				return messageStreams[i]._id;
+			}
 		}
-		return null
 	}
+	return null
+}
+
+function sameCommunicators(communsToMatchSorted, otherUserCommuns){
+	if(communsToMatchSorted.length !== otherUserCommuns.length){return;}
+
+	let found = true;
+	for(let i =0; i<otherUserCommuns.length; i++){
+		otherUserCommuns.sort();
+		if(communsToMatchSorted.length === otherUserCommuns.length){
+			if(communsToMatchSorted[i] !== otherUserCommuns[i]){
+				found = false;
+			}
+		}
+	}
+	return found;
+}
+
+function otherUserHasNotification(user, streamID){
+	for(let i =0; i<user.notifications.messages.messageNote.length; i++){
+		const note = user.notifications.messages.messageNote[i];
+		if(note === streamID){
+			return note;
+		}
+	}
+	return null;
+}
 
 module.exports = MessageHandler;

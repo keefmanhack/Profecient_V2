@@ -22,7 +22,7 @@ class App extends React.Component{
 			foundID: null,
 		}
 
-		this.testUserId = '5f4aa6042c0c8f715ae71d97';
+		this.testUserId = '5f5aab5a6f1dda2b82855985';
 
 		//Keefer - 5f4aa6042c0c8f715ae71d97
 		//Sarah  - 5f5aab5a6f1dda2b82855985

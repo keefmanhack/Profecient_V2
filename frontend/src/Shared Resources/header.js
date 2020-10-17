@@ -7,14 +7,19 @@ import Loader from './Effects/loader';
 import {FadeInOutHandleState, FadeRightHandleState} from './Effects/CustomTransition';
 import {SuccessCheck, FailedSent} from './Effects/lottie/LottieAnimations';
 
+import NotificationRequest from '../APIRequests/Notification';
+
 import './header.css';
 
 class Header extends React.Component{
 	constructor(props){
 		super(props);
 
+		this.notifReq = new NotificationRequest(this.props.currentUser._id)
+
 		this.state={
 			showACNotes: false,
+			showMsgNotes: false,
 		}
 	}
 
@@ -26,6 +31,7 @@ class Header extends React.Component{
 
 	render(){
 		const acNotes = this.props.currentUser.notifications.academic.unDismissed;
+		const msgNotes = this.props.currentUser.notifications.messages.unDismissed;
 		return(
 			<div className='top-bar black-bc' style={style_topBar}>
 				<Link to='/home'>
@@ -53,9 +59,11 @@ class Header extends React.Component{
 						<Link to='/message'>
 							<button className='green-c off-black-bc'><i className="fas fa-comments"></i></button>
 						</Link>
-						<button className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
-						{100 > 0 ? <h5>{100}</h5> : null}
-						<MessageNotifications currentUser={this.props.currentUser}/>
+						<button onClick={() => this.setState({showMsgNotes: true})} className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
+						{msgNotes> 0 ? <h5>{msgNotes}</h5> : null}
+						<FadeInOutHandleState condition={this.state.showMsgNotes}>
+							<MessageNotifications hideForm={() => this.setState({showMsgNotes: false})} notifReq={this.notifReq} currentUser={this.props.currentUser}/>
+						</FadeInOutHandleState>
 					</span>
 				</span>
 
@@ -82,12 +90,17 @@ class MessageNotifications extends React.Component{
 	constructor(props){
 		super(props);
 
+		this.state={
+			notifs: undefined,
+		}
+
 		this.wrapperRef = React.createRef();
 		this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
 
 	componentDidMount(){
 		document.addEventListener('mousedown', this.handleClickOutside);
+		this.getMessageNotifications();
 	}
 
 	componentWillUnmount() {
@@ -96,14 +109,35 @@ class MessageNotifications extends React.Component{
 
     handleClickOutside(event) {
         if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
-            // this.props.hideForm();
+            this.props.hideForm();
         }
     }
 
+    async getMessageNotifications(){
+    	const notifications = await this.props.notifReq.getMessgeNotifs();
+    	this.setState({
+    		notifs: notifications,
+    	})
+    }
+
 	render(){
+		let newMsgNotifs = []; 
+
+		if(this.state.notifs){
+			for(let i = this.state.notifs.length; i>0; i++){
+				newMsgNotifs.push(this.state.notifs[i]);
+			}
+		}
+
 		return(
 			<div className='note-container' ref={this.wrapperRef}>
-				<NewMessageNote currentUser={this.props.currentUser}/>
+				{this.state.notifs === undefined ? <Loader/> : null}
+				{newMsgNotifs}
+				{this.state.notifs === null ? 
+					<p style={{textAlign: 'center'}} className='muted-c'>No notifications</p>
+					:
+					null
+				}
 			</div>
 		)
 	}
@@ -211,7 +245,7 @@ class AcademicNotifications extends React.Component{
 
 	render(){
 		let assAddedNotes = [];
-		if(this.state.notifications !==null){
+		if(this.state.notifications && this.state.notifications.classNote){
 			for(let i =0; i< this.state.notifications.classNote.length; i++){
 				const classNote = this.state.notifications.classNote[i];			
 				if(classNote.note_Data === 'Ass Added'){
@@ -253,14 +287,14 @@ function NewMessageNote(props){
 
 	return(
 		<div className='sans-font translucent-blue-bc note message'>
-			<Link to={'/profile/' + 'props'}>
+			<Link to={'/profile/' + props.data.otherUser.user_id}>
 				<span className='other-user'>
-					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.currentUser.profilePictureURL} alt="Can't display"/>
-					Sarah Steel
+					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.data.otherUser.user_information.profilePictureURL} alt=""/>
+					{props.data.otherUser.user_information.name}
 				</span>
 			</Link>
-			<h4 className='count'>5</h4>
-			<p className='gray-c'>This is a peice of text</p>
+			<h4 className='count'>{props.data.unReadMessages}</h4>
+			<p className='gray-c'>{props.data.lastMessage}</p>
 		</div>
 	);
 }
