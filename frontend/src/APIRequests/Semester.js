@@ -7,8 +7,8 @@ class SemesterRequests{
 
 	getCurrSemWClasses = async () => {
 		try{
-			const currSemWClasses_EndPoint = `/users/` + this.currUserID + '/semesters/current';
-			const response = await axios.get(currSemWClasses_EndPoint);
+			const endPoint = `/users/` + this.currUserID + '/semesters/current';
+			const response = await axios.get(endPoint);
 			return response.data;
 		}catch(err){
 			console.log(err);

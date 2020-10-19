@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
-import axios from 'axios';
 import moment from 'moment';
 
 import Loader from './Effects/loader';
@@ -8,6 +7,7 @@ import {FadeInOutHandleState, FadeRightHandleState} from './Effects/CustomTransi
 import {SuccessCheck, FailedSent} from './Effects/lottie/LottieAnimations';
 
 import NotificationRequest from '../APIRequests/Notification';
+import AssignmentRequest from '../APIRequests/Assignment';
 
 import './header.css';
 
@@ -45,10 +45,10 @@ class Header extends React.Component{
 						{acNotes > 0 ? <h5>{acNotes}</h5> : null}
 						<FadeInOutHandleState condition={this.state.showACNotes}>
 							<AcademicNotifications 
-								updateCurrentUser={() => this.props.updateCurrentUser()} 
 								getUpcommingAssignments={() => this.props.getUpcommingAssignments()} 
 								currentUserID={this.props.currentUser._id}
 								hideForm={() => this.toggleAcademicNotifications(false)}
+								notifReq={this.notifReq}
 							/>
 						</FadeInOutHandleState>
 					</span>
@@ -155,6 +155,8 @@ class AcademicNotifications extends React.Component{
 	constructor(props){
 		super(props);
 
+		this.assReq = new AssignmentRequest(this.props.currentUserID);
+
 		this.state={
 			notifications: null,
 			adds: {
@@ -182,57 +184,34 @@ class AcademicNotifications extends React.Component{
         }
     }
 
-	getAcademicNotificiations(){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUserID + '/notifications/academic';
-
-		axios.get(endPoint)
-		.then((res) =>{
-			this.setState({
-				notifications: res.data,
-			})
-		})
+	async getAcademicNotificiations(){
+		this.setState({notifications: await this.props.notifReq.getAcademicNotifs()});
 	}
 
-	addNewAss(otherUserAssID, myClassID, noteID){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUserID +`/classes/` + myClassID + '/assignment/fromConnection';
-
-		axios.post(endPoint, {otherUserAssID: otherUserAssID, noteID: noteID})
-		.then((res) =>{
+	async addNewAss(otherUserAssID, myClassID, noteID){
+		const data = await this.assReq.addNewFromOtherUser(myClassID, noteID, otherUserAssID);
+		if(data){
 			const adds = this.state.adds;
 			adds.successes.push(noteID);
 			this.setState({
 				adds: adds,
 			});
-		})
-		.catch((err) => {
+		}else{
 			const adds = this.state.adds;
 			adds.fails.push(noteID);
 			this.setState({
 				adds: adds,
 			});
-		})
-
-		
+		}		
 	}
 
-	removeNote(noteID){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUserID +`/notifications/academic/` + noteID;
-
-		axios.delete(endPoint)
-		.then((res) =>{
-			this.getData();
-		})
-		.catch((err) => {
-			console.log(err);
-		})
-
+	async removeNote(noteID){
+		const data = await this.notifReq.removeAcademicNotif(noteID);
+		if(data) this.getData();
 	}
 
 	getData(){
 		this.getAcademicNotificiations();
-		if(this.props.updateCurrentUser){
-			this.props.updateCurrentUser();
-		}
 		if(this.props.getUpcommingAssignments){
 			this.props.getUpcommingAssignments();
 		}

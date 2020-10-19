@@ -11,6 +11,10 @@ class ClassView extends React.Component{
 
 		this.state={
 			showDialog: false,
+			semesters: [],
+			currSemesterIndex: -1,
+			showNewSem: false,
+			editSemMode: false,
 		}
 	}
 
@@ -26,8 +30,27 @@ class ClassView extends React.Component{
 		})
 	}
 
+	async getSemesters(){
+		const data = await this.semReq.getAllSems();
+		this.setState({semesters: data, currSemesterIndex: data.length-1});
+	}
+
+	showNewSem(val){
+		let editMode = this.state.editSemMode
+		if(!val){
+			this.getSemesters();
+			// this.props.updateCurrentUser();
+			editMode = false;
+		}
+
+		this.setState({
+			showNewSem: val,
+			editSemMode: editMode,
+		})
+	}
+
 	render(){
-		let currSem = this.props.currSemExists ? this.props.semesters[this.props.currSemesterIndex] : null;
+		let currSem = this.state.currSemesterIndex > -1 ? this.props.semesters[this.props.currSemesterIndex] : null;
 
 		const classes =  this.props.currSemExists ? currSem.classes.map((data, index) =>
 			<ClassCon
@@ -61,7 +84,7 @@ class ClassView extends React.Component{
 					<MenuDropDown hideDropDown={() => this.hideDialog()}>
 						<DropDownMain>
 							{this.props.isCurrentUserViewing ?
-								<button onClick={() => this.props.showNewSem(true)}> 
+								<button onClick={() => this.showNewSem(true)}> 
 									<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
 								</button>
 							: null}

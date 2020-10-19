@@ -5,12 +5,25 @@ class UserRequests{
 		this.currUserID = id;
 	}
 	
-	requestUserByID = id =>{
-		console.log(id);
-		axios.get('/users/5f4aa6042c0c8f715ae71d97')
-		.then((res) => {
-			console.log(res.data);
-		})
+	getUser = async () => {
+		try{
+			const endPoint = '/users/' + this.currUserID;
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	toggleFriend = async (isFriend, otherUserID) => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/friends';
+			const res = await axios.post(endPoint, {isFriend: isFriend, userID: otherUserID});
+			return res.data 
+		}catch(err){
+			console.log(err);
+		}
+
 	}
 }
 export default UserRequests;

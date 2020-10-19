@@ -5,6 +5,16 @@ class AssignmentRequests{
 		this.currUserID = id;
 	}
 
+	addNewFromOtherUser = async (myClassID, notifID, assID) => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/classes/' + myClassID + '/assignment/fromConnection';
+			const res = await axios.post(endPoint, {otherUserAssID: assID, noteID: notifID});
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
 	getUpcomming = async () => {
 		try{
 			const endPoint = `/users/` + this.currUserID + '/assignment/upcomming';

@@ -5,6 +5,26 @@ class NotificationRequest{
 		this.currUserID = id;
 	}
 
+	getAcademicNotifs = async () => {
+		try{
+			const endPoint = `/users/` + this.currUserID + '/notifications/academic';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	removeAcademicNotif = async id => {
+		try{
+			const endPoint = `/users/` + this.currUserID + '/notifications/academic/' + id;
+			const res = await axios.delete(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
 	getMessgeNotifs = async () => {
 		try{
 			const endPoint = `/users/` + this.currUserID + '/notifications/message';

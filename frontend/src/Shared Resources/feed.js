@@ -1,13 +1,18 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import axios from 'axios';
+
 import {convertToStdDate} from '../Home/Agenda/Agenda_Helper';
 
+import PostRequests from '../APIRequests/Post';
+
 function Feed(props){
+	const postReq  = new PostRequests(props.currentUser._id);
+
 	const posts = props.feedData!==null ? props.feedData.map((data, index) =>
 		<Post 
 			data={data}
 			currentUser={props.currentUser}
+			postReq={postReq}
 			key={index}
 		/>
 	) : <p>Currently No Posts</p>;
@@ -29,52 +34,27 @@ class Post extends React.Component{
 		}
 	}
 
-	getLikes(){
-		axios.get(`http://localhost:8080/posts/` + this.props.data._id + '/likes')
-	    .then(res => {
-			this.setState({
-				likes: res.data,
-			})
-		})
-	}
-
-	getComments(){
-		axios.get(`http://localhost:8080/posts/` + this.props.data._id + '/comments')
-	    .then(res => {
-			this.setState({
-				comments: res.data,
-			})
-		})
-	}
-
-	toggleLike(){
-		const endPoint = 'http://localhost:8080/users/'+ this.props.currentUser._id + '/posts/' + this.props.data._id +'/likes';
-
-		axios.post(endPoint, {})
-		.then((response) => {
-		    this.getLikes();
-		}).catch((error) => {
-			console.log(error);
-		});
-	}
-
-	newComment(text){
-		const endPoint = 'http://localhost:8080/posts/' + this.props.data._id + '/comments';
-
-		axios.post(endPoint, {
-			text: text,
-			author: this.props.currentUser._id,
-		})
-		.then((response) => {
-		    this.getComments();
-		}).catch((error) => {
-		    console.log(error);
-		});
-	}
-
 	componentDidMount(){
 		this.getLikes();
 		this.getComments();
+	}
+
+	async getLikes(){
+		this.setState({likes: await this.props.postReq.getLikes(this.props.data._id)});
+	}
+
+	async getComments(){
+		this.setState({comments: await this.props.postReq.getComments(this.props.data._id)});
+	}
+
+	async toggleLike(){
+		await this.props.postReq.toggleLike(this.props.data._id);
+		await this.getLikes();
+	}
+
+	async newComment(text){
+		await this.props.postReq.newComment(this.props.data._id, text);
+		await this.getComments();
 	}
 
 	render(){
@@ -108,7 +88,6 @@ class Post extends React.Component{
 				</h4>
 			
 				<InteractionSection 
-					currentUser={this.props.currentUser}
 					liked={this.state.likes.includes(this.props.currentUser._id)}
 					toggleLike={() => this.toggleLike()}
 					newComment={(text) => this.newComment(text)}

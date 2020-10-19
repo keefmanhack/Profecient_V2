@@ -1,14 +1,19 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 
 import Loader from '../Effects/loader';
+
+import SemesterRequests from '../APIRequests/Semester';
+import ClassRequests from '../APIRequests/Class';
 
 import './LinkSelector.css';
 
 class LinkSelector extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.semReq = new SemesterRequests(this.props.currentUser._id);
+		this.classReq = new ClassRequests(this.props.currentUser._id);
 
 		this.state={
 			currSemester: null,
@@ -19,37 +24,13 @@ class LinkSelector extends React.Component{
 		this.getClassData();
 	}
 
-	getClassData(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current')
-	    .then(res => {
-			this.setState({
-				currSemester: res.data
-			})
-		})
+	async getClassData(){
+		this.setState({currSemester: await this.semReq.getCurrSemWClasses()});
 	}
 
-	classSelected(i){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/class/connection';
-		const data={
-			otherUser: this.props.otherUserID,
-			otherUserClass: this.props.linkClass._id,
-			currUserClass: this.state.currSemester.classes[i]._id,
-		}
-
-		axios.post(endPoint, data)
-	    .then(res => {
-			console.log('success');
-		})
+	async classSelected(i){
+		const data = await this.classReq.addNewConnection(this.props.otherUserID, this.props.linkClass._id, this.state.currSemester.classes[i]._id);
 	}
-
-	/*
-	Data needed
-	-----------
-	-currentUser
-	-otherUser
-	-Data about class to be linked to
-	-currentUser current semester class list
-	*/
 
 	render(){
 		const classItems = this.state.currSemester ? this.state.currSemester.classes.map((data, index) => 

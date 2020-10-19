@@ -12,56 +12,48 @@ import Loader from './Shared Resources/Effects/loader';
 
 import './Shared Resources/index.css';
 
+import UserRequests = from './APIRequests/User';
 
 class App extends React.Component{
 	constructor(props){
 		super(props);
-
-		this.state={
-			currentUser: null,
-			foundID: null,
-		}
 
 		this.testUserId = '5f4aa6042c0c8f715ae71d97';
 
 		//Keefer - 5f4aa6042c0c8f715ae71d97
 		//Sarah  - 5f5aab5a6f1dda2b82855985
 		//Pat    - 5f5d3bea7c33842654ec2efb
+
+		this.UserRqst = new UserRequests(this.testUserId);
+
+
+		this.state={
+			currentUser: null,
+			foundID: null,
+		}
 	}
 
 	componentDidMount(){
 		this.getCurrentUser();
 	}
 
-	getRequestedUser(id){
-		console.log(id);
-		axios.get(`http://localhost:8080/users/` + id)
-	    .then(res => {
-			this.setState({
-				foundUser: res.data,
-			})
-		})
+	// getRequestedUser(id){
+	// 	console.log(id);
+	// 	axios.get(`http://localhost:8080/users/` + id)
+	//     .then(res => {
+	// 		this.setState({
+	// 			foundUser: res.data,
+	// 		})
+	// 	})
+	// }
+
+	async getCurrentUser(){
+		this.setState({currentUser: await this.UserRqst.getUser()})
 	}
 
-	getCurrentUser(){
-		axios.get(`http://localhost:8080/users/` + this.testUserId )
-	    .then(res => {
-			this.setState({
-				currentUser: res.data,
-			})
-		})
-	}
-
-	toggleFriend(isFriend, userID){
-		const endPoint = `http://localhost:8080/users/` + this.state.currentUser._id + '/friends';
-
-		axios.post(endPoint, {
-			isFriend: isFriend,
-			userID: userID,
-		})
-		.then(res => {
-			this.getCurrentUser();
-		})
+	async toggleFriend(isFriend, userID){
+		await this.UserRqst.toggleFriend(isFriend, userID);
+		await this.getCurrentUser();
 	}
 
 	setFoundUser(id){
@@ -94,7 +86,7 @@ class App extends React.Component{
 							
 						<Route path='/home'>
 							{this.state.currentUser ? 
-								<Home updateCurrentUser={() => this.getCurrentUser()} currentUser={this.state.currentUser}/> 
+								<Home currentUser={this.state.currentUser}/> 
 							: 
 								<Loader/>
 							}
@@ -105,8 +97,7 @@ class App extends React.Component{
 							}
 							if(this.state.currentUser && this.state.foundID !==null){
 								return (<ProfilePage 
-									foundUser={this.state.foundID} 
-									updateCurrentUser={() => this.getCurrentUser()} 
+									foundUser={this.state.foundID}  
 									currentUser={this.state.currentUser}
 									toggleFriend={(isFriend, userID) => this.toggleFriend(isFriend, userID)}
 								/> )

@@ -1,12 +1,17 @@
 import React from 'react';
-import {FadeInOutHandleState} from './Effects/CustomTransition';
-import axios from 'axios';
 import FormData from 'form-data';
+
+import {FadeInOutHandleState} from './Effects/CustomTransition';
 import Loader from './Effects/loader';
+
+import PostRequests from '../APIRequests/Post';
 
 class PostCreator extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.postReq = new PostRequests(this.props.currentUser._id);
+
 		this.state={
 			images: null,
 			error: false,
@@ -67,7 +72,7 @@ class PostCreator extends React.Component{
 		}
 	}
 
-	sendData(){
+	async sendData(){
 		const checkError = this.checkError();
 
 		if(!checkError){
@@ -76,37 +81,21 @@ class PostCreator extends React.Component{
 			});
 
 			const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/posts';
-			let data = new FormData();
-
-			data.append('text', this.textArea.current.innerText);
-			if(this.state.images)
-				this.state.images.forEach(function(image){
-					data.append('images', image);
-				})
-			
-
-			axios.post(endPoint, data, {
-			  headers: {
-			    'accept': 'application/json',
-			    'Accept-Language': 'en-US,en;q=0.8',
-			    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-			  }
-			})
-			.then((response) => {
-			    this.setState({
+			const data = await this.postReq.newPost(this.textArea.current.innerText, this.state.images);
+			if(data){
+				this.setState({
 			    	sendingData: false,
 			    	images: null,
 			    	httpError: false,
 			    })
 			    this.textArea.current.innerText = '';
 			    this.props.reloadFeed();
-			}).catch((error) => {
-				console.log(error);
-			    this.setState({
+			}else{
+				this.setState({
 			    	sendingData: false,
 			    	httpError: true,
 			    })
-			});
+			}
 		}
 	}
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 
 import Loader from '../Effects/loader';
@@ -12,6 +11,8 @@ class LinkSelector extends React.Component{
 	constructor(props){
 		super(props);
 
+		this.semReq = new SemesterRequests(this.props.currentUser._id);
+
 		this.state={
 			currSemester: null,
 			selectedIndex: -1,
@@ -23,13 +24,8 @@ class LinkSelector extends React.Component{
 		this.getClassData();
 	}
 
-	getClassData(){
-		axios.get(`http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/current')
-	    .then(res => {
-			this.setState({
-				currSemester: res.data
-			})
-		})
+	async getClassData(){
+		this.setState({currSemester: await this.semReq.getCurrSemWClasses()});
 	}
 
 	addNewLink(){

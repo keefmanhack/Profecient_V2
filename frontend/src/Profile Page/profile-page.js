@@ -11,18 +11,20 @@ import PostCreator from '../Shared Resources/PostCreator';
 // import Loader from '../Shared Resources/Effects/loader';
 import LinkSelector from '../Shared Resources/Link Selector/LinkSelector';
 
+import UserRequests from '../APIRequests/User';
+import PostRequests from '../APIRequests/Post';
+
 import './profile-page.css';
 
 class ProfilePage extends React.Component{
 	constructor(props){
 		super(props);
 
+		this.userReq = new UserRequests(this.props.foundUser);
+		// this.postReq = new PostRequests(this.props.foundUser);
+
 		this.state = {
-			showNewSem: false,
 			postData: null,
-			currSemesterIndex: -1,
-			semesters: [],
-			editSemMode: false,
 			profile: null,
 			showNewLinkForm: false,
 			newLinkSuccess: false,
@@ -40,65 +42,19 @@ class ProfilePage extends React.Component{
 		this.getRequestedUser();
 	}
 
-	getRequestedUser(){
-		axios.get(`http://localhost:8080/users/` + this.props.foundUser)
-	    .then(res => {
-	    	this.setState({
-	    		profile: res.data,
-	    	})
-		})
+	async getRequestedUser(){
+		this.setState({profile: await this.userReq.getUser()})
 	}
 
-	getUserPosts(){
-		axios.get(`http://localhost:8080/users/` + this.props.foundUser + '/posts')
-	    .then(res => {
-			this.setState({
-				postData: res.data,
-			})
-		})
+	async getUserPosts(){
+		this.setState({postData: await this.postReq.getPosts()});
 	}
 
-
-	getSemesters(){
-		axios.get(`http://localhost:8080/users/` + this.props.foundUser + '/semesters/classes/assignments')
-	    .then(res => {
-			this.setState({
-				semesters: res.data,
-				currSemesterIndex: res.data.length-1,
-			})
-		})
-	}
-
-	showNewSem(val){
-		let editMode = this.state.editSemMode
-		if(!val){
-			this.getSemesters();
-			this.props.updateCurrentUser();
-			editMode = false;
-		}
-
-		this.setState({
-			showNewSem: val,
-			editSemMode: editMode,
-		})
-	}
 
 	editCurrentSem(){
 		this.setState({
 			editSemMode: true,
 			showNewSem: true,
-		})
-	}
-
-	deleteCurrentSem(){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semesters/' + this.state.semesters[this.state.currSemesterIndex]._id;
-		axios.delete(endPoint)
-	    .then(res => {
-			this.getSemesters();
-			this.props.updateCurrentUser();
-		})
-		.catch((err) =>{
-			console.log(err);
 		})
 	}
 
@@ -108,16 +64,16 @@ class ProfilePage extends React.Component{
 		})
 	}
 
-	findClassIndex(classID){
-		let i =0;
-		const classes = this.state.semesters[this.state.currSemesterIndex].classes;
-		for(;i<classes.length; i++){
-			if(classID === classes[i]._id){
-				break;
-			}
-		}
-		return i;
-	}
+	// findClassIndex(classID){
+	// 	let i =0;
+	// 	const classes = this.state.semesters[this.state.currSemesterIndex].classes;
+	// 	for(;i<classes.length; i++){
+	// 		if(classID === classes[i]._id){
+	// 			break;
+	// 		}
+	// 	}
+	// 	return i;
+	// }
 
 	addLink(classID){
 		this.setState({selectedClassIndex: this.findClassIndex(classID)});
