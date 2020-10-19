@@ -19,9 +19,10 @@ router.get('/users/:id/messageStreams', async (req,res) =>{
 router.put('/users/:id/messageStream/:streamID', async (req,res) =>{
 	//id if this route is in use
 	try{
-		await MessageService.updateStream(req.params.streamID, req.body.messageStream);
+		await MessageService.updateStream(req.params.streamID, req.body.newMessage);
 		res.send();
-		MessageHandler.postNotification(req.params.id, req.body.messageStream);
+		await MessageHandler.sendMessageToCommunicators(req.params.id, req.params.streamID, req.body.newMessage)
+		MessageHandler.postNotification(req.params.id, req.params.streamID);
 	}catch(err){
 		console.log(err);
 	}

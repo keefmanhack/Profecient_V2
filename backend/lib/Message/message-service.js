@@ -14,11 +14,13 @@ const getStreamsWOutPopComms = Message => async streamIds =>{
 	return await Message.find({_id: streamIds});
 }
 
-const updateStream = Message => async (streamID, updatedStream) => {
+const updateStream = Message => async (streamID, newMessage) => {
 	if(!streamID){
 		throw new Error('No streamID');
 	}
-	await Message.findByIdAndUpdate(streamID, updatedStream);
+	const stream = await Message.findById(streamID);
+	stream.sentMessages.push(newMessage);
+	return await stream.save();
 }
 
 const findStream = Message => async id => {

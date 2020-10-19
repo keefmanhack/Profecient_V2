@@ -68,7 +68,7 @@
 
 .note h4.count{
     position: absolute;
-    top: 10px;
+    top: 40px;
     right: 10px;
     font-weight: 200;
 }
@@ -85,7 +85,7 @@
 .note p{
     font-size: 14px;
     font-weight: 400;
-    width: 100%;
+    width: 80%;
     height: 20px;
     overflow: hidden;
     margin: 0;

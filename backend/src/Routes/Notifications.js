@@ -37,5 +37,18 @@ router.get('/users/:id/notifications/message', async (req,res) => {
 	}
 })
 
+router.delete('/users/:id/notifications/message/:msgID', async (req,res) => {
+	try{
+		const user = await UserService.findById(req.params.id);
+		const notifs = await MessageNoteService.remove(req.params.msgID);
+		user.notifications.messages.messageNote.pull(req.params.msgID);
+		user.notifications.messages.unDismissed--;
+		await user.save();
+		res.send();
+	}catch(err){
+		console.log(err);
+	}
+})
+
 module.exports = router;
 

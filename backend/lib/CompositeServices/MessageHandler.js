@@ -12,13 +12,38 @@ class MessageHandler{
 		}
 	}
 
+	static async sendMessageToCommunicators(myId, streamID, newMessage){
+		const stream = await MessageService.findStream(streamID);
+		for(let i =0; i<stream.communicators.length; i++){
+			if(stream.communicators[i] !== myId){
+				const foundCommun = await UserService.findById(stream.communicators[i]);
+				const foundStreamID = await this.findStreamToNotify(stream.communicators, foundCommun);
+				if(foundStreamID){
+					MessageService.updateStream(foundStreamID, newMessage);
+				}else{
+					const data = {
+						communicators: stream.communicators,
+						sentMessages: [newMessage],
+					}
+					const newStream = await MessageService.create(data);
+					foundCommun.messageStreams.push(newStream);
+					foundCommun.save();
+				}
+			}
+		}
+		//search each communicators stream (that isn't me)
+		//look through stream to find matching communicators
+		//if not found, create a new stream for the other communicators
+		//else update the stream with the new message
+	}
+
 	static async postNotification(myId, mostRecentStreamID){
 		const user = await UserService.findById(myId);
 		const stream = await MessageService.findStream(mostRecentStreamID);
+		stream.communicators.pull(myId);
 		for(let i =0; i< stream.communicators.length; i++){
-			let comm = stream.communicators[i];
-			if(comm + "" !== myId + ""){
-				const userToBeNotified =  await UserService.findById(comm);
+			if(stream.communicators[i] !== myId){
+				const userToBeNotified =  await UserService.findById(stream.communicators[i]);
 				const streamID = await this.findStreamToNotify(stream.communicators, userToBeNotified);
 				const noteID = otherUserHasNotification(userToBeNotified, streamID);
 				let note;
@@ -60,9 +85,10 @@ class MessageHandler{
 	}
 
 	static async findStreamToNotify(myStreamCommunicatorIDs, currCommunicator){
+		myStreamCommunicatorIDs.sort();
 		for(let i =0; i<currCommunicator.messageStreams.length; i++){
 			const stream = await MessageService.findStream(currCommunicator.messageStreams[i]);
-			if(sameCommunicators(myStreamCommunicatorIDs.sort(), stream.communicators)){
+			if(sameCommunicators(myStreamCommunicatorIDs, stream.communicators)){
 				return currCommunicator.messageStreams[i];
 			}
 		}
@@ -121,10 +147,8 @@ function sameCommunicators(communsToMatchSorted, otherUserCommuns){
 	let found = true;
 	for(let i =0; i<otherUserCommuns.length; i++){
 		otherUserCommuns.sort();
-		if(communsToMatchSorted.length === otherUserCommuns.length){
-			if(communsToMatchSorted[i] !== otherUserCommuns[i]){
-				found = false;
-			}
+		if(communsToMatchSorted[i] + "" !== otherUserCommuns[i] + ""){
+			found = false;
 		}
 	}
 	return found;

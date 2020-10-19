@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import axios from 'axios';
 import moment from 'moment';
@@ -91,7 +91,7 @@ class MessageNotifications extends React.Component{
 		super(props);
 
 		this.state={
-			notifs: undefined,
+			notifs: null,
 		}
 
 		this.wrapperRef = React.createRef();
@@ -118,21 +118,28 @@ class MessageNotifications extends React.Component{
     	this.setState({
     		notifs: notifications,
     	})
+
     }
 
 	render(){
 		let newMsgNotifs = []; 
 
 		if(this.state.notifs){
-			for(let i = this.state.notifs.length; i>0; i++){
-				newMsgNotifs.push(this.state.notifs[i]);
+			for(let i = this.state.notifs.length-1; i>=0; i--){
+				const notif = this.state.notifs[i];
+				newMsgNotifs.push(
+					<NewMessageNote 
+						removeElement={async () => {await this.props.notifReq.removeMsgNotif(notif._id); this.getMessageNotifications()}} 
+						key={notif._id} 
+						data={notif}
+					/>
+				);
 			}
 		}
 
 		return(
 			<div className='note-container' ref={this.wrapperRef}>
-				{this.state.notifs === undefined ? <Loader/> : null}
-				{newMsgNotifs}
+				{this.state.notifs === null ? <Loader/> : newMsgNotifs}
 				{this.state.notifs === null ? 
 					<p style={{textAlign: 'center'}} className='muted-c'>No notifications</p>
 					:
@@ -284,9 +291,11 @@ class AcademicNotifications extends React.Component{
 }
 
 function NewMessageNote(props){
-
+	const [removed, setRemoved] = useState(false);
 	return(
 		<div className='sans-font translucent-blue-bc note message'>
+			<button onClick={() => {props.removeElement(); setRemoved(true)}} className='red-c remove'>Remove</button>
+			{removed ? <Loader/> : null}
 			<Link to={'/profile/' + props.data.otherUser.user_id}>
 				<span className='other-user'>
 					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.data.otherUser.user_information.profilePictureURL} alt=""/>

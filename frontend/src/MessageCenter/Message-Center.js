@@ -100,8 +100,8 @@ class MessageCenter extends React.Component{
 		})
 	}
 
-	updateMessageStreams(messageStream){
-		axios.put(`http://localhost:8080/users/` + this.props.currentUser._id + `/messageStream/` + messageStream._id, {messageStream: messageStream})
+	updateMessageStreams(newMessage){
+		axios.put(`http://localhost:8080/users/` + this.props.currentUser._id + `/messageStream/` + this.state.messageStream[this.state.selectedIndex]._id, {newMessage: newMessage})
 	    .then(res => {
 	    	console.log(res);
 		})
@@ -132,8 +132,7 @@ class MessageCenter extends React.Component{
 		if(e.key === 'Enter'){
 			const newMessage = {
 				sender: this.props.currentUser._id,
-				message: this.textarea.current.value.trim(),
-				date: new Date(),
+				message: this.textarea.current.value.trim()
 			}
 			this.textarea.current.value = '';
 			
@@ -144,7 +143,7 @@ class MessageCenter extends React.Component{
 				messageStreams: messageStreams,
 			})
 
-			this.updateMessageStreams(messageStreams[this.state.selectedIndex]);
+			this.updateMessageStreams(newMessage);
 		}
 	}
 
