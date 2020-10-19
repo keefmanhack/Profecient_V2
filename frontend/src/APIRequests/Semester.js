@@ -14,5 +14,25 @@ class SemesterRequests{
 			console.log(err);
 		}
 	}
+
+	getAllSems = async () => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/semesters';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	getClasses = async semID => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/semesters/' + semID + '/classes';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
 }
 export default SemesterRequests;

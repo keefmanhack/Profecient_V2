@@ -5,6 +5,13 @@ const findById = Semester => async id => {
 	return await Semester.findById(id);
 }
 
+const findMultiple = Semester => async ids => {
+	if(!ids){
+		throw new Error("No ids received to find semesters");
+	}
+	return await Semester.find({_id: ids});
+}
+
 const create = Semester => async data => {
 	if(!data){
 		throw new Error('No data');
@@ -40,6 +47,7 @@ module.exports = Semester => {
 		create: create(Semester),
 		findMutlipleAndPopulateClassAndAssignment: findMutlipleAndPopulateClassAndAssignment(Semester),
 		getCurrentSemester: getCurrentSemester(Semester),
-		deleteOne: deleteOne(Semester)
+		deleteOne: deleteOne(Semester),
+		findMultiple: findMultiple(Semester),
 	}
 }

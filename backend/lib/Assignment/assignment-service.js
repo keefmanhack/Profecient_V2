@@ -40,12 +40,20 @@ const create = Ass => async data =>{
 	return await newAss.save();
 }
 
+const findMultiple = Ass => async ids => {
+	if(!ids){
+		throw new Error("No ids supplied to find assginments");
+	}
+	return await Ass.find({_id: ids});
+}
+
 module.exports = Ass => {
 	return {
 		deleteMultiple: deleteMultiple(Ass),
 		deleteOne: deleteOne(Ass),
 		getAssesDueInAWeekSortedByDate: getAssesDueInAWeekSortedByDate(Ass),
 		update: update(Ass),
-		create: create(Ass)
+		create: create(Ass),
+		findMultiple: findMultiple(Ass),
 	}
 }

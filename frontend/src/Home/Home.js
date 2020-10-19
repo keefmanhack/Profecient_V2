@@ -1,11 +1,8 @@
 import React from 'react';
-// import {Link} from "react-router-dom";
-import axios from 'axios';
 
 import Header from '../Shared Resources/header';
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 import AssignmentDashboard from './AssignmentDashboard';
-import {NewAssignment} from './AssignmentDashboard';
 import Agenda from './Agenda/Agenda';
 import {NewAgendaItem} from './Agenda/Agenda';
 import Feed from '../Shared Resources/feed';

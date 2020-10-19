@@ -9,7 +9,6 @@ import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition
 import Header from '../Shared Resources/header';
 import PostCreator from '../Shared Resources/PostCreator';
 // import Loader from '../Shared Resources/Effects/loader';
-import LinkSelector from '../Shared Resources/Link Selector/LinkSelector';
 
 import UserRequests from '../APIRequests/User';
 import PostRequests from '../APIRequests/Post';
@@ -21,7 +20,7 @@ class ProfilePage extends React.Component{
 		super(props);
 
 		this.userReq = new UserRequests(this.props.foundUser);
-		// this.postReq = new PostRequests(this.props.foundUser);
+		this.postReq = new PostRequests(this.props.foundUser);
 
 		this.state = {
 			postData: null,
@@ -38,7 +37,6 @@ class ProfilePage extends React.Component{
 
 	getProfileData(){
 		this.getUserPosts();
-		this.getSemesters();
 		this.getRequestedUser();
 	}
 
@@ -164,17 +162,9 @@ class ProfilePage extends React.Component{
 						<div className='row'>
 							<div className='col-lg-4 left'>
 								<ClassView 
-									currSemesterIndex={this.state.currSemesterIndex} 
-									semesters={this.state.semesters} 
-									showNewSem={() => this.showNewSem(true)}
-									editCurrSem={() => this.editCurrentSem()}
-									deleteCurrSem={() => this.deleteCurrentSem()}
-									currSemExists={currSemExists}
-									changeCurrentSem={(i) => this.changeCurrentSem(i)}
 									isCurrentUserViewing={this.props.currentUser !==null && this.state.profile._id === this.props.currentUser._id}
 									currentUser={this.props.currentUser}
-									addLink={(classID) => this.addLink(classID)}
-									removeLink={(classID) => this.removeLink(classID)}
+									otherUserID={this.state.profile._id}
 								/>
 							</div>
 							<div className='col-lg-8'>
@@ -199,17 +189,6 @@ class ProfilePage extends React.Component{
 						updateData={this.state.editSemMode ? this.state.semesters[this.state.currSemesterIndex] : null}
 					/>
 				</FadeInOutHandleState>
-				{this.state.showNewLinkForm  ?
-					<LinkSelector
-						otherUserID={this.state.profile._id}
-						linkClass={this.state.semesters[this.state.currSemesterIndex].classes[this.state.selectedClassIndex]}
-						currentUser={this.props.currentUser}
-						addNewLink={(data) => this.addNewLink(data)}
-						success={this.state.newLinkSuccess}
-						hideForm={() => this.showLinkSelector(false)}
-					/>
-				: null
-				}
 			</React.Fragment>
 		);
 	}

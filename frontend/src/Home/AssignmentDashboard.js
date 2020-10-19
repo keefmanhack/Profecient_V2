@@ -29,7 +29,7 @@ function AssignmentDashboard(props){
 		fetchData();
 
 		return () => {}
-	}, [shouldShowNewForm, editCount, editClassIndex]);
+	}, [shouldShowNewForm, editCount, editClassIndex, assReq]);
 
 	useEffect(() => {
 		async function fetchData(){
@@ -38,7 +38,7 @@ function AssignmentDashboard(props){
 		fetchData();
 
 		return () => {}
-	}, [shouldShowNewForm, editCount, editClassIndex]);
+	}, [shouldShowNewForm, editCount, editClassIndex, semReq]);
 
 
 	const assignments = upCommingAss ? upCommingAss.map((data, index) =>

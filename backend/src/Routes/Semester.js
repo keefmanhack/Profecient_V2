@@ -98,24 +98,27 @@ router.get('/users/:id/semesters/current', async (req,res) =>{
 	}
 })
 
-// router.post('/users/:id/semesters/current', function(req,res){
-// 	User.findById(req.params.id).populate({path: 'semesters', populate: {path: 'classes'}}).exec(function(err, foundUser){
-// 		if(err){
-// 			console.log(err);
-// 		}else{
-// 			foundUser.currentSemesterID = req.body.semID;
-// 			console.log(foundUser.currentSemesterID);
-// 			foundUser.save(function(err){
-// 				if(err){
-// 					console.log(err);
-// 				}else{
-// 					res.send('success');
-// 				}
-// 			});
-			
-// 		}
-// 	})
-// })
+router.get('/users/:id/semesters/:semID/classes', async (req, res) => {
+	try{
+		// const user = await UserService.findById(req.params.id); //this doesn't need to be here
+		const semester = await SemesterService.findById(req.params.semID);
+		const classes = await ClassService.findMultiple(semester.classes);
+		res.json(classes);
+	}catch(err){
+		res.send();
+		console.log(err);
+	}
+})
+
+router.get('/users/:id/semesters', async (req, res) => {
+	try{
+		const user = await UserService.findById(req.params.id);
+		res.json(await SemesterService.findMultiple(user.semesters));
+	}catch(err){
+		console.log(err);
+	}
+})
+
 
 router.delete('/users/:id/semesters/:sem_id', async (req, res) => {
 	try{
@@ -175,6 +178,16 @@ router.put('/assignment/:id', async (req,res) =>{
 	}
 })
 
+router.get('/users/:id/classes/:classID/assignments', async (req,res) => {
+	try{
+		const foundClass = await ClassService.findById(req.params.classID);
+		const foundAsses = await AssignmentService.findMultiple(foundClass.assignments);
+		res.json(foundAsses);
+	}catch(err){
+		console.log(err);
+	}
+})
+
 router.post('/users/:id/classes/:classID/assignment', async (req, res) =>{
 	try{
 		const user = await UserService.findById(req.params.id);
@@ -202,51 +215,5 @@ router.post('/users/:id/classes/:classID/assignment/fromConnection', async (req,
 		console.log(err);
 	}
 })
-
-// function createAssignment(userID, classID, assingmentData, cb){
-// 	User.findById(userID, function(err, foundUser){
-// 		if(err){
-// 			console.log(err);
-// 		}else{
-// 			Assignment.create(assingmentData, function(err, newAss){
-// 				if(err){
-// 					console.log(err);
-// 				}else{
-// 					Class.findById(classID, function(err, foundClass){
-// 						if(err){
-// 							console.log(err);
-// 						}else{
-// 							newAss.complete = false;
-// 							foundClass.assignments.push(newAss);
-// 							foundClass.save(function(err){
-// 								if(err){
-// 									console.log(err);
-// 								}else{
-// 									sendConnectionsFromNewAssNotification(foundClass, foundUser, newAss._id);
-// 									cb();
-// 								}
-// 							});
-// 						}
-// 					})
-// 				}
-// 			})
-// 		}
-// 	})
-// }
-
-
-// function getAssignment(id, cb){
-// 	Assignment.findById(id, function(err, foundAss){
-// 		if(err){
-// 			console.log(err);
-// 		}else{
-// 			cb(foundAss);
-// 		}
-// 	})
-// }
-
-
-
-
 
 module.exports = router;

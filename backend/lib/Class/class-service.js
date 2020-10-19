@@ -120,6 +120,13 @@ const getClassAssignmentsDueInAWeekSortedByDate = ClassModel => async ids =>{
 	return returnArr.slice().sort((a,b) => a.ass.dueDate-b.ass.dueDate);
 }
 
+const findMultiple = ClassModel => async ids => {
+	if(!ids){
+		throw new Error("No ids supplied to find classes");
+	}
+	return await ClassModel.find({_id: ids});
+}
+
 module.exports = ClassModel => {
 	return {
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
@@ -128,6 +135,7 @@ module.exports = ClassModel => {
 		updateClasses: updateClasses(ClassModel),
 		deleteMultiple: deleteMultiple(ClassModel),
 		findById: findById(ClassModel),
+		findMultiple: findMultiple(ClassModel),
 		getAllClassAssIDs: getAllClassAssIDs(ClassModel),
 		getClassAssignmentsDueInAWeekSortedByDate: getClassAssignmentsDueInAWeekSortedByDate(ClassModel),
 	}

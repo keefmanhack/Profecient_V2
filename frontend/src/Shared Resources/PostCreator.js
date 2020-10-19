@@ -1,5 +1,4 @@
 import React from 'react';
-import FormData from 'form-data';
 
 import {FadeInOutHandleState} from './Effects/CustomTransition';
 import Loader from './Effects/loader';
@@ -80,7 +79,6 @@ class PostCreator extends React.Component{
 				sendingData: true,
 			});
 
-			const endPoint = 'http://localhost:8080/users/' + this.props.currentUser._id + '/posts';
 			const data = await this.postReq.newPost(this.textArea.current.innerText, this.state.images);
 			if(data){
 				this.setState({

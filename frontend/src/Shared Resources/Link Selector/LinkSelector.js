@@ -5,6 +5,8 @@ import Loader from '../Effects/loader';
 import {FadeRightHandleState, FadeInOutHandleState} from '../Effects/CustomTransition';
 import {SuccessCheck} from '../Effects/lottie/LottieAnimations';
 
+import SemesterRequests from '../../APIRequests/Semester';
+
 import './LinkSelector.css';
 
 class LinkSelector extends React.Component{

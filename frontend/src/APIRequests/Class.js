@@ -18,6 +18,16 @@ class ClassRequests{
 		}catch(err){
 			console.log(err);
 		}
-	}	
+	}
+
+	getAssignments = async classID =>{
+		try{
+			const endPoint = '/users/' + this.currUserID + '/classes/' + classID + '/assignments';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
 }
 export default ClassRequests;

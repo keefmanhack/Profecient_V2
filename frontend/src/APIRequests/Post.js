@@ -3,14 +3,6 @@ import axios from './index';
 class PostRequests{
 	constructor(id){
 		this.currUserID = id;
-
-		this.multiPartHeader = {
-			  headers: {
-			    'accept': 'application/json',
-			    'Accept-Language': 'en-US,en;q=0.8',
-			    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-			  }
-			}
 	}
 
 	getPosts  = async () => {
@@ -30,10 +22,16 @@ class PostRequests{
 			//setup data before sending
 			data.append('text', text);
 			for(let i =0; i<images.length; i++){
-				data.append('images', image);
+				data.append('images', images[i]);
 			}
 
-			const res = await axios.post(endPoint, data, this.multiPartHeader);
+			const res = await axios.post(endPoint, data, {
+			  headers: {
+			    'accept': 'application/json',
+			    'Accept-Language': 'en-US,en;q=0.8',
+			    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+			  }
+			});
 			return res.data;
 		}catch(err){
 			console.log(err);
@@ -62,7 +60,7 @@ class PostRequests{
 
 	toggleLike = async (id) =>{
 		try{
-			const endPoint = '/users/' this.currUserID + '/posts/' + id + '/likes';
+			const endPoint = '/users/' + this.currUserID + '/posts/' + id + '/likes';
 			const res = await axios.post(endPoint,{});
 			return res.data;
 		}catch(err){
@@ -82,7 +80,7 @@ class PostRequests{
 
 	newComment = async (id, text) =>{
 		try{
-			const endPoint = '/users/' this.currUserID + '/posts/' + id + '/comments';
+			const endPoint = '/users/' + this.currUserID + '/posts/' + id + '/comments';
 			const res = await axios.post(endPoint,{text:text, author: this.currUserID});
 			return res.data;
 		}catch(err){

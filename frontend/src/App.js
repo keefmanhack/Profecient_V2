@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
-import axios from 'axios';
 
 import Login from './Login Landing/Login';
 import Landing from './Login Landing/landing';
@@ -12,7 +11,7 @@ import Loader from './Shared Resources/Effects/loader';
 
 import './Shared Resources/index.css';
 
-import UserRequests = from './APIRequests/User';
+import UserRequests from './APIRequests/User';
 
 class App extends React.Component{
 	constructor(props){

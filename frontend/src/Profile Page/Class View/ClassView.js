@@ -1,206 +1,112 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import moment from 'moment';
 
-import {FadeDownUpHandleState, FadeInOut, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
+import LinkSelector from '../../Shared Resources/Link Selector/LinkSelector';
+import {FadeDownUpHandleState, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
+import MenuDropDown, {DropDownMain, Options} from '../../Shared Resources/MenuDropDown';
+import Loader from '../../Shared Resources/Effects/loader';
+
+import SemesterRequests from '../../APIRequests/Semester';
+import ClassRequests from '../../APIRequests/Class';
 
 import './class-view.css';
 
-class ClassView extends React.Component{
-	constructor(props){
-		super(props);
+function ClassView(props){
+	const semReq = new SemesterRequests(props.otherUserID);
+	const classReq = new ClassRequests(props.otherUserID);
 
-		this.state={
-			showDialog: false,
-			semesters: [],
-			currSemesterIndex: -1,
-			showNewSem: false,
-			editSemMode: false,
+	const [semesters, setSemesters] = useState(null);
+	const [classes, setClasses] = useState(null);
+	const [currSemesterID, setCurrSemesterID] = useState(null);
+	// const [linkID, setLinkID] = useState(null);
+	const [showDialog, setShowDialog] = useState(false);
+	const [showNewSemForm, setShowNewSemForm] = useState(false);
+
+	useEffect(() => {
+		const getSemesters = async () => {
+			const data = await semReq.getAllSems();	
+			setSemesters(data);
+			setCurrSemesterID(data[data.length-1]._id)
 		}
-	}
+		getSemesters();
+	}, [])
 
-	showDialog(){
-		this.setState({
-			showDialog: true,
-		})
-	}
-
-	hideDialog(){
-		this.setState({
-			showDialog: false,
-		})
-	}
-
-	async getSemesters(){
-		const data = await this.semReq.getAllSems();
-		this.setState({semesters: data, currSemesterIndex: data.length-1});
-	}
-
-	showNewSem(val){
-		let editMode = this.state.editSemMode
-		if(!val){
-			this.getSemesters();
-			// this.props.updateCurrentUser();
-			editMode = false;
+	useEffect(() => {
+		const getClasses = async () => {
+			setClasses(await semReq.getClasses(currSemesterID));
 		}
+		if(currSemesterID!==null) getClasses();
+	}, [currSemesterID])
 
-		this.setState({
-			showNewSem: val,
-			editSemMode: editMode,
-		})
-	}
+	const currSem = currSemesterID ? findSem(semesters, currSemesterID) : null;
+	const classContainers =  classes ? classes.map((data, index) =>
+		<ClassCon
+			data={data}
+			key={index}
+			isCurrentUserViewing={props.isCurrentUserViewing}
+			currentUser={props.currentUser}
+			otherUserID={props.otherUserID}
+			classReq={classReq}
+		/> 
+	): null
 
-	render(){
-		let currSem = this.state.currSemesterIndex > -1 ? this.props.semesters[this.props.currSemesterIndex] : null;
-
-		const classes =  this.props.currSemExists ? currSem.classes.map((data, index) =>
-			<ClassCon
-				data={data}
-				key={index}
-				isCurrentUserViewing={this.props.isCurrentUserViewing}
-				currentUser={this.props.currentUser}
-				addLink={() => this.props.addLink(data._id)}
-				removeLink={() => this.props.removeLink(data._id)}
-			/> 
-		): null
-
-		return(
-			<div className='class-view-container'>
-				<div className='semester-container white-c'>
-					<div className='sem-title'>
-						<h1 className={!this.props.currSemExists ? 'muted-c': null}>
-							{this.props.currSemExists ? currSem.name : 'No Semester Exists'}
-						</h1>
-					</div>
-					<FadeInOutHandleState condition={this.props.isCurrentUserViewing || this.props.semesters.length>0}>
-						<button className='white-c' onClick={() => this.showDialog()}>...</button>
-					</FadeInOutHandleState>
-				</div>
-				<h5 className='muted-c'>{this.props.currSemExists ? currSem.classes.length + ' Classes' : null}</h5>
-				<hr/>
-				<div style={{minHeight: 150, maxHeight: 350, overflow: 'scroll'}}>
-					{classes}
-				</div>
-				<FadeInOutHandleState condition={this.state.showDialog}>
-					<MenuDropDown hideDropDown={() => this.hideDialog()}>
-						<DropDownMain>
-							{this.props.isCurrentUserViewing ?
-								<button onClick={() => this.showNewSem(true)}> 
-									<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
-								</button>
-							: null}
-							{this.props.semesters.length>0 ?
-								<React.Fragment>
-									{this.props.isCurrentUserViewing ?
-										<React.Fragment>
-											<button onClick={() => this.props.editCurrSem()}> 
-												<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
-											</button>
-											<button onClick={() => this.props.deleteCurrSem()}> 
-												<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
-											</button>
-										</React.Fragment>
-									:null}
-									<Options 
-										text={'Current Semester'} 
-										icon={<i class="fas fa-caret-right"></i>} 
-										options={this.props.semesters}
-										selected={currSem}
-										clickEvent={(i) => this.props.changeCurrentSem(i)}
-									/>
-								</React.Fragment>
-							: null}
-						</DropDownMain>
-					</MenuDropDown>
-				</FadeInOutHandleState>
+	return(
+		<div className='class-view-container'>
+			<div className='semester-container white-c'>
+				{semesters ?
+					<React.Fragment>
+						<div className='sem-title'>
+							<h1 className={!currSemesterID ? 'muted-c': null}>
+								{currSemesterID ? currSem.name : 'No Semester Exists'}
+							</h1>
+						</div>
+						<FadeInOutHandleState condition={props.isCurrentUserViewing || semesters.length>0}>
+							<button className='white-c' onClick={() => setShowDialog(true)}>...</button>
+						</FadeInOutHandleState>
+					</React.Fragment>
+				: 
+					<Loader/>
+				}
 			</div>
-		);
-	}
-}
-
-class MenuDropDown extends React.Component{
-	constructor(props){
-		super(props);
-
-		this.wrapperRef = React.createRef();
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-	}
-
-	componentDidMount() {
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    }
-
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
-            this.props.hideDropDown();
-        }
-    }
-
-	render(){
-		return(
-			<div ref={this.wrapperRef} className='drop-down-con'>
-				{this.props.children}
+			<h5 className='muted-c'>{classes ? classes.length + ' Classes' : null}</h5>
+			<hr/>
+			<div style={{minHeight: 150, maxHeight: 350, overflow: 'scroll', position: 'relative', borderRadius: 5}}>
+				{classes ? classContainers: <Loader/>}
 			</div>
-		);
-	}
-}
-
-class DropDownMain extends React.Component{
-	render(){
-		return(
-			<div className='main'>
-				{this.props.children}
-			</div>
-		);
-	}
-}
-
-class Options extends React.Component{
-	constructor(props){
-		super(props);
-
-		this.state={
-			showOptions: false,
-		}
-	}
-
-	showOptions(){
-		this.setState({
-			showOptions: true,
-		})
-	}
-
-	hideOptions(){
-		this.setState({
-			showOptions: false,
-		})
-	}
-
-	render(){
-		let options;
-		if(this.state.showOptions){
-			options = this.props.options.map((data, index) =>
-				<button 
-					onClick={() => this.props.clickEvent(index)}
-					style={data === this.props.selected ? {fontWeight: 600}: null}
-					key={index}
-				>{data.name}</button>
-			);
-		}
-		return(
-			<div className='option' onMouseEnter={() => this.showOptions()} onMouseLeave={() => this.hideOptions()}>
-				<button >{this.props.text} {this.props.icon}</button>
-				<FadeInOut condition={this.state.showOptions}>
-					<div className='perif'>
-						{options}
-					</div>
-				</FadeInOut>
-			</div>
-		);
-	}
+			<FadeInOutHandleState condition={showDialog}>
+				<MenuDropDown hideDropDown={() => setShowDialog(false)}>
+					<DropDownMain>
+						{props.isCurrentUserViewing ?
+							<button onClick={() => setShowNewSemForm(true)}> 
+								<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
+							</button>
+						: null}
+						{semesters && semesters.length>0 ?
+							<React.Fragment>
+								{props.isCurrentUserViewing ?
+									<React.Fragment>
+										<button onClick={() => this.props.editCurrSem()}> 
+											<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
+										</button>
+										<button onClick={() => this.props.deleteCurrSem()}> 
+											<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
+										</button>
+									</React.Fragment>
+								:null}
+								<Options 
+									text={'Current Semester'} 
+									icon={<i class="fas fa-caret-right"></i>} 
+									options={semesters}
+									selected={currSem}
+									clickEvent={(i) => setCurrSemesterID(semesters[i]._id)}
+								/>
+							</React.Fragment>
+						: null}
+					</DropDownMain>
+				</MenuDropDown>
+			</FadeInOutHandleState>
+		</div>
+	);
 }
 
 
@@ -220,7 +126,13 @@ class ClassCon extends React.Component{
 
 		this.setState({
 			showAssignment: !showAssCopy,
+			showLinkSelector: false,
+			linkAddedSuccess: false
 		})
+	}
+
+	addNewLink(data){
+		console.log(data);
 	}
 
 
@@ -245,12 +157,22 @@ class ClassCon extends React.Component{
 		if(connectedTo){
 			linkBtn = <button onClick={() => this.props.removeLink()} className='link orange-bc white-c' >UnLink</button>
 		}else{
-			linkBtn = <button onClick={() => this.props.addLink()} className='link blue-bc'>Link</button>
+			linkBtn = <button onClick={() => this.setState({showLinkSelector: true})} className='link blue-bc'>Link</button>
 		}
 
 		const dropDownDis = this.state.showAssignment ? <i className="fas fa-chevron-up"></i> : <i className="fas fa-chevron-down"></i>;
 		return(
 			<div className='class-container'>
+				<FadeInOutHandleState condition={this.state.showLinkSelector}>
+					<LinkSelector
+						otherUserID={this.props.otherUserID}
+						linkClass={this.props.data}
+						currentUser={this.props.currentUser}
+						addNewLink={(data) => this.addNewLink(data)}
+						success={this.state.linkAddedSuccess}
+						hideForm={() => this.setState({showLinkSelector: false})}
+					/>
+				</FadeInOutHandleState>
 				{this.props.isCurrentUserViewing ? null :
 					<React.Fragment>
 					{linkBtn}
@@ -266,7 +188,7 @@ class ClassCon extends React.Component{
 				</button>
 				<div style={{position: 'relative'}}>
 					<FadeDownUpHandleState condition={this.state.showAssignment}>
-						<AssignContainer assignments={this.props.data.assignments}/>
+						<AssignContainer classID={this.props.data._id} classReq={this.props.classReq}/>
 					</FadeDownUpHandleState>
 				</div>
 			</div>
@@ -275,7 +197,16 @@ class ClassCon extends React.Component{
 }
 
 function AssignContainer(props){
-	const upComAssign = props.assignments.map((data, index) =>
+	const [assignments, setAssignments] = useState(null);
+
+	useEffect(() => {
+		const getAssignments = async () => {
+			setAssignments(await props.classReq.getAssignments(props.classID));
+		}
+		getAssignments();
+	}, [])
+
+	const upComAssign = assignments ? assignments.map((data, index) =>
 		data.completed ? null : 
 			<Assign
 				name={data.name}
@@ -283,9 +214,9 @@ function AssignContainer(props){
 				description={data.description}
 				style={{background: findColor(data.dueDate)}}
 			/>
-	);
+	) : null;
 
-	const compAssign = props.assignments.map((data, index) =>
+	const compAssign = assignments ? assignments.map((data, index) =>
 		data.completed ? 
 			<Assign
 				name={data.name}
@@ -295,16 +226,16 @@ function AssignContainer(props){
 				style={{background: 'rgb(211, 227, 246)'}}
 			/>
 		: null
-	);
+	): null;
 
 	return(
 		<div className='assign-container'>
 			<h5>Upcomming</h5>
 			<hr/>
-			{upComAssign}
+			{assignments ? upComAssign : <Loader/>}
 			<h5 style={{marginTop: 10}}>Completed</h5>
 			<hr/>
-			{compAssign}
+			{assignments ? compAssign : <Loader/>}
 		</div>
 	);
 }
@@ -321,23 +252,19 @@ function Assign(props){
 	);
 }
 
+function findSem(allSems, selectedID){
+	for(let i =0; i<allSems.length; i++){
+		if(allSems[i]._id === selectedID){
+			return allSems[i];
+		}
+	}
+}
 
 function findColor(date){
 	const today = moment();
 	const dueDate = moment(date);
 	const dayDiff = today.diff(dueDate, 'days');
 
-	// if(today.getFullYear() === dueDate.getFullYear()){
-	// 	if(today.getMonth() === dueDate.getMonth()){
-	// 		if(today.getDate()-dueDate.getDate() === 0){
-	// 			return 'rgb(255, 206, 206)'; //red
-	// 		}else if(today.getDate()-dueDate.getDate() < 7){
-	// 			return 'rgb(249, 231, 205)'; //orange
-	// 		}
-	// 	}
-	// }
-
-	console.log(dayDiff);
 	if(dayDiff === 0){
 		return 'rgb(255, 206, 206)'; //red
 	}else if(dayDiff <7){
