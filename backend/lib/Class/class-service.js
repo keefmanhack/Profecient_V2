@@ -21,6 +21,9 @@ const toggleConnectionTo = ClassModel => async (myClassID, otherUserID, otherUse
 		throw new Error("Missing connection to data");
 	}
 	const foundClass = await ClassModel.findById(myClassID);
+
+	if(!foundClass) return;
+
 	for(let i =0; i< foundClass.connectionsTo.length; i++){
 		const connection = foundClass.connectionsTo[i];
 		if(connection.user == otherUserID && connection.class_data == otherUserClassID){
@@ -33,20 +36,20 @@ const toggleConnectionTo = ClassModel => async (myClassID, otherUserID, otherUse
 	await foundClass.save();
 }
 
-const toggleConnectionFrom = ClassModel => async (myClassID, otherUserID, otherUserClassID) =>{
-	if(!myClassID || !otherUserID || !otherUserClassID){
+const toggleConnectionFrom = ClassModel => async (otherUserClassID, currUserID, myClassID) =>{
+	if(!myClassID || !currUserID || !otherUserClassID){
 		throw new Error("Missing connection to data");
 	}
-	const foundClass = await ClassModel.findById(myClassID);
+	const foundClass = await ClassModel.findById(otherUserClassID);
 	for(let i =0; i< foundClass.connectionsFrom.length; i++){
 		const connection = foundClass.connectionsFrom[i];
-		if(connection.user == otherUserID && connection.class_data == otherUserClassID){
+		if(connection.user + "" === currUserID + "" && connection.class_data + "" === myClassID + ""){
 			foundClass.connectionsFrom.splice(i, i+1);
 			await foundClass.save();
 			return;
 		}
 	}
-	foundClass.connectionsFrom.push({user: otherUserID, class_data: otherUserClassID});
+	foundClass.connectionsFrom.push({user: currUserID, class_data: myClassID});
 	await foundClass.save();
 }
 
@@ -131,6 +134,7 @@ module.exports = ClassModel => {
 	return {
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
 		toggleConnectionTo: toggleConnectionTo(ClassModel),
+		toggleConnectionFrom: toggleConnectionFrom(ClassModel),
 		create: create(ClassModel),
 		updateClasses: updateClasses(ClassModel),
 		deleteMultiple: deleteMultiple(ClassModel),

@@ -7,6 +7,9 @@ import moment from 'moment';
 import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 import {findTopPosition, dateObjToStdTime, convertToStdDate} from './Agenda_Helper';
 import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
+import Loader from '../../Shared Resources/Effects/loader';
+
+import AgendaRequests from '../../APIRequests/Agenda';
 
 import './newAgItem.css';
 import './agenda.css';
@@ -14,6 +17,14 @@ import './agenda.css';
 class Agenda extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.agendaReq = new AgendaRequests(this.props.currentUserID);
+
+		this.state ={
+			items: null,
+			showNewForm: false,
+			selectedItemIndex: -1,
+		}
 		
 		this.times = ['12:00AM', '12:30AM', '1:00AM', '1:30AM', '2:00AM', '2:30AM', '3:00AM', '3:30AM', '4:00AM', '4:30AM', '5:00AM', '5:30AM', '6:00AM', '6:30AM', '7:00AM', '7:30AM', '8:00AM', '8:30AM', '9:00AM', '9:30AM', '10:00AM', '10:30AM', '11:00AM', '11:30AM', '12:00PM', '12:30PM', '1:00PM', '1:30PM', '2:00PM', '2:30PM', '3:00PM', '3:30PM', '4:00PM', '4:30PM', '5:00PM', '5:30PM', '6:00PM', '6:30PM', '7:00PM', '7:30PM', '8:00PM', '8:30PM', '9:00PM', '9:30PM', '10:00PM', '10:30PM', '11:00PM', '11:30PM' ]
 		
@@ -25,6 +36,19 @@ class Agenda extends React.Component{
 		const currTime = dateObjToStdTime(date);
 
 		this.scrollBox.current.scrollTop=findTopPosition(currTime);
+		this.getCurrentItems();
+	}
+
+	async getCurrentItems(){
+		this.setState({items: await this.agendaReq.getTodaysEvents()});
+	}
+
+	reset(){
+		this.getCurrentItems();
+		this.setState({
+			showNewForm: false,
+			selectedItemIndex: -1
+		})
 	}
 	
 	render(){
@@ -32,7 +56,7 @@ class Agenda extends React.Component{
 			<TimeHR time={time} spacing={index*25} key={index}/>
 		);
 
-		const AgendaItems = this.props.agendaItems.map((data, index) => {
+		const AgendaItems = this.state.items ? this.state.items.map((data, index) => {
 			const startTime = moment(data.time.start);
 			const endTime = moment(data.time.end);
 
@@ -45,20 +69,27 @@ class Agenda extends React.Component{
 				name={data.name} 
 				location={data.location}
 				zIndex={index}
-				itemClicked={() => this.props.handleAgendaItemClick(index)}
+				itemClicked={() => this.setState({selectedItemIndex: index})}
 			/>
-		});
+		}) : null;
 
 		//NEED TO ADD UPCOMMING NEXT PART TO SHOW DATE-TIME INFO
 		return(
 			<div className='agenda sans-font' style={{position: 'relative'}}>
+				<FadeInOutHandleState condition={this.state.showNewForm || this.state.selectedItemIndex>=0}>
+					<NewAgendaItem 
+						updateItem={this.state.selectedItemIndex>=0 ? this.state.items[this.state.selectedItemIndex] : null} 
+						agendaReq={this.agendaReq} 
+						hideNewAgForm={() => {this.reset()}}
+					/>
+				</FadeInOutHandleState>
 				<h1 className='gray-c'>Agenda</h1>
 				<h4 className='gray-c'>{convertToStdDate(new Date())}</h4>
 				<button className='see-more gray-c'>See More</button>
-				<button onClick={() => this.props.showNewAgForm()} className='add green-bc'>Add</button>
+				<button onClick={() => this.setState({showNewForm: true})} className='add green-bc'>Add</button>
 				<div ref={this.scrollBox} className='foreground'>
 					{timeHRs}
-					{AgendaItems}
+					{this.state.items ? AgendaItems : <Loader/>}
 				</div>
 			</div>
 		);
@@ -139,7 +170,7 @@ class NewAgendaItem extends React.Component{
 
 
 	// Server interaction
-	submitForm(){
+	async submitForm(){
 		const error = this.checkErrors();
 
 		if(!error){
@@ -150,12 +181,12 @@ class NewAgendaItem extends React.Component{
 				time: this.state.time,
 				date: this.state.date,
 			}
-
-			this.props.sendData(data);
+			await this.props.agendaReq.postNewItem(data);
+			this.setState({success: true})
 		}
 	}
 
-	update(){
+	async update(){
 		if(!this.checkErrors()){
 			const data = {
 				name: this.name.current.value,
@@ -164,8 +195,14 @@ class NewAgendaItem extends React.Component{
 				time: this.state.time,
 				date: this.state.date,
 			}
-			this.props.update(data);
+			await this.props.agendaReq.updateItem(this.props.updateItem._id, data);
+			this.setState({success: true})
 		}
+	}
+
+	async delete(){
+		await this.props.agendaReq.deleteItem(this.props.updateItem._id);
+		this.setState({success: true});
 	}
 
 	checkErrors(){
@@ -232,68 +269,72 @@ class NewAgendaItem extends React.Component{
     }
 
     render(){
+    	console.log(this.props.updateItem);
     	return(
-    		<div ref={this.wrapperRef} className='new-ag-it-cont sans-font form-bc new-form'>
-    			<FadeInOutHandleState condition={this.props.success}>
-	 				<SuccessCheck onCompleted={() =>this.props.hideNewAgForm()}/>
-	 			</FadeInOutHandleState>
-    			<button onClick={() => this.props.hideNewAgForm()} className='cancel'>Cancel</button>
-    			<input
-    				style={this.state.errors.name ? {border: '1px solid red'} : null}
-    				ref={this.name} 
-    				type="text" 
-    				className='name' 
-    				placeholder='Event Name'
-    			/>
-    			<input ref={this.location} type="text" placeholder='Location'/>
-    			<div className='row'>
-    				<div className='col-lg-6'>
-    					<div style={this.state.errors.time.start ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
-	    					<label  htmlFor="">Start</label>
-	    					<TimePicker
-						          onChange={(time) => this.timeChanged('start', moment(time, 'hh:mm'))}
-						          clockIcon={null}
-						          disableClock={true}
-						          format={'hh:mm a'}
-						          clearIcon={null}
-						          value={new Date(this.state.time.start)}
-						    />
-						</div>
-						<div style={this.state.errors.time.end ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
-	    					<label htmlFor="">End</label>
-	    					<TimePicker
-						          onChange={(time) => this.timeChanged('end', moment(time, 'hh:mm'))}
-						          clockIcon={null}
-						          disableClock={true}
-						          format={'hh:mm a'}
-						          clearIcon={null}
-						          value={new Date(this.state.time.end)}
-						    />
-						</div>
-    				</div>
-    				<div className='col-lg-6'>
-	    				<DatePicker
-				        	selected={this.state.date}
-				        	onChange={(date) => this.dateChanged(date)}
-				      	/>
-    					<textarea ref={this.description} placeholder='Description'></textarea>
-    				</div>
-    			</div>
-    			{this.props.updateItem ===null ? 
-    				<button onClick={() => this.submitForm()} className='blue-bc submit'>Submit</button>
-    			:
-    				<div className='row'>
-    					<div className='col-lg-6'>
-    						<button onClick={() => this.props.delete()} className='red-bc delete'>Delete</button>
-    					</div>
-    					<div className='col-lg-6'>
-    						<button onClick={() => this.update()} className='orange-bc update'>Update</button>
-    					</div>
-    				</div>
+    		<React.Fragment>
+	    		<div className='background-shader'/>
+	    		<div ref={this.wrapperRef} className='new-ag-it-cont sans-font form-bc new-form'>
+	    			
+	    			<FadeInOutHandleState condition={this.state.success}>
+		 				<SuccessCheck onCompleted={() =>this.props.hideNewAgForm()}/>
+		 			</FadeInOutHandleState>
+	    			<button onClick={() => this.props.hideNewAgForm()} className='cancel'>Cancel</button>
+	    			<input
+	    				style={this.state.errors.name ? {border: '1px solid red'} : null}
+	    				ref={this.name} 
+	    				type="text" 
+	    				className='name' 
+	    				placeholder='Event Name'
+	    			/>
+	    			<input ref={this.location} type="text" placeholder='Location'/>
+	    			<div className='row'>
+	    				<div className='col-lg-6'>
+	    					<div style={this.state.errors.time.start ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
+		    					<label  htmlFor="">Start</label>
+		    					<TimePicker
+							          onChange={(time) => this.timeChanged('start', moment(time, 'hh:mm'))}
+							          clockIcon={null}
+							          disableClock={true}
+							          format={'hh:mm a'}
+							          clearIcon={null}
+							          value={new Date(this.state.time.start)}
+							    />
+							</div>
+							<div style={this.state.errors.time.end ? {border: '2px solid red', borderRadius: '5px', transition: '.3s'} : null} >
+		    					<label htmlFor="">End</label>
+		    					<TimePicker
+							          onChange={(time) => this.timeChanged('end', moment(time, 'hh:mm'))}
+							          clockIcon={null}
+							          disableClock={true}
+							          format={'hh:mm a'}
+							          clearIcon={null}
+							          value={new Date(this.state.time.end)}
+							    />
+							</div>
+	    				</div>
+	    				<div className='col-lg-6'>
+		    				<DatePicker
+					        	selected={this.state.date}
+					        	onChange={(date) => this.dateChanged(date)}
+					      	/>
+	    					<textarea ref={this.description} placeholder='Description'></textarea>
+	    				</div>
+	    			</div>
+	    			{this.props.updateItem ===null ? 
+	    				<button onClick={() => this.submitForm()} className='blue-bc submit'>Submit</button>
+	    			:
+	    				<div className='row'>
+	    					<div className='col-lg-6'>
+	    						<button onClick={() => this.delete()} className='red-bc delete'>Delete</button>
+	    					</div>
+	    					<div className='col-lg-6'>
+	    						<button onClick={() => this.update()} className='orange-bc update'>Update</button>
+	    					</div>
+	    				</div>
 
-    			}
-    			
-    		</div>
+	    			}	
+	    		</div>
+	    	</React.Fragment>
     	);
     }
 }

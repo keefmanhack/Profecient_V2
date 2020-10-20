@@ -2,10 +2,11 @@
 	width: 400px;
     padding: 10px;
     padding-top: 30px;
-    position: absolute;
+    position: fixed;
     border-radius: 5px;
-    top: 0;
-    left: 31%;
+    top: 78px;
+    left: 35%;
+    z-index: 2;
 }
 
 .new-ag-it-cont label{

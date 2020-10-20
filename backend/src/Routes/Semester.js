@@ -12,9 +12,10 @@ const NotificationHandler = require('../../lib/CompositeServices/NotificationHan
 
 router.post('/users/:id/class/connection', async (req, res) =>{
 	try{
+
 		const currUser = await UserService.findById(req.params.id);
 		const otherUser = await UserService.findById(req.body.otherUser);
-		await ClassService.toggleConnectionTo(req.body.currUserClass, otheruser._id, req.body.otherUserClass);
+		await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
 		await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
 		res.send();
 	}catch(err){
@@ -26,8 +27,9 @@ router.post('/users/:id/class/connection/delete', async (req, res) => {
 	try{
 		const currUser = await UserService.findById(req.params.id);
 		const otherUser = await UserService.findById(req.body.otherUser);
-		await ClassService.toggleConnectionTo(req.body.currUserClass, otheruser._id, req.body.otherUserClass);
+		await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
 		await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
+		res.send();
 	}catch(err){
 		console.log(err);
 	}
@@ -124,7 +126,7 @@ router.delete('/users/:id/semesters/:sem_id', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
 		const sem = await SemesterService.findById(req.params.sem_id);
-		const foundClasses = await ClassService.findMutliple(sem.classes);
+		const foundClasses = await ClassService.findMultiple(sem.classes);
 		await AssignmentService.deleteMultiple(foundClasses.assignments);
 		await ClassService.deleteMultiple(sem.classes);
 		await SemesterService.deleteOne(req.params.sem_id);

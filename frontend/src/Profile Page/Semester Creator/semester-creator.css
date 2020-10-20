@@ -4,8 +4,9 @@
     background: -webkit-linear-gradient(144deg, rgba(255,255,255,1) 0%, rgba(79,154,241,1) 100%);
     background: linear-gradient(144deg, rgba(255,255,255,1) 0%, rgba(79,154,241,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#4f9af1",GradientType=1);
-    position: absolute;
-    top: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 98.5%;
     min-height: 625px;
     padding: 10px;
@@ -13,6 +14,7 @@
     margin-top: 50px;
     margin-left: 10px;
     overflow: hidden;
+    z-index: 2;
 }
 
 .react-time-picker .react-time-picker__wrapper {
@@ -30,7 +32,7 @@
 .semester-creator-container button.create-semester{
     position: absolute;
     right: 17px;
-    top: 35px;
+    top: 30px;
     border: none;
     background: lightgreen;
     border-radius: 5px;

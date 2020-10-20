@@ -5,6 +5,7 @@ import LinkSelector from '../../Shared Resources/Link Selector/LinkSelector';
 import {FadeDownUpHandleState, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 import MenuDropDown, {DropDownMain, Options} from '../../Shared Resources/MenuDropDown';
 import Loader from '../../Shared Resources/Effects/loader';
+import SemesterCreator from '../Semester Creator/SemesterCreator';
 
 import SemesterRequests from '../../APIRequests/Semester';
 import ClassRequests from '../../APIRequests/Class';
@@ -18,7 +19,6 @@ function ClassView(props){
 	const [semesters, setSemesters] = useState(null);
 	const [classes, setClasses] = useState(null);
 	const [currSemesterID, setCurrSemesterID] = useState(null);
-	// const [linkID, setLinkID] = useState(null);
 	const [showDialog, setShowDialog] = useState(false);
 	const [showNewSemForm, setShowNewSemForm] = useState(false);
 
@@ -26,17 +26,18 @@ function ClassView(props){
 		const getSemesters = async () => {
 			const data = await semReq.getAllSems();	
 			setSemesters(data);
-			setCurrSemesterID(data[data.length-1]._id)
+			if(data.length>0) setCurrSemesterID(data[data.length-1]._id);
 		}
 		getSemesters();
-	}, [])
+	}, [showDialog, showNewSemForm])
 
 	useEffect(() => {
-		const getClasses = async () => {
-			setClasses(await semReq.getClasses(currSemesterID));
-		}
 		if(currSemesterID!==null) getClasses();
 	}, [currSemesterID])
+
+	const getClasses = async () => {
+		setClasses(await semReq.getClasses(currSemesterID));
+	}
 
 	const currSem = currSemesterID ? findSem(semesters, currSemesterID) : null;
 	const classContainers =  classes ? classes.map((data, index) =>
@@ -47,6 +48,7 @@ function ClassView(props){
 			currentUser={props.currentUser}
 			otherUserID={props.otherUserID}
 			classReq={classReq}
+			reloadClasses={() => getClasses()}
 		/> 
 	): null
 
@@ -71,25 +73,25 @@ function ClassView(props){
 			<h5 className='muted-c'>{classes ? classes.length + ' Classes' : null}</h5>
 			<hr/>
 			<div style={{minHeight: 150, maxHeight: 350, overflow: 'scroll', position: 'relative', borderRadius: 5}}>
-				{classes ? classContainers: <Loader/>}
+				{currSemesterID ? (classes ? classContainers: <Loader/>) : null}
 			</div>
 			<FadeInOutHandleState condition={showDialog}>
 				<MenuDropDown hideDropDown={() => setShowDialog(false)}>
 					<DropDownMain>
 						{props.isCurrentUserViewing ?
 							<button onClick={() => setShowNewSemForm(true)}> 
-								<i style={{color: 'lightgreen'}} class="fas fa-plus-circle"></i> New Semester
+								<i style={{color: 'lightgreen'}} className="fas fa-plus-circle"></i> New Semester
 							</button>
 						: null}
 						{semesters && semesters.length>0 ?
 							<React.Fragment>
 								{props.isCurrentUserViewing ?
 									<React.Fragment>
-										<button onClick={() => this.props.editCurrSem()}> 
-											<i style={{color: 'orange'}} class="far fa-edit"></i> Edit Current Semester
+										<button onClick={() => props.editCurrSem()}> 
+											<i style={{color: 'orange'}} className="far fa-edit"></i> Edit Current Semester
 										</button>
-										<button onClick={() => this.props.deleteCurrSem()}> 
-											<i style={{color: 'red'}} class="fas fa-trash"></i> Delete Current Semester
+										<button onClick={() => {semReq.remove(currSemesterID); setShowDialog(false);}}> 
+											<i style={{color: 'red'}} className="fas fa-trash"></i> Delete Current Semester
 										</button>
 									</React.Fragment>
 								:null}
@@ -104,6 +106,9 @@ function ClassView(props){
 						: null}
 					</DropDownMain>
 				</MenuDropDown>
+			</FadeInOutHandleState>
+			<FadeInOutHandleState condition={showNewSemForm}>
+				<SemesterCreator updateData={null} hideNewSemForm={() => setShowNewSemForm(false)} currentUser={props.currentUser}/>
 			</FadeInOutHandleState>
 		</div>
 	);
@@ -127,12 +132,20 @@ class ClassCon extends React.Component{
 		this.setState({
 			showAssignment: !showAssCopy,
 			showLinkSelector: false,
-			linkAddedSuccess: false
+			linkAddedSuccess: false,
+			reloading: false,
 		})
 	}
 
 	addNewLink(data){
 		console.log(data);
+	}
+
+	async removeLink(classID){
+		this.setState({reloading: true});
+		await this.props.classReq.removeAConnection(this.props.otherUserID, classID, this.props.data._id, this.props.currentUser._id);
+		this.props.reloadClasses();
+		this.setState({reloading: false})
 	}
 
 
@@ -144,18 +157,18 @@ class ClassCon extends React.Component{
 		const startTime = moment(this.props.data.time.start).format('h:mm a');
 		const endTime = moment(this.props.data.time.end).format('h:mm a');
 
-		let connectedTo = false;
+		let connectedToClassID = null;
 
 		this.props.data.connectionsFrom.forEach(function(connection){
 			if(connection.user === this.props.currentUser._id){
-				connectedTo = true;
+				connectedToClassID = connection.class_data;
 			}
 		}.bind(this))
 
 		let linkBtn;
 
-		if(connectedTo){
-			linkBtn = <button onClick={() => this.props.removeLink()} className='link orange-bc white-c' >UnLink</button>
+		if(connectedToClassID){
+			linkBtn = <button onClick={() => this.removeLink(connectedToClassID)} className='link orange-bc white-c' >UnLink</button>
 		}else{
 			linkBtn = <button onClick={() => this.setState({showLinkSelector: true})} className='link blue-bc'>Link</button>
 		}
@@ -163,6 +176,7 @@ class ClassCon extends React.Component{
 		const dropDownDis = this.state.showAssignment ? <i className="fas fa-chevron-up"></i> : <i className="fas fa-chevron-down"></i>;
 		return(
 			<div className='class-container'>
+				{this.state.reloading ? <Loader/> : null}
 				<FadeInOutHandleState condition={this.state.showLinkSelector}>
 					<LinkSelector
 						otherUserID={this.props.otherUserID}
@@ -170,7 +184,7 @@ class ClassCon extends React.Component{
 						currentUser={this.props.currentUser}
 						addNewLink={(data) => this.addNewLink(data)}
 						success={this.state.linkAddedSuccess}
-						hideForm={() => this.setState({showLinkSelector: false})}
+						hideForm={() => {this.setState({showLinkSelector: false}); this.props.reloadClasses()}}
 					/>
 				</FadeInOutHandleState>
 				{this.props.isCurrentUserViewing ? null :
@@ -213,6 +227,7 @@ function AssignContainer(props){
 				dueDate={data.dueDate}
 				description={data.description}
 				style={{background: findColor(data.dueDate)}}
+				key={index}
 			/>
 	) : null;
 

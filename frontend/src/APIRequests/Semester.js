@@ -34,5 +34,35 @@ class SemesterRequests{
 			console.log(err);
 		}
 	}
+
+	remove = async id => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/semesters/' +id;
+			const res = await axios.delete(endPoint);
+			return res.data;
+		}catch(err){	
+			console.log(err);
+		}
+	}
+
+	create = async data => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/semester';
+			const res = await axios.post(endPoint, {semesterData: data});
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	update = async data => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/semester';
+			const res = await axios.put(endPoint, {semesterData: data});
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
 }
 export default SemesterRequests;

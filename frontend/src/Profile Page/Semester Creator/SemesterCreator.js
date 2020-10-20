@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import axios from 'axios';
 
 import {BackInOutHandleState, FadeInOutHandleState, FadeRightHandleState} from '../../Shared Resources/Effects/CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
@@ -8,12 +7,18 @@ import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
 import ClassEditor from './ClassEditor/ClassEditor';
 import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 
+import SemesterRequests from '../../APIRequests/Semester';
+import ClassRequests from '../../APIRequests/Class';
+
 import './semester-creator.css';
 
 
 class SemesterCreator extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.semReq = new SemesterRequests(this.props.currentUser._id);
+		this.classReq = new ClassRequests(this.props.currentUser._id);
 
 		this.state ={
 			semData: {
@@ -55,32 +60,14 @@ class SemesterCreator extends React.Component{
 		}
 	}
 
-	createSemester(){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semester';
-
-		axios.post(endPoint, {semesterData: this.state.semData})
-		.then((res) =>{
-			this.setState({
-				successful: true,
-			})
-		})
-		.catch((err) => {
-			console.log(err);
-		})
+	async createSemester(){
+		await this.semReq.create(this.state.semData);
+		this.setState({successful: true});
 	}
 
-	updateSemester(){
-		const endPoint = `http://localhost:8080/users/` + this.props.currentUser._id + '/semester';
-
-		axios.put(endPoint, {semesterData: this.state.semData})
-		.then((res) =>{
-			this.setState({
-				successful: true,
-			})
-		})
-		.catch((err) => {
-			console.log(err);
-		})
+	async updateSemester(){
+		await this.semReq.update(this.state.semData);
+		this.setState({successful: true});
 	}
 
 	createDefaultClass(){
@@ -94,17 +81,9 @@ class SemesterCreator extends React.Component{
 		return classData_copy;
 	}
 
-	// Server Requests
-	getSuggestedLinks(data){
-		const endPoint = `http://localhost:8080/users/classes`;
-		axios.post(endPoint, {classData: data, currentLinks: this.state.currentClass.links})
-	    .then(res => {
-			this.setState({
-				suggestedUserLinks: res.data,
-			})
-		})
+	async getSuggestedLinks(data){
+		this.setState({suggestedUserLinks: await this.classReq.findLinks(data, this.state.currentClass.links)});
 	}
-	//End of Server Requests
 
 	toggleSelected(i){
 		let currentClass_copy = this.state.currentClass;
@@ -242,71 +221,74 @@ class SemesterCreator extends React.Component{
 			/>
 		);
 		return(
-			<div className='semester-creator-container'>
-				<FadeInOutHandleState condition={this.state.successful}>
-	 				<SuccessCheck onCompleted={() =>this.props.hideNewSemForm()}/>
-	 			</FadeInOutHandleState>
+			<React.Fragment>
+				<div className='background-shader'/>
+				<div className='semester-creator-container'>
+					<FadeInOutHandleState condition={this.state.successful}>
+		 				<SuccessCheck onCompleted={() =>this.props.hideNewSemForm()}/>
+		 			</FadeInOutHandleState>
 
 
-				<button onClick={() => this.props.hideNewSemForm()} id='exit'>Exit</button>
-				<FadeRightHandleState condition={this.state.semData.classes.length > 0}>
-					{this.props.updateData === null ?
-						<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
-					:
-						<button onClick={() => this.updateSemester()} className='update-semester'>Edit Semester</button>	
-					}
-				</FadeRightHandleState>
+					<button onClick={() => this.props.hideNewSemForm()} id='exit'>Exit</button>
+					<FadeRightHandleState condition={this.state.semData.classes.length > 0}>
+						{this.props.updateData === null ?
+							<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
+						:
+							<button onClick={() => this.updateSemester()} className='update-semester'>Edit Semester</button>	
+						}
+					</FadeRightHandleState>
 
-				<BackInOutHandleState condition={this.state.semData.name === null} >
-					<NameSemester semName={(key, text) => this.semName(key, text)}/>
-				</BackInOutHandleState>
-				<FadeInOutHandleState condition={this.state.semData.name !== null}>
-					<div>
-						<h1>{this.state.semData.name}</h1>
-						<hr/>
-						<div className='row'>
-							<div className='col-lg-6'>
-								<FadeInOutHandleState condition={this.state.semData.classes.length>0}>
-									<div className='class-item-container'>
-										{classItems}
-									</div>
-								</FadeInOutHandleState>
+					<BackInOutHandleState condition={this.state.semData.name === null} >
+						<NameSemester semName={(key, text) => this.semName(key, text)}/>
+					</BackInOutHandleState>
+					<FadeInOutHandleState condition={this.state.semData.name !== null}>
+						<div>
+							<h1>{this.state.semData.name}</h1>
+							<hr/>
+							<div className='row'>
+								<div className='col-lg-6'>
+									<FadeInOutHandleState condition={this.state.semData.classes.length>0}>
+										<div className='class-item-container'>
+											{classItems}
+										</div>
+									</FadeInOutHandleState>
 
-								<div className='row'>
-									<div className='col-lg-6'>
-										<ClassEditor
-											updateCurrent={(key, text) => this.updateCurrent(key, text)}
-											updateCurrent_2Key={(key1, key2, text) => this.updateCurrent_2Key(key1, key2, text)}
-											currentClass={this.state.currentClass}
-											addClass={() => this.addClass()}
-											editMode={this.state.editMode}
-											toggleSelected={(i) => this.toggleSelected(i)}
-											cancelUpdate={() => this.cancelUpdate()}
-											updateClass={() => this.updateClass()}
-										/>
-									</div>
-									<div className='col-lg-6'>
-										<SuggestedLinksContainer 
-											suggestedUserLinks={this.state.suggestedUserLinks}
-											addLink={(i) => this.addLink(i)}
-											removeLink={(i) => this.removeLink(i)}
-											currentLinks={this.state.currentClass.links}
-										/>
+									<div className='row'>
+										<div className='col-lg-6'>
+											<ClassEditor
+												updateCurrent={(key, text) => this.updateCurrent(key, text)}
+												updateCurrent_2Key={(key1, key2, text) => this.updateCurrent_2Key(key1, key2, text)}
+												currentClass={this.state.currentClass}
+												addClass={() => this.addClass()}
+												editMode={this.state.editMode}
+												toggleSelected={(i) => this.toggleSelected(i)}
+												cancelUpdate={() => this.cancelUpdate()}
+												updateClass={() => this.updateClass()}
+											/>
+										</div>
+										<div className='col-lg-6'>
+											<SuggestedLinksContainer 
+												suggestedUserLinks={this.state.suggestedUserLinks}
+												addLink={(i) => this.addLink(i)}
+												removeLink={(i) => this.removeLink(i)}
+												currentLinks={this.state.currentClass.links}
+											/>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div className='col-lg-6'>
-								{this.state.semData.classes.length > 0 ?
-									<SevenDayAgenda 
-										evItClick={(i) => this.classItemSelected(i)} 
-										data={this.state.semData.classes}
-										selectedIndex={this.state.selectedIndex}
-									/> : null}
+								<div className='col-lg-6'>
+									{this.state.semData.classes.length > 0 ?
+										<SevenDayAgenda 
+											evItClick={(i) => this.classItemSelected(i)} 
+											data={this.state.semData.classes}
+											selectedIndex={this.state.selectedIndex}
+										/> : null}
+								</div>
 							</div>
 						</div>
-					</div>
-				</FadeInOutHandleState>
-			</div>
+					</FadeInOutHandleState>
+				</div>
+			</React.Fragment>
 		);
 	}
 }
@@ -358,7 +340,7 @@ class NameSemester extends React.Component{
 		return(
 			<div className='name-semester'>
 				<h1>Let's Get Started</h1>
-				<h2>Create your first</h2>
+				<h2>Create a</h2>
 				<h3>SEMESTER</h3>
 				<input 
 					ref={this.input} 

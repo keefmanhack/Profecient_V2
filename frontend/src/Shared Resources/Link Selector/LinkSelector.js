@@ -6,6 +6,7 @@ import {FadeRightHandleState, FadeInOutHandleState} from '../Effects/CustomTrans
 import {SuccessCheck} from '../Effects/lottie/LottieAnimations';
 
 import SemesterRequests from '../../APIRequests/Semester';
+import ClassRequests from '../../APIRequests/Class';
 
 import './LinkSelector.css';
 
@@ -14,6 +15,7 @@ class LinkSelector extends React.Component{
 		super(props);
 
 		this.semReq = new SemesterRequests(this.props.currentUser._id);
+		this.classReq = new ClassRequests(this.props.currentUser._id);
 
 		this.state={
 			currSemester: null,
@@ -30,25 +32,10 @@ class LinkSelector extends React.Component{
 		this.setState({currSemester: await this.semReq.getCurrSemWClasses()});
 	}
 
-	addNewLink(){
-		const data={
-			otherUser: this.props.otherUserID,
-			otherUserClass: this.props.linkClass._id,
-			currUserClass: this.state.currSemester.classes[this.state.selectedIndex]._id,
-		}
-
-		this.props.addNewLink(data);
+	async addNewLink(){
+		await this.classReq.addNewConnection(this.props.otherUserID, this.props.linkClass._id, this.state.currSemester.classes[this.state.selectedIndex]._id, this.props.currentUser._id);
+		this.setState({success: true});
 	}
-
-
-	/*
-	Data needed
-	-----------
-	-currentUser
-	-otherUser
-	-Data about class to be linked to
-	-currentUser current semester class list
-	*/
 
 	render(){
 		const classItems = this.state.currSemester ? this.state.currSemester.classes.map((data, index) => 
@@ -67,34 +54,37 @@ class LinkSelector extends React.Component{
 		const startTime = moment(linkClass.time.start).format('h:mm a');
 		const endTime = moment(linkClass.time.end).format('h:mm a');
 		return(
-			<div className='link-selector form-bc sans-font'>
-				<FadeInOutHandleState condition={this.props.success}>
-	 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>
-	 			</FadeInOutHandleState>
-				<button onClick={() => this.props.hideForm()} className='cancel red-c'>Cancel</button>
-				<FadeRightHandleState condition={this.state.selectedIndex>-1}>
-					<button onClick={() => this.addNewLink()} className='add blue-bc'>Add Link</button>
-				</FadeRightHandleState>
-				{this.state.currSemester ?
-					<React.Fragment>	
-						<h1 className='bold-text'>{this.state.currSemester.name}</h1>
-						<h5 className='light-text muted-c'>Add new link</h5>
-						<hr/>
-						<div className='gray-bc link-info'>
-							<h2>{linkClass.name}</h2>
-							<h3>{linkClass.instructor}</h3>
-							<h4>{linkClass.location}</h4>
-							<h4 className='indent light-text'>{daySpans}</h4>
-							<h4 className='indent light-text'>{startTime} - {endTime}</h4>
-						</div>
-						<div className='class-items white-bc'>
-							{classItems}
-						</div>
-					</React.Fragment>
-				:
-					<Loader/>
-				}
-			</div>
+			<React.Fragment>
+				<div className='background-shader'/>
+				<div className='link-selector form-bc sans-font'>
+					<FadeInOutHandleState condition={this.state.success}>
+		 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>
+		 			</FadeInOutHandleState>
+					<button onClick={() => this.props.hideForm()} className='cancel red-c'>Cancel</button>
+					<FadeRightHandleState condition={this.state.selectedIndex>-1}>
+						<button onClick={() => this.addNewLink()} className='add blue-bc'>Add Link</button>
+					</FadeRightHandleState>
+					{this.state.currSemester ?
+						<React.Fragment>	
+							<h1 className='bold-text'>{this.state.currSemester.name}</h1>
+							<h5 className='light-text muted-c'>Add new link</h5>
+							<hr/>
+							<div className='gray-bc link-info'>
+								<h2>{linkClass.name}</h2>
+								<h3>{linkClass.instructor}</h3>
+								<h4>{linkClass.location}</h4>
+								<h4 className='indent light-text'>{daySpans}</h4>
+								<h4 className='indent light-text'>{startTime} - {endTime}</h4>
+							</div>
+							<div className='class-items white-bc'>
+								{classItems}
+							</div>
+						</React.Fragment>
+					:
+						<Loader/>
+					}
+				</div>
+			</React.Fragment>
 		);
 	}
 }

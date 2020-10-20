@@ -1,5 +1,6 @@
 .link-selector{
-	position: absolute;
+	position: fixed;
+    z-index: 2;
     top: 75px;
     left: 33%;
     width: 400px;
@@ -11,7 +12,7 @@
 
 .link-selector button.add{
 	position: absolute;
-    top: 60px;
+    top: 25px;
     right: 10px;
 }
 
