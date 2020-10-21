@@ -11,7 +11,7 @@ router.get('/users/:id/friends/posts', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
 		const friendPosts = await PostService.findMutlipleByAuthor(user.friends);
-		res.send(friendPosts);
+		res.json(friendPosts);
 	}catch(err){
 		console.log(err);
 	}
@@ -23,6 +23,19 @@ router.get('/users/:id/posts', async (req, res) => {
 		const posts = await PostService.findMultiple(user.posts);
 		res.json(posts);
 	}catch(err){	
+		console.log(err);
+	}
+})
+
+router.delete('/users/:id/posts/:postID', async (req, res) => {
+	try{
+		const user = await UserService.findById(req.params.id);
+		PostService.deleteById(req.params.postID, async function(){
+			user.posts.pull(req.params.postID);
+			await user.save();
+			res.send();
+		});
+	}catch(err){
 		console.log(err);
 	}
 })
@@ -55,10 +68,10 @@ router.get('/posts/:id/comments', async (req, res) => {
 	}
 })
 
-router.post('/posts/:id/comments', async (req, res) =>{
+router.post('/users/:id/posts/:postID/comments', async (req, res) =>{
 	try{
 		const newComment = await CommentService.create(req.body);
-		const foundPost = await PostService.findById(req.params.id);
+		const foundPost = await PostService.findById(req.params.postID);
 		foundPost.comments.push(newComment);
 		await foundPost.save();
 		res.send();
@@ -67,17 +80,19 @@ router.post('/posts/:id/comments', async (req, res) =>{
 	}
 });
 
-router.post('/users/:id/posts', upload.array('images',6), async (req, res) => {
+router.post('/users/:id/posts', upload.array('images',6), (req, res) => {
 	try{
-		const post = await PostService.create(req.body.text, req.params.id, req.body.images)
-		const user = await UserService.findById(req.params.id);
-		user.posts.unshift(post);
-		await user.save();
-		res.send();
+		PostService.create(req.body.text, req.params.id, req.body.images, async (post) => {
+			const user = await UserService.findById(req.params.id);
+			user.posts.unshift(post);
+			await user.save();
+			res.send();
+		})
 	}catch(err){
 		console.log(err);
 	}
 });
+
 
 
 

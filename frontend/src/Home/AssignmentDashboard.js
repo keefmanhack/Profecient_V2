@@ -29,7 +29,7 @@ function AssignmentDashboard(props){
 		fetchData();
 
 		return () => {}
-	}, [shouldShowNewForm, editCount, editClassIndex, assReq]);
+	}, [shouldShowNewForm, editCount, editClassIndex]);
 
 	useEffect(() => {
 		async function fetchData(){
@@ -38,7 +38,7 @@ function AssignmentDashboard(props){
 		fetchData();
 
 		return () => {}
-	}, [shouldShowNewForm, editCount, editClassIndex, semReq]);
+	}, [shouldShowNewForm, editCount, editClassIndex]);
 
 
 	const assignments = upCommingAss ? upCommingAss.map((data, index) =>
@@ -50,7 +50,7 @@ function AssignmentDashboard(props){
 			deleteAssignment={() => {assReq.delete(data.parentClassID, data.ass._id); let ct = editCount;setEditCount(++ct)}}
 		/>
 	): null;
-	
+	// console.log(currSemester);
 	return(
 		<React.Fragment>
 			<div className='assignment-dashboard sans-font' style={props.style}>

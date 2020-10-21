@@ -79,8 +79,8 @@ class PostCreator extends React.Component{
 				sendingData: true,
 			});
 
-			const data = await this.postReq.newPost(this.textArea.current.innerText, this.state.images);
-			if(data){
+			const res = await this.postReq.newPost(this.textArea.current.innerText, this.state.images);
+			if(res){
 				this.setState({
 			    	sendingData: false,
 			    	images: null,

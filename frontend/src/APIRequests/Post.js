@@ -21,8 +21,10 @@ class PostRequests{
 			let data = new FormData();
 			//setup data before sending
 			data.append('text', text);
-			for(let i =0; i<images.length; i++){
-				data.append('images', images[i]);
+			if(images){
+				for(let i =0; i<images.length; i++){
+					data.append('images', images[i]);
+				}
 			}
 
 			const res = await axios.post(endPoint, data, {
@@ -32,9 +34,10 @@ class PostRequests{
 			    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
 			  }
 			});
-			return res.data;
+			return res;
 		}catch(err){
 			console.log(err);
+			return;
 		}
 	}
 	
@@ -85,6 +88,17 @@ class PostRequests{
 			return res.data;
 		}catch(err){
 			console.log(err);
+		}
+	}
+
+	remove = async id => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/posts/' +id;
+			const res = await axios.delete(endPoint); 
+			return true;
+		}catch(err){
+			console.log(err);
+			return false;
 		}
 	}
 

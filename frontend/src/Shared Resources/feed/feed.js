@@ -1,21 +1,28 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-import {convertToStdDate} from '../Home/Agenda/Agenda_Helper';
+import {convertToStdDate} from '../../Home/Agenda/Agenda_Helper';
+import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
+import MenuDropDown, {DropDownMain} from '../../Shared Resources/MenuDropDown';
+import {FailedSent, SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
+import Loader from '../../Shared Resources/Effects/loader';
 
-import PostRequests from '../APIRequests/Post';
+import './feed.css';
+
+import PostRequests from '../../APIRequests/Post';
 
 function Feed(props){
 	const postReq  = new PostRequests(props.currentUser._id);
 
-	const posts = props.feedData!==null ? props.feedData.map((data, index) =>
+	const posts = props.feedData.length>0 ? props.feedData.map((data, index) =>
 		<Post 
 			data={data}
 			currentUser={props.currentUser}
 			postReq={postReq}
 			key={index}
+			reloadPosts={() => props.reloadPosts()}
 		/>
-	) : <p>Currently No Posts</p>;
+	) : <p className='no-data'> <span role="img" aria-label="crying">😥</span> {props.noFeedDataMsg} <span role="img" aria-label="thumbs-up">👍</span></p>;
 
 	return(
 		<div className='feed white-c'>
@@ -31,12 +38,24 @@ class Post extends React.Component{
 		this.state={
 			likes: [],
 			comments: [],
+			showDialog: false,
+			showLoader: false,
+			actionSuccess: false,
+			actionSuccess: false,
 		}
 	}
 
 	componentDidMount(){
 		this.getLikes();
 		this.getComments();
+	}
+
+	async remove(){
+		this.setState({showLoader: true});
+		this.setState({showDialog: false});
+		const res = await this.props.postReq.remove(this.props.data._id);
+		this.setState({showLoader: false});
+		res ? this.setState({actionSuccess: true}) : this.setState({actionFailure: true});
 	}
 
 	async getLikes(){
@@ -68,15 +87,28 @@ class Post extends React.Component{
 		)
 
 		return(
-			<div className='post white-c sans-font'>
+			<div className='post white-c sans-font post-bc'>
+				<FadeInOutHandleState condition={this.state.actionSuccess}>
+					<SuccessCheck onCompleted={() => {this.props.reloadPosts(); this.setState({actionSuccess: false})}}/>
+				</FadeInOutHandleState>
+				<FadeInOutHandleState condition={this.state.actionFailure}>
+					<FailedSent onCompleted={() => {this.props.reloadPosts(); this.setState({actionFailure: false})}}/>
+				</FadeInOutHandleState>
+				{this.state.showLoader ? <Loader/> : null}
+				{this.props.data.author._id === this.props.currentUser._id ? <button onClick={() => this.setState({showDialog: true})} className='edit white-c'>...</button> : null}
 				<Link to={'/profile/' + this.props.data.author._id} id={this.props.data.author._id}>
 					<img className='profile-photo' alt='Not found' src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.data.author.profilePictureURL}/>
 					<h1 className='white-c'>{this.props.data.author.name}</h1>
 				</Link>
-				
-
-				{this.props.linkedClasses ? <h5>{this.props.linkedClasses}</h5> : null}
-				
+				<FadeInOutHandleState condition={this.state.showDialog}>
+					<MenuDropDown hideDropDown={() => this.setState({showDialog: false})}>
+						<DropDownMain>
+							<button onClick={() => this.remove()}> 
+								<i style={{color: 'red'}} className="fas fa-trash"></i> Delete Post
+							</button>
+						</DropDownMain>
+					</MenuDropDown>
+				</FadeInOutHandleState>
 
 				<h4 className='muted-c'>{convertToStdDate(this.props.data.date)}</h4>
 				<p>{this.props.data.text}</p>

@@ -1,0 +1,146 @@
+.feed{
+    overflow: scroll;
+    height: 500px;
+    overflow-x: hidden;
+}
+
+.feed p.no-data{
+    text-align: center;
+    background: #4c4c4c;
+    border-radius: 5px;
+}
+
+.feed .post{
+    position: relative;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.post .drop-down-con{
+    left: auto;
+    right: 7px;
+    top: 23px;
+}
+
+.post .profile-photo{
+    height: 35px;
+    width: 35px;
+    object-fit: cover;
+    border-radius: 100%;
+}
+
+.post button.edit{
+    position: absolute;
+    top: -10px;
+    right: 5px;
+}
+
+.post a:hover{
+    text-decoration: none;
+    opacity: .7;
+}
+
+.post h1{
+    position: absolute;
+    top: -2px;
+    left: 52px;
+}
+
+.post h1:hover{
+    opacity: .7;
+}
+
+.post h5{
+    font-size: 14px;
+    font-weight: 200;
+    position: absolute;
+    top: 35px;
+    left: 53px;
+}
+
+.post p{
+    text-align: justify;
+    margin-bottom: 0;
+}
+
+.post h4{
+    font-size: 14px;
+}
+
+.post button{
+    border: none;
+    background: none;
+    font-size: 23px;
+    display: inline;
+}
+
+.post .image{
+    width: 100%;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.post .submit{
+    display: inline;
+    width: 195px;
+    background: #3185FC;
+    margin-left: 41px;
+    border-radius: 5px;
+    font-weight: 600;
+
+}
+
+.comment-section{
+    width: 75%;
+}
+
+.comment-section .p-fake{
+    margin: 0;
+}
+
+.image-gal{
+    margin-bottom: 10px;
+}
+.image-gal .image-con{
+    width: inherit;
+    position: inherit;
+}
+
+.image-con button{
+    position: absolute;
+    color: white;
+    background: none;
+    right: -16px;
+    top: -18px;
+}
+
+.image-gal img{
+    width: inherit;
+    object-fit: contain;
+}
+
+.overlay{
+    background: rgba(0,0,0,.6);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+
+
+/*Comment Styling*/
+    .comments-container{
+        margin: 10px 51px;
+    }
+
+    .comments-container p{
+        margin: 0;
+    }
+
+    p .name{
+        font-weight: 700;
+    }
+/*End of Comment Styling*/
+
+/*End of feed container styling*/

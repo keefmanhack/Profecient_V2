@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
 
-import Feed from '../Shared Resources/feed';
+import Feed from '../Shared Resources/feed/feed';
 import ClassView from './Class View/ClassView';
 import SemesterCreator from './Semester Creator/SemesterCreator';
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';

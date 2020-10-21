@@ -41,7 +41,23 @@ const findById = Post => async id => {
 	return await Post.findById(id);
 }
 
-const create = Post => async (text, authorID, images) => {
+const deleteById = Post => async (id, cb) =>{
+	if(!id){
+		throw new Error('No id supplied for post delete');
+	}
+	const post = await Post.findById(id);
+	if(post.photos && post.photos.length>0){
+		deleteImages(post.photos, async function(){
+			await Post.findByIdAndRemove(id);
+			cb();
+		});
+	}else{
+		await Post.findByIdAndRemove(id);
+		cb();
+	}
+}
+
+const create = Post => async (text, authorID, images, cb) => {
 	if(!text || !authorID){
 		throw new Error('No text or authorID');
 	}
@@ -60,14 +76,33 @@ const create = Post => async (text, authorID, images) => {
 		await uploadImages(images, directory, async function(imgPaths){
 			post.photos = imgPaths;
 			await post.save();
-			return post;
+			cb(post);
 		});
 	}else{
-		return post;
+		cb(post);
 	}
 }
 
-async function uploadImages(images, directory, cb) {
+function deleteImages(imagePaths, cb){
+	for(let i =0; i<imagePaths.length; i++){
+		const params= {
+			Bucket: process.env.S3_BUCKET_NAME,
+			Key: imagePaths[i],
+		}
+		s3.deleteObject(params, function(err, data){
+			if(err){
+				console.log(err)
+			}else{
+				console.log("File deleted");
+				if(i===imagePaths.length-1){
+					cb();
+				}
+			}
+		})
+	}
+}
+
+function uploadImages(images, directory, cb) {
 	let ct =0;
 	let returnArr =[];
 	for(let i =0; i< images.length; i++){
@@ -102,6 +137,7 @@ module.exports = Post => {
 		findMultiple: findMultiple(Post),
 		toggleLike: toggleLike(Post),
 		findById: findById(Post),
-		create: create(Post)
+		create: create(Post),
+		deleteById: deleteById(Post),
 	}
 }
