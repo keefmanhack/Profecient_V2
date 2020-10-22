@@ -140,7 +140,7 @@ class Post extends React.Component{
 function Comment(props){
 	return(
 		<div className='comment'>
-			<p><Link to='#' className='name green-c'>{props.data.author.name}</Link> {props.data.text}</p>
+			<p><Link to={'/profile/' + props.data.author._id} className='name green-c'>{props.data.author.name}</Link> {props.data.text}</p>
 		</div>
 	);
 }

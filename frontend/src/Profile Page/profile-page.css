@@ -12,43 +12,69 @@
     border-radius: 5px;
 }
 
-.profile-page .top img{
-	height: 120px;
+.profile-page .top .basic-info{
+    width: inherit;
+    position: relative;
+}
+
+.profile-page .follow-count{
+    margin-top: 5px;
+}
+
+.profile-page .top .follow-count h4{
+    text-align: center;
+    margin: 0;
+    font-size: 18px;
+}
+
+.basic-info .name-school{
+    position: relative;
+    height: 120px;
+    width: inherit;
+    overflow: hidden;
+}
+
+.basic-info .name-school img.profile-pic{
+    height: inherit;
     width: 120px;
     border-radius: 100%;
     object-fit: cover;
 }
 
-.profile-page .top h1{
-    display: inline;
-    position: relative;
-    top: -30px;
+
+.basic-info .name-school h1{
+    position: absolute;
+    left: 130px;
+    top: 16px;
     font-weight: 600;
     font-size: 45px;
-    left: 20px;
+    width: inherit;
 }
 
-.profile-page .top .school{
-	position: absolute;
-    left: 150px;
+.basic-info .name-school .school{
+    position: absolute;
     height: 40px;
-    width: 40px;
-    top: 47px;
+    width: inherit;
+    left: 130px;
+    bottom: 10px;
 }
 
-.profile-page .top h2{
-	display: inline;
+.basic-info .name-school .school img{
+    left: 0;
+    top: 0;
+    height: inherit;
+    width: 40px;
+    border-radius: 100%;
+}
+
+.basic-info .name-school .school h2{
+    left: 49px;
+    top: 6px;
     font-weight: 200;
     font-size: 24px;
     position: absolute;
-    left: 25%;
-    top: 44%;
-}
-
-.top .classes h5{
-	font-size: 24px;
-    font-weight: 600;
-    display: inline;
+    width: inherit;
+    text-align: left;
 }
 
 .profile-page .feed-container{

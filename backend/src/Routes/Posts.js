@@ -10,7 +10,7 @@ const UserService    = require('../../lib/User/index'),
 router.get('/users/:id/friends/posts', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
-		const friendPosts = await PostService.findMutlipleByAuthor(user.friends);
+		const friendPosts = await PostService.findMutlipleByAuthor(user.following);
 		res.json(friendPosts);
 	}catch(err){
 		console.log(err);

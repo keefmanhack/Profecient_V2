@@ -93,6 +93,7 @@
     width: 98%;
     border: 2px solid transparent;
     transition: .3s;
+    overflow: scroll;
 }
 
 .event-item:hover{
@@ -101,6 +102,7 @@
 
 .event-item h5{
     font-size: 93%;
+    margin: 0;
 }
 
 .seven-day-agenda h5.time{
@@ -136,7 +138,7 @@
     top: 0;
     background: white;
     width: 45px;
-    height: 46px;
+    height: 100%;
     border-radius: 5px;
     border: none;
 }

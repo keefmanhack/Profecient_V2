@@ -22,7 +22,11 @@ let UserSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Semester"
 	}],
-	friends: [{
+	followers: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User"
+	}],
+	following: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
 	}],

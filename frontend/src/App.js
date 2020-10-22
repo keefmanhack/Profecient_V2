@@ -17,7 +17,7 @@ class App extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.testUserId = '5f4aa6042c0c8f715ae71d97';
+		this.testUserId = '5f5d3bea7c33842654ec2efb';
 
 		//Keefer - 5f4aa6042c0c8f715ae71d97
 		//Sarah  - 5f5aab5a6f1dda2b82855985
@@ -48,11 +48,6 @@ class App extends React.Component{
 
 	async getCurrentUser(){
 		this.setState({currentUser: await this.UserRqst.getUser()})
-	}
-
-	async toggleFriend(isFriend, userID){
-		await this.UserRqst.toggleFriend(isFriend, userID);
-		await this.getCurrentUser();
 	}
 
 	setFoundUser(id){
@@ -98,7 +93,7 @@ class App extends React.Component{
 								return (<ProfilePage 
 									foundUser={this.state.foundID}  
 									currentUser={this.state.currentUser}
-									toggleFriend={(isFriend, userID) => this.toggleFriend(isFriend, userID)}
+									reloadCurrUser={() => this.getCurrentUser()}
 								/> )
 							}else{
 								return (<Loader/>)

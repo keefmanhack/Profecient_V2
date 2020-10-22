@@ -25,10 +25,10 @@ class UserRequests{
 		}
 	}
 
-	toggleFriend = async (isFriend, otherUserID) => {
+	toggleUserFollowing = async otherUserID => {
 		try{
-			const endPoint = '/users/' + this.currUserID + '/friends';
-			const res = await axios.post(endPoint, {isFriend: isFriend, userID: otherUserID});
+			const endPoint = '/users/' + this.currUserID + '/following';
+			const res = await axios.post(endPoint, {userID: otherUserID});
 			return res.data 
 		}catch(err){
 			console.log(err);

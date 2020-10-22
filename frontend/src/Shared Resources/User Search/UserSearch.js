@@ -22,14 +22,14 @@ function SearchItem(props){
 					className='person' 
 					src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.profilePic} 
 					alt="not found"
-					onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
+					onError={(e)=>{e.target.src="/generic_person.jpg"}}
 				/>
 				<h2>{props.name}</h2>
 				<img 
 					className='school' 
 					src={props.school.logoUrl} 
 					alt=""
-					onError={(e)=>{e.target.onerror = null; e.target.src="/generic_school.jpg"}}
+					onError={(e)=>{e.target.src="/generic_school.jpg"}}
 				/>
 				<h3>{props.school.name}</h3>
 			</div>

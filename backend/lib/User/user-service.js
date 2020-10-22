@@ -16,24 +16,37 @@ const findById = User => async id => {
 
 const findUsersByName = User => async searchString => {
 	if(!searchString){
-		throw new Error(`Search String: ${searchString}`);
+		return;
 	}
 	const users = await User.find({'name':  { "$regex": searchString, "$options": "i" }});
 	return users;
 }
 
-const toggleUserFriend = User => async (userID, friendID) => {
+const toggleUserFollowing = User => async (userID, friendID) => {
 	if(!userID || !friendID){
 		throw new Error(`Undefined or null id`);
 	}
 	const currUser = await User.findById(userID);
-	if(currUser.friends.includes(friendID)){
-		currUser.pull(friendID);
+	if(currUser.following.includes(friendID)){
+		currUser.following.pull(friendID);
 	}else{
-		currUser.push(friendID);
+		currUser.following.push(friendID);
 	}
 
-	return currUser.save();
+	return await currUser.save();
+}
+
+const toggleUserFollowers = User => async (userID, possibleFollowerID) =>{
+	if(!userID || !possibleFollowerID){
+		throw new Error("Missing data to toggle Followers");
+	}
+	const user = await User.findById(userID);
+	if(user.followers.includes(possibleFollowerID)){
+		user.followers.pull(possibleFollowerID);
+	}else{
+		user.followers.push(possibleFollowerID);
+	}
+	return await user.save();
 }
 
 const deleteAcNotif = User => async (userID, noteID) =>{
@@ -111,11 +124,12 @@ module.exports = User => {
 		createUser: createUser(User),
 		findById: findById(User),
 		findUsersByName: findUsersByName(User),
-		toggleUserFriend: toggleUserFriend(User),
+		toggleUserFollowing: toggleUserFollowing(User),
 		deleteAcNotif : deleteAcNotif(User),
 		findMultiple: findMultiple(User),
 		findLinks: findLinks(User),
-		postNewNotification: postNewNotification(User)
+		postNewNotification: postNewNotification(User),
+		toggleUserFollowers: toggleUserFollowers(User)
 	}
 }
 

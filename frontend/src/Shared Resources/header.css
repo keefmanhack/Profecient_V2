@@ -103,8 +103,8 @@
 	position: absolute;
     font-size: 12px;
     background: none;
-    top: 9px;
-    right: 0px;
+    top: 0px;
+    right: -1px;
     margin: 0;
 }
 
@@ -170,6 +170,31 @@ h2 .other-user{
     overflow: auto;
     margin-bottom: 6px;
 }
+
+.note.new-follower{
+    height: 66px;
+}
+
+.top-bar .new-follower h1{
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.new-follower button.follow-back{
+    position: absolute;
+    left: 135px;
+    font-size: 12px;
+    top: 8px;
+    font-weight: 400;
+}
+
+.new-follower a{
+    position: absolute;
+    top: 30px;
+    left: 10px;
+}
+
+
 
 /*.top-bar h5 span{
 	left: -4%;

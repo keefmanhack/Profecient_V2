@@ -46,9 +46,12 @@ app.post('/users', async (req, res) => {
 	}
 })
 
-app.post('/users/:id/friends', async (req, res) =>{
+app.post('/users/:id/following', async (req, res) =>{
 	try{
-		await UserService.toggleUserFriend(req.params.id, req.body.userID);
+		const user = await UserService.findById(req.params.id);
+		await UserService.toggleUserFollowing(user._id, req.body.userID);
+		await UserService.toggleUserFollowers(req.body.userID, user._id);
+		res.send();
 	}catch(err){
 		console.log(err);
 	}

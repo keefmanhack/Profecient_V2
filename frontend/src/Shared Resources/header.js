@@ -70,8 +70,14 @@ class Header extends React.Component{
 							/>
 						</FadeInOutHandleState>
 					</span>
-					
-					<button className='green-c off-black-bc'><i className="fas fa-user-friends"></i></button>
+
+
+					<span>
+						<button className='green-c off-black-bc'><i className="fas fa-user-friends"></i></button>
+						<FollowerNotifications
+
+						/>
+					</span>
 
 					<span>
 						<Link to='/message'>
@@ -97,6 +103,37 @@ class Header extends React.Component{
 		);
 	}
 }
+
+class FollowerNotifications extends React.Component{
+	render(){
+		return(
+			<div className='note-container'>
+				<NewFollowerNote />
+			</div>
+		)
+	}
+}
+
+function NewFollowerNote(props){
+	return(
+		<div className='note new-follower follower-note-bc'>
+			<button className='red-c remove'>Remove</button>
+			<h1>New Follower</h1>
+			<button className='follow-back'>Follow Back</button>
+			<Link to={'/profile/' + '#'}>
+				<span className='other-user'>
+					<img 
+						src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + 'fake'} 
+						alt=""
+						onError={(e) => e.target.src="/generic_person.jpg"}
+					/>
+					{'Janis Joplin'}
+				</span>
+			</Link>
+		</div>
+	)
+}
+
 
 const style_topBar = {
 	paddingTop: 10,
