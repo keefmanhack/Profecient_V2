@@ -8,7 +8,7 @@ import SemesterCreator from './Semester Creator/SemesterCreator';
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 import Header from '../Shared Resources/header';
 import PostCreator from '../Shared Resources/PostCreator';
-// import Loader from '../Shared Resources/Effects/loader';
+import Loader from '../Shared Resources/Effects/loader';
 
 import UserRequests from '../APIRequests/User';
 import PostRequests from '../APIRequests/Post';
@@ -114,11 +114,6 @@ class ProfilePage extends React.Component{
 
 	render(){
 		let currSemExists = this.state.currSemesterIndex >-1;
-		const classList = currSemExists ? this.state.semesters[this.state.currSemesterIndex].classes.map((data, index) =>
-			<div key={index} className='col-lg-2'>
-				<h5 key={data.id}>{data.name}</h5>
-			</div>
-		): null;
 
 		return (
 			<React.Fragment>
@@ -135,7 +130,7 @@ class ProfilePage extends React.Component{
 									/>
 									<h1>{this.state.profile.name}</h1>
 
-									<img className='school' src={this.state.profile.school.logoUrl} alt="Can't display"/>
+									<img className='school' src={this.state.profile.school.logoUrl} alt="Can't display" onError={(e)=>{e.target.onerror = null; e.target.src="/generic_school.jpg"}}/>
 									<h2>{this.state.profile.school.name}</h2>
 								</div>
 								<div className='col-lg-4'>
@@ -155,9 +150,6 @@ class ProfilePage extends React.Component{
 									</FadeInOutHandleState>
 								</div>
 							</div>
-							<div className='classes row' style={{marginTop: 30}}>
-								{classList}
-							</div>
 						</div>
 						<div className='row'>
 							<div className='col-lg-4 left'>
@@ -173,22 +165,21 @@ class ProfilePage extends React.Component{
 									: null
 								}
 								<div className='feed-container'>
-									<Feed 
-										feedData={this.state.postData} 
-										currentUser={this.props.currentUser}
-									/>
+									{this.state.postData ? 
+										<Feed 
+											reloadPosts={() => this.getUserPosts()} 
+											feedData={this.state.postData} 
+											currentUser={this.props.currentUser}
+											noFeedDataMsg={"Sorry no posts to display."}
+										/>
+									:
+										<Loader/>
+									}
 								</div>
 							</div>
 						</div>
 					</div>
 				: this.getProfileData()}
-				<FadeInOutHandleState condition={this.state.showNewSem}>
-					<SemesterCreator
-						currentUser={this.props.currentUser} 
-						hideNewSemForm={() => this.showNewSem(false)}
-						updateData={this.state.editSemMode ? this.state.semesters[this.state.currSemesterIndex] : null}
-					/>
-				</FadeInOutHandleState>
 			</React.Fragment>
 		);
 	}

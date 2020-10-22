@@ -1,0 +1,63 @@
+.user-search{
+	background: white;
+    position: absolute;
+    z-index: 4;
+    border-radius: 2px;
+    width: inherit;
+    padding: 5px;
+}
+
+.user-search .search-item:last-child{
+	border: none;
+}
+
+.user-search .search-item{
+	position: relative;
+	height: 54px;
+    background: #e6e6e6;
+    margin: 0;
+    border-bottom: 1px solid black;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.user-search .search-item *{
+	margin: 0;
+}
+
+.user-search .search-item img{
+	height: 30px;
+	width: 30px;
+	object-fit: cover;
+	border-radius: 100%;
+	border: none;
+	position: absolute;
+}
+
+.user-search img.school{
+    left: 38px;
+    top: 32px;
+    height: 20px;
+    width: 20px;
+}
+
+.user-search h2{
+	font-size: 24px;
+	font-weight: 600;
+	display: block;
+	position: absolute;
+	text-align: left;
+    left: 40px;
+    width: 87%;
+}
+
+.user-search h3{
+	position: absolute;
+    top: 32px;
+    left: 60px;
+    font-size: 15px;
+    font-weight: 300;
+    width: 81%;
+    overflow: hidden;
+    text-align: left;
+}

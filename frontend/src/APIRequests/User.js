@@ -4,6 +4,16 @@ class UserRequests{
 	constructor(id){
 		this.currUserID = id;
 	}
+
+	findMultiple = async name => {
+		try{
+			const endPoint = '/users';
+			const res = await axios.post(endPoint, {searchString: name});
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
 	
 	getUser = async () => {
 		try{

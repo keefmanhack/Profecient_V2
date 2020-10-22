@@ -5,9 +5,11 @@ import moment from 'moment';
 import Loader from './Effects/loader';
 import {FadeInOutHandleState, FadeRightHandleState} from './Effects/CustomTransition';
 import {SuccessCheck, FailedSent} from './Effects/lottie/LottieAnimations';
+import UserSearch from './User Search/UserSearch';
 
 import NotificationRequest from '../APIRequests/Notification';
 import AssignmentRequest from '../APIRequests/Assignment';
+import UserRequest from '../APIRequests/User';
 
 import './header.css';
 
@@ -16,10 +18,12 @@ class Header extends React.Component{
 		super(props);
 
 		this.notifReq = new NotificationRequest(this.props.currentUser._id)
+		this.userReq = new UserRequest(this.props.currentUser._id);
 
 		this.state={
 			showACNotes: false,
 			showMsgNotes: false,
+			foundClassMates: [],
 		}
 	}
 
@@ -27,6 +31,10 @@ class Header extends React.Component{
 		this.setState({
 			showACNotes: val,
 		})
+	}
+
+	async findUsers(text){
+		this.setState({foundClassMates: await this.userReq.findMultiple(text)});
 	}
 
 	render(){
@@ -37,7 +45,17 @@ class Header extends React.Component{
 				<Link to='/home'>
 					<h1 className='mont-font blue-c'>Profecient</h1>
 				</Link>
-				<input className='sans-font' type='text' placeholder='Find classmates'/>
+				<div style={{display: 'inline', 'position': 'relative'}}>
+					<input onChange={(e) => this.findUsers(e.target.value)} className='sans-font' type='text' placeholder='Find classmates'/>
+					{this.state.foundClassMates.length>0 ?
+						<div style={{width: 300, left: 0, position: 'absolute'}}>
+							<UserSearch users={this.state.foundClassMates}/>
+						</div>
+					: 
+						null
+					}
+				</div>
+				
 				
 				<span className='not'>
 					<span>

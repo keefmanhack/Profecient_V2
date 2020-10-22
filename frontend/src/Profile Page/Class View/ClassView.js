@@ -87,16 +87,13 @@ function ClassView(props){
 							<React.Fragment>
 								{props.isCurrentUserViewing ?
 									<React.Fragment>
-										<button onClick={() => props.editCurrSem()}> 
-											<i style={{color: 'orange'}} className="far fa-edit"></i> Edit Current Semester
-										</button>
 										<button onClick={() => {semReq.remove(currSemesterID); setShowDialog(false);}}> 
 											<i style={{color: 'red'}} className="fas fa-trash"></i> Delete Current Semester
 										</button>
 									</React.Fragment>
 								:null}
 								<Options 
-									text={'Current Semester'} 
+									text={'Semester'} 
 									icon={<i class="fas fa-caret-right"></i>} 
 									options={semesters}
 									selected={currSem}
