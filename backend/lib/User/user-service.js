@@ -1,9 +1,9 @@
-const createUser = User => userData => {
+const create = User => async userData => {
 	if(!userData){
 		throw new Error(`Message: ${userData}`);
 	}
 	const newUser = new User(userData);
-	return newUser.save();
+	return await newUser.save();
 }
 
 const findById = User => async id => {
@@ -118,10 +118,17 @@ const postNewNotification = User => async (id, newNoteID) => {
 	return await user.save();
 }
 
+const deleteById = User => async id => {
+	if(!id){
+		throw new Error("No id supplied to delete a user");
+	}
+	return await User.findByIdAndRemove(id);
+}
+
 
 module.exports = User => {
 	return {
-		createUser: createUser(User),
+		create: create(User),
 		findById: findById(User),
 		findUsersByName: findUsersByName(User),
 		toggleUserFollowing: toggleUserFollowing(User),
@@ -129,7 +136,8 @@ module.exports = User => {
 		findMultiple: findMultiple(User),
 		findLinks: findLinks(User),
 		postNewNotification: postNewNotification(User),
-		toggleUserFollowers: toggleUserFollowers(User)
+		toggleUserFollowers: toggleUserFollowers(User),
+		deleteById: deleteById(User),
 	}
 }
 

@@ -1,81 +1,67 @@
 const ClassService        = require('../Class/index'),
 	  ClassNoteService    = require('../Notification/Class/index'),
-	  UserService         = require('../User/index');
+	  UserService         = require('../User/index'),
+	  newFollowerService  = require('../Notification/Relations/New Follower/index');
 
 class NotificationHandler{
+	static async createAndAddANewFollowerNotif(userFollowingID, userToBeFollowedID){
+		if(!userFollowingID || !userToBeFollowedID){
+			throw new Error("No id's supplied to create a new Follower notif");
+		}
+		const userToBeFollowed = await UserService.findById(userToBeFollowedID);
+		const newNotif = await newFollowerService.create(userFollowingID);
+		userToBeFollowed.notifications.relations.unDismissed++;
+		userToBeFollowed.notifications.relations.newFollowerNote.push(newNotif);
+		await userToBeFollowed.save();
+		return newNotif;
+	}
+
+	static async prepareDataToSend(notifIDs){
+		if(!notifIDs){
+			throw new Error('No notif ids to prepare data');
+		}
+		let returnArr = [];
+		for(let i =0; i<notifIDs.length; i++){
+			const notif = await newFollowerService.findById(notifIDs[i]);
+			let user = await UserService.findById(notif.followerID);
+			const data = {
+				name: user.name,
+				school: user.school,
+				profilePictureURL: user.profilePictureURL,
+				followerID: user._id,
+			}
+			returnArr.push(data);
+		}
+		return returnArr;
+	}
+
 	static async sendConnectionsFromNewAssNotification(userClass, user, assID){
-		try{
-			if(!userClass || !user || !assID){
-				throw new Error('Missing new Assignment Notification data');
-			}
+		if(!userClass || !user || !assID){
+			throw new Error('Missing new Assignment Notification data');
+		}
 
-			if(userClass.connectionsFrom.length <1){
-				return;
-			}
+		if(userClass.connectionsFrom.length <1){
+			return;
+		}
 
-			for(let i =0; i<userClass.connectionsFrom.length; i++){
-				const connection = userClass.connectionsFrom[i];
-				const foundClass = await ClassService.findById(connection.class_data);
-				const newNote = await ClassNoteService.createNewAssNotification(foundClass, user, userClass, assID);
-				await UserService.postNewNotification(connection.user, newNote._id);
-			}
-		}catch(err){
-			console.log(err);
+		for(let i =0; i<userClass.connectionsFrom.length; i++){
+			const connection = userClass.connectionsFrom[i];
+			const foundClass = await ClassService.findById(connection.class_data);
+			const newNote = await ClassNoteService.createNewAssNotification(foundClass, user, userClass, assID);
+			await UserService.postNewNotification(connection.user, newNote._id);
 		}
 	}
 
 	static async deleteNewAssNotification(userID, noteID){
-		try{
-			if(!userID || !noteID){
-				throw new Error('Missing userID or noteID for deleting notification');
-			}
-			ClassNoteService.deleteNewAssNotification(noteID);
-			const user = await UserService.findById(userID);
-			foundUser.notifications.academic.classNote.pull(noteID);
-			foundUser.notifications.academic.unDismissed--;
-			return await foundUser.save();
-		}catch(err){
-			console.log(err);
+		if(!userID || !noteID){
+			throw new Error('Missing userID or noteID for deleting notification');
 		}
+		ClassNoteService.deleteNewAssNotification(noteID);
+		const user = await UserService.findById(userID);
+		foundUser.notifications.academic.classNote.pull(noteID);
+		foundUser.notifications.academic.unDismissed--;
+		return await foundUser.save();
 	}
-
-	// static sendNewAssNotification(userToBeNotifiedID, noteID){
-	// 	User.findById(userToBeNotifiedID, function(err, foundUser){
-	// 		if(err){
-	// 			console.log(err);
-	// 		}else{
-	// 			foundUser.notifications.academic.unDismissed++;
-	// 			foundUser.notifications.academic.classNote.unshift(noteID);
-	// 			foundUser.save();
-	// 			console.log('Notification posted for user ' + foundUser.name);
-	// 		}
-	// 	})
-	// }
-
-	// static deleteNewAssNotification(userID, noteID, cb){
-	// 	User.findById(userID, function(err, foundUser){
-	// 		if(err){
-	// 			console.log(err);
-	// 		}else{
-	// 			ClassNote.findByIdAndRemove(noteID, function(err){
-	// 				if(err){
-	// 					console.log(err);
-	// 				}else{
-	// 					foundUser.notifications.academic.classNote.pull(noteID);
-	// 					foundUser.notifications.academic.unDismissed--;
-	// 					foundUser.save(function(err){
-	// 						if(err){
-	// 							console.log(err);
-	// 						}else{
-	// 							console.log('Notification deleted for ' + foundUser.name); 
-	// 							cb();
-	// 						}
-	// 					})
-	// 				}
-	// 			})
-	// 		}
-	// 	})
-	// }
 }
 
 module.exports = NotificationHandler;

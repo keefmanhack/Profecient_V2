@@ -5,6 +5,16 @@ class NotificationRequest{
 		this.currUserID = id;
 	}
 
+	getRelatonsNotifs = async () => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/notifications/relations';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
 	getAcademicNotifs = async () => {
 		try{
 			const endPoint = `/users/` + this.currUserID + '/notifications/academic';

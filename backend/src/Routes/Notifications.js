@@ -5,6 +5,18 @@ const ClassNoteService   = require('../../lib/Notification/Class/index'),
       UserService        = require('../../lib/User/index'),
       MessageNoteService = require('../../lib/Notification/Message/index');
 
+const NotificationHandler = require('../../lib/CompositeServices/NotificationHandler');
+
+router.get('/users/:id/notifications/relations', async (req, res) => {
+	try{
+		const user = await UserService.findById(req.params.id);
+		const notifs = await NotificationHandler.prepareDataToSend(user.notifications.relations.newFollowerNote);
+		res.json(notifs);
+	}catch(err){
+		console.log(err);
+	}
+})
+
 router.get('/users/:id/notifications/academic', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
@@ -14,7 +26,6 @@ router.get('/users/:id/notifications/academic', async (req, res) => {
 		console.log(err);
 	}
 })
-
 
 
 router.delete('/users/:id/notifications/academic/:noteID', async (req, res) => {

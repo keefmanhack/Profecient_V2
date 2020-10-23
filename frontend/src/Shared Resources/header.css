@@ -1,7 +1,7 @@
 .not button.drop-down{
 	position: absolute;
-    right: -6px;
-    bottom: -11px;
+    right: -7px;
+    bottom: -5px;
     color: white;
     font-size: 5px;
     padding: 2px;
@@ -52,6 +52,10 @@
     right: 0px;
     max-height: 301px;
     overflow: scroll;
+}
+
+.not-wrapper{
+    position: relative;
 }
 
 .note-container .note{

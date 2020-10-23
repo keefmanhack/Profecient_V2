@@ -23,6 +23,7 @@ class Header extends React.Component{
 		this.state={
 			showACNotes: false,
 			showMsgNotes: false,
+			showRelNotes: false,
 			foundClassMates: [],
 		}
 	}
@@ -40,6 +41,7 @@ class Header extends React.Component{
 	render(){
 		const acNotes = this.props.currentUser.notifications.academic.unDismissed;
 		const msgNotes = this.props.currentUser.notifications.messages.unDismissed;
+		const relNotes = this.props.currentUser.notifications.relations.unDismissed;
 		return(
 			<div className='top-bar black-bc' style={style_topBar}>
 				<Link to='/home'>
@@ -57,39 +59,45 @@ class Header extends React.Component{
 				</div>
 				
 				
-				<span className='not'>
-					<span>
-						<button onClick={() => this.toggleAcademicNotifications(true)} className='green-c off-black-bc'><i className="fas fa-pencil-alt"></i></button>
-						{acNotes > 0 ? <h5>{acNotes}</h5> : null}
-						<FadeInOutHandleState condition={this.state.showACNotes}>
-							<AcademicNotifications 
-								getUpcommingAssignments={() => this.props.getUpcommingAssignments()} 
-								currentUserID={this.props.currentUser._id}
-								hideForm={() => this.toggleAcademicNotifications(false)}
-								notifReq={this.notifReq}
-							/>
-						</FadeInOutHandleState>
-					</span>
-
-
-					<span>
-						<button className='green-c off-black-bc'><i className="fas fa-user-friends"></i></button>
-						<FollowerNotifications
-
-						/>
-					</span>
-
-					<span>
-						<Link to='/message'>
-							<button className='green-c off-black-bc'><i className="fas fa-comments"></i></button>
-						</Link>
-						<button onClick={() => this.setState({showMsgNotes: true})} className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
-						{msgNotes> 0 ? <h5>{msgNotes}</h5> : null}
-						<FadeInOutHandleState condition={this.state.showMsgNotes}>
-							<MessageNotifications hideForm={() => this.setState({showMsgNotes: false})} notifReq={this.notifReq} currentUser={this.props.currentUser}/>
-						</FadeInOutHandleState>
-					</span>
-				</span>
+				<div style={{display: 'inline-block', width: 150}} className='not'>
+					<div className='row'>
+						<div className='col-xs-4'>
+							<div className='not-wrapper'>
+								<button onClick={() => this.toggleAcademicNotifications(true)} className='green-c off-black-bc'><i className="fas fa-pencil-alt"></i></button>
+								{acNotes > 0 ? <h5>{acNotes}</h5> : null}
+								<FadeInOutHandleState condition={this.state.showACNotes}>
+									<AcademicNotifications 
+										getUpcommingAssignments={() => this.props.getUpcommingAssignments()} 
+										currentUserID={this.props.currentUser._id}
+										hideForm={() => this.toggleAcademicNotifications(false)}
+										notifReq={this.notifReq}
+									/>
+								</FadeInOutHandleState>
+							</div>
+						</div>
+						<div className='col-xs-4'>
+							<div className='not-wrapper'>
+								<button onClick={() => this.setState({showRelNotes: true})} className='green-c off-black-bc'><i className="fas fa-user-friends"></i></button>
+								{relNotes > 0 ? <h5>{relNotes}</h5> : null}
+								<FadeInOutHandleState condition={this.state.showRelNotes}>
+									<RelationsNotifications hideForm={() => this.setState({showRelNotes: false})} notifReq={this.notifReq} currentUser={this.props.currentUser}/>
+								</FadeInOutHandleState>
+							</div>	
+						</div>
+						<div className='col-xs-4'>
+							<div className='not-wrapper'>
+								<Link to='/message'>
+									<button className='green-c off-black-bc'><i className="fas fa-comments"></i></button>
+								</Link>
+								<button onClick={() => this.setState({showMsgNotes: true})} className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
+								{msgNotes> 0 ? <h5>{msgNotes}</h5> : null}
+								<FadeInOutHandleState condition={this.state.showMsgNotes}>
+									<MessageNotifications hideForm={() => this.setState({showMsgNotes: false})} notifReq={this.notifReq} currentUser={this.props.currentUser}/>
+								</FadeInOutHandleState>
+							</div>
+						</div>
+					</div>
+				</div>
 
 				
 				<span className='profile'>
@@ -104,11 +112,56 @@ class Header extends React.Component{
 	}
 }
 
-class FollowerNotifications extends React.Component{
+class RelationsNotifications extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state = {
+			notifs: null,
+		}
+
+		this.wrapperRef = React.createRef();
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+
+	componentDidMount(){	
+		document.addEventListener('mousedown', this.handleClickOutside);
+		this.loadRelationsNotifications();
+	}
+
+	componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+            this.props.hideForm();
+        }
+    }
+
+	async loadRelationsNotifications(){
+		this.setState({notifs: await this.props.notifReq.getRelatonsNotifs()});
+	}
+
 	render(){
+		const notifs = this.state.notifs ? this.state.notifs.map((data, index) => 
+			<NewFollowerNote key={index} data={data}/>
+		) : null;
 		return(
-			<div className='note-container'>
-				<NewFollowerNote />
+			<div ref={this.wrapperRef} className='note-container'>
+				{this.state.notifs ? 
+					<React.Fragment>
+						{this.state.notifs.length>0 ? 
+							<React.Fragment>
+								{notifs}
+							</React.Fragment>
+						:
+							<p style={{textAlign: 'center'}} className='muted-c'>No notifications</p>
+						}
+					</React.Fragment>
+				:
+					<Loader/>
+				}
 			</div>
 		)
 	}
@@ -120,14 +173,14 @@ function NewFollowerNote(props){
 			<button className='red-c remove'>Remove</button>
 			<h1>New Follower</h1>
 			<button className='follow-back'>Follow Back</button>
-			<Link to={'/profile/' + '#'}>
+			<Link to={'/profile/' + props.data.followerID}>
 				<span className='other-user'>
 					<img 
-						src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + 'fake'} 
+						src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.data.profilePictureURL} 
 						alt=""
 						onError={(e) => e.target.src="/generic_person.jpg"}
 					/>
-					{'Janis Joplin'}
+					{props.data.name}
 				</span>
 			</Link>
 		</div>
