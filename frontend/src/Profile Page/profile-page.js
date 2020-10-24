@@ -47,8 +47,8 @@ class ProfilePage extends React.Component{
 		this.setState({postData: await this.postReq.getPosts()});
 	}
 
-	async toggleFollowing(possibleFollowingID){
-		await this.currUserReq.toggleUserFollowing(possibleFollowingID);
+	async toggleFollowing(possibleFollowingID, isFollowing){
+		await this.currUserReq.toggleUserFollowing(possibleFollowingID, isFollowing);
 		await this.props.reloadCurrUser();
 		this.setState({followAction: false});
 	}
@@ -100,14 +100,14 @@ class ProfilePage extends React.Component{
 												<button
 													disabled={this.state.followAction}
 													style={this.state.followAction ? {opacity: .5, cursor: 'default'} : null} 
-													onClick={() => { this.setState({followAction: true}); this.toggleFollowing(this.state.profile._id)}} 
+													onClick={() => { this.setState({followAction: true}); this.toggleFollowing(this.state.profile._id, true)}} 
 													className='white-bc red-c'><i className="fas fa-minus"></i> UnFollow
 												</button>
 											:
 												<button 
 													disabled={this.state.followAction}
 													style={this.state.followAction ? followAcStyle : null} 
-													onClick={() => { this.setState({followAction: true}); this.toggleFollowing(this.state.profile._id)}}
+													onClick={() => { this.setState({followAction: true}); this.toggleFollowing(this.state.profile._id, false)}}
 													className='blue-bc black-c'><i className="fas fa-plus"></i> Follow
 												</button>
 											}

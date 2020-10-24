@@ -7,7 +7,7 @@ const UserService         = require('../../lib/User/index'),
 	  ClassNoteService    = require('../../lib/Notification/Class/index'), //this needs to be here so that it is registered to mongoDB
 	  AssignmentService   = require('../../lib/Assignment/index');
 
-const NotificationHandler = require('../../lib/CompositeServices/NotificationHandler');
+const AcademicHandler = require('../../lib/CompositeServices/Notification/AcademicHandler');
 // Connection Routes
 
 router.post('/users/:id/class/connection', async (req, res) =>{
@@ -198,7 +198,7 @@ router.post('/users/:id/classes/:classID/assignment', async (req, res) =>{
 		foundClass.assignments.push(newAss);
 		await foundClass.save();
 		res.send();
-		NotificationHandler.sendConnectionsFromNewAssNotification(foundClass, user, newAss._id);
+		AcademicHandler.sendConnectionsFromNewAssNotification(foundClass, user, newAss._id);
 	}catch(err){
 		console.log(err);
 	}
@@ -212,7 +212,7 @@ router.post('/users/:id/classes/:classID/assignment/fromConnection', async (req,
 		foundClass.assignments.push(newAss);
 		await foundClass.save();
 		res.send();
-		NotificationHandler.deleteNewAssNotification(user.params.id, req.body.noteID);
+		AcademicHandler.deleteNewAssNotification(user.params.id, req.body.noteID);
 	}catch(err){
 		console.log(err);
 	}

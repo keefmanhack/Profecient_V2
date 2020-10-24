@@ -7,6 +7,8 @@ const UserService    = require('../../lib/User/index'),
       PostService    = require('../../lib/Post/index'),
       CommentService = require('../../lib/Comment/index');
 
+const PostHandler = require('../../lib/CompositeServices/Notification/Relations/PostHandler');
+
 router.get('/users/:id/friends/posts', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
@@ -82,10 +84,7 @@ router.post('/users/:id/posts/:postID/comments', async (req, res) =>{
 
 router.post('/users/:id/posts', upload.array('images',6), (req, res) => {
 	try{
-		PostService.create(req.body.text, req.params.id, req.body.images, async (post) => {
-			const user = await UserService.findById(req.params.id);
-			user.posts.unshift(post);
-			await user.save();
+		PostHandler.generateNewPostWithNotifBucket(req.body.text, req.params.id, req.body.images, () => {
 			res.send();
 		})
 	}catch(err){

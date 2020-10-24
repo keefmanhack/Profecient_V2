@@ -12,7 +12,7 @@ app.use(
 app.use(express.json());
 
 const UserService = require('../lib/User/index');
-const NotificationHandler = require('../lib/CompositeServices/NotificationHandler');
+const FriendHandler = require('../lib/CompositeServices/Notification/Relations/FriendHandler');
 
 
 let NotificationRoutes = require('./Routes/Notifications');
@@ -50,10 +50,13 @@ app.post('/users', async (req, res) => {
 app.post('/users/:id/following', async (req, res) =>{
 	try{
 		const user = await UserService.findById(req.params.id);
-		await UserService.toggleUserFollowing(user._id, req.body.userID);
+		const isFollowing = user.following.includes(req.body.userID)
+		await UserService.toggleUserFollowing(user._id, req.body.userID, isFollowing);
 		await UserService.toggleUserFollowers(req.body.userID, user._id);
 		res.send();
-		NotificationHandler.createAndAddANewFollowerNotif(req.params.id, req.body.userID);
+		if(!isFollowing){
+			FriendHandler.createAndAddANewFollowerNotif(req.params.id, req.body.userID);
+		}
 	}catch(err){
 		console.log(err);
 	}

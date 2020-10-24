@@ -25,10 +25,10 @@ class UserRequests{
 		}
 	}
 
-	toggleUserFollowing = async otherUserID => {
+	toggleUserFollowing = async (otherUserID, isFollowing) => {
 		try{
 			const endPoint = '/users/' + this.currUserID + '/following';
-			const res = await axios.post(endPoint, {userID: otherUserID});
+			const res = await axios.post(endPoint, {userID: otherUserID, isFollowing: isFollowing});
 			return res.data 
 		}catch(err){
 			console.log(err);

@@ -57,13 +57,14 @@ const deleteById = Post => async (id, cb) =>{
 	}
 }
 
-const create = Post => async (text, authorID, images, cb) => {
+const create = Post => async (text, authorID, images, notifBucketID, cb) => {
 	if(!text || !authorID){
 		throw new Error('No text or authorID');
 	}
 	const postStruct = {
 		text: text,
-		author: authorID
+		author: authorID,
+		notifBucketID: notifBucketID
 	}
 	let post = await Post.create(postStruct);
 

@@ -10,6 +10,14 @@
     border-radius: 100%;
 }
 
+.note.new-follower h2{
+    position: absolute;
+    top: 12px;
+    left: 142px;
+    font-size: 12px;
+    font-weight: 200;
+}
+
 .drop-down i.fas{
 	font-size: 13px;
 }
@@ -196,6 +204,7 @@ h2 .other-user{
     position: absolute;
     top: 30px;
     left: 10px;
+    font-weight: 600;
 }
 
 

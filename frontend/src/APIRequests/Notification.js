@@ -15,6 +15,15 @@ class NotificationRequest{
 		}
 	}
 
+	deleteRelationNewFollowerNotif = async followerID => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/notifications/relations/newFollower/' + followerID;
+			await axios.delete(endPoint);
+		}catch(err){
+			console.log(err);
+		}
+	}
+
 	getAcademicNotifs = async () => {
 		try{
 			const endPoint = `/users/` + this.currUserID + '/notifications/academic';

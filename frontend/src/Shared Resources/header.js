@@ -120,6 +120,8 @@ class RelationsNotifications extends React.Component{
 			notifs: null,
 		}
 
+		this.userReq = new UserRequest(this.props.currentUser._id);
+
 		this.wrapperRef = React.createRef();
 		this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
@@ -143,9 +145,26 @@ class RelationsNotifications extends React.Component{
 		this.setState({notifs: await this.props.notifReq.getRelatonsNotifs()});
 	}
 
+	async deleteNewFollowerNotif(id){
+		await this.props.notifReq.deleteRelationNewFollowerNotif(id);
+		this.loadRelationsNotifications();
+	}
+
+	async followBack(notifID, userID){
+		await this.userReq.toggleUserFollowing(userID, false);
+		await this.deleteNewFollowerNotif(notifID);
+		this.loadRelationsNotifications();
+	}
+
 	render(){
 		const notifs = this.state.notifs ? this.state.notifs.map((data, index) => 
-			<NewFollowerNote key={index} data={data}/>
+			<NewFollowerNote
+				isFollowing={this.props.currentUser.following.includes(data.followerID)}
+				remove={() => this.deleteNewFollowerNotif(data._id)}
+				followBack={() => this.followBack(data._id, data.followerID)}
+				key={data._id} 
+				data={data}
+			/>
 		) : null;
 		return(
 			<div ref={this.wrapperRef} className='note-container'>
@@ -168,11 +187,18 @@ class RelationsNotifications extends React.Component{
 }
 
 function NewFollowerNote(props){
+	const [isActing, setIsActing] = useState(false);
 	return(
 		<div className='note new-follower follower-note-bc'>
-			<button className='red-c remove'>Remove</button>
+			{isActing ? <Loader/> : null}
+			<button onClick={() => {setIsActing(true); props.remove()}} className='red-c remove'>Remove</button>
 			<h1>New Follower</h1>
-			<button className='follow-back'>Follow Back</button>
+			{props.isFollowing ? 
+				<h2 className='blue-c'>Following</h2>
+			:
+				<button onClick={() => {setIsActing(true); props.followBack()}} className='follow-back'>Follow Back</button>
+			}
+			
 			<Link to={'/profile/' + props.data.followerID}>
 				<span className='other-user'>
 					<img 

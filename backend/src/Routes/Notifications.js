@@ -5,13 +5,22 @@ const ClassNoteService   = require('../../lib/Notification/Class/index'),
       UserService        = require('../../lib/User/index'),
       MessageNoteService = require('../../lib/Notification/Message/index');
 
-const NotificationHandler = require('../../lib/CompositeServices/NotificationHandler');
+const FriendHandler = require('../../lib/CompositeServices/Notification/Relations/FriendHandler');
 
 router.get('/users/:id/notifications/relations', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
-		const notifs = await NotificationHandler.prepareDataToSend(user.notifications.relations.newFollowerNote);
+		const notifs = await FriendHandler.prepareDataToSend(user.notifications.relations.newFollowerNote);
 		res.json(notifs);
+	}catch(err){
+		console.log(err);
+	}
+})
+
+router.delete('/users/:id/notifications/relations/newFollower/:followerID', async (req, res) => {
+	try{
+		await FriendHandler.removeNotification(req.params.id, req.params.followerID);
+		res.send();
 	}catch(err){
 		console.log(err);
 	}

@@ -15,6 +15,10 @@ let PostSchema = mongoose.Schema({
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
+	},
+	notifBucketID: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "PostBucket"
 	}
 
 })

@@ -22,12 +22,12 @@ const findUsersByName = User => async searchString => {
 	return users;
 }
 
-const toggleUserFollowing = User => async (userID, friendID) => {
+const toggleUserFollowing = User => async (userID, friendID, isFollowing) => {
 	if(!userID || !friendID){
 		throw new Error(`Undefined or null id`);
 	}
 	const currUser = await User.findById(userID);
-	if(currUser.following.includes(friendID)){
+	if(isFollowing){
 		currUser.following.pull(friendID);
 	}else{
 		currUser.following.push(friendID);
