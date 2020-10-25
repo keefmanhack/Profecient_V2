@@ -1,4 +1,5 @@
 const moment = require('moment');
+const BaseRequests = require('../BaseServiceRequests');
 
 const deleteMultiple = Ass => async ids =>{
 	if(!ids){
@@ -9,13 +10,6 @@ const deleteMultiple = Ass => async ids =>{
 	}
 }
 
-const deleteOne = Ass => async id => {
-	if(!id){
-		throw new Error('No id');
-	}
-	Ass.findByIdAndRemove(id);
-}
-
 const getAssesDueInAWeekSortedByDate = Ass => async ids =>{
 	if(!ids){
 		throw new Error('No ids supplied');
@@ -24,12 +18,6 @@ const getAssesDueInAWeekSortedByDate = Ass => async ids =>{
 	return asses.slice().sort((a,b) => a.dueDate-b.dueDate);
 }
 
-const update = Ass => async (id, data) =>{
-	if(!id || !data){
-		throw new Error('No id or data supplied for assignment update');
-	}
-	return await Ass.findByIdAndUpdate(id, data);
-}
 
 const create = Ass => async data =>{
 	if(!data){
@@ -50,9 +38,9 @@ const findMultiple = Ass => async ids => {
 module.exports = Ass => {
 	return {
 		deleteMultiple: deleteMultiple(Ass),
-		deleteOne: deleteOne(Ass),
+		deleteOne: BaseRequests.deleteById(Ass),
 		getAssesDueInAWeekSortedByDate: getAssesDueInAWeekSortedByDate(Ass),
-		update: update(Ass),
+		update: BaseRequests.update(Ass),
 		create: create(Ass),
 		findMultiple: findMultiple(Ass),
 	}

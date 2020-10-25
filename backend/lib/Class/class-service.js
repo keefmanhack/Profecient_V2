@@ -1,4 +1,5 @@
 const moment = require('moment');
+const BaseRequests = require('../BaseServiceRequests');
 
 const getClassesOccuringToday = ClassModel => async classIds => {
 	if(!classIds){
@@ -53,12 +54,6 @@ const toggleConnectionFrom = ClassModel => async (otherUserClassID, currUserID, 
 	await foundClass.save();
 }
 
-const create = ClassModel => async data =>{
-	if(!data){
-		throw new Error('No class Data');
-	}
-	return await ClassModel.create(data);
-}
 
 const updateClasses = ClassModel => async data=> {
 	if(!data){
@@ -84,13 +79,6 @@ const deleteMultiple = ClassModel => async ids =>{
 	for(let i =0; i<ids.length; i++){
 		await ClassModel.findByIdAndRemove(ids[i]);
 	}
-}
-
-const findById = ClassModel => async id => {
-	if(!id){
-		throw new Error('No id given');
-	}
-	return await ClassModel.findById(id);
 }
 
 const getAllClassAssIDs = ClassModel => async ids => {
@@ -123,23 +111,16 @@ const getClassAssignmentsDueInAWeekSortedByDate = ClassModel => async ids =>{
 	return returnArr.slice().sort((a,b) => a.ass.dueDate-b.ass.dueDate);
 }
 
-const findMultiple = ClassModel => async ids => {
-	if(!ids){
-		throw new Error("No ids supplied to find classes");
-	}
-	return await ClassModel.find({_id: ids});
-}
-
 module.exports = ClassModel => {
 	return {
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
 		toggleConnectionTo: toggleConnectionTo(ClassModel),
 		toggleConnectionFrom: toggleConnectionFrom(ClassModel),
-		create: create(ClassModel),
+		create: BaseRequests.create(ClassModel),
 		updateClasses: updateClasses(ClassModel),
 		deleteMultiple: deleteMultiple(ClassModel),
-		findById: findById(ClassModel),
-		findMultiple: findMultiple(ClassModel),
+		findById: BaseRequests.findById(ClassModel),
+		findMultiple: BaseRequests.findMultipleById(ClassModel),
 		getAllClassAssIDs: getAllClassAssIDs(ClassModel),
 		getClassAssignmentsDueInAWeekSortedByDate: getClassAssignmentsDueInAWeekSortedByDate(ClassModel),
 	}

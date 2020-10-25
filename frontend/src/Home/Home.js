@@ -12,7 +12,6 @@ import UserRequests       from '../APIRequests/User';
 import PostRequests       from '../APIRequests/Post';
 
 
-
 class Home extends React.Component{
 	constructor(props){
 		super(props);

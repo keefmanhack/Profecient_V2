@@ -1,23 +1,4 @@
-const findById = Semester => async id => {
-	if(!id){
-		throw new Error('No Semester id');
-	}
-	return await Semester.findById(id);
-}
-
-const findMultiple = Semester => async ids => {
-	if(!ids){
-		throw new Error("No ids received to find semesters");
-	}
-	return await Semester.find({_id: ids});
-}
-
-const create = Semester => async data => {
-	if(!data){
-		throw new Error('No data');
-	}
-	return await Semester.create(data);
-}
+const BaseRequests = require('../BaseServiceRequests');
 
 const findMutlipleAndPopulateClassAndAssignment = Semester => async ids =>{
 	if(!ids){
@@ -34,20 +15,15 @@ const getCurrentSemester = Semester => async id =>{
 	return await Semester.findById(id).populate('classes');
 }
 
-const deleteOne = Semester => async id => {
-	if(!id){
-		throw new Error('No id given');
-	}
-	await Semester.findByIdAndRemove(id);
-}
-
 module.exports = Semester => {
 	return {
-		findById: findById(Semester),
-		create: create(Semester),
+		create: BaseRequests.create(Semester),
+		findById: BaseRequests.findById(Semester),
+		deleteById: BaseRequests.deleteById(Semester),
+		size: BaseRequests.size(Semester),
+		findMultiple: BaseRequests.findMultipleById(Semester),
+		
 		findMutlipleAndPopulateClassAndAssignment: findMutlipleAndPopulateClassAndAssignment(Semester),
 		getCurrentSemester: getCurrentSemester(Semester),
-		deleteOne: deleteOne(Semester),
-		findMultiple: findMultiple(Semester),
 	}
 }

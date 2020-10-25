@@ -1,3 +1,5 @@
+const BaseRequests = require('../BaseServiceRequests');
+
 const getUserStreams = Message => async streamIds => {
 	if(!streamIds){
 		return [];
@@ -23,26 +25,12 @@ const updateStream = Message => async (streamID, newMessage) => {
 	return await stream.save();
 }
 
-const findStream = Message => async id => {
-	if(!id){
-		throw new Error('No message id');
-	}
-	return await Message.findById(id);
-}
-
-const createNewStream = Message => async data =>{
-	if(!data){
-		throw new Error("no data supplied to create a new message");
-	}
-	return await Message.create(data);
-}
-
 module.exports = Message => {
 	return {
 		getUserStreams: getUserStreams(Message),
 		updateStream: updateStream(Message),
-		findStream: findStream(Message),
-		createNewStream: createNewStream(Message),
+		findStream: BaseRequests.findById(Message),
+		createNewStream: BaseRequests.create(Message),
 		getStreamsWOutPopComms: getStreamsWOutPopComms(Message),
 	}
 }

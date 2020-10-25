@@ -35,11 +35,6 @@ describe('Creates a new post notification bucket when user creates a post', () =
 			await UserService.deleteById(user1._id);
 
 
-			expect(await PostBucketService.size()).toEqual(0);
-			expect(await UserService.size()).toEqual(0);
-			expect(await PostService.size()).toEqual(0);
-
-
 			done();
 		});
 	})
@@ -59,18 +54,14 @@ describe('Deletes a post notification bucket from a user when  post is deleted',
 
 	it('Can delete the post and the post notification bucket', async done => {
 		let user1 = await UserService.create(users[0]);
-		await PostHandler.generateNewPostWithNotifBucket("This is my post", user1._id, null, async function(newPost){
-			await PostHandler.deletePostAndNotifBucket(newPost._id, user1._id, async function(){
+		PostHandler.generateNewPostWithNotifBucket("This is my post", user1._id, null, async function(newPost){
+			PostHandler.deletePostAndNotifBucket(newPost._id, user1._id, async function(){
 				user1 = await UserService.findById(user1._id);
 				expect(user1.notifications.relations.postBuckets.length).toEqual(0);
 				expect(user1.posts.length).toEqual(0);
 
 				await UserService.deleteById(user1._id);
 
-				expect(await PostBucketService.size()).toEqual(0);
-				expect(await UserService.size()).toEqual(0);
-				expect(await PostService.size()).toEqual(0);
-				
 				done();
 			})
 		});

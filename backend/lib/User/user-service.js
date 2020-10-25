@@ -1,18 +1,4 @@
-const create = User => async userData => {
-	if(!userData){
-		throw new Error(`Message: ${userData}`);
-	}
-	const newUser = new User(userData);
-	return await newUser.save();
-}
-
-const findById = User => async id => {
-	if(!id){
-		throw new Error(`Message: ${id}`);
-	}
-	const user = await User.findById(id);
-	return user;
-}
+const BaseRequests = require('../BaseServiceRequests');
 
 const findUsersByName = User => async searchString => {
 	if(!searchString){
@@ -56,13 +42,6 @@ const deleteAcNotif = User => async (userID, noteID) =>{
 	const user = await User.findById(userID);
 	user.notifications.academic.classNote.pull(noteID);
 	await user.save();
-}
-
-const findMultiple = User => async (ids) => {
-	if(!ids){
-		throw new Error('No ids');
-	}
-	return await User.find({_id: ids});
 }
 
 const findLinks = User => async (classSearchData, currentLinks) => {
@@ -118,26 +97,20 @@ const postNewNotification = User => async (id, newNoteID) => {
 	return await user.save();
 }
 
-const deleteById = User => async id => {
-	if(!id){
-		throw new Error("No id supplied to delete a user");
-	}
-	return await User.findByIdAndRemove(id);
-}
-
-
 module.exports = User => {
 	return {
-		create: create(User),
-		findById: findById(User),
+		create: BaseRequests.create(User),
+		findById: BaseRequests.findById(User),
+		deleteById: BaseRequests.deleteById(User),
+		size: BaseRequests.size(User),
+		findMultiple: BaseRequests.findMultipleById(User),
+
 		findUsersByName: findUsersByName(User),
 		toggleUserFollowing: toggleUserFollowing(User),
 		deleteAcNotif : deleteAcNotif(User),
-		findMultiple: findMultiple(User),
 		findLinks: findLinks(User),
 		postNewNotification: postNewNotification(User),
-		toggleUserFollowers: toggleUserFollowers(User),
-		deleteById: deleteById(User),
+		toggleUserFollowers: toggleUserFollowers(User)
 	}
 }
 

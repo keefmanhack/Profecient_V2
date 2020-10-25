@@ -1,5 +1,6 @@
 const async	  = require('async'),
-	  aws 		= require('aws-sdk');
+	  aws 		= require('aws-sdk'),
+	  BaseRequests = require('../BaseServiceRequests');
 
 const s3 = new aws.S3(
 	{
@@ -34,12 +35,6 @@ const toggleLike = Post => async (userID, postID) => {
 	await post.save();
 }
 
-const findById = Post => async id => {
-	if(!id){
-		throw new Error('No id for post');
-	}
-	return await Post.findById(id);
-}
 
 const deleteById = Post => async (id, cb) =>{
 	if(!id){
@@ -137,7 +132,7 @@ module.exports = Post => {
 		findMutlipleByAuthor: findMutlipleByAuthor(Post),
 		findMultiple: findMultiple(Post),
 		toggleLike: toggleLike(Post),
-		findById: findById(Post),
+		findById: BaseRequests.findById(Post),
 		create: create(Post),
 		deleteById: deleteById(Post),
 	}

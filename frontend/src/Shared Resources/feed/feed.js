@@ -19,7 +19,7 @@ function Feed(props){
 			data={data}
 			currentUser={props.currentUser}
 			postReq={postReq}
-			key={index}
+			key={data._id}
 			reloadPosts={() => props.reloadPosts()}
 		/>
 	) : <p className='no-data'> <span role="img" aria-label="crying">😥</span> {props.noFeedDataMsg} <span role="img" aria-label="thumbs-up">👍</span></p>;

@@ -1,18 +1,4 @@
-const getNotifications = Notification => async notifcationIDs =>{
-	if(!notifcationIDs){
-		throw new Error(`No ID: ${notifcationIDs}`);
-	}
-
-	const notifs = await Notification.findById(notifcationIDs);
-	return notifs;
-}
-
-const deleteNotification = Notification => notifcationID => {
-	if(!notifcationID){
-		throw new Error(`No ID: ${notifcationIDs}`);
-	}
-	Notification.findByIdAndRemove(notifcationID);
-}
+const BaseRequests = require('../../BaseServiceRequests');
 
 const createNewAssNotification = Notification => async (usersClassToBeNotified, userNotifing, userNotifingClass, notifingUserAssignmentID) => {
 	if(!usersClassToBeNotified || !userNotifing || !userNotifingClass || !notifingUserAssignmentID){
@@ -43,8 +29,9 @@ const createNewAssNotification = Notification => async (usersClassToBeNotified, 
 
 module.exports = Notification => {
 	return{
-		getNotifications: getNotifications(Notification),
-		deleteNotification: deleteNotification(Notification),
+		getNotifications: BaseRequests.findById(Notification),
+		deleteNotification : BaseRequests.deleteById(Notification),
+
 		createNewAssNotification: createNewAssNotification(Notification)
 	}
 }
