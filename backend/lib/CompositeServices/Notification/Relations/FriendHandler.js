@@ -27,9 +27,6 @@ class FriendHandler{
 	}
 
 	static async prepareDataToSend(notifIDs){
-		if(!notifIDs){
-			throw new Error('No notif ids to prepare data');
-		}
 		let returnArr = [];
 		for(let i =0; i<notifIDs.length; i++){
 			const notif = await newFollowerService.findById(notifIDs[i]);

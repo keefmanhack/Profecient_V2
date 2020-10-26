@@ -41,7 +41,7 @@ router.delete('/users/:id/posts/:postID', async (req, res) => {
 
 router.post('/users/:id/posts/:postID/likes', async (req, res) =>{
 	try{
-		await PostService.toggleLike(req.params.id, req.params.postID);
+		await PostHandler.toggleLiked(req.params.postID, req.params.id);
 		res.send();
 	}catch(err){
 		console.log(err);

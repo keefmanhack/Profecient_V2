@@ -27,12 +27,15 @@ const toggleLike = Post => async (userID, postID) => {
 		throw new Error('No user id or postID');
 	}
 	const post = await Post.findById(postID);
+	let postWasLiked = false;
 	if(post.likes.includes(userID)){
-		post.likes.pop(userID);
+		post.likes.pull(userID);
 	}else{
 		post.likes.push(userID);
+		postWasLiked = true;
 	}
 	await post.save();
+	return postWasLiked;
 }
 
 

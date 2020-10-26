@@ -53,8 +53,7 @@ let UserSchema = mongoose.Schema({
 				ref: 'NewFollowerNote',
 			}],
 			postBuckets: [{
-				newInteractionsCt: {type: Number, default: 0},
-				bucket: {type: mongoose.Schema.Types.ObjectId, ref: 'PostBucket'}
+				type: mongoose.Schema.Types.ObjectId, ref: 'PostBucket'
 			}]
 		},
 		messages: {
