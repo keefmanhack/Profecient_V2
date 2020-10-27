@@ -1,5 +1,6 @@
 const PostService = require('../../../Post/index');
 const PostBucketService = require('../../../Notification/Relations/PostBucket/index');
+const NotificationService = require('../../../Notification/index');
 const UserService = require('../../../User/index');
 const User = require('../../../User/index');
 
@@ -12,14 +13,17 @@ class PostHandler{
 
 		const foundPost = await PostService.findById(postID);
 		const author = await UserService.findById(foundPost.author._id);
+
+		let bucket;
 		if(postWasLiked){
-			await PostBucketService.addNewLike(foundPost.notifBucketID, userMayHaveLikedID);
+			bucket = await PostBucketService.addNewLike(foundPost.notifBucketID, userMayHaveLikedID);
 
 			author.notifications.relations.unDismissed++;
 		}else{
-			await PostBucketService.removeALike(foundPost.notifBucketID, userMayHaveLikedID);
+			bucket = await PostBucketService.removeALike(foundPost.notifBucketID, userMayHaveLikedID);
 			author.notifications.relations.unDismissed--;
 		}
+		await NotificationService.sendItemToFront(author.notifications.relations.notifs, bucket._id)
 		await author.save();
 		return postWasLiked;
 	}
@@ -31,10 +35,11 @@ class PostHandler{
 
 		const newPostNotifBucket = await PostBucketService.create();
 		const user = await UserService.findById(userID);
-		user.notifications.relations.postBuckets.push(newPostNotifBucket);
 		PostService.create(text, userID, images, newPostNotifBucket._id, async function(newPost){
 			newPostNotifBucket.postID = newPost._id;
 			await newPostNotifBucket.save();
+
+			await NotificationService.insertItem(user.notifications.relations.notifs, newPostNotifBucket);
 
 			user.posts.unshift(newPost);
 			await user.save();
@@ -49,12 +54,7 @@ class PostHandler{
 
 		const post = await PostService.findById(postID);
 		const user = await UserService.findById(userID);
-		for(let i = 0; i<user.notifications.relations.postBuckets.length; i++){
-			const postBucket = user.notifications.relations.postBuckets[i];
-			if(postBucket + "" === post.notifBucketID + ""){
-				user.notifications.relations.postBuckets.pop(i);
-			}
-		}
+		await NotificationService.removeItem(user.notifications.relations.notifs, post.notifBucketID);
 
 		user.posts.pull(postID);
 		await user.save();

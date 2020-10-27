@@ -5,4 +5,4 @@ const NewFollowerSchema = mongoose.Schema({
 	timeStamp: {type: Date, Default: new Date()}
 })
 
-module.exports = mongoose.model('NewFollowerNotif', NewFollowerSchema);
+module.exports = mongoose.model('NewFollower', NewFollowerSchema);

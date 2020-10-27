@@ -1,5 +1,6 @@
 const UserService         = require('../../../User/index'),
-      newFollowerService  = require('../../../Notification/Relations/New Follower/index');
+	  newFollowerService  = require('../../../Notification/Relations/New Follower/index'),
+	  NotificationService = require('../../../Notification/index');
 
 
 class FriendHandler{
@@ -10,8 +11,10 @@ class FriendHandler{
 		const user = await UserService.findById(userID);
 		await newFollowerService.deleteById(notifID);
 		user.notifications.relations.unDismissed--;
-		user.notifications.relations.newFollowerNote.pull(notifID);
-		return await user.save();
+
+		const notifBucket = await NotificationService.findById(user.notifications.relations.notifs);
+		notifBucket.pull(notifID);
+		return await notifBucket.save();
 	}
 
 	static async createAndAddANewFollowerNotif(userFollowingID, userToBeFollowedID){
@@ -21,8 +24,10 @@ class FriendHandler{
 		const userToBeFollowed = await UserService.findById(userToBeFollowedID);
 		const newNotif = await newFollowerService.create(userFollowingID);
 		userToBeFollowed.notifications.relations.unDismissed++;
-		userToBeFollowed.notifications.relations.newFollowerNote.push(newNotif);
-		await userToBeFollowed.save();
+
+		const notifBucket = await NotificationService.findById(userToBeFollowed.notifications.relations.notifs);
+		notifBucket.push(newNotif);
+		await notifBucket.save();
 		return newNotif;
 	}
 

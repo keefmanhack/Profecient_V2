@@ -1,4 +1,5 @@
 const BaseRequests = require('../BaseServiceRequests');
+const NotificationService = require('../Notification/index');
 
 const findUsersByName = User => async searchString => {
 	if(!searchString){
@@ -97,14 +98,20 @@ const postNewNotification = User => async (id, newNoteID) => {
 	return await user.save();
 }
 
+const create = User => async data => {
+	let user = new User(data);
+	user.notifications.relations.notifBucket = await NotificationService.create();//need to add others in the future
+	return await user.save();
+}
+
 module.exports = User => {
 	return {
-		create: BaseRequests.create(User),
 		findById: BaseRequests.findById(User),
 		deleteById: BaseRequests.deleteById(User),
 		size: BaseRequests.size(User),
 		findMultiple: BaseRequests.findMultipleById(User),
 
+		create: create(User),
 		findUsersByName: findUsersByName(User),
 		toggleUserFollowing: toggleUserFollowing(User),
 		deleteAcNotif : deleteAcNotif(User),

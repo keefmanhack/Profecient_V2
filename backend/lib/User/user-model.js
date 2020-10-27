@@ -48,13 +48,7 @@ let UserSchema = mongoose.Schema({
 		},
 		relations: {
 			unDismissed: {type: Number, default: 0},
-			newFollowerNote: [{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'NewFollowerNote',
-			}],
-			postBuckets: [{
-				type: mongoose.Schema.Types.ObjectId, ref: 'PostBucket'
-			}]
+			notifBucket: {type: mongoose.Schema.Types.ObjectId, ref: 'Notifications'},
 		},
 		messages: {
 			unDismissed: {type: Number, default: 0},
