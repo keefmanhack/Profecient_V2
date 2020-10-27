@@ -21,12 +21,13 @@ const sendItemToFront = NotificationModel => async (id, itemID) => {
     return await notifs.save();
 }
 
-const removeItem = NotificationModel => async (id, itemID) => {
+const removeItemByToId = NotificationModel => async (id, itemID) => {
     if(!id || !itemID){
         throw new Error("Missing data to remove a notification item");
     }
     const foundNotifs = await NotificationModel.findById(id);
-    foundNotifs.list.pull(itemID);
+
+    foundNotifs.list.splice(foundNotifs.list.indexOf({to: itemID}), 1);
     return await foundNotifs.save();
 }
 
@@ -42,10 +43,11 @@ module.exports = NotificationModel => {
         findById: BaseRequests.findById(NotificationModel),
         create: BaseRequests.create(NotificationModel),
         deleteById: BaseRequests.deleteById(NotificationModel),
+        size: BaseRequests.size(NotificationModel),
 
         insertItem: insertItem(NotificationModel),
         sendItemToFront: sendItemToFront(NotificationModel),
-        removeItem: removeItem(NotificationModel),
+        removeItemByToId: removeItemByToId(NotificationModel),
         getPopulatedList: getPopulatedList(NotificationModel),
     }
 }

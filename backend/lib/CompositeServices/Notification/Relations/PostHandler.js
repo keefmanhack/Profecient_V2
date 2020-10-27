@@ -39,7 +39,7 @@ class PostHandler{
 			newPostNotifBucket.postID = newPost._id;
 			await newPostNotifBucket.save();
 
-			await NotificationService.insertItem(user.notifications.relations.notifs, newPostNotifBucket);
+			await NotificationService.insertItem(user.notifications.relations.notifBucket, newPostNotifBucket);
 
 			user.posts.unshift(newPost);
 			await user.save();
@@ -54,7 +54,7 @@ class PostHandler{
 
 		const post = await PostService.findById(postID);
 		const user = await UserService.findById(userID);
-		await NotificationService.removeItem(user.notifications.relations.notifs, post.notifBucketID);
+		await NotificationService.removeItemByToId(user.notifications.relations.notifBucket, post.notifBucketID);
 
 		user.posts.pull(postID);
 		await user.save();

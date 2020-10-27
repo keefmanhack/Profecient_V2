@@ -132,10 +132,12 @@ function uploadImages(images, directory, cb) {
 
 module.exports = Post => {
 	return {
+		findById: BaseRequests.findById(Post),
+		size: BaseRequests.size(Post),
+
 		findMutlipleByAuthor: findMutlipleByAuthor(Post),
 		findMultiple: findMultiple(Post),
 		toggleLike: toggleLike(Post),
-		findById: BaseRequests.findById(Post),
 		create: create(Post),
 		deleteById: deleteById(Post),
 	}
