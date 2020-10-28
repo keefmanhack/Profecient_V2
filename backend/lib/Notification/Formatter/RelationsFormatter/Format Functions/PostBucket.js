@@ -3,7 +3,6 @@ const PostService = require('../../../../Post/index');
 const CommentService = require('../../../../Comment/index');
 
 const formatFunc = async postBucketData => {
-    console.log(postBucketData);
     if(!postBucketData.lastLiker  && !postBucketData.lastComment){
         return [];
     }
@@ -42,7 +41,8 @@ const formatFunc = async postBucketData => {
             text: post.text,
             photos: post.photos,
         },
-        timeStamp: postBucketData.timeStamp
+        timeStamp: postBucketData.timeStamp,
+        type: 'PostBucket',
     }
     return [data];
 }

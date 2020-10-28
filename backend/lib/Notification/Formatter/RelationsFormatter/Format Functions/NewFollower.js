@@ -9,6 +9,7 @@ const formatFunc = async newFollowerData => {
         followerID: newFollower._id,
         _id: newFollowerData._id,
         timeStamp: newFollowerData.timeStamp,
+        type: 'NewFollower',
     }
     return [data];
 }

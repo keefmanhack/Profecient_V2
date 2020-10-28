@@ -1,7 +1,7 @@
 const BaseRequests = require('../../../../BaseServiceRequests');
 
 const setLastLiker = PostBucket => async (id, userID) => {
-	if(!id || !userID){
+	if(!id){
 		throw new Error("Missing data to add a like to postBucket");
 	}
 	const bucket = await PostBucket.findById(id);

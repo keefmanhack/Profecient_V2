@@ -60,11 +60,13 @@ describe('Creates a new post notification bucket when user creates a post', () =
 
             await PostHandler.toggleLiked(post1._id, user2._id, true);
             relNotifications =await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
-            
+            user1 = await UserService.findById(user1._id);
+
             //test
             expect(relNotifications.list.length).toEqual(2);
             expect(relNotifications.list[0].to._id).toEqual(post1.notifBucketID);
             expect(relNotifications.list[0].to.lastLiker).toEqual(user2._id);
+            expect(user1.notifications.relations.unDismissed).toEqual(1);
             done();
         })
     })

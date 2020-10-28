@@ -6,20 +6,17 @@ const User = require('../../../User/index');
 
 class PostHandler{
 	static async toggleLiked(postID, toggledUserID, wasLiked){
-		if(!postID || !toggledUserID || !wasLiked){
+		if(!postID || !toggledUserID){
 			throw new Error('Missing data to toggle like on post');
 		}
 		const post = await PostService.toggleLike(postID, toggledUserID, wasLiked);
 		if(wasLiked){
 			const postBucket = await PostBucketService.setLastLiker(post.notifBucketID, toggledUserID);
-			const author = await UserService.findById(post.author);
+			const author = await UserService.incrementRelationsNotifCt(post.author);
 			await NotificationService.sendItemToFrontByTo(author.notifications.relations.notifBucket, postBucket._id);
 		}else{
-			if(post.likes.length>=1){
-				await PostBucketService.setLastLiker(post.notifBucketID, post.likes[post.likes.length-1]);
-			}else{
-				await PostBucketService.setLastLiker(post.notifBucketID, null);
-			}
+			if(post.likes.length===0){await PostBucketService.setLastLiker(post.notifBucketID, null)}
+			await UserService.decrementRelationsNotifCt(post.author);
 		}
 		return post;
 	}
