@@ -88,36 +88,65 @@ const findLinks = User => async (classSearchData, currentLinks) => {
 	return returnLinks;
 }
 
-const postNewNotification = User => async (id, newNoteID) => {
-	if(!id || !newNoteID){
-		throw new Error('Missing notification data to post');
-	}
-	const user = await User.findById(id);
-	user.notifications.academic.unDismissed++;
-	user.notifications.academic.classNote.unshift(newNoteID);
+const create = User => async data => {
+	let user = new User(data);
+	user.following.push(user._id);
+	user.notifications.relations.notifBucket = await NotificationService.create();//need to add others in the future
 	return await user.save();
 }
 
-const create = User => async data => {
-	let user = new User(data);
-	user.notifications.relations.notifBucket = await NotificationService.create();//need to add others in the future
-	return await user.save();
+const deleteById = User => async id => {
+	if(!id){
+		throw new Error("Missing id to delete user");
+	}
+	const foundUser = await User.findById(id);
+	NotificationService.deleteById(foundUser.notifications.relations.notifBucket);
+	await User.findByIdAndRemove(id);
+}
+
+const incrementRelationsNotifCt = User => async id => {
+	if(!id){
+		throw new Error('Missing id to increment rel notifs');
+	}
+	const foundUser = await User.findById(id);
+	foundUser.notifications.relations.unDismissed++;
+	return await foundUser.save();
+}
+
+const decrementRelationsNotifCt = User => async id => {
+	if(!id){
+		throw new Error('Missing id to decrement rel notifs');
+	}
+	const foundUser = await User.findById(id);
+	foundUser.notifications.relations.unDismissed--;
+	return await foundUser.save();
+}
+
+const insertNewPost = User => async (id, newPostID) => {
+	if(!id || !newPostID){
+		throw new Error("Missing data to add a new post to user");
+	}
+	const foundUser = await User.findById(id);
+	foundUser.posts.unshift(newPostID);
+	return await foundUser.save();
 }
 
 module.exports = User => {
 	return {
 		findById: BaseRequests.findById(User),
-		deleteById: BaseRequests.deleteById(User),
 		size: BaseRequests.size(User),
 		findMultiple: BaseRequests.findMultipleById(User),
 
+		deleteById: deleteById(User),
 		create: create(User),
 		findUsersByName: findUsersByName(User),
 		toggleUserFollowing: toggleUserFollowing(User),
 		deleteAcNotif : deleteAcNotif(User),
 		findLinks: findLinks(User),
-		postNewNotification: postNewNotification(User),
-		toggleUserFollowers: toggleUserFollowers(User)
+		toggleUserFollowers: toggleUserFollowers(User),
+		incrementRelationsNotifCt: incrementRelationsNotifCt(User),
+		decrementRelationsNotifCt: decrementRelationsNotifCt(User),
+		insertNewPost: insertNewPost(User),
 	}
 }
 

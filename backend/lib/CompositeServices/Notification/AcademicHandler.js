@@ -1,5 +1,5 @@
 const ClassService        = require('../../Class/index'),
-	  ClassNoteService    = require('../../Notification/Class/index'),
+	  ClassNoteService    = require('../../Notification/Categories/Class/index'),
 	  UserService         = require('../../User/index');
 class AcademicHandler{
 	static async sendConnectionsFromNewAssNotification(userClass, user, assID){

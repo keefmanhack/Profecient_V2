@@ -66,8 +66,8 @@ class Post extends React.Component{
 		this.setState({comments: await this.props.postReq.getComments(this.props.data._id)});
 	}
 
-	async toggleLike(){
-		await this.props.postReq.toggleLike(this.props.data._id);
+	async toggleLike(wasLiked){
+		await this.props.postReq.toggleLike(this.props.data._id, wasLiked);
 		await this.getLikes();
 	}
 
@@ -97,7 +97,12 @@ class Post extends React.Component{
 				{this.state.showLoader ? <Loader/> : null}
 				{this.props.data.author._id === this.props.currentUser._id ? <button onClick={() => this.setState({showDialog: true})} className='edit white-c'>...</button> : null}
 				<Link to={'/profile/' + this.props.data.author._id} id={this.props.data.author._id}>
-					<img className='profile-photo' alt='Not found' src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.data.author.profilePictureURL}/>
+					<img 
+						className='profile-photo' 
+						alt='Not found' 
+						src={"https://proficient-assets.s3.us-east-2.amazonaws.com/" + this.props.data.author.profilePictureURL}
+						onError={(e) => {e.target.onerror=null; e.target.src='/generic_person.jpg'}}
+					/>
 					<h1 className='white-c'>{this.props.data.author.name}</h1>
 				</Link>
 				<FadeInOutHandleState condition={this.state.showDialog}>
@@ -121,7 +126,7 @@ class Post extends React.Component{
 			
 				<InteractionSection 
 					liked={this.state.likes.includes(this.props.currentUser._id)}
-					toggleLike={() => this.toggleLike()}
+					toggleLike={(wasLiked) => this.toggleLike(wasLiked)}
 					newComment={(text) => this.newComment(text)}
 				/>
 
@@ -170,7 +175,7 @@ class InteractionSection extends React.Component{
 				<div className='row'>
 					<div className='col-lg-1'>
 						<button 
-							onClick={() => this.props.toggleLike()} 
+							onClick={() => this.props.toggleLike(!this.props.liked)} 
 							className={this.props.liked ? 'blue-c' : 'white-c'}
 						>
 						<i className="fas fa-heart"></i></button>

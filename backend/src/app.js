@@ -61,5 +61,17 @@ app.post('/users/:id/following', async (req, res) =>{
 		console.log(err);
 	}
 })
+const testUsers = require('../lib/testUsers');
+app.get('/createTestUsers', async (req, res) => {
+	try{
+		await UserService.create(testUsers[0]);
+		await UserService.create(testUsers[1]);
+		await UserService.create(testUsers[2]);
+		console.log('test users created');
+		res.send();
+	}catch(err){
+		console.log(err);
+	}
+})
 
 module.exports = app;

@@ -80,7 +80,7 @@ class PostCreator extends React.Component{
 			});
 
 			const res = await this.postReq.newPost(this.textArea.current.innerText, this.state.images);
-			if(res){
+			if(res && res.data !== 'Error'){
 				this.setState({
 			    	sendingData: false,
 			    	images: null,

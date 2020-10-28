@@ -1,6 +1,6 @@
 const MessageService      = require('../Message/index'),
 	  UserService         = require('../User/index'),
-	  MsgNoteService      = require('../Notification/Message/index');
+	  MsgNoteService      = require('../Notification/Categories/Message/index');
 
 class MessageHandler{
 	static async handleNewMessage(msgData){

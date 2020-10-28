@@ -101,7 +101,11 @@ class Header extends React.Component{
 
 				
 				<span className='profile'>
-					<img src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.currentUser.profilePictureURL} alt=""/>
+					<img 
+						src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.currentUser.profilePictureURL} 
+						alt=""
+						onError={(e) => {e.target.onerror = null; e.target.src="/generic_school.jpg"}}
+					/>
 					<Link to={'/profile/' + this.props.currentUser._id}>
 						<button className='blue-c'><i className="fas fa-chevron-down"></i></button>
 					</Link>
@@ -146,7 +150,7 @@ class RelationsNotifications extends React.Component{
 	}
 
 	async deleteNewFollowerNotif(id){
-		await this.props.notifReq.deleteRelationNewFollowerNotif(id);
+		await this.props.notifReq.deleteRelationNotif(id);
 		this.loadRelationsNotifications();
 	}
 
@@ -209,6 +213,7 @@ function NewFollowerNote(props){
 					{props.data.name}
 				</span>
 			</Link>
+			<h3 className='time-stamp'>{moment(props.data.timeStamp).fromNow()}</h3>
 		</div>
 	)
 }

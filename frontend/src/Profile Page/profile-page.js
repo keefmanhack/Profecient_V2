@@ -80,7 +80,7 @@ class ProfilePage extends React.Component{
 										</div>
 										<div className='follow-count'>
 											<div style={{display: 'inline-block', marginRight: 15}}>
-												<h4 className='blue-c'>{this.state.profile.following.length}</h4>
+												<h4 className='blue-c'>{this.state.profile.following.length-1 /*since users follow themselves*/}</h4>
 												<h4 className='muted-c'>Following</h4>
 											</div>
 											<div style={{display: 'inline-block'}}>

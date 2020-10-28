@@ -35,5 +35,15 @@ class UserRequests{
 		}
 
 	}
+	
+	createTestUsers = async () => {
+		try{
+			const endPoint = '/createTestUsers';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
 }
 export default UserRequests;

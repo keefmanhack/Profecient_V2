@@ -17,11 +17,11 @@ class App extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.testUserId = '5f5aab5a6f1dda2b82855985';
+		this.testUserId = '5f98ad43c927af87eb62a42f';
 
-		//Keefer - 5f4aa6042c0c8f715ae71d97
-		//Sarah  - 5f5aab5a6f1dda2b82855985
-		//Pat    - 5f5d3bea7c33842654ec2efb
+		//Stan Smith - 5f98ad43c927af87eb62a42f
+		//Quenn Latifa  - 5f98ad43c927af87eb62a431
+		//King Bee    - 5f98ad43c927af87eb62a433
 
 		this.UserRqst = new UserRequests(this.testUserId);
 
@@ -34,6 +34,7 @@ class App extends React.Component{
 
 	componentDidMount(){
 		this.getCurrentUser();
+		// this.UserRqst.createTestUsers();
 	}
 
 	// getRequestedUser(id){

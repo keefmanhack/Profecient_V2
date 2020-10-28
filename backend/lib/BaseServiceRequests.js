@@ -1,7 +1,7 @@
 const { Model } = require("mongoose");
 
 const size = Model => async () => {
-     const val = await Model.count({});
+     const val = await Model.countDocuments({});
      return val;
 }
 const findById = Model => async id => {

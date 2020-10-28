@@ -1,25 +1,33 @@
 const express = require("express"),
 	  router  = express.Router();
 
-const ClassNoteService   = require('../../lib/Notification/Class/index'),
-      UserService        = require('../../lib/User/index'),
-      MessageNoteService = require('../../lib/Notification/Message/index');
+const ClassNoteService    = require('../../lib/Notification/Categories/Class/index'),
+      UserService         = require('../../lib/User/index'),
+	  MessageNoteService  = require('../../lib/Notification/Categories/Message/index'),
+	  NotificationService = require('../../lib/Notification/index');
+
+const Formatter = require('../../lib/Notification/Formatter/formatter');
+const RelFormatMap = require('../../lib/Notification/Formatter/RelationsFormatter/formatMap');
+
 
 const FriendHandler = require('../../lib/CompositeServices/Notification/Relations/FriendHandler');
 
 router.get('/users/:id/notifications/relations', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
-		const notifs = await FriendHandler.prepareDataToSend(user.notifications.relations.newFollowerNote);
-		res.json(notifs);
+		const userRelNotifID = user.notifications.relations.notifBucket;
+		const relNotifs = await NotificationService.findByIdAndPopulateList(userRelNotifID);
+		const formattedNotifs = await Formatter.format(relNotifs, RelFormatMap);
+		res.json(formattedNotifs);
 	}catch(err){
 		console.log(err);
+		res.send();
 	}
 })
 
-router.delete('/users/:id/notifications/relations/newFollower/:followerID', async (req, res) => {
+router.delete('/users/:id/notifications/relations/:notifID', async (req, res) => {
 	try{
-		await FriendHandler.removeNotification(req.params.id, req.params.followerID);
+		await FriendHandler.removeNotification(req.params.id, req.params.notifID);
 		res.send();
 	}catch(err){
 		console.log(err);

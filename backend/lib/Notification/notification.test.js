@@ -3,8 +3,8 @@ const mongoose_tester = require('../../mongoose_test_config');
 const users = require('../testUsers');
 
 const NotificationService = require('./index');
-const PostBucketService = require('./Relations/PostBucket/index');
-const NewFollowerService = require('./Relations/New Follower/index');
+const PostBucketService = require('./Categories/Relations/PostBucket/index');
+const NewFollowerService = require('./Categories/Relations/New Follower/index');
 const UserService = require('../User/index');
 
 require('dotenv').config();
@@ -25,7 +25,6 @@ describe('Able to insert generic items into list', () =>{
 	afterAll(async done => {
         await PostBucketService.deleteById(createdBucket._id);
         await NewFollowerService.deleteById(newFollowerNotif._id);
-        await NotificationService.deleteById(Notifications._id);
         await UserService.deleteById(newUser._id);
 
         await mongoose_tester.connection.close();
@@ -37,10 +36,9 @@ describe('Able to insert generic items into list', () =>{
         await NotificationService.insertItem(Notifications._id, newFollowerNotif);
 
         notifBucket = await NotificationService.findById(Notifications._id);
-        const res = await NotificationService.getPopulatedList(Notifications._id);
 
         expect(notifBucket.list.length).toEqual(2);
-        expect(notifBucket.list[0].to).toEqual(createdBucket._id);
-        expect(notifBucket.list[1].to).toEqual(newFollowerNotif._id);
+        expect(notifBucket.list[1].to).toEqual(createdBucket._id);
+        expect(notifBucket.list[0].to).toEqual(newFollowerNotif._id);
     })
 })

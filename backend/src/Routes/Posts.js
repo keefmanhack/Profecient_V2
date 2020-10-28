@@ -41,7 +41,7 @@ router.delete('/users/:id/posts/:postID', async (req, res) => {
 
 router.post('/users/:id/posts/:postID/likes', async (req, res) =>{
 	try{
-		await PostHandler.toggleLiked(req.params.postID, req.params.id);
+		await PostHandler.toggleLiked(req.params.postID, req.params.id, req.body.wasLiked);
 		res.send();
 	}catch(err){
 		console.log(err);
@@ -81,11 +81,12 @@ router.post('/users/:id/posts/:postID/comments', async (req, res) =>{
 
 router.post('/users/:id/posts', upload.array('images',6), (req, res) => {
 	try{
-		PostHandler.generateNewPostWithNotifBucket(req.body.text, req.params.id, req.body.images, () => {
+		PostHandler.createNewPost(req.body.text, req.params.id, req.body.images, () => {
 			res.send();
 		})
 	}catch(err){
 		console.log(err);
+		res.send('Error');
 	}
 });
 

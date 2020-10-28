@@ -1,4 +1,4 @@
-const BaseRequests = require('../../BaseServiceRequests');
+const BaseRequests = require('../../../BaseServiceRequests');
 
 const incrementNote = Notification => async (id, lastMessage) => {
 	if(!id || !lastMessage){

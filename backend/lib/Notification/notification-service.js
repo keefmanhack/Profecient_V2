@@ -5,19 +5,19 @@ const insertItem = NotificationModel => async (id, item) =>{
         throw new Error("Missing item to insert");
     }
     const notifications = await NotificationModel.findById(id);
-    notifications.list.push({to: item._id, onModel: item.constructor.modelName});
+    notifications.list.unshift({to: item._id, onModel: item.constructor.modelName});
     return await notifications.save();
 
 }
 
-const sendItemToFront = NotificationModel => async (id, itemID) => {
+const sendItemToFrontByTo = NotificationModel => async (id, itemID) => {
     if(!id || !itemID){
         throw new Error("Missing data to change object position");
     }
     const notifs = await NotificationModel.findById(id);
     const itemIndex = notifs.list.indexOf(itemID);
-    notifs.list.splice(itemIndex, 1);
-    notifs.list.push(itemID);
+    const item = notifs.list.pop(itemIndex);
+    notifs.list.unshift(item);
     return await notifs.save();
 }
 
@@ -31,7 +31,7 @@ const removeItemByToId = NotificationModel => async (id, itemID) => {
     return await foundNotifs.save();
 }
 
-const getPopulatedList = NotificationModel => async id => {
+const findByIdAndPopulateList = NotificationModel => async id => {
     if(!id){
         throw new Error("Missing id to populate list");
     }
@@ -46,8 +46,8 @@ module.exports = NotificationModel => {
         size: BaseRequests.size(NotificationModel),
 
         insertItem: insertItem(NotificationModel),
-        sendItemToFront: sendItemToFront(NotificationModel),
+        sendItemToFrontByTo: sendItemToFrontByTo(NotificationModel),
         removeItemByToId: removeItemByToId(NotificationModel),
-        getPopulatedList: getPopulatedList(NotificationModel),
+        findByIdAndPopulateList: findByIdAndPopulateList(NotificationModel),
     }
 }

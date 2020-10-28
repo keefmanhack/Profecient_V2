@@ -61,10 +61,10 @@ class PostRequests{
 		}
 	}
 
-	toggleLike = async (id) =>{
+	toggleLike = async (id, wasLiked) =>{
 		try{
 			const endPoint = '/users/' + this.currUserID + '/posts/' + id + '/likes';
-			const res = await axios.post(endPoint,{});
+			const res = await axios.post(endPoint,{wasLiked: wasLiked});
 			return res.data;
 		}catch(err){
 			console.log(err);

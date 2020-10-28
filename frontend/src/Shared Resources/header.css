@@ -85,6 +85,14 @@
     font-weight: 200;
 }
 
+.note h3.time-stamp{
+    position: absolute;
+    bottom: -3px;
+    right: 6px;
+    font-size: 10px;
+    font-weight: 200;
+}
+
 .note.message{
     cursor: pointer;
     transition: .3s;

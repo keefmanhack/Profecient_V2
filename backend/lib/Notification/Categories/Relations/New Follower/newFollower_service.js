@@ -1,4 +1,4 @@
-const BaseRequests = require('../../../BaseServiceRequests');
+const BaseRequests = require('../../../../BaseServiceRequests');
 
 const create = NewFollowerNotif => async newFollowerID => {
 	if(!newFollowerID){
@@ -15,5 +15,6 @@ module.exports = NewFollowerNotif => {
 
 		findById: BaseRequests.findById(NewFollowerNotif),
 		deleteById: BaseRequests.deleteById(NewFollowerNotif),
+		size: BaseRequests.size(NewFollowerNotif),
 	}
 }
