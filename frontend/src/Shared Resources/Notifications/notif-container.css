@@ -1,0 +1,17 @@
+.notif-container{
+	-webkit-box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
+	box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
+	background: white;
+    position: absolute;
+    z-index: 1;
+    width: 300px;
+    padding: 5px;
+    min-height: 78px;
+    overflow: hidden;
+    border-radius: 5px;
+    top: 28px;
+    right: 0px;
+    max-height: 301px;
+    overflow: scroll;
+}

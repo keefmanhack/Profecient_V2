@@ -44,52 +44,14 @@
     right: 0;
 }
 
-.note-container{
-	-webkit-box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
-	box-shadow: inset 0px -4px 10px 0px rgba(0,0,0,0.75);
-	background: white;
-    position: absolute;
-    z-index: 1;
-    width: 300px;
-    padding: 5px;
-    min-height: 78px;
-    overflow: hidden;
-    border-radius: 5px;
-    top: 28px;
-    right: 0px;
-    max-height: 301px;
-    overflow: scroll;
-}
-
 .not-wrapper{
     position: relative;
-}
-
-.note-container .note{
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 5px;
-    position: relative;
-}
-
-.top-bar .note h1{
-	font-size: 14px;
-    font-weight: 400;
 }
 
 .note h4.count{
     position: absolute;
     top: 40px;
     right: 10px;
-    font-weight: 200;
-}
-
-.note h3.time-stamp{
-    position: absolute;
-    bottom: -3px;
-    right: 6px;
-    font-size: 10px;
     font-weight: 200;
 }
 
@@ -108,23 +70,6 @@
     width: 80%;
     height: 20px;
     overflow: hidden;
-    margin: 0;
-}
-
-.note img{
-	height: 30px;
-    width: 30px;
-    border-radius: 100%;
-    object-fit: cover;
-    margin-right: 10px;
-}
-
-.note button.remove{
-	position: absolute;
-    font-size: 12px;
-    background: none;
-    top: 0px;
-    right: -1px;
     margin: 0;
 }
 
@@ -198,14 +143,6 @@ h2 .other-user{
 .top-bar .new-follower h1{
     font-weight: 800;
     font-size: 20px;
-}
-
-.new-follower button.follow-back{
-    position: absolute;
-    left: 135px;
-    font-size: 12px;
-    top: 8px;
-    font-weight: 400;
 }
 
 .new-follower a{

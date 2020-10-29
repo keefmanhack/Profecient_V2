@@ -6,6 +6,7 @@ import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransit
 import MenuDropDown, {DropDownMain} from '../../Shared Resources/MenuDropDown';
 import {FailedSent, SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 import Loader from '../../Shared Resources/Effects/loader';
+import ImageGallary from '../../Shared Resources/ImageGallary';
 
 import './feed.css';
 
@@ -196,22 +197,6 @@ class InteractionSection extends React.Component{
 			</div>
 		);
 	}
-}
-
-function ImageGallary(props){
-	const smallImages = props.images.map((imagePath, index) =>
-		<div key={index} className='col-lg-6'>
-			<img className='image' alt='Not found' key={index} src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + imagePath}/>
-		</div>
-	);
-
-	return(
-		<div className='image-gal'>
-			<div className='row'>
-				{smallImages}
-			</div>
-		</div>
-	);
 }
 
 

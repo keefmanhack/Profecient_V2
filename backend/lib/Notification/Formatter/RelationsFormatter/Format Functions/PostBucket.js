@@ -15,6 +15,7 @@ const formatFunc = async postBucketData => {
             lastLiker: {
                 name: lastLiker.name,
                 profilePictureURL: lastLiker.profilePictureURL,
+                id: lastLiker._id,
             },
             otherLikerCt: post.likes.length-1,
         }
@@ -27,6 +28,7 @@ const formatFunc = async postBucketData => {
             lastCommenter: {
                 name: lastCommenter.name,
                 profilePictureURL: lastCommenter.profilePictureURL,
+                id: lastCommenter._id,
             },
             text: comment.text,
             otherCommentsCt: post.comments.length-1,

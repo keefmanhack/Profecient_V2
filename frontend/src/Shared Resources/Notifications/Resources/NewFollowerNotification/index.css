@@ -1,0 +1,33 @@
+.notif{
+    background-color: #cfefd3;
+}
+
+.notif button.follow-back{
+    position: absolute;
+    left: 127px;
+    font-size: 12px;
+    top: 8px;
+    font-weight: 400;
+}
+
+.notif .school{
+    position: relative;
+    height: 23px;
+    top: -3px;
+    overflow: scroll;
+}
+
+.notif .school img{
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    left: 27px;
+}
+
+.notif .school h3{
+    position: absolute;
+    left: 53px;
+    font-size: 13px;
+    top: 4px;
+    font-weight: 300;
+}

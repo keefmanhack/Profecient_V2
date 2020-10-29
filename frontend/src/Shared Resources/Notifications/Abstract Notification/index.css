@@ -1,0 +1,37 @@
+.notif{
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.top-bar .notif h1{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.top-bar .notif h3.time-stamp{
+    position: absolute;
+    bottom: -3px;
+    right: 6px;
+    font-size: 10px;
+    font-weight: 200;
+}
+
+.notif button.remove{
+    position: absolute;
+    font-size: 12px;
+    background: none;
+    top: 0px;
+    right: -1px;
+    margin: 0;
+    font-weight: 400;
+}
+
+.notif img{
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    object-fit: cover;
+    margin-right: 10px;
+}

@@ -29,23 +29,6 @@ class FriendHandler{
 
 		return newFollowerNotif;
 	}
-
-	// static async prepareDataToSend(notifIDs){
-	// 	let returnArr = [];
-	// 	for(let i =0; i<notifIDs.length; i++){
-	// 		const notif = await newFollowerService.findById(notifIDs[i]);
-	// 		let user = await UserService.findById(notif.followerID);
-	// 		const data = {
-	// 			name: user.name,
-	// 			school: user.school,
-	// 			profilePictureURL: user.profilePictureURL,
-	// 			followerID: user._id,
-	// 			_id: notif._id,
-	// 		}
-	// 		returnArr.push(data);
-	// 	}
-	// 	return returnArr;
-	// }
 }
 
 module.exports = FriendHandler;

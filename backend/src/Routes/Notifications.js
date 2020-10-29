@@ -11,6 +11,7 @@ const RelFormatMap = require('../../lib/Notification/Formatter/RelationsFormatte
 
 
 const FriendHandler = require('../../lib/CompositeServices/Notification/Relations/FriendHandler');
+const NotificationHandler = require("../../lib/CompositeServices/Notification/NotificationHandler");
 
 router.get('/users/:id/notifications/relations', async (req, res) => {
 	try{
@@ -27,7 +28,8 @@ router.get('/users/:id/notifications/relations', async (req, res) => {
 
 router.delete('/users/:id/notifications/relations/:notifID', async (req, res) => {
 	try{
-		await FriendHandler.removeNotification(req.params.id, req.params.notifID);
+		console.log(req.params);
+		await NotificationHandler.removeRelationNotifById(req.params.id, req.params.notifID);
 		res.send();
 	}catch(err){
 		console.log(err);

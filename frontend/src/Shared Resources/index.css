@@ -215,7 +215,8 @@ h5.error-msg{
 
 /*Header Styling*/
 .top-bar{
-    border-bottom: 1px solid rgba(223, 221, 221, 0.71);;
+    border-bottom: 1px solid rgba(223, 221, 221, 0.71);
+    padding: 10px 40px 0 40px;
 }
 .top-bar h1{
     font-weight: bold;
