@@ -67,8 +67,8 @@ class Post extends React.Component{
 		this.setState({comments: await this.props.postReq.getComments(this.props.data._id)});
 	}
 
-	async toggleLike(wasLiked){
-		await this.props.postReq.toggleLike(this.props.data._id, wasLiked);
+	async toggleLike(){
+		await this.props.postReq.toggleLike(this.props.data._id);
 		await this.getLikes();
 	}
 
@@ -127,7 +127,7 @@ class Post extends React.Component{
 			
 				<InteractionSection 
 					liked={this.state.likes.includes(this.props.currentUser._id)}
-					toggleLike={(wasLiked) => this.toggleLike(wasLiked)}
+					toggleLike={() => this.toggleLike()}
 					newComment={(text) => this.newComment(text)}
 				/>
 
@@ -176,7 +176,7 @@ class InteractionSection extends React.Component{
 				<div className='row'>
 					<div className='col-lg-1'>
 						<button 
-							onClick={() => this.props.toggleLike(!this.props.liked)} 
+							onClick={() => this.props.toggleLike()} 
 							className={this.props.liked ? 'blue-c' : 'white-c'}
 						>
 						<i className="fas fa-heart"></i></button>

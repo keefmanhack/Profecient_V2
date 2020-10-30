@@ -15,10 +15,9 @@ const NotificationHandler = require("../../lib/CompositeServices/Notification/No
 
 router.get('/users/:id/notifications/relations', async (req, res) => {
 	try{
-		const user = await UserService.findById(req.params.id);
-		const userRelNotifID = user.notifications.relations.notifBucket;
+		const userRelNotifID = await UserService.getRelationNotifBucketID(req.params.id);
 		const relNotifs = await NotificationService.findByIdAndPopulateList(userRelNotifID);
-		const formattedNotifs = await Formatter.format(relNotifs, RelFormatMap);
+		const formattedNotifs = await Formatter.format(relNotifs, RelFormatMap, req.param.id);
 		res.json(formattedNotifs);
 	}catch(err){
 		console.log(err);
@@ -28,7 +27,6 @@ router.get('/users/:id/notifications/relations', async (req, res) => {
 
 router.delete('/users/:id/notifications/relations/:notifID', async (req, res) => {
 	try{
-		console.log(req.params);
 		await NotificationHandler.removeRelationNotifById(req.params.id, req.params.notifID);
 		res.send();
 	}catch(err){

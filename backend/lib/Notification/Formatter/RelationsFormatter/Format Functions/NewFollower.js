@@ -1,6 +1,7 @@
+const NotificationHandler = require('../../../../CompositeServices/Notification/NotificationHandler');
 const UserService = require('../../../../User/index');
 
-const formatFunc = async newFollowerData => {
+const formatFunc = async (newFollowerData, currUserID) => {
     try{
         const newFollower = await UserService.findById(newFollowerData.followerID);
         const data = {
@@ -14,6 +15,8 @@ const formatFunc = async newFollowerData => {
         }
         return [data];
     }catch(err){
+        await NotificationHandler.removeRelationNotifById(currUserID, newFollowerData._id);
+        console.log('Removed a notification with')
         return [];
     }
 }

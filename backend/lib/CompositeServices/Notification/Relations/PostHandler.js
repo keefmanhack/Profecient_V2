@@ -2,17 +2,18 @@ const PostService = require('../../../Post/index');
 const PostBucketService = require('../../../Notification/Categories/Relations/PostBucket/index');
 const NotificationService = require('../../../Notification/index');
 const UserService = require('../../../User/index');
-const User = require('../../../User/index');
+const CommentService = require('../../../Comment/index');
+
 
 class PostHandler{
-	static async toggleLiked(postID, toggledUserID, wasLiked){
+	static async toggleLiked(userID, postID, toggledUserID){
 		if(!postID || !toggledUserID){
 			throw new Error('Missing data to toggle like on post');
 		}
-		const post = await PostService.toggleLike(postID, toggledUserID, wasLiked);
-		if(wasLiked){
+		const post = await PostService.toggleLike(postID, toggledUserID);
+		if(!post.likes.includes(toggledUserID)){
 			const postBucket = await PostBucketService.setLastLiker(post.notifBucketID, toggledUserID);
-			const author = await UserService.incrementRelationsNotifCt(post.author);
+			const author = await UserService.incrementRelationsNotifCt(userID);
 			await NotificationService.sendItemToFrontByTo(author.notifications.relations.notifBucket, postBucket._id);
 		}else{
 			if(post.likes.length===0){await PostBucketService.setLastLiker(post.notifBucketID, null)}
@@ -34,7 +35,7 @@ class PostHandler{
 		})
 	}
 
-	static async deletePostAndNotifBucket(postID, userID, cb){
+	static async deletePost(postID, userID, cb){
 		if(!postID){
 			throw new Error("No postID to remove a post");
 		}
@@ -49,6 +50,22 @@ class PostHandler{
 		PostService.deleteById(postID, function(){
 			cb();
 		})
+	}
+
+	static async removeNotification(userID, notifID){
+		const bucket = await PostBucketService.setLikerAndCommentToNull(notifID);
+		const post = await PostService.findById(bucket.postID);
+		await UserService.subtractRelationNotifCT(userID, (post.likes.length + post.comments.length));
+	}
+
+	static async createNewComment(userID, postID, commentData){
+		const newComment = await CommentService.create(commentData);
+		let updatedPost = await PostService.addNewComment(postID, newComment);
+		const postBucket = await PostBucketService.setLastCommenter(updatedPost.notifBucketID, newComment._id);
+
+		const user1 = await UserService.incrementRelationsNotifCt(userID);
+		await NotificationService.sendItemToFrontByTo(user1.notifications.relations.notifBucket, postBucket._id);
+		return updatedPost;
 	}
 }
 

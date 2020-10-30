@@ -10,6 +10,8 @@ const findMultiple = Comment => async ids =>{
 module.exports = Comment => {
 	return {
 		findMultiple: findMultiple(Comment),
+
 		create: BaseRequests.create(Comment),
+		findById: BaseRequests.findById(Comment),
 	}
 }

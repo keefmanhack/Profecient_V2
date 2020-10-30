@@ -10,8 +10,7 @@ function Notification(props){
 
     const removeNotif = async () => {
         setActing(true);
-        await props.removeNotif();
-        setActing(false);
+        props.removeNotif();
     }
 
     return(

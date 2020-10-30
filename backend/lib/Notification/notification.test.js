@@ -41,4 +41,11 @@ describe('Able to insert generic items into list', () =>{
         expect(notifBucket.list[1].to).toEqual(createdBucket._id);
         expect(notifBucket.list[0].to).toEqual(newFollowerNotif._id);
     })
+
+    it('Can remove an item based on toID', async () => {
+        await NotificationService.removeItemByToId(Notifications._id, newFollowerNotif._id);
+        notifBucket = await NotificationService.findById(Notifications._id);
+
+        expect(notifBucket.list.length).toEqual(1);
+    })
 })

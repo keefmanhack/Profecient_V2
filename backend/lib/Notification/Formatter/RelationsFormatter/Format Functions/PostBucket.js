@@ -45,6 +45,7 @@ const formatFunc = async postBucketData => {
         },
         timeStamp: postBucketData.timeStamp,
         type: 'PostBucket',
+        _id: postBucketData._id,
     }
     return [data];
 }

@@ -25,7 +25,7 @@ describe('Can properly format a newFollower notification', () => {
 
     afterAll(async done => {
         await NewFollowerService.deleteById(newFollowerNotif._id);
-        await UserService.deleteById(user1._id);
+        // await UserService.deleteById(user1._id);
         await UserService.deleteById(user2._id);
         await mongoose_tester.connection.close();
 		done();
@@ -35,7 +35,7 @@ describe('Can properly format a newFollower notification', () => {
         //setup
         user2 = await UserService.findById(user2._id);
         const relNotifs = await NotificationService.findByIdAndPopulateList(user2.notifications.relations.notifBucket);
-        const formattedData = await Formatter.format(relNotifs, RelFormatMap);
+        const formattedData = await Formatter.format(relNotifs, RelFormatMap, user2._id);
         //test
         expect(formattedData.length).toEqual(1);
         expect(formattedData[0].name).toEqual(user1.name);
@@ -46,6 +46,19 @@ describe('Can properly format a newFollower notification', () => {
 
         expect(formattedData[0]._id).toEqual(relNotifs.list[0].to._id);
         expect(formattedData[0].timeStamp).toEqual(relNotifs.list[0].to.timeStamp);
+    })
+
+    it('Removes a new follower notification if there is an error', async done => {
+        await UserService.deleteById(user1._id);
+        const relNotifBucketID = await UserService.getRelationNotifBucketID(user2._id);
+        let relNotifs = await NotificationService.findByIdAndPopulateList(relNotifBucketID);
+        const formattedData = await Formatter.format(relNotifs, RelFormatMap, user2._id);
+        relNotifs = await NotificationService.findByIdAndPopulateList(relNotifBucketID);
+
+        expect(formattedData.length).toEqual(0);
+        expect(relNotifs.list.length).toEqual(0);
+
+        done();
     })
 })
 
@@ -64,7 +77,7 @@ describe('Can properly format a postbucket notif', () => {
     })
 
     afterAll(async done => {
-        PostHandler.deletePostAndNotifBucket(post._id, user1._id, async () => {
+        PostHandler.deletePost(post._id, user1._id, async () => {
             await NotificationService.deleteById(relNotifs._id);
             await UserService.deleteById(user1._id);
             await UserService.deleteById(user2._id);
@@ -74,14 +87,14 @@ describe('Can properly format a postbucket notif', () => {
     })
 
     it('Outputs correctly if there is no new data in a post bucket notif', async () => {
-        const formattedData = await Formatter.format(relNotifs, RelFormatMap);
+        const formattedData = await Formatter.format(relNotifs, RelFormatMap, user1._id);
         expect(formattedData).toEqual([]);
     })
 
     it('Outputs correctly if post is liked once', async done => {
-        await PostHandler.toggleLiked(post._id, user1._id, true);
+        await PostHandler.toggleLiked(user1._id, post._id, user1._id);
         relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
-        const formattedData = await Formatter.format(relNotifs, RelFormatMap);
+        const formattedData = await Formatter.format(relNotifs, RelFormatMap, user1._id);
 
         expect(formattedData.length).toEqual(1);
         expect(formattedData[0].likeData.lastLiker.name).toEqual(user1.name);
@@ -94,9 +107,9 @@ describe('Can properly format a postbucket notif', () => {
     })
 
     it('Removes notification when post unliked', async done => {
-        await PostHandler.toggleLiked(post._id, user1._id, false);
+        await PostHandler.toggleLiked(user1._id, post._id, user1._id);
         relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
-        const formattedData = await Formatter.format(relNotifs, RelFormatMap);
+        const formattedData = await Formatter.format(relNotifs, RelFormatMap, user1._id);
 
         expect(formattedData).toEqual([]);
 
@@ -104,10 +117,10 @@ describe('Can properly format a postbucket notif', () => {
     })
 
     it('Properly handles multiple likes on a post', async done => {
-        await PostHandler.toggleLiked(post._id, user1._id, true);
-        await PostHandler.toggleLiked(post._id, user2._id, true);
+        await PostHandler.toggleLiked(user1._id, post._id, user1._id);
+        await PostHandler.toggleLiked(user1._id, post._id, user2._id);
         relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
-        const formattedData = await Formatter.format(relNotifs, RelFormatMap);
+        const formattedData = await Formatter.format(relNotifs, RelFormatMap, user1._id);
 
         expect(formattedData.length).toEqual(1);
         expect(formattedData[0].likeData.lastLiker.name).toEqual(user2.name);

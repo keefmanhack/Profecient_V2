@@ -131,6 +131,24 @@ const insertNewPost = User => async (id, newPostID) => {
 	return await foundUser.save();
 }
 
+const getRelationNotifBucketID = User => async id => {
+	if(!id){
+		throw new Error('Missing data to find relational notifBucket ID');
+	}
+	const foundUser = await User.findById(id);
+	return foundUser.notifications.relations.notifBucket;
+}
+
+const subtractRelationNotifCT = User => async (id, val) => {
+	if(!id){
+		throw new Error('Missing id');
+	}
+	const foundUser = await User.findById(id);
+	foundUser.notifications.relations.unDismissed-=val;
+	if(foundUser.notifications.relations.unDismissed<0){foundUser.notifications.relations.unDismissed=0}
+	return foundUser.save();
+}
+
 module.exports = User => {
 	return {
 		findById: BaseRequests.findById(User),
@@ -147,6 +165,8 @@ module.exports = User => {
 		incrementRelationsNotifCt: incrementRelationsNotifCt(User),
 		decrementRelationsNotifCt: decrementRelationsNotifCt(User),
 		insertNewPost: insertNewPost(User),
+		getRelationNotifBucketID: getRelationNotifBucketID(User),
+		subtractRelationNotifCT: subtractRelationNotifCT(User),
 	}
 }
 

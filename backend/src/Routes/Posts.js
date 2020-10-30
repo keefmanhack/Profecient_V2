@@ -41,7 +41,7 @@ router.delete('/users/:id/posts/:postID', async (req, res) => {
 
 router.post('/users/:id/posts/:postID/likes', async (req, res) =>{
 	try{
-		await PostHandler.toggleLiked(req.params.postID, req.params.id, req.body.wasLiked);
+		await PostHandler.toggleLiked(req.params.id, req.params.postID, req.params.id);
 		res.send();
 	}catch(err){
 		console.log(err);
@@ -69,10 +69,7 @@ router.get('/posts/:id/comments', async (req, res) => {
 
 router.post('/users/:id/posts/:postID/comments', async (req, res) =>{
 	try{
-		const newComment = await CommentService.create(req.body);
-		const foundPost = await PostService.findById(req.params.postID);
-		foundPost.comments.push(newComment);
-		await foundPost.save();
+		await PostHandler.createNewComment(req.params.id, req.params.postID, req.body);
 		res.send();
 	}catch(err){	
 		console.log(err);

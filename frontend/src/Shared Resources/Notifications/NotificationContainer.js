@@ -19,6 +19,7 @@ class NotificationContainer extends React.Component{
         this.wrapperRef = React.createRef();
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.requestNotifications = this.requestNotifications.bind(this);
+        this.removeNotif = this.removeNotif.bind(this);
     }
 
     componentDidMount(){
@@ -38,11 +39,16 @@ class NotificationContainer extends React.Component{
 
     async requestNotifications(){
         this.setState({notifs: await this.notifReq.get()});
-        alert('called');
+    }
+
+    async removeNotif(id){
+        await this.notifReq.delete(id);
+        await this.requestNotifications();
     }
 
     render(){
-        const notifs = FormatSelector.format(this.state.notifs, this.notifReq, this.requestNotifications);
+        const notifs = FormatSelector.format(this.state.notifs, this.removeNotif);
+
         return(
             <div className='notif-container' ref={this.wrapperRef}>
                 {this.state.notifs ? 

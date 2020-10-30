@@ -27,11 +27,12 @@ const toggleLike = Post => async (postID, userID, wasLiked) => {
 		throw new Error('No user id or postID');
 	}
 	const post = await Post.findById(postID);
-	if(wasLiked){
-		post.likes.push(userID);
-	}else{
+	if(post.likes.includes(userID)){
 		post.likes.pull(userID);
+	}else{
+		post.likes.push(userID);
 	}
+	
 	return await post.save();
 }
 
@@ -127,6 +128,15 @@ function uploadImages(images, directory, cb) {
 	}
 }
 
+const addNewComment = Post => async (id, comment) => {
+	if(!id || !comment){
+		throw new Error('Missing data to add a new comment');
+	}
+	const post = await Post.findById(id);
+	post.comments.push(comment);
+	return await post.save();
+}
+
 module.exports = Post => {
 	return {
 		findById: BaseRequests.findById(Post),
@@ -137,5 +147,6 @@ module.exports = Post => {
 		toggleLike: toggleLike(Post),
 		create: create(Post),
 		deleteById: deleteById(Post),
+		addNewComment: addNewComment(Post),
 	}
 }
