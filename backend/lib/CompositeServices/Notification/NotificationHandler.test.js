@@ -7,7 +7,7 @@ const Formatter = require('../../Notification/Formatter/formatter');
 const relFormatMap = require('../../Notification/Formatter/RelationsFormatter/formatMap');
 const NotificationHandler = require('./NotificationHandler');
 
-const users = require('../../testUsers');
+const users = require('../../Testing Data/testUsers');
 
 
 require('dotenv').config();

@@ -92,6 +92,7 @@ const create = User => async data => {
 	let user = new User(data);
 	user.following.push(user._id);
 	user.notifications.relations.notifBucket = await NotificationService.create();//need to add others in the future
+	user.notifications.academic.notifBucket = await NotificationService.create();//need to add others in the future
 	return await user.save();
 }
 
@@ -149,6 +150,15 @@ const subtractRelationNotifCT = User => async (id, val) => {
 	return foundUser.save();
 }
 
+const incrementAcademicNotifCt = User => async id => {
+	if(!id){
+		throw new Error('Missing id to increment academic notif counter');
+	}
+	const foundUser = await User.findById(id);
+	foundUser.notifications.academic.unDismissed++;
+	return await foundUser.save();
+}
+
 module.exports = User => {
 	return {
 		findById: BaseRequests.findById(User),
@@ -164,6 +174,7 @@ module.exports = User => {
 		toggleUserFollowers: toggleUserFollowers(User),
 		incrementRelationsNotifCt: incrementRelationsNotifCt(User),
 		decrementRelationsNotifCt: decrementRelationsNotifCt(User),
+		incrementAcademicNotifCt: incrementAcademicNotifCt(User),
 		insertNewPost: insertNewPost(User),
 		getRelationNotifBucketID: getRelationNotifBucketID(User),
 		subtractRelationNotifCT: subtractRelationNotifCT(User),

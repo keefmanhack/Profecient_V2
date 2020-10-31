@@ -1,7 +1,7 @@
 const mongoose_tester = require('../../../mongoose_test_config');
 // mongoose_tester.set('debug', true);
 const UserService = require('../index');
-const users = require('../../testUsers');
+const users = require('../../Testing Data/testUsers');
 
 require('dotenv').config();
 

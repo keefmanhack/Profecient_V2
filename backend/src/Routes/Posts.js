@@ -31,7 +31,7 @@ router.get('/users/:id/posts', async (req, res) => {
 
 router.delete('/users/:id/posts/:postID', async (req, res) => {
 	try{
-		PostHandler.deletePostAndNotifBucket(req.params.postID, req.params.id, () => {
+		PostHandler.deletePost(req.params.postID, req.params.id, () => {
 			res.send();
 		})
 	}catch(err){

@@ -10,14 +10,14 @@ class PostHandler{
 		if(!postID || !toggledUserID){
 			throw new Error('Missing data to toggle like on post');
 		}
-		const post = await PostService.toggleLike(postID, toggledUserID);
-		if(!post.likes.includes(toggledUserID)){
+		const wasLiked = await PostService.toggleLike(postID, toggledUserID);
+		const post = await PostService.findById(postID);
+		if(wasLiked){
 			const postBucket = await PostBucketService.setLastLiker(post.notifBucketID, toggledUserID);
 			const author = await UserService.incrementRelationsNotifCt(userID);
 			await NotificationService.sendItemToFrontByTo(author.notifications.relations.notifBucket, postBucket._id);
 		}else{
-			if(post.likes.length===0){await PostBucketService.setLastLiker(post.notifBucketID, null)}
-			await UserService.decrementRelationsNotifCt(post.author);
+			await UserService.decrementRelationsNotifCt(userID);
 		}
 		return post;
 	}
@@ -41,7 +41,7 @@ class PostHandler{
 		}
 
 		const post = await PostService.findById(postID);
-		const user = await UserService.findById(userID);
+		const user = await UserService.subtractRelationNotifCT(userID, post.likes.length + post.comments.length);
 		await NotificationService.removeItemByToId(user.notifications.relations.notifBucket, post.notifBucketID);
 
 		user.posts.pull(postID);

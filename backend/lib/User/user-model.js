@@ -36,15 +36,12 @@ let UserSchema = mongoose.Schema({
 	}],
 	agenda: [{
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "Agenda" //not yet created
+		ref: "Agenda"
 	}],
 	notifications: {
 		academic: {
 			unDismissed: {type: Number, default: 0},
-			classNote: [{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "ClassNote"
-			}]
+			notifBucket: {type: mongoose.Schema.Types.ObjectId, ref: 'Notifications'},
 		},
 		relations: {
 			unDismissed: {type: Number, default: 0},

@@ -14,21 +14,21 @@ let ClassSchema = mongoose.Schema({
 	},
 	daysOfWeek: Array,
 	connectionsTo: [{
-		user: {
+		userID: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User"
 		},
-		class_data: {
+		classID: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Class"
 		}
 	}],
 	connectionsFrom: [{
-		user: {
+		userID: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User"
 		},
-		class_data: {
+		classID: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Class"
 		}

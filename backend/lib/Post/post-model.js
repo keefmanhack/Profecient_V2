@@ -3,11 +3,13 @@ let mongoose = require('mongoose');
 let PostSchema = mongoose.Schema({
 	likes: [{
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "User"
+		ref: "User",
+		default: [],
 	}],
 	comments: [{
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "Comment"
+		ref: "Comment",
+		default: [],
 	}],
 	text: String,
 	photos: [String],

@@ -17,41 +17,28 @@ const getClassesOccuringToday = ClassModel => async classIds => {
 	return classesToday;
 }
 
-const toggleConnectionTo = ClassModel => async (myClassID, otherUserID, otherUserClassID) =>{
-	if(!myClassID || !otherUserID || !otherUserClassID){
-		throw new Error("Missing connection to data");
+const addConnectionFrom = ClassModel => async (id, classID, userID) => {
+	if(!id || !classID || ! userID){
+		throw new Error('Missing data to add a connection from');
 	}
-	const foundClass = await ClassModel.findById(myClassID);
-
-	if(!foundClass) return;
-
-	for(let i =0; i< foundClass.connectionsTo.length; i++){
-		const connection = foundClass.connectionsTo[i];
-		if(connection.user == otherUserID && connection.class_data == otherUserClassID){
-			foundClass.connectionsTo.splice(i, i+1);
-			await foundClass.save();
-			return;
-		}
+	const foundClass = await ClassModel.findById(id);
+	const newConnection = {userID: userID, classID: classID};
+	if(!connectionExists(foundClass.connectionsFrom, newConnection)){
+		foundClass.connectionsFrom.push(newConnection);
+		return await foundClass.save();
 	}
-	foundClass.connectionsTo.push({user: otherUserID, class_data: otherUserClassID});
-	await foundClass.save();
 }
 
-const toggleConnectionFrom = ClassModel => async (otherUserClassID, currUserID, myClassID) =>{
-	if(!myClassID || !currUserID || !otherUserClassID){
-		throw new Error("Missing connection to data");
+const addConnectionTo = ClassModel => async (id, classID, userID) => {
+	if(!id || !classID || ! userID){
+		throw new Error('Missing data to add a connection from');
 	}
-	const foundClass = await ClassModel.findById(otherUserClassID);
-	for(let i =0; i< foundClass.connectionsFrom.length; i++){
-		const connection = foundClass.connectionsFrom[i];
-		if(connection.user + "" === currUserID + "" && connection.class_data + "" === myClassID + ""){
-			foundClass.connectionsFrom.splice(i, i+1);
-			await foundClass.save();
-			return;
-		}
+	const foundClass = await ClassModel.findById(id);
+	const newConnection = {userID: userID, classID: classID};
+	if(!connectionExists(foundClass.connectionsTo, newConnection)){
+		foundClass.connectionsTo.push(newConnection);
+		return await foundClass.save();
 	}
-	foundClass.connectionsFrom.push({user: currUserID, class_data: myClassID});
-	await foundClass.save();
 }
 
 
@@ -111,17 +98,38 @@ const getClassAssignmentsDueInAWeekSortedByDate = ClassModel => async ids =>{
 	return returnArr.slice().sort((a,b) => a.ass.dueDate-b.ass.dueDate);
 }
 
+const addAssignment = ClassModel => async (id, newAssID) => {
+	if(!id || !newAssID){
+		throw new Error("Missing data to add a new Assignment");
+	}
+	const foundClass = await ClassModel.findById(id);
+	foundClass.assignments.push(newAssID);
+	return await foundClass.save();
+}
+
+function connectionExists(connectionList, newConnection){
+	for(let i =0; i<connectionList.length; i++){
+		if(connectionList[i].userID + '' === newConnection.userID + '' && connectionList[i].classID + '' === newConnection.classID + ''){
+			return true;
+		}
+	}
+	return false;
+}
+
 module.exports = ClassModel => {
 	return {
-		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
-		toggleConnectionTo: toggleConnectionTo(ClassModel),
-		toggleConnectionFrom: toggleConnectionFrom(ClassModel),
 		create: BaseRequests.create(ClassModel),
-		updateClasses: updateClasses(ClassModel),
-		deleteMultiple: deleteMultiple(ClassModel),
 		findById: BaseRequests.findById(ClassModel),
 		findMultiple: BaseRequests.findMultipleById(ClassModel),
+		deleteById: BaseRequests.deleteById(ClassModel),
+
+		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
+		addConnectionTo: addConnectionTo(ClassModel),
+		addConnectionFrom: addConnectionFrom(ClassModel),
+		updateClasses: updateClasses(ClassModel),
+		deleteMultiple: deleteMultiple(ClassModel),
 		getAllClassAssIDs: getAllClassAssIDs(ClassModel),
+		addAssignment: addAssignment(ClassModel),
 		getClassAssignmentsDueInAWeekSortedByDate: getClassAssignmentsDueInAWeekSortedByDate(ClassModel),
 	}
 }

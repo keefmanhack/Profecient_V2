@@ -22,18 +22,20 @@ const findMultiple = Post => async ids => {
 	return await Post.find({_id: ids}).sort('-date').populate('author');
 }
 
-const toggleLike = Post => async (postID, userID, wasLiked) => {
+const toggleLike = Post => async (postID, userID) => {
 	if(!userID || !postID){
 		throw new Error('No user id or postID');
 	}
+	let wasLiked = false;
 	const post = await Post.findById(postID);
 	if(post.likes.includes(userID)){
 		post.likes.pull(userID);
 	}else{
 		post.likes.push(userID);
+		wasLiked=true;
 	}
-	
-	return await post.save();
+	await post.save();
+	return wasLiked;
 }
 
 

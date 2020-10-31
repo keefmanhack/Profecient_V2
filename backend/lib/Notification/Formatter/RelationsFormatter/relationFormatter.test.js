@@ -6,7 +6,7 @@ const PostBucketNotifService = require('../../../Notification/Categories/Relatio
 const RelFormatMap = require('./formatMap');
 // mongoose_tester.set('debug', true);
 
-const users = require('../../../testUsers');
+const users = require('../../../Testing Data/testUsers');
 const UserService = require('../../../User/index');
 const Formatter = require('../formatter');
 const PostHandler = require('../../../CompositeServices/Notification/Relations/PostHandler');
@@ -94,6 +94,7 @@ describe('Can properly format a postbucket notif', () => {
     it('Outputs correctly if post is liked once', async done => {
         await PostHandler.toggleLiked(user1._id, post._id, user1._id);
         relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
+
         const formattedData = await Formatter.format(relNotifs, RelFormatMap, user1._id);
 
         expect(formattedData.length).toEqual(1);
@@ -106,18 +107,9 @@ describe('Can properly format a postbucket notif', () => {
         done();
     })
 
-    it('Removes notification when post unliked', async done => {
-        await PostHandler.toggleLiked(user1._id, post._id, user1._id);
-        relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
-        const formattedData = await Formatter.format(relNotifs, RelFormatMap, user1._id);
-
-        expect(formattedData).toEqual([]);
-
-        done();
-    })
 
     it('Properly handles multiple likes on a post', async done => {
-        await PostHandler.toggleLiked(user1._id, post._id, user1._id);
+        // await PostHandler.toggleLiked(user1._id, post._id, user1._id);
         await PostHandler.toggleLiked(user1._id, post._id, user2._id);
         relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
         const formattedData = await Formatter.format(relNotifs, RelFormatMap, user1._id);

@@ -1,6 +1,6 @@
 const mongoose_tester = require('../../mongoose_test_config');
 // mongoose_tester.set('debug', true);
-const users = require('../testUsers');
+const users = require('../Testing Data/testUsers');
 
 const NotificationService = require('./index');
 const PostBucketService = require('./Categories/Relations/PostBucket/index');

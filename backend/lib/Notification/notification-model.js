@@ -10,7 +10,7 @@ let NotificationSchema = mongoose.Schema({
         onModel: {
             type: String,
             required: true,
-            enum: ['NewFollower', 'PostBucket']
+            enum: ['NewFollower', 'PostBucket', 'NewAssignment']
         }
     }]
 })

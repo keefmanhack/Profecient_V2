@@ -7,7 +7,7 @@ const NotificationService = require('../../../../Notification/index');
 const PostBucketService = require('../../../../Notification/Categories/Relations/PostBucket/index');
 const PostService = require('../../../../Post/index');
 
-const users = require('../../../../testUsers');
+const users = require('../../../../Testing Data/testUsers');
 
 require('dotenv').config();
 
@@ -104,10 +104,7 @@ describe('Deletes a post notification bucket from a user when  post is deleted',
 })
 
 describe('Notifications on post likes and comments', () =>{
-	let user1;
-	let user2;
-	let user3;
-	let post;
+	let user1, user2, user3, post;
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
 		user1 = await UserService.create(users[0]);
@@ -120,17 +117,15 @@ describe('Notifications on post likes and comments', () =>{
 	})
 
 	afterAll(async done => {
-		PostHandler.deletePost(post._id, user1._id, async () => {
-            await NotificationService.deleteById(user1.notifications.relations.notifBucket);
-            await NotificationService.deleteById(user2.notifications.relations.notifBucket);
-            await NotificationService.deleteById(user3.notifications.relations.notifBucket);
-            await UserService.deleteById(user1._id);
-            await UserService.deleteById(user2._id);
-            await UserService.deleteById(user3._id);
+		await NotificationService.deleteById(user1.notifications.relations.notifBucket);
+		await NotificationService.deleteById(user2.notifications.relations.notifBucket);
+		await NotificationService.deleteById(user3.notifications.relations.notifBucket);
+		await UserService.deleteById(user1._id);
+		await UserService.deleteById(user2._id);
+		await UserService.deleteById(user3._id);
 
-			await mongoose_tester.connection.close();
-			done();
-		})
+		await mongoose_tester.connection.close();
+		done();
 	})
 
 	it('Can add a notification that a post was liked', async () => {
@@ -188,17 +183,17 @@ describe('Notifications on post likes and comments', () =>{
         expect(user1.notifications.relations.unDismissed).toEqual(0);
     })
 
-	// it('Can delete multiple notification likes', async () => {
-	// 	await PostHandler.toggleLiked(post._id, user2._id);
-	// 	await PostHandler.toggleLiked(post._id, user3._id);
+	it('Removes notifications if a post is deleted', async done => {
+		post=await PostHandler.toggleLiked(user1._id, post._id, user2._id);
+		user1 = await UserService.findById(user1._id);
+		expect(user1.notifications.relations.unDismissed).toEqual(1);
 
-	// 	post = await PostService.findById(post._id);
-	// 	const postBucketNotif = await PostBucketService.findById(post.notifBucketID);
-	// 	user1 = await UserService.findById(user1._id);
-
-	// 	expect(post.likes.length).toEqual(0);
-	// 	expect(postBucketNotif.newLikes.length).toEqual(0);
-	// 	expect(user1.notifications.relations.unDismissed).toEqual(0);
-	// })
+		PostHandler.deletePost(post._id, user1._id, async () => {
+			user1 = await UserService.findById(user1._id);
+			expect(user1.notifications.relations.unDismissed).toEqual(0);
+			
+			done();
+		})
+	})
 
 })

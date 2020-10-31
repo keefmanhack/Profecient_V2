@@ -5,8 +5,7 @@ const NotificationService = require('../../../../Notification/index');
 
 const UserService = require('../../../../User/index');
 
-const users = require('../../../../testUsers');
-const User = require('../../../../User/index');
+const users = require('../../../../Testing Data/testUsers');
 
 require('dotenv').config();
 

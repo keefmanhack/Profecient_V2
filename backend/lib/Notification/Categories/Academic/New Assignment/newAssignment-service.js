@@ -1,4 +1,4 @@
-const BaseRequests = require('../../../BaseServiceRequests');
+const BaseRequests = require('../../../../BaseServiceRequests');
 
 const createNewAssNotification = Notification => async (usersClassToBeNotified, userNotifing, userNotifingClass, notifingUserAssignmentID) => {
 	if(!usersClassToBeNotified || !userNotifing || !userNotifingClass || !notifingUserAssignmentID){
@@ -29,8 +29,9 @@ const createNewAssNotification = Notification => async (usersClassToBeNotified, 
 
 module.exports = Notification => {
 	return{
-		getNotifications: BaseRequests.findById(Notification),
-		deleteNotification : BaseRequests.deleteById(Notification),
+		findById: BaseRequests.findById(Notification),
+		deleteById : BaseRequests.deleteById(Notification),
+		create: BaseRequests.create(Notification),
 
 		createNewAssNotification: createNewAssNotification(Notification)
 	}
