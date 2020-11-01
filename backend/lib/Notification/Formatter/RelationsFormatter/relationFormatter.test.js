@@ -50,7 +50,7 @@ describe('Can properly format a newFollower notification', () => {
 
     it('Removes a new follower notification if there is an error', async done => {
         await UserService.deleteById(user1._id);
-        const relNotifBucketID = await UserService.getRelationNotifBucketID(user2._id);
+        const relNotifBucketID = await UserService.getNotifBucketID(user2._id, UserService.notifCategories.relation);
         let relNotifs = await NotificationService.findByIdAndPopulateList(relNotifBucketID);
         const formattedData = await Formatter.format(relNotifs, RelFormatMap, user2._id);
         relNotifs = await NotificationService.findByIdAndPopulateList(relNotifBucketID);

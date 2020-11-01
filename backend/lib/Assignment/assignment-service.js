@@ -37,10 +37,12 @@ const findMultiple = Ass => async ids => {
 
 module.exports = Ass => {
 	return {
-		deleteMultiple: deleteMultiple(Ass),
-		deleteOne: BaseRequests.deleteById(Ass),
-		getAssesDueInAWeekSortedByDate: getAssesDueInAWeekSortedByDate(Ass),
 		update: BaseRequests.update(Ass),
+		deleteById: BaseRequests.deleteById(Ass),
+		findById: BaseRequests.findById(Ass),
+
+		deleteMultiple: deleteMultiple(Ass),
+		getAssesDueInAWeekSortedByDate: getAssesDueInAWeekSortedByDate(Ass),
 		create: create(Ass),
 		findMultiple: findMultiple(Ass),
 	}

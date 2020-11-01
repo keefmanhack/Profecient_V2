@@ -36,15 +36,6 @@ const toggleUserFollowers = User => async (userID, possibleFollowerID) =>{
 	return await user.save();
 }
 
-const deleteAcNotif = User => async (userID, noteID) =>{
-	if(!userID || !noteID){
-		throw new Error(`Undefined or null id`);
-	}
-	const user = await User.findById(userID);
-	user.notifications.academic.classNote.pull(noteID);
-	await user.save();
-}
-
 const findLinks = User => async (classSearchData, currentLinks) => {
 	if(!classSearchData){
 		throw new Error('No data for link search');
@@ -102,24 +93,25 @@ const deleteById = User => async id => {
 	}
 	const foundUser = await User.findById(id);
 	NotificationService.deleteById(foundUser.notifications.relations.notifBucket);
+	NotificationService.deleteById(foundUser.notifications.academic.notifBucket);
 	await User.findByIdAndRemove(id);
 }
 
-const incrementRelationsNotifCt = User => async id => {
+const incrementNotifCt = User => async (id, category) => {
 	if(!id){
 		throw new Error('Missing id to increment rel notifs');
 	}
 	const foundUser = await User.findById(id);
-	foundUser.notifications.relations.unDismissed++;
+	foundUser.notifications[category].unDismissed++;
 	return await foundUser.save();
 }
 
-const decrementRelationsNotifCt = User => async id => {
+const decrementNotifCt = User => async (id, category) => {
 	if(!id){
 		throw new Error('Missing id to decrement rel notifs');
 	}
 	const foundUser = await User.findById(id);
-	foundUser.notifications.relations.unDismissed--;
+	foundUser.notifications[category].unDismissed--;
 	return await foundUser.save();
 }
 
@@ -132,12 +124,12 @@ const insertNewPost = User => async (id, newPostID) => {
 	return await foundUser.save();
 }
 
-const getRelationNotifBucketID = User => async id => {
+const getNotifBucketID = User => async (id, category) => {
 	if(!id){
 		throw new Error('Missing data to find relational notifBucket ID');
 	}
 	const foundUser = await User.findById(id);
-	return foundUser.notifications.relations.notifBucket;
+	return foundUser.notifications[category].notifBucket;
 }
 
 const subtractRelationNotifCT = User => async (id, val) => {
@@ -150,14 +142,6 @@ const subtractRelationNotifCT = User => async (id, val) => {
 	return foundUser.save();
 }
 
-const incrementAcademicNotifCt = User => async id => {
-	if(!id){
-		throw new Error('Missing id to increment academic notif counter');
-	}
-	const foundUser = await User.findById(id);
-	foundUser.notifications.academic.unDismissed++;
-	return await foundUser.save();
-}
 
 module.exports = User => {
 	return {
@@ -169,15 +153,14 @@ module.exports = User => {
 		create: create(User),
 		findUsersByName: findUsersByName(User),
 		toggleUserFollowing: toggleUserFollowing(User),
-		deleteAcNotif : deleteAcNotif(User),
 		findLinks: findLinks(User),
 		toggleUserFollowers: toggleUserFollowers(User),
-		incrementRelationsNotifCt: incrementRelationsNotifCt(User),
-		decrementRelationsNotifCt: decrementRelationsNotifCt(User),
-		incrementAcademicNotifCt: incrementAcademicNotifCt(User),
+		incrementNotifCt: incrementNotifCt(User),
+		decrementNotifCt: decrementNotifCt(User),
 		insertNewPost: insertNewPost(User),
-		getRelationNotifBucketID: getRelationNotifBucketID(User),
+		getNotifBucketID: getNotifBucketID(User),
 		subtractRelationNotifCT: subtractRelationNotifCT(User),
+		notifCategories: {relation: 'relations', academic: 'academic'},
 	}
 }
 

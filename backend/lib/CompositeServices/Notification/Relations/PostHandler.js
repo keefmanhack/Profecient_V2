@@ -14,10 +14,10 @@ class PostHandler{
 		const post = await PostService.findById(postID);
 		if(wasLiked){
 			const postBucket = await PostBucketService.setLastLiker(post.notifBucketID, toggledUserID);
-			const author = await UserService.incrementRelationsNotifCt(userID);
+			const author = await UserService.incrementNotifCt(userID, UserService.notifCategories.relation);
 			await NotificationService.sendItemToFrontByTo(author.notifications.relations.notifBucket, postBucket._id);
 		}else{
-			await UserService.decrementRelationsNotifCt(userID);
+			await UserService.decrementNotifCt(userID, UserService.notifCategories.relation);
 		}
 		return post;
 	}
@@ -63,7 +63,7 @@ class PostHandler{
 		let updatedPost = await PostService.addNewComment(postID, newComment);
 		const postBucket = await PostBucketService.setLastCommenter(updatedPost.notifBucketID, newComment._id);
 
-		const user1 = await UserService.incrementRelationsNotifCt(userID);
+		const user1 = await UserService.incrementNotifCt(userID, UserService.notifCategories.relation);
 		await NotificationService.sendItemToFrontByTo(user1.notifications.relations.notifBucket, postBucket._id);
 		return updatedPost;
 	}

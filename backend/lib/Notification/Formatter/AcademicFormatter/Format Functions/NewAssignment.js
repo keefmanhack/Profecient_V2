@@ -17,13 +17,14 @@ const formatFunc = async (newAssignmentData, userID) => {
                 name: assignment.name,
                 description: assignment.description,
                 dueDate: assignment.dueDate,
-                parentClass: foundClass.name,
+                parentClassName: foundClass.name,
             },
             timeStamp: newAssignmentData.timeStamp,
             _id: newAssignmentData._id,
         }
-
+        return [data];
     }catch(err){
+        console.log(err);
         return [];
     }
 }

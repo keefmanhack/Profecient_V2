@@ -9,7 +9,7 @@ class FriendHandler{
 			throw new Error("Missing data to remove a notifcation");
 		}
 		//find user and decrement undissmised
-		const user = await UserService.decrementRelationsNotifCt(userID);
+		const user = await UserService.decrementNotifCt(userID, UserService.notifCategories.relation);
 		//remove the new follower notification
 		await newFollowerService.deleteById(notifID);
 		//remove the notification from relation notifBucket
@@ -21,7 +21,7 @@ class FriendHandler{
 			throw new Error("No id's supplied to create a new Follower notif");
 		}
 		//find user and increment undissmissed
-		const userBeingFollowed = await UserService.incrementRelationsNotifCt(userToBeFollowedID);
+		const userBeingFollowed = await UserService.incrementNotifCt(userToBeFollowedID, UserService.notifCategories.relation);
 		//generate a new followerNotification
 		const newFollowerNotif = await newFollowerService.create(userFollowingID);
 		//insert notification

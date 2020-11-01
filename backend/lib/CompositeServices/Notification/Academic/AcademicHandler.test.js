@@ -15,7 +15,7 @@ const NewAssignmentService = require('../../../Notification/Categories/Academic/
 require('dotenv').config();
 
 describe('Proper handeling of assignment creation', () =>{
-    let user1, user2, class1, class2, sem1, sem2;
+    let user1, user2, class1, class2, sem1, sem2, newAssNotif;
 	beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
 
@@ -76,7 +76,7 @@ describe('Proper handeling of assignment creation', () =>{
         user1 = await UserService.findById(user1._id);
         const academicNotifs = await NotificationService.findById(user1.notifications.academic.notifBucket);
 
-        const newAssNotif = await NewAssignmentService.findById(academicNotifs.list[0].to);
+        newAssNotif = await NewAssignmentService.findById(academicNotifs.list[0].to);
 
         expect(academicNotifs.list.length).toEqual(1)
         expect(academicNotifs.list[0].to).toEqual(newAssNotif._id);
@@ -84,5 +84,13 @@ describe('Proper handeling of assignment creation', () =>{
         expect(newAssNotif.assignmentID).toEqual(newAss._id);
         expect(newAssNotif.ownerID).toEqual(user2._id);
         expect(newAssNotif.parentClassID).toEqual(class2._id);
+    })
+
+    it('Can remove a new assignment notification', async () => {
+        await AcademicHandler.removeNotification(user1._id, newAssNotif._id);
+        const acNotifBucketID = await UserService.getNotifBucketID(user1._id, UserService.notifCategories.academic);
+        const acNotifs = await NotificationService.findById(acNotifBucketID);
+
+        expect(acNotifs.list.length).toEqual(0);
     })
 })
