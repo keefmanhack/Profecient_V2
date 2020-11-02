@@ -14,6 +14,16 @@ class UserRequests{
 			console.log(err);
 		}
 	}
+
+	create = async data => {
+		try{
+			const endPoint = '/user/new';
+			const res = await axios.post(endPoint, data);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
 	
 	getUser = async () => {
 		try{

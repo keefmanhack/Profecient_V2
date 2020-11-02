@@ -6,10 +6,13 @@ import PhoneInput from 'react-phone-input-2'
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 
 import './landing.css';
+import UserRequests from '../APIRequests/User';
 
 class Landing extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.UserReq = new UserRequests(null);
 
 		this.state ={
 			firstName: '',
@@ -28,10 +31,16 @@ class Landing extends React.Component{
 			}
 		}
 	}
-	submitForm(){
+	async submitForm(){
 		const isError = this.checkErrors();
 		if(!isError){
-
+			const data ={
+				name: this.state.firstName + ' ' + this.state.lastName,
+				email: this.state.email,
+				phoneNumber: this.state.phoneNumber,
+				password: this.state.password,
+			}
+			await this.UserReq.create(data);
 		}
 	}
 	checkErrors(){

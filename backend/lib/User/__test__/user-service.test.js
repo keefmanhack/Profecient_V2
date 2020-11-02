@@ -9,14 +9,15 @@ describe('Following and unfollowing', () =>{
     let user1, user2;
 	beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        user1 = await UserService.create(users[0]);
-        user2 = await UserService.create(users[1]);
+        let res = await UserService.create(users[0]);
+        user1 = res.user;
+        res = await UserService.create(users[1]);
+        user2 = res.user;
 		done();
 	})
 
 	afterAll(async done => {
-        await UserService.deleteById(user1._id);
-        await UserService.deleteById(user2._id);
+        await UserService.deleteAll();
 
 		await mongoose_tester.connection.close();
 		done();
@@ -35,5 +36,26 @@ describe('Following and unfollowing', () =>{
 
         user1 = await UserService.findById(user1._id);
         expect(user1.following.length).toEqual(1); //because users follow themselves
+    })
+})
+
+describe('Can create a new user', () => {
+    let user1;
+    beforeAll(async done => {
+        await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
+        done();
+    })
+
+    afterAll(async done => {
+        await UserService.deleteAll();
+        await mongoose_tester.connection.close();
+        done();
+    })
+
+    it('Can create a new user', async () => {
+        let res = await UserService.create(users[0]);
+        if(res.success){
+            user1 = res.user;
+        }
     })
 })

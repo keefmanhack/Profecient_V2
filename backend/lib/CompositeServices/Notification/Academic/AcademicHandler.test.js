@@ -21,13 +21,15 @@ describe('Proper handeling of assignment creation', () =>{
 
         class1 = await ClassService.create(testClasses[0]);
         sem1 = await SemesterService.create({name: 'User 1 Sem', classes: [class1]});
-        user1 = await UserService.create(users[0]);
+        const res = await UserService.create(users[0]);
+        user1 = res.user;
         user1.semesters.push(sem1);
         await user1.save();
 
         class2 = await ClassService.create(testClasses[1]);
         sem2 = await SemesterService.create({name: 'User 2 Sem', classes: [class2]});
-        user2 = await UserService.create(users[1]);
+        const res2 = await UserService.create(users[1]);
+        user2 = res2.user;
         user2.semesters.push(sem2);
         await user2.save();
 
@@ -39,9 +41,7 @@ describe('Proper handeling of assignment creation', () =>{
         await ClassService.deleteById(class2._id);
         await SemesterService.deleteById(sem1._id);
         await SemesterService.deleteById(sem2._id);
-        await UserService.deleteById(user1._id);
-        await UserService.deleteById(user2._id);
-
+        await UserService.deleteAll();
 
         await mongoose_tester.connection.close();
 		done();

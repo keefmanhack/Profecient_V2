@@ -80,11 +80,32 @@ const findLinks = User => async (classSearchData, currentLinks) => {
 }
 
 const create = User => async data => {
-	let user = new User(data);
-	user.following.push(user._id);
-	user.notifications.relations.notifBucket = await NotificationService.create();//need to add others in the future
-	user.notifications.academic.notifBucket = await NotificationService.create();//need to add others in the future
-	return await user.save();
+	//ADD TESTS TO MAKE SURE USER IS VALID
+	console.log(await User.countDocuments({}));
+	try{
+		const user = new User(data);
+		user.following.push(user._id);
+		user.notifications.relations.notifBucket = await NotificationService.create();
+		user.notifications.academic.notifBucket = await NotificationService.create();
+		const newUser = await User.register(user, data.password);
+		return {success: true, user: newUser};
+	}catch(err){
+		console.log(err);
+		return {success: false, error: err}
+	}
+
+
+
+	// let user = new User(data);
+	// user.following.push(user._id);
+	// user.notifications.relations.notifBucket = await NotificationService.create();
+	// user.notifications.academic.notifBucket = await NotificationService.create();
+	// return await user.save();
+}
+
+const deleteAll = User => async () => {
+	await User.deleteMany({});
+	console.log(await User.countDocuments({}))
 }
 
 const deleteById = User => async id => {
@@ -149,6 +170,7 @@ module.exports = User => {
 		size: BaseRequests.size(User),
 		findMultiple: BaseRequests.findMultipleById(User),
 
+		deleteAll: deleteAll(User),
 		deleteById: deleteById(User),
 		create: create(User),
 		findUsersByName: findUsersByName(User),

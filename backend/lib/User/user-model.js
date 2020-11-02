@@ -1,19 +1,19 @@
 let mongoose = require('mongoose');
+let passportLocalMongoose = require("passport-local-mongoose");
 
 
 let UserSchema = mongoose.Schema({
-	// username: {type: String, unique:true, required: true},
-	// password: String,
-	name: String,
+	name: {type: String, required: true},
+	username: {type: String, unique:true, required: true},
 	school: {
 		name: String,
 		logoUrl: String,
 	},
-	email: String, //{type: String, unique: true, required: true}
+	email: {type: String, unique: true, required: true}, 
+	phoneNumber: {type: Number, unique: true, require: true},
 	profilePictureURL: String,
 	resetPasswordToken: String,
 	resetPasswordExpires: Date,
-	totalLinks: {type: Number, default: 0},
 	posts: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Post"
@@ -48,15 +48,12 @@ let UserSchema = mongoose.Schema({
 			notifBucket: {type: mongoose.Schema.Types.ObjectId, ref: 'Notifications'},
 		},
 		messages: {
-			unDismissed: {type: Number, default: 0},
-			messageNote: [{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "MessageNote",
-			}]
+
 		}
 	}
 
 
 })
 
+UserSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model('User', UserSchema);

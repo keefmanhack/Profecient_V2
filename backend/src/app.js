@@ -38,6 +38,15 @@ app.get('/users/:id', async (req, res) => {
 	}
 });
 
+app.post('/users/new', async (req, res) => {
+	try{
+		const res = await UserService.create(req.body.data);
+		console.log(res);
+	}catch(err){
+		console.log(err);
+	}
+})
+
 app.post('/users', async (req, res) => {
 	try{
 		const users = await UserService.findUsersByName(req.body.searchString);

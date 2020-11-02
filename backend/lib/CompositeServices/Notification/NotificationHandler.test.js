@@ -16,8 +16,10 @@ describe('Creates new notification when a user followers another user', () =>{
 	let user1, user2, notifID;
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		user1 = await UserService.create(users[0]);
-		user2 = await UserService.create(users[1]);
+		let res = await UserService.create(users[0]);
+		user1 = res.user;
+		res = await UserService.create(users[1]);
+		user2 = res.user;
 		//create multiple notifications
 		await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
 		await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
@@ -30,8 +32,7 @@ describe('Creates new notification when a user followers another user', () =>{
 	})
 
 	afterAll(async done => {
-		await UserService.deleteById(user1._id);
-		await UserService.deleteById(user2._id);
+		await UserService.deleteAll();
 		await mongoose_tester.connection.close();
 		done();
 	})

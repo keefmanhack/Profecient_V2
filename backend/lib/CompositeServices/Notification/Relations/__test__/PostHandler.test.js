@@ -15,8 +15,10 @@ describe('Creates a new post notification bucket when user creates a post', () =
     let user1, user2, post1, post2;
 	beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        user1 = await UserService.create(users[0]);
-        user2 = await UserService.create(users[1]);
+		let res = await UserService.create(users[0]);
+		user1 = res.user;
+		res = await UserService.create(users[1]);
+		user2 = res.user;
 		done();
 	})
 
@@ -25,8 +27,7 @@ describe('Creates a new post notification bucket when user creates a post', () =
         await PostBucketService.deleteById(post2.notifBucketID);
         await PostService.deleteById(post1._id,  ()=>{});
         await PostService.deleteById(post2._id,  ()=>{});
-        await UserService.deleteById(user1._id);
-        await UserService.deleteById(user2._id);
+        await UserService.deleteAll();
 
         await mongoose_tester.connection.close();
 		done();
@@ -79,12 +80,14 @@ describe('Deletes a post notification bucket from a user when  post is deleted',
 	})
 
 	afterAll(async done => {
+		await UserService.deleteAll();
 		await mongoose_tester.connection.close();
 		done();
 	})
 
 	it('Can delete the post and the post notification bucket', async done => {
-		let user1 = await UserService.create(users[0]);
+		let res = await UserService.create(users[0]);
+		user1 = res.user;
 		PostHandler.createNewPost("This post will be deleted", user1._id, null, async function(newPost){
 			PostHandler.deletePost(newPost._id, user1._id, async function(){
 				user1 = await UserService.findById(user1._id);
@@ -107,9 +110,12 @@ describe('Notifications on post likes and comments', () =>{
 	let user1, user2, user3, post;
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		user1 = await UserService.create(users[0]);
-		user2 = await UserService.create(users[1]);
-		user3 = await UserService.create(users[2]);
+		let res = await UserService.create(users[0]);
+		user1 = res.user;
+		res = await UserService.create(users[1]);
+		user2 = res.user;
+		res = await UserService.create(users[2]);
+		user3 = res.user;
 		PostHandler.createNewPost("Test notifications of likes and comments", user1._id, null, newPost =>{
 			post=newPost;
 			done();
@@ -120,9 +126,7 @@ describe('Notifications on post likes and comments', () =>{
 		await NotificationService.deleteById(user1.notifications.relations.notifBucket);
 		await NotificationService.deleteById(user2.notifications.relations.notifBucket);
 		await NotificationService.deleteById(user3.notifications.relations.notifBucket);
-		await UserService.deleteById(user1._id);
-		await UserService.deleteById(user2._id);
-		await UserService.deleteById(user3._id);
+		await UserService.deleteAll();
 
 		await mongoose_tester.connection.close();
 		done();
