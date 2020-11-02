@@ -1,7 +1,3 @@
-.notif .post-info:hover{
-    box-shadow: rgba(0,0,0,.9) 0px 0px 5px inset;
-}
-
 .notif{
     background: #282828;
     color: white;
@@ -15,6 +11,7 @@
     transition: .3s;
     border-radius: 5px;
     padding: 5px;
+    box-shadow: rgba(0,0,0,.9) 0px 0px 5px inset;
 }
 
 .notif .image-gal-cont{

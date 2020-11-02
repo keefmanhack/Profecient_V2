@@ -14,7 +14,6 @@ function PostBucketNotification(props){
             removeNotif={() => props.removeNotif()}
             interaction={null}
             mainData={
-                <Link to={'/profile/' + props.data.postData.id}>
                     <div className='post-info white-bc'>   
                         <p>{props.data.postData.text}</p>
                         {props.data.postData.photos.length>0 ?
@@ -24,7 +23,6 @@ function PostBucketNotification(props){
                             </div>
                         : null}
                     </div>
-			    </Link>
             }
             auxData={
                 <div className='interactions'> 
