@@ -18,6 +18,8 @@
     "react-dom": "^16.13.1",
     "react-flash-message": "^1.0.4",
     "react-lottie": "^1.2.3",
+    "react-password-strength": "^2.4.0",
+    "react-phone-input-2": "^2.13.8",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",

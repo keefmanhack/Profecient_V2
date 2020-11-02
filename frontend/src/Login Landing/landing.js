@@ -1,10 +1,59 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-// import axios from 'axios';
+import ReactPasswordStrength from 'react-password-strength';
+import PhoneInput from 'react-phone-input-2'
+
+import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 
 import './landing.css';
 
 class Landing extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state ={
+			firstName: '',
+			lastName: '',
+			email: '',
+			phoneNumber: '',
+			password: {password: '', isValid: false},
+			repeatedPassword: '',
+			errors: {
+				firstName: false,
+				lastName: false,
+				email: false,
+				phoneNumber: false,
+				password: false,
+				repeatedPassword: false,
+			}
+		}
+	}
+	submitForm(){
+		const isError = this.checkErrors();
+		if(!isError){
+
+		}
+	}
+	checkErrors(){
+		let errors = this.state.errors;
+		this.state.firstName === '' ? errors.firstName=true : errors.firstName=false;
+		this.state.lastName === '' ? errors.lastName=true : errors.lastName=false;
+		
+		emailTester(this.state.email) ? errors.email=false : errors.email = true;
+		phoneNumberTester(this.state.phoneNumber) ? errors.phoneNumber=false : errors.phoneNumber = true;
+
+		!this.state.password.isValid ? errors.password=true : errors.password=false;
+		this.state.repeatedPassword !== this.state.password.password ? errors.repeatedPassword=true : errors.repeatedPassword=false; 
+
+		this.setState({errors: errors});
+		for(let x in errors){
+			if(errors[x]){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	render(){
 		return(
 			<div className='background' id='landing'>
@@ -22,10 +71,10 @@ class Landing extends React.Component{
 
 						<ul className='white-c'>
 							<li>
-								<h5><i className="fas fa-comments black-c"></i>    Message your peers and connect outside the classroom</h5>
+								<h5><i className="fas fa-tasks black-c"></i>    Manage your entire academic schedule</h5>
 							</li>
 							<li>
-								<h5><i className="fas fa-tasks black-c"></i>    Manage your entire academic schedule</h5>
+								<h5><i className="fas fa-comments black-c"></i>    Connect with your peers outside the classroom</h5>
 							</li>
 							<li>
 								<h5><i className="fas fa-bell black-c"></i>    Automatically get assignment notifications from your peers</h5>
@@ -37,19 +86,66 @@ class Landing extends React.Component{
 					</div>
 					<div className='col-lg-3'>
 						<h3 className='sans-font black-c'>Sign Up</h3>
-						<input className='sans-font' type="text" placeholder='First Name'/>
-						<input className='sans-font' style={{marginBottom:50}} type="text" placeholder='Last Name'/>
-						<input className='sans-font' type="email" placeholder='Email'/>
-						<input className='sans-font' style={{marginBottom:50}} type="text" placeholder='Phone Number'/>
-						<input className='sans-font' type="password" placeholder='Password'/>
-						<input className='sans-font' type="password" placeholder='Retype Password'/>
-						<button className='sign-up mont-font blue-bc white-c'>Sign Up</button>
+						<input 
+							onChange={(e) => this.setState({firstName: e.target.value})} 
+							className='sans-font' 
+							type="text" 
+							placeholder='John'
+							style={this.state.errors.firstName ? {border: '1px solid red'} : null}
+						/>
+						<input 
+							style={this.state.errors.lastName ? {border: '1px solid red', marginBottom: 50} : {marginBottom: 50}} 
+							onChange={(e) => this.setState({lastName: e.target.value})} 
+							className='sans-font'
+							type="text" placeholder='Smith' 
+						/>
+						<input
+							style={this.state.errors.email ? {border: '1px solid red'} : null}
+							onChange={(e) => this.setState({email: e.target.value})} 
+							className='sans-font' 
+							type="email" 
+							placeholder='johnsmith@proficient.com'
+						/>
+						<PhoneInput
+							country={'us'}
+							value={this.state.phoneNumber}
+							onChange={phone => this.setState({phoneNumber: phone})}
+							style={this.state.errors.phoneNumber ? {border: '1px solid red'} : null}
+						/>
+						<ReactPasswordStrength
+							className="customClass"
+							minLength={5}
+							minScore={2}
+							style={this.state.errors.password ? {border: '1px solid red', transition: '.3s'} : null}
+							scoreWords={['weak', 'okay', 'good', 'strong', 'stronger']}
+							changeCallback={(e) => this.setState({password: e})}
+							inputProps={{ name: "password_input", autoComplete: "off", className: "form-control sans-font", placeholder:'Password'}}
+						/>
+						<input 
+							style={this.state.errors.repeatedPassword ? {border: '1px solid red'} : null}
+							onChange={(e) => this.setState({repeatedPassword: e.target.value})} 
+							className='sans-font' 
+							type="password" 
+							placeholder='Retype Password'
+						/>
+						<FadeInOutHandleState condition={this.state.password.password !== this.state.repeatedPassword}>
+							<h5 className='red-c error'><i class="fas fa-times-circle"></i> The passwords don't match</h5>
+						</FadeInOutHandleState>
+						<button onClick={() => this.submitForm()} className='sign-up mont-font blue-bc white-c'>Sign Up</button>
 					</div>
 				</div>
 				<Link id='footer-tag'>A Gregoire Design Production</Link>
 			</div>
 		);
 	}
+}
+
+function emailTester(text){
+	return /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(text);
+}
+
+function phoneNumberTester(text){
+	return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(text);
 }
 
 export default Landing;
