@@ -12,6 +12,7 @@ const formatFunc = async (newAssignmentData, userID) => {
                 name: otherUser.name,
                 school: otherUser.school,
                 profilePictureURL: otherUser.profilePictureURL,
+                _id: otherUser._id,
             },
             assignment: {
                 name: assignment.name,
@@ -21,6 +22,7 @@ const formatFunc = async (newAssignmentData, userID) => {
             },
             timeStamp: newAssignmentData.timeStamp,
             _id: newAssignmentData._id,
+            type: 'NewAssignment'
         }
         return [data];
     }catch(err){

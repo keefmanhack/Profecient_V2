@@ -107,6 +107,18 @@ const addAssignment = ClassModel => async (id, newAssID) => {
 	return await foundClass.save();
 }
 
+const createMultiple = ClassModel => async classArr => {
+	if(!classArr){
+		throw new Error('Missing data to create multiple classes');
+	}
+	let returnArr = [];
+	for(let i =0; i<classArr.length; i++){
+		const newClass = await ClassModel.create(classArr[i]);
+		returnArr.push(newClass);
+	}
+	return returnArr;
+}
+
 function connectionExists(connectionList, newConnection){
 	for(let i =0; i<connectionList.length; i++){
 		if(connectionList[i].userID + '' === newConnection.userID + '' && connectionList[i].classID + '' === newConnection.classID + ''){
@@ -123,6 +135,7 @@ module.exports = ClassModel => {
 		findMultiple: BaseRequests.findMultipleById(ClassModel),
 		deleteById: BaseRequests.deleteById(ClassModel),
 
+		createMultiple: createMultiple(ClassModel),
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
 		addConnectionTo: addConnectionTo(ClassModel),
 		addConnectionFrom: addConnectionFrom(ClassModel),

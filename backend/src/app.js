@@ -61,7 +61,7 @@ app.post('/users/:id/following', async (req, res) =>{
 		console.log(err);
 	}
 })
-const testUsers = require('../lib/testUsers');
+const testUsers = require('../lib/Testing Data/testUsers');
 app.get('/createTestUsers', async (req, res) => {
 	try{
 		await UserService.create(testUsers[0]);

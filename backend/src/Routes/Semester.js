@@ -4,10 +4,9 @@ const express = require("express"),
 const UserService         = require('../../lib/User/index'),
 	  ClassService        = require('../../lib/Class/index'),
 	  SemesterService     = require('../../lib/Semester/index'),
-	  ClassNoteService    = require('../../lib/Notification/Categories/Class/index'), //this needs to be here so that it is registered to mongoDB
 	  AssignmentService   = require('../../lib/Assignment/index');
 
-const AcademicHandler = require('../../lib/CompositeServices/Notification/AcademicHandler');
+const AcademicHandler = require('../../lib/CompositeServices/Notification/Academic/AcademicHandler');
 // Connection Routes
 
 router.post('/users/:id/class/connection', async (req, res) =>{
@@ -15,8 +14,8 @@ router.post('/users/:id/class/connection', async (req, res) =>{
 
 		const currUser = await UserService.findById(req.params.id);
 		const otherUser = await UserService.findById(req.body.otherUser);
-		await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
-		await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
+		console.log(req.body);
+		await AcademicHandler.addNewConnection(req.body.otherUserClass, otherUser._id, req.body.currUserClass, req.params.id);
 		res.send();
 	}catch(err){
 		console.log(err);
@@ -27,8 +26,8 @@ router.post('/users/:id/class/connection/delete', async (req, res) => {
 	try{
 		const currUser = await UserService.findById(req.params.id);
 		const otherUser = await UserService.findById(req.body.otherUser);
-		await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
-		await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
+		// await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
+		// await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
 		res.send();
 	}catch(err){
 		console.log(err);
@@ -39,11 +38,9 @@ router.post('/users/:id/class/connection/delete', async (req, res) => {
 router.post('/users/:id/semester', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
-		const newSem = await SemesterService.create({});
-		const newClasses = await ClassService.create(req.body.semesterData.classes);
-		newSem.name =  req.body.semesterData.name;
-		newSem.classes = newClasses;
-		await newSem.save();
+		const newClasses = await ClassService.createMultiple(req.body.semesterData.classes);
+		const newSem = await SemesterService.create({name: req.body.semesterData.name, classes: newClasses});
+
 		user.semesters.push(newSem);
 		await user.save();
 		res.send();
@@ -192,13 +189,8 @@ router.get('/users/:id/classes/:classID/assignments', async (req,res) => {
 
 router.post('/users/:id/classes/:classID/assignment', async (req, res) =>{
 	try{
-		const user = await UserService.findById(req.params.id);
-		const foundClass = await ClassService.findById(req.params.classID);
-		const newAss = await AssignmentService.create(req.body);
-		foundClass.assignments.push(newAss);
-		await foundClass.save();
+		await AcademicHandler.newAssignment(req.params.id,req.params.classID,req.body);
 		res.send();
-		AcademicHandler.sendConnectionsFromNewAssNotification(foundClass, user, newAss._id);
 	}catch(err){
 		console.log(err);
 	}

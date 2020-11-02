@@ -1,21 +1,17 @@
 const express = require("express"),
-	  router  = express.Router();
-
-const ClassNoteService    = require('../../lib/Notification/Categories/Class/index'),
+	  router  = express.Router(),
       UserService         = require('../../lib/User/index'),
-	  MessageNoteService  = require('../../lib/Notification/Categories/Message/index'),
 	  NotificationService = require('../../lib/Notification/index');
 
 const Formatter = require('../../lib/Notification/Formatter/formatter');
 const RelFormatMap = require('../../lib/Notification/Formatter/RelationsFormatter/formatMap');
+const AcFormatMap = require('../../lib/Notification/Formatter/AcademicFormatter/formatMap');
 
-
-const FriendHandler = require('../../lib/CompositeServices/Notification/Relations/FriendHandler');
 const NotificationHandler = require("../../lib/CompositeServices/Notification/NotificationHandler");
 
 router.get('/users/:id/notifications/relations', async (req, res) => {
 	try{
-		const userRelNotifID = await UserService.getRelationNotifBucketID(req.params.id);
+		const userRelNotifID = await UserService.getNotifBucketID(req.params.id, UserService.notifCategories.relation);
 		const relNotifs = await NotificationService.findByIdAndPopulateList(userRelNotifID);
 		const formattedNotifs = await Formatter.format(relNotifs, RelFormatMap, req.param.id);
 		res.json(formattedNotifs);
@@ -36,11 +32,13 @@ router.delete('/users/:id/notifications/relations/:notifID', async (req, res) =>
 
 router.get('/users/:id/notifications/academic', async (req, res) => {
 	try{
-		const user = await UserService.findById(req.params.id);
-		const notifs = await ClassNoteService.getNotifications(user.notifications.academic.classNote);
-		res.json(notifs);
+		const userAcNotifId = await UserService.getNotifBucketID(req.params.id, UserService.notifCategories.academic);
+		const relNotifs = await NotificationService.findByIdAndPopulateList(userAcNotifId);
+		const formattedNotifs = await Formatter.format(relNotifs, AcFormatMap, req.param.id);
+		res.json(formattedNotifs);
 	}catch(err){
 		console.log(err);
+		res.send();
 	}
 })
 

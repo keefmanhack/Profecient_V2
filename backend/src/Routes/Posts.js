@@ -26,6 +26,7 @@ router.get('/users/:id/posts', async (req, res) => {
 		res.json(posts);
 	}catch(err){	
 		console.log(err);
+		res.send();
 	}
 })
 

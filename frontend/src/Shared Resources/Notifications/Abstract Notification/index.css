@@ -12,7 +12,7 @@
 
 .top-bar .notif h3.time-stamp{
     position: absolute;
-    bottom: -3px;
+    bottom: 0;
     right: 6px;
     font-size: 10px;
     font-weight: 200;

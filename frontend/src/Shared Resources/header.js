@@ -13,6 +13,7 @@ import AssignmentRequest from '../APIRequests/Assignment';
 import UserRequest from '../APIRequests/User';
 
 import RelationalNotifReq from '../APIRequests/Notification/Concrete/RelationalNotifReq';
+import AcademicNotifReq from '../APIRequests/Notification/Concrete/AcademicNotifReq';
 
 import './header.css';
 
@@ -28,12 +29,6 @@ class Header extends React.Component{
 			showRelNotes: false,
 			foundClassMates: [],
 		}
-	}
-
-	toggleAcademicNotifications(val){
-		this.setState({
-			showACNotes: val,
-		})
 	}
 
 	async findUsers(text){
@@ -65,9 +60,15 @@ class Header extends React.Component{
 					<div className='row'>
 						<div className='col-xs-4'>
 							<div className='not-wrapper'>
-								<button onClick={() => this.toggleAcademicNotifications(true)} className='green-c off-black-bc'><i className="fas fa-pencil-alt"></i></button>
+								<button onClick={() => this.setState({showACNotes: true})} className='green-c off-black-bc'><i className="fas fa-pencil-alt"></i></button>
 								{acNotes > 0 ? <h5>{acNotes}</h5> : null}
-
+								<FadeInOutHandleState condition={this.state.showACNotes}>
+									<NotificationContainer 
+										type={AcademicNotifReq}
+										currentUserID={this.props.currentUser._id}
+										hide={() => this.setState({showACNotes: false})}
+									/>
+								</FadeInOutHandleState>
 							</div>
 						</div>
 						<div className='col-xs-4'>

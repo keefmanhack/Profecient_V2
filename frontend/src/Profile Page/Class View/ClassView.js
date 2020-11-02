@@ -157,8 +157,8 @@ class ClassCon extends React.Component{
 		let connectedToClassID = null;
 
 		this.props.data.connectionsFrom.forEach(function(connection){
-			if(connection.user === this.props.currentUser._id){
-				connectedToClassID = connection.class_data;
+			if(connection.userID + '' === this.props.currentUser._id + ''){
+				connectedToClassID = connection.classID;
 			}
 		}.bind(this))
 
