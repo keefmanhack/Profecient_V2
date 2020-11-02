@@ -48,7 +48,10 @@ class Header extends React.Component{
 					<input onChange={(e) => this.findUsers(e.target.value)} className='sans-font' type='text' placeholder='Find classmates'/>
 					{this.state.foundClassMates.length>0 ?
 						<div style={{width: 300, left: 0, position: 'absolute'}}>
-							<UserSearch users={this.state.foundClassMates}/>
+							<UserSearch 
+								hide={() => this.setState({foundClassMates: []})} 
+								users={this.state.foundClassMates}
+							/>
 						</div>
 					: 
 						null

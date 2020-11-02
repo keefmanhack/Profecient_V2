@@ -3,15 +3,38 @@ import {Link} from "react-router-dom";
 
 import './usersearch.css';
 
-function UserSearch(props){
-	const searchItems = props.users && props.users.length>0 ? props.users.map((user, index) => 
-			<SearchItem id={user._id} key={user._id} profilePic={user.profilePictureURL} name={user.name} school={user.school}/>
-		) : null;
-	return(
-		<div className='user-search'>
-			{searchItems}
-		</div>
-	)
+class UserSearch extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.wrapperRef = React.createRef();
+		this.handleClickOutside = this.handleClickOutside.bind(this);
+	}
+	
+	componentDidMount(){
+		document.addEventListener('mousedown', this.handleClickOutside);
+	}
+
+	componentWillUnmount(){
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+            this.props.hide();
+        }
+    }
+
+	render(){
+		const searchItems = this.props.users && this.props.users.length>0 ? this.props.users.map((user, index) => 
+				<SearchItem id={user._id} key={user._id} profilePic={user.profilePictureURL} name={user.name} school={user.school}/>
+			) : null;
+		return(
+			<div ref={this.wrapperRef} className='user-search'>
+				{searchItems}
+			</div>
+		)
+	}
 }
 
 function SearchItem(props){
