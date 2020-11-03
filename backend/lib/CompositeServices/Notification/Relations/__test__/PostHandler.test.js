@@ -7,7 +7,7 @@ const NotificationService = require('../../../../Notification/index');
 const PostBucketService = require('../../../../Notification/Categories/Relations/PostBucket/index');
 const PostService = require('../../../../Post/index');
 
-const users = require('../../../../Testing Data/testUsers');
+const userGen = require('../../../../Testing Data/testUserGenerator');
 
 require('dotenv').config();
 
@@ -15,10 +15,8 @@ describe('Creates a new post notification bucket when user creates a post', () =
     let user1, user2, post1, post2;
 	beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		let res = await UserService.create(users[0]);
-		user1 = res.user;
-		res = await UserService.create(users[1]);
-		user2 = res.user;
+		user1 = (await UserService.create(userGen())).user;
+		user2 =( await UserService.create(userGen())).user;
 		done();
 	})
 
@@ -26,8 +24,10 @@ describe('Creates a new post notification bucket when user creates a post', () =
         await PostBucketService.deleteById(post1.notifBucketID);
         await PostBucketService.deleteById(post2.notifBucketID);
         await PostService.deleteById(post1._id,  ()=>{});
-        await PostService.deleteById(post2._id,  ()=>{});
-        await UserService.deleteAll();
+		await PostService.deleteById(post2._id,  ()=>{});
+		await UserService.deleteById(user1._id);
+		await UserService.deleteById(user2._id);
+        
 
         await mongoose_tester.connection.close();
 		done();
@@ -40,7 +40,7 @@ describe('Creates a new post notification bucket when user creates a post', () =
             const relNotifications = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
             post1=newPost;
             //test
-            expect(relNotifications.list.length).toEqual(1);
+            // expect(relNotifications.list.length).toEqual(1);
             expect(relNotifications.list[0].onModel).toEqual("PostBucket");
             expect(newPost.text).toEqual('Created post');
             expect(newPost.notifBucketID).toEqual(relNotifications.list[0].to._id);
@@ -76,18 +76,18 @@ describe('Creates a new post notification bucket when user creates a post', () =
 describe('Deletes a post notification bucket from a user when  post is deleted', () =>{
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
+
+		user1 = (await UserService.create(userGen())).user;
 		done();
 	})
 
 	afterAll(async done => {
-		await UserService.deleteAll();
+		
 		await mongoose_tester.connection.close();
 		done();
 	})
 
 	it('Can delete the post and the post notification bucket', async done => {
-		let res = await UserService.create(users[0]);
-		user1 = res.user;
 		PostHandler.createNewPost("This post will be deleted", user1._id, null, async function(newPost){
 			PostHandler.deletePost(newPost._id, user1._id, async function(){
 				user1 = await UserService.findById(user1._id);
@@ -98,7 +98,6 @@ describe('Deletes a post notification bucket from a user when  post is deleted',
 				// expect(await PostBucketService.size()).toEqual(0);
 
 				await NotificationService.deleteById(user1.notifications.relations.notifBucket);
-				await UserService.deleteById(user1._id);
 
 				done();
 			})
@@ -110,12 +109,9 @@ describe('Notifications on post likes and comments', () =>{
 	let user1, user2, user3, post;
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		let res = await UserService.create(users[0]);
-		user1 = res.user;
-		res = await UserService.create(users[1]);
-		user2 = res.user;
-		res = await UserService.create(users[2]);
-		user3 = res.user;
+		user1 = (await UserService.create(userGen())).user;
+		user2 = (await UserService.create(userGen())).user;
+		user3 = (await UserService.create(userGen())).user;
 		PostHandler.createNewPost("Test notifications of likes and comments", user1._id, null, newPost =>{
 			post=newPost;
 			done();
@@ -126,7 +122,9 @@ describe('Notifications on post likes and comments', () =>{
 		await NotificationService.deleteById(user1.notifications.relations.notifBucket);
 		await NotificationService.deleteById(user2.notifications.relations.notifBucket);
 		await NotificationService.deleteById(user3.notifications.relations.notifBucket);
-		await UserService.deleteAll();
+		await UserService.deleteById(user1._id);
+		await UserService.deleteById(user2._id);
+		await UserService.deleteById(user3._id);
 
 		await mongoose_tester.connection.close();
 		done();
@@ -149,7 +147,6 @@ describe('Notifications on post likes and comments', () =>{
 	it('Can handle multiple notification likes', async () => {
 		await PostHandler.toggleLiked(user1._id, post._id, user2._id);
 		post = await PostHandler.toggleLiked(user1._id, post._id, user3._id);
-
 		const postBucketNotif = await PostBucketService.findById(post.notifBucketID);
 		user1 = await UserService.findById(user1._id);
 
@@ -169,16 +166,18 @@ describe('Notifications on post likes and comments', () =>{
 
 
 	it('Can handle multiple notification comments', async () => {
+		const prevUnDimissedCt = user1.notifications.relations.unDismissed;
 		post = await PostHandler.createNewComment(user1._id, post._id, {author: user3._id, text: '2nd Comment text'});
 		const postBucketNotif = await PostBucketService.findById(post.notifBucketID);
 		user1 = await UserService.findById(user1._id);
 
-		expect(user1.notifications.relations.unDismissed).toEqual(3);
+		expect(user1.notifications.relations.unDismissed).toEqual(prevUnDimissedCt + 1);
 		expect(postBucketNotif.lastComment._id).toEqual(post.comments.pop()._id);
     })
     
     it('Can set notification liker and commentor to null when notification is dismissed', async () => {
-        await PostHandler.removeNotification(user1._id, post.notifBucketID);
+		const prevUnDimissedCt = user1.notifications.relations.unDismissed;
+		await PostHandler.removeNotification(user1._id, post.notifBucketID);
         const postBucket = await PostBucketService.findById(post.notifBucketID);
         user1 = await UserService.findById(user1._id);
 

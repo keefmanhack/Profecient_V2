@@ -6,7 +6,7 @@ const PostBucketNotifService = require('../../../Notification/Categories/Relatio
 const RelFormatMap = require('./formatMap');
 // mongoose_tester.set('debug', true);
 
-const users = require('../../../Testing Data/testUsers');
+const userGen = require('../../../Testing Data/testUserGenerator');
 const UserService = require('../../../User/index');
 const Formatter = require('../formatter');
 const PostHandler = require('../../../CompositeServices/Notification/Relations/PostHandler');
@@ -17,17 +17,17 @@ describe('Can properly format a newFollower notification', () => {
     let user1, user2, newFollowerNotif;
     beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        let res = await UserService.create(users[0]);
-        user1 = res.user;
-        res = await UserService.create(users[1]);
-        user2 = res.user;
+        user1 = (await UserService.create(userGen())).user;
+        user2 = (await UserService.create(userGen())).user;
         newFollowerNotif = await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
 		done();
     })
 
     afterAll(async done => {
         await NewFollowerService.deleteById(newFollowerNotif._id);
-        await UserService.deleteAll();
+        // await UserService.deleteById(user1._id);
+        await UserService.deleteById(user2._id);
+        
         await mongoose_tester.connection.close();
 		done();
     })
@@ -50,7 +50,7 @@ describe('Can properly format a newFollower notification', () => {
     })
 
     it('Removes a new follower notification if there is an error', async done => {
-        await UserService.deleteById(user1._id);
+        await UserService.deleteById(user1._id); //creating an error
         const relNotifBucketID = await UserService.getNotifBucketID(user2._id, UserService.notifCategories.relation);
         let relNotifs = await NotificationService.findByIdAndPopulateList(relNotifBucketID);
         const formattedData = await Formatter.format(relNotifs, RelFormatMap, user2._id);
@@ -67,10 +67,8 @@ describe('Can properly format a postbucket notif', () => {
     let user1, notifBucket, relNotifs, post;
     beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        let res = await UserService.create(users[0]);
-        user1 = res.user;
-        res = await UserService.create(users[1]);
-        user2 = res.user;
+        user1 = (await UserService.create(userGen())).user;
+        user2 = (await UserService.create(userGen())).user;
         PostHandler.createNewPost('Fake text', user1._id, null, async newPost => {
             post = newPost;
             notifBucket = await PostBucketNotifService.findById(newPost.notifBucketID);
@@ -82,7 +80,9 @@ describe('Can properly format a postbucket notif', () => {
     afterAll(async done => {
         PostHandler.deletePost(post._id, user1._id, async () => {
             await NotificationService.deleteById(relNotifs._id);
-            await UserService.deleteAll();
+            await UserService.deleteById(user1._id);
+            await UserService.deleteById(user2._id);
+            
             await mongoose_tester.connection.close();
             done();
         });		

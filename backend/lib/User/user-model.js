@@ -51,8 +51,6 @@ let UserSchema = mongoose.Schema({
 
 		}
 	}
-
-
 })
 
 UserSchema.plugin(passportLocalMongoose);

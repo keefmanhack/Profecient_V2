@@ -1,3 +1,5 @@
+//these item's already exist and don't need to be remade
+
 const user1Data={
 	name: 'Stan Smith',
 	username: 'stamith100',
@@ -9,6 +11,7 @@ const user1Data={
 	phoneNumber: 12345678999,
 	password: 'stansTerriblePassword',
 	profilePictureURL: 'Stans profilePictureURL',
+	_id: '5fa17df46284495645593b8a',
 }
 
 const user2Data={
@@ -22,6 +25,7 @@ const user2Data={
 	email: 'queen@yahoo.com',
 	phoneNumber: 12345178999,
 	password: 'queensTerriblePassword',
+	_id: '5fa17df56284495645593b8d'
 }
 
 const user3Data={
@@ -35,6 +39,7 @@ const user3Data={
 	email: 'king@yahoo.com',
 	phoneNumber: 12345678929,
 	password: 'kingsTerriblePassword',
+	_id: '5fa17df56284495645593b90',
 }
 
 module.exports = [user1Data, user2Data, user3Data];

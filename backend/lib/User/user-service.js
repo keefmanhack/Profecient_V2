@@ -81,7 +81,6 @@ const findLinks = User => async (classSearchData, currentLinks) => {
 
 const create = User => async data => {
 	//ADD TESTS TO MAKE SURE USER IS VALID
-	console.log(await User.countDocuments({}));
 	try{
 		const user = new User(data);
 		user.following.push(user._id);

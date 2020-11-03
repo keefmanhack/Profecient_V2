@@ -1,7 +1,7 @@
 const mongoose_tester = require('../../../mongoose_test_config');
 // mongoose_tester.set('debug', true);
 const UserService = require('../index');
-const users = require('../../Testing Data/testUsers');
+const userGen = require('../../Testing Data/testUserGenerator');
 
 require('dotenv').config();
 
@@ -9,16 +9,14 @@ describe('Following and unfollowing', () =>{
     let user1, user2;
 	beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        let res = await UserService.create(users[0]);
-        user1 = res.user;
-        res = await UserService.create(users[1]);
-        user2 = res.user;
+        user1 = (await UserService.create(userGen())).user;
+        user2 = (await UserService.create(userGen())).user;
 		done();
 	})
 
 	afterAll(async done => {
-        await UserService.deleteAll();
-
+        await UserService.deleteById(user1._id);
+        await UserService.deleteById(user2._id);
 		await mongoose_tester.connection.close();
 		done();
 	})
@@ -47,15 +45,15 @@ describe('Can create a new user', () => {
     })
 
     afterAll(async done => {
-        await UserService.deleteAll();
         await mongoose_tester.connection.close();
         done();
     })
 
     it('Can create a new user', async () => {
-        let res = await UserService.create(users[0]);
+        let res = await UserService.create(userGen());
         if(res.success){
             user1 = res.user;
+            await UserService.deleteById(user1._id);
         }
     })
 })
