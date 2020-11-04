@@ -28,6 +28,11 @@ app.use(AgendaRoutes);
 app.use(PostRoutes);
 app.use(SemesterRoutes);
 
+app.get('/users/verify', async (req, res) => {
+	const query = req.query;
+	const validation = await UserService.validate(query);
+	res.json(validation);
+})
 
 app.get('/users/:id', async (req, res) => {
 	try{

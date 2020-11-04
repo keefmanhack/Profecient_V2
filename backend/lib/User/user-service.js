@@ -162,6 +162,30 @@ const subtractRelationNotifCT = User => async (id, val) => {
 	return foundUser.save();
 }
 
+const validate = User => async obj => {
+	const objKey = Object.keys(obj)[0];
+	let validation = {isValid: false, errorCode: getErrorCode(objKey)}
+	try{
+		const foundItems = await User.find({email: obj[objKey]});
+
+		if(foundItems.length === 0){
+			validation = {isValid: true, errorCode: null}
+		}
+	}catch(err){
+		return validation;
+	}
+	return validation;
+}
+
+function getErrorCode(key){
+	if(key === 'email'){
+		return 0;
+	}else if(key === 'phoneNumber'){
+		return 1;
+	}
+	return null;
+}
+
 
 module.exports = User => {
 	return {
@@ -181,6 +205,7 @@ module.exports = User => {
 		insertNewPost: insertNewPost(User),
 		getNotifBucketID: getNotifBucketID(User),
 		subtractRelationNotifCT: subtractRelationNotifCT(User),
+		validate: validate(User),
 		notifCategories: {relation: 'relations', academic: 'academic'},
 	}
 }

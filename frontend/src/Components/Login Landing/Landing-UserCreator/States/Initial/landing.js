@@ -3,10 +3,10 @@ import {Link} from "react-router-dom";
 import ReactPasswordStrength from 'react-password-strength';
 import PhoneInput from 'react-phone-input-2'
 
-import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../../../Shared Resources/Effects/CustomTransition';
 
 import './landing.css';
-import UserRequests from '../APIRequests/User';
+import UserRequests from '../../../../../APIRequests/User';
 
 class Landing extends React.Component{
 	constructor(props){
@@ -40,7 +40,7 @@ class Landing extends React.Component{
 				phoneNumber: this.state.phoneNumber,
 				password: this.state.password,
 			}
-			await this.UserReq.create(data);
+			this.props.handleEvent(data);
 		}
 	}
 	checkErrors(){

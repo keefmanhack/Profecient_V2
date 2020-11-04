@@ -2,10 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
 import Login from './Login Landing/Login';
-import Landing from './Login Landing/landing';
+import OnBoard from './Components/Login Landing/Landing-UserCreator/Onboard';
 import MessageCenter from './MessageCenter/Message-Center';
 import Home from './Home/Home';
 import ProfilePage from './Profile Page/profile-page';
+
 
 import Loader from './Shared Resources/Effects/loader';
 
@@ -103,7 +104,7 @@ class App extends React.Component{
 						<Route path='/login'>
 							<Login/>
 						</Route>
-						<Route path='/' component={Landing}/>
+						<Route path='/' component={OnBoard}/>
 					</Switch>
 				</div>
 			</Router>
