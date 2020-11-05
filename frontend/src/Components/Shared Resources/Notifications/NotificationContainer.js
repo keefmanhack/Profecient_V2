@@ -5,7 +5,7 @@ import Loader from '../Effects/loader';
 import FormatSelector from './Formatter/Formatter';
 
 import './notif-container.css';
-import NotificationRequest from '../../APIRequests/Notification/Notification';
+import NotificationRequest from '../../../APIRequests/Notification/Notification';
 
 class NotificationContainer extends React.Component{
     constructor(props){

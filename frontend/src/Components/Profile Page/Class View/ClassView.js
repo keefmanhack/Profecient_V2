@@ -7,8 +7,8 @@ import MenuDropDown, {DropDownMain, Options} from '../../Shared Resources/MenuDr
 import Loader from '../../Shared Resources/Effects/loader';
 import SemesterCreator from '../Semester Creator/SemesterCreator';
 
-import SemesterRequests from '../../APIRequests/Semester';
-import ClassRequests from '../../APIRequests/Class';
+import SemesterRequests from '../../../APIRequests/Semester';
+import ClassRequests from '../../../APIRequests/Class';
 
 import './class-view.css';
 

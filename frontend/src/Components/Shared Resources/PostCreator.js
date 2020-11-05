@@ -3,7 +3,7 @@ import React from 'react';
 import {FadeInOutHandleState} from './Effects/CustomTransition';
 import Loader from './Effects/loader';
 
-import PostRequests from '../APIRequests/Post';
+import PostRequests from '../../APIRequests/Post';
 
 class PostCreator extends React.Component{
 	constructor(props){

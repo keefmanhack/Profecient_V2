@@ -10,8 +10,8 @@ import Header from '../Shared Resources/header';
 import PostCreator from '../Shared Resources/PostCreator';
 import Loader from '../Shared Resources/Effects/loader';
 
-import UserRequests from '../APIRequests/User';
-import PostRequests from '../APIRequests/Post';
+import UserRequests from '../../APIRequests/User';
+import PostRequests from '../../APIRequests/Post';
 
 import './profile-page.css';
 

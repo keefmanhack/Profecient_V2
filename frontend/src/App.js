@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
-import Login from './Login Landing/Login';
+import Login from './Components/Login Landing/Login';
 import OnBoard from './Components/Login Landing/Landing-UserCreator/Onboard';
-import MessageCenter from './MessageCenter/Message-Center';
-import Home from './Home/Home';
-import ProfilePage from './Profile Page/profile-page';
+import MessageCenter from './Components/MessageCenter/Message-Center';
+import Home from './Components/Home/Home';
+import ProfilePage from './Components/Profile Page/profile-page';
 
 
-import Loader from './Shared Resources/Effects/loader';
+import Loader from './Components/Shared Resources/Effects/loader';
 
-import './Shared Resources/index.css';
+import './Components/Shared Resources/index.css';
 
 import UserRequests from './APIRequests/User';
 

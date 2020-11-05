@@ -7,8 +7,8 @@ import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
 import ClassEditor from './ClassEditor/ClassEditor';
 import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 
-import SemesterRequests from '../../APIRequests/Semester';
-import ClassRequests from '../../APIRequests/Class';
+import SemesterRequests from '../../../APIRequests/Semester';
+import ClassRequests from '../../../APIRequests/Class';
 
 import './semester-creator.css';
 

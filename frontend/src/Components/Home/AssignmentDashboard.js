@@ -3,8 +3,8 @@ import DatePicker from "react-datepicker";
 import TimePicker from 'react-time-picker';
 import moment from 'moment';
 
-import SemesterRequests   from '../APIRequests/Semester';
-import AssignmentRequests from '../APIRequests/Assignment';
+import SemesterRequests   from '../../APIRequests/Semester';
+import AssignmentRequests from '../../APIRequests/Assignment';
 
 import {SuccessCheck, FailedSent} from '../Shared Resources/Effects/lottie/LottieAnimations';
 import {FadeInOutHandleState, FadeDownUpHandleState} from '../Shared Resources/Effects/CustomTransition';

@@ -1,19 +1,15 @@
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
-import moment from 'moment';
 
-import Loader from './Effects/loader';
 import {FadeInOutHandleState} from './Effects/CustomTransition';
 // import {SuccessCheck, FailedSent} from './Effects/lottie/LottieAnimations';
 import UserSearch from './User Search/UserSearch';
 import NotificationContainer from '../Shared Resources/Notifications/NotificationContainer';
 
-import NotificationRequest from '../APIRequests/Notification/Notification';
-import AssignmentRequest from '../APIRequests/Assignment';
-import UserRequest from '../APIRequests/User';
+import UserRequest from '../../APIRequests/User';
 
-import RelationalNotifReq from '../APIRequests/Notification/Concrete/RelationalNotifReq';
-import AcademicNotifReq from '../APIRequests/Notification/Concrete/AcademicNotifReq';
+import RelationalNotifReq from '../../APIRequests/Notification/Concrete/RelationalNotifReq';
+import AcademicNotifReq from '../../APIRequests/Notification/Concrete/AcademicNotifReq';
 
 import './header.css';
 

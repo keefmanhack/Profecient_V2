@@ -10,7 +10,7 @@ import ImageGallary from '../../Shared Resources/ImageGallary';
 
 import './feed.css';
 
-import PostRequests from '../../APIRequests/Post';
+import PostRequests from '../../../APIRequests/Post';
 
 function Feed(props){
 	const postReq  = new PostRequests(props.currentUser._id);

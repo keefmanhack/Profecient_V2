@@ -4,17 +4,7 @@ class UserRequests{
 	constructor(id){
 		this.currUserID = id;
 	}
-
-	verifyEmail = async email => {
-		try{
-			const endPoint = '/users/verify/?email=' + email;
-			const res = await axios.get(endPoint);
-			return res.data;
-		}catch(err){
-
-		}
-	}
-
+	
 	findMultiple = async name => {
 		try{
 			const endPoint = '/users';

@@ -8,8 +8,8 @@ import Feed from '../Shared Resources/feed/feed';
 import PostCreator from '../Shared Resources/PostCreator';
 import Loader from '../Shared Resources/Effects/loader'
 
-import UserRequests       from '../APIRequests/User';
-import PostRequests       from '../APIRequests/Post';
+import UserRequests       from '../../APIRequests/User';
+import PostRequests       from '../../APIRequests/Post';
 
 
 class Home extends React.Component{

@@ -6,11 +6,15 @@ handleError()
 getNextState()
 */
 import errors from '../ErrorCodes';
+import LandingPage2 from '../../Components/Login Landing/Landing-UserCreator/States/Final/Final';
+import UserRequests from '../../APIRequests/User';
 
 class Final{
     constructor(){
         this.nextState=null;
-        this.validation = '';
+        this.validation = null;
+        this.component= LandingPage2;
+        this.userReq = new UserRequests(null);
     }
 
     getNextState(){
@@ -23,13 +27,13 @@ class Final{
     }
 
     handleError(){
-        if(this.validation.errorCode === errors.EMAIL_EXISTS){
+        // if(this.validation.errorCode === errors.EMAIL_EXISTS){
 
-        }else if(this.validation.errorCode === errors.PHONE_NUMBER_EXISTS){
+        // }else if(this.validation.errorCode === errors.PHONE_NUMBER_EXISTS){
 
-        }else{
-            //handle unknown error
-        }
+        // }else{
+        //     //handle unknown error
+        // }
     }
 }
 

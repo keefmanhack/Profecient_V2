@@ -9,7 +9,7 @@ import {findTopPosition, dateObjToStdTime, convertToStdDate} from './Agenda_Help
 import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 import Loader from '../../Shared Resources/Effects/loader';
 
-import AgendaRequests from '../../APIRequests/Agenda';
+import AgendaRequests from '../../../APIRequests/Agenda';
 
 import './newAgItem.css';
 import './agenda.css';
