@@ -1,0 +1,91 @@
+.final{
+    background: rgb(211,236,209);
+    background: -moz-linear-gradient(144deg, rgba(211,236,209,1) 40%, rgba(0,123,255,1) 100%);
+    background: -webkit-linear-gradient(144deg, rgba(211,236,209,1) 40%, rgba(0,123,255,1) 100%);
+    background: linear-gradient(144deg, rgba(211,236,209,1) 40%, rgba(0,123,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#d3ecd1",endColorstr="#007bff",GradientType=1);
+    height: 100vh;
+    width: 100vw;
+    padding: 10px;
+}
+
+.final .final-form{
+    background: white;
+    margin: 0px 33%;
+    padding: 20px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 29px 23px 0px rgba(0,0,0,0.73);
+    -moz-box-shadow: 0px 29px 23px 0px rgba(0,0,0,0.73);
+    box-shadow: 0px 29px 23px 0px rgba(0,0,0,0.73);
+}
+
+.final .photo-container img{
+    height: inherit;
+    border-radius: 100%;
+    width: inherit;
+    border: 2px solid rgba(0,0,0,0.2);
+    object-fit: cover;
+}
+
+.final input{
+    transition: .3s;
+}
+
+input[type=file] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+    cursor: pointer;
+}
+
+.final .photo-container{
+    height: inherit;
+    width: 100px;
+}
+
+.final .img-selector{
+    height: 100px;
+}
+
+.final .img-selector input{
+    position: relative;
+    top: 32%;
+}
+
+.final label{
+    border-bottom: 1px solid rgba(0,0,0,.3);
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0;
+}
+
+.final button.submit{
+    border: none;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 30px;
+    -webkit-box-shadow: 0px 121px 104px -56px rgba(0,0,0,0.8);
+    -moz-box-shadow: 0px 121px 104px -56px rgba(0,0,0,0.8);
+    box-shadow: 0px 121px 104px -56px rgba(0,0,0,0.8);
+}
+
+.final .selected-school{
+    position: relative;
+    top: 26%;
+    background: rgba(0,0,0,.1);
+    padding: 5px;
+    border-radius: 2px;
+}
+
+.final .selected-school h5{
+    display: inline;
+    margin-left: 5px;
+}
+
+.final .selected-school button{
+    border: none;
+    color: red;
+    font-weight: 600;
+}
+

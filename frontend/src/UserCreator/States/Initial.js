@@ -5,7 +5,7 @@ isValid()
 handleError()
 getNextState()
 */
-import next from './Final';
+import Final from './Final';
 import errors from '../ErrorCodes';
 import Landing from  '../../Components/Login Landing/Landing-UserCreator/States/Initial/landing';
 import UserVerifier from '../../APIRequests/UserVerifier';
@@ -14,12 +14,13 @@ import GenericErr from '../../Components/Login Landing/Landing-UserCreator/Error
 import EmailErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/EmailErr';
 import PhoneNumberErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/PhoneNumberErr';
 import NotConnectedErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/NotConnectedErr';
+import LandingPage2 from '../../Components/Login Landing/Landing-UserCreator/States/Final/Final';
 
 class Initial{
     constructor(){
-        this.nextState=next;
+        this.nextState= new Final();
         this.validation = null;
-        this.component= Landing;
+        this.component= LandingPage2;
         this.userVerifier = new UserVerifier();
     }
 
@@ -48,8 +49,7 @@ class Initial{
     }
 
     handleError(){
-        if(!this.validation){return null}
-        console.log(this.validation);
+        if(!this.validation){return GenericErr}
         if(this.validation.errorCode === errors.EMAIL_EXISTS){
             return EmailErr;
         }else if(this.validation.errorCode === errors.PHONE_NUMBER_EXISTS){

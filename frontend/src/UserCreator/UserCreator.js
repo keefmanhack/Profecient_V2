@@ -30,7 +30,7 @@ class UserCreator{
         if(isValid){
             this.updateUser(data);
             if(this.state !== this.finalState){
-                // this.state = new this.state.getNextState()();
+                this.state = this.state.getNextState();
             }
         }
     }

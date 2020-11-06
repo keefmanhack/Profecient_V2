@@ -1,0 +1,50 @@
+.logo-results{
+    margin-top: 30px;
+    max-height: 175px;
+    background: white;
+    padding: 10px;
+    overflow: scroll;
+    -webkit-box-shadow: 0px 0px 62px -4px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 62px -4px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 62px -4px rgba(0,0,0,0.75);
+}
+
+.logo-results .result{
+    background: white;
+    margin: 6px 0px;
+    padding: 5px;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 5px;
+    transition: .3s;
+    cursor: pointer;
+}
+
+.logo-results .result:hover{
+    -webkit-box-shadow: inset 0px 0px 29px 0px rgba(0,0,0,0.45);
+    -moz-box-shadow: inset 0px 0px 29px 0px rgba(0,0,0,0.45);
+    box-shadow: inset 0px 0px 29px 0px rgba(0,0,0,0.45);;
+}
+
+.logo-results .result img{
+    height: 30px;
+    width: 30px;
+    object-fit: contain;
+    border: 1px solid rgba(0,0,0,.3);
+    border-radius: 100%;
+}
+
+.logo-results .result h5.name{
+    display: inline;
+    margin-left: 5px;
+    margin-bottom: 0;
+    font-size: 18px;
+    width: 86%;
+    overflow: hidden;
+    font-weight: 600;
+}
+
+.logo-results .result h5.domain{
+    font-size: 12px;
+    font-weight: 200px;
+    margin: 0;
+}

@@ -4,19 +4,23 @@ import errors from '../UserCreator/ErrorCodes';
 
 const notConnected = {isValid: false, errorCode: errors.NOT_CONNECTED}
 class UserVerifier{
+	verifyUserName = async username => {
+		const endPoint = '/users/verify/?username=' + username;
+		return await this.absractVerifier(endPoint);
+	}
+
     verifyEmail = async email => {
-		try{
-			const endPoint = '/users/verify/?email=' + email;
-			const res = await axios.get(endPoint);
-			return res.data;
-		}catch(err){
-			return notConnected;
-		}
+		const endPoint = '/users/verify/?email=' + email;
+		return await this.absractVerifier(endPoint);
     }
     
     verifyPhoneNumber = async phoneNumber => {
+		const endPoint = '/users/verify/?phoneNumber=' + phoneNumber;
+		return await this.absractVerifier(endPoint);
+	}
+
+	 absractVerifier = async endPoint => {
 		try{
-			const endPoint = '/users/verify/?phoneNumber=' + phoneNumber;
 			const res = await axios.get(endPoint);
 			return res.data;
 		}catch(err){

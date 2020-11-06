@@ -66,7 +66,7 @@ class Landing extends React.Component{
 	render(){
 		return(
 			<div className='background' id='landing'>
-				<Link className='mont-font blue-c' id='header-tag' to="/">Profecient</Link>
+				<Link className='mont-font blue-c header-tag' to="/">Profecient</Link>
 				<Link to='/home'>
 					<button className='blue-bc mont-font login white-c'>Login</button>
 				</Link>

@@ -11,7 +11,7 @@ class OnBoard extends React.Component{
         this.uc = new UserCreator();
         this.state = {
             comp: this.uc.getComponent(),
-            errorComp: this.uc.getErrorComponent(),
+            showError: false,
             isActing: false,
         }
         
@@ -21,26 +21,29 @@ class OnBoard extends React.Component{
         this.setState({isActing: true});
         await this.uc.handleEvent(data);
         if(this.uc.hasError()){
-            this.setState({errorComp: this.uc.getErrorComponent()});
-            setInterval(() => {
-                this.setState({errorComp: null});
+            this.setState({showError: true});
+            setTimeout(() => {
+                this.setState({showError: false});
             }, 1500);
         }
-
         this.setState({comp: this.uc.getComponent()});
         this.setState({isActing: false});
     }
 
     render(){
         const Component = this.state.comp;
-        const ErrorComponent = this.state.errorComp;
+        const ErrorComponent = this.uc.getErrorComponent();
+        const renderedError = ErrorComponent ? <ErrorComponent/> : null;
         return (
             <div>
                 {this.state.isActing ? <Loader/> : null}
                 <Component handleEvent={(data) => this.handleEvent(data)}/>
-                <FadeInOutHandleState condition={this.state.errorComp}>
-                    <ErrorComponent/>
+                <FadeInOutHandleState condition={this.state.showError}>
+                    <React.Fragment>
+                        {renderedError}
+                    </React.Fragment>   
                 </FadeInOutHandleState>
+                
             </div>
                 
         );

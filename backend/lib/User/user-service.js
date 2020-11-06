@@ -182,6 +182,8 @@ function getErrorCode(key){
 		return 0;
 	}else if(key === 'phoneNumber'){
 		return 1;
+	}else if(key === 'username'){
+		return 3;
 	}
 	return null;
 }

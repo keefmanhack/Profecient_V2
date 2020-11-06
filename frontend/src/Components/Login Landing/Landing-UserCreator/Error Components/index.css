@@ -1,16 +1,16 @@
 .error-message{
-    position: relative;
     background: white;
-    top: 93px;
-    margin: 0 33%;
+    position: absolute;
+    margin: 0 40%;
+    top: 17px;
     padding: 10px;
     border-radius: 10px;
     color: red;
     font-weight: 500;
     font-size: 17px;
-    -webkit-box-shadow: inset 0px 0px 25px -9px rgba(0,0,0,0.75);
-    -moz-box-shadow: inset 0px 0px 25px -9px rgba(0,0,0,0.75);
-    box-shadow: inset 0px 0px 25px -9px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 0px 25px -9px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 25px -9px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 25px -9px rgba(0,0,0,0.75);
 }
 
 .error-message p{
