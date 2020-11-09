@@ -40,22 +40,39 @@ function AssignmentDashboard(props){
 		return () => {}
 	}, [shouldShowNewForm, editCount, editClassIndex]);
 
+	const deleteAss = async (classID, assID) => {
+		const res = await assReq.delete(classID, assID); 
+		let ct = editCount;
+		setEditCount(++ct);
+		if(!res.success){
+			alert('Unable to delete assignment');
+		}
+	}
+
 
 	const assignments = upCommingAss ? upCommingAss.map((data, index) =>
 		<Assignment 
 			data={data.ass}
-			key={index}
+			key={data.ass._id}
 			toggleCompleted={(id, isCompleted) => assReq.toggleCompleted(id, {complete: isCompleted})}
 			editAssignment={() => {setEditClassIndex(index);}}
-			deleteAssignment={() => {assReq.delete(data.parentClassID, data.ass._id); let ct = editCount;setEditCount(++ct)}}
+			deleteAssignment={() => deleteAss(data.parentClassID, data.ass._id)}
 		/>
 	): null;
-	// console.log(currSemester);
+	
+	const handleNewEvent = () => {
+		if(currSemester){
+			setShouldShowNewForm(true);
+		}else{
+			alert('You need to create a semester to add an assignment');
+		}
+	}
+
 	return(
 		<React.Fragment>
 			<div className='assignment-dashboard sans-font' style={props.style}>
 				<h1 className='gray-c '>Upcoming</h1>
-				<button onClick={() => setShouldShowNewForm(true)} className='add green-bc'>Add</button>
+				<button onClick={() => handleNewEvent(true)} className='add green-bc'>Add</button>
 				<hr/>
 				<div className='assignments-cont'>
 					{assignments}
@@ -83,6 +100,8 @@ class Assignment extends React.Component{
 			mouseOver: false,
 			deleting: false,
 		}
+
+		this.timeOut = null;
 	}
 
 	toggleDropDown(){
@@ -101,6 +120,18 @@ class Assignment extends React.Component{
 		this.setState({
 			completed: !completed_copy,
 		})
+	}
+
+	deleteItem(){
+		this.setState({deleting: true});
+		this.timeOut = setTimeout(function(){
+			this.setState({deleting: false});
+		}.bind(this), 3000);
+		this.props.deleteAssignment();
+	}
+
+	componentWillUnmount(){
+		clearTimeout(this.timeOut);
 	}
 
 	render(){
@@ -133,7 +164,7 @@ class Assignment extends React.Component{
 						<p>{this.props.data.description}</p>
 						<h5>{moment(this.props.data.dueTime).format('h:mm a')}</h5>
 						<button onClick={() => this.props.editAssignment()}>Edit</button>
-						<button onClick={() => {this.setState({deleting: true}); this.props.deleteAssignment()}}>Delete</button>
+						<button onClick={() => this.deleteItem()}>Delete</button>
 					</div>
 				</FadeDownUpHandleState>
 				<FadeInOutHandleState condition={this.state.mouseOver}>
@@ -235,8 +266,7 @@ class NewAssignment extends React.Component{
 			const editData = this.props.editData;
 			let res = editData ? await this.assReq.update(editData.parentClassID, editData.ass._id, this.state.selectedClassID, data) 
 				: await this.assReq.create(this.state.selectedClassID, data);
-
-			res ? this.setState({success: true}) : this.setState({error: true});
+			res.success ? this.setState({success: true}) : this.setState({error: true});
 		}
 	}
 

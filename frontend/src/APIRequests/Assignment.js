@@ -28,7 +28,8 @@ class AssignmentRequests{
 	delete = async (classID, assID) => {
 		try{
 			const endPoint = `/users/` + this.currUserID + '/classes/' + classID + '/assignment/' + assID;
-			return await axios.delete(endPoint);
+			const res =  await axios.delete(endPoint);
+			return res.data;
 		}catch(err){
 			console.log(err);
 		}
@@ -37,7 +38,8 @@ class AssignmentRequests{
 	create = async (classID, data) => {
 		try{
 			const endPoint = `/users/` + this.currUserID + '/classes/' + classID + '/assignment/'
-			return await axios.post(endPoint, data);
+			const res = await axios.post(endPoint, data);
+			return res.data;
 		}catch(err){
 			console.log(err);
 		}
@@ -46,9 +48,11 @@ class AssignmentRequests{
 	update = async(classID, assID, newClassID, data) => {
 		try{
 			await this.delete(classID, assID);
-			return await this.create(newClassID, data);
+			const res = await this.create(newClassID, data);
+			return res; //res already holds data since create return res.data
 		}catch(err){
 			console.log(err);
+			return {success: false}
 		}
 	}
 

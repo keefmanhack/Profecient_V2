@@ -2,6 +2,9 @@ const mongoose_tester = require('../../../mongoose_test_config');
 // mongoose_tester.set('debug', true);
 const UserService = require('../index');
 const userGen = require('../../Testing Data/testUserGenerator');
+const passport      = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('../user-model');
 
 require('dotenv').config();
 
@@ -38,22 +41,33 @@ describe('Following and unfollowing', () =>{
 })
 
 describe('Can create a new user', () => {
-    let user1;
+    let user1, password;
     beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
+        
+        // passport.use(new LocalStrategy(User.authenticate()));
+        // passport.serializeUser(User.serializeUser());
+        // passport.deserializeUser(User.deserializeUser(async function(id, done){
+        //     const user = await UserService.findById(id);
+        //     console.log(user);
+        // }));
+
+
         done();
     })
 
     afterAll(async done => {
+        await UserService.deleteById(user1._id);
         await mongoose_tester.connection.close();
         done();
     })
 
     it('Can create a new user', async () => {
-        let res = await UserService.create(userGen());
+        const genUser = userGen();
+        password = genUser.password;
+        let res = await UserService.create(genUser);
         if(res.success){
             user1 = res.user;
-            await UserService.deleteById(user1._id);
         }
     })
 })

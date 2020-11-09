@@ -4,6 +4,7 @@ import LogoRequester from '../../../../../LogoRequester';
 import { FadeInOutHandleState } from '../../../../Shared Resources/Effects/CustomTransition';
 import LogoResults from '../../../../Shared Resources/Logo Requests/LogoResults';
 
+
 import './index.css';
 
 class LandingPage2 extends React.Component{

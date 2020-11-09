@@ -10,6 +10,7 @@ import Loader from '../Shared Resources/Effects/loader'
 
 import UserRequests       from '../../APIRequests/User';
 import PostRequests       from '../../APIRequests/Post';
+import UserVerifier from '../../APIRequests/UserVerifier';
 
 
 class Home extends React.Component{
@@ -17,16 +18,27 @@ class Home extends React.Component{
 		super(props);
 
 		//setUpAPIRequests
-		this.userReq   = new UserRequests();
-		this.postReq   = new PostRequests(this.props.currentUser._id);
+		this.userReq=null;
+		this.postReq=null;
+		this.uV = new UserVerifier();
 
 		this.state = {
 			postData: null,
+			currentUser: null,
 		}
 	}
 
 	async componentDidMount(){
-		this.getFriendsPosts();
+		try{
+			const user = await this.uV.getCurrUser();
+			this.userReq = new UserRequests(user._id);
+			this.postReq = new PostRequests(user._id);
+			this.setState({currentUser: user});
+			this.getFriendsPosts();
+		}catch(err){
+			console.log(err);
+			this.props.history.push('/login');
+		}
 	}
 
 	async getFriendsPosts(){
@@ -34,41 +46,45 @@ class Home extends React.Component{
 	}
 	
 	render(){
-		return(
-			<React.Fragment>
-				<Header updateCurrentUser={() => this.props.updateCurrentUser()} getUpcommingAssignments={() => this.getUpcommingAssignments()} currentUser={this.props.currentUser}/>
-				<div className='page-container black-bc'>
-				  	<div 
-				  		className="row" 
-				  		style={this.state.showNewAssignmentForm || this.state.showNewAgForm ? {opacity: .3, transition: '.3s'} : {transition: '.3s'}}
-				  	>
-					    <div className='col-lg-4 left'>
-						    <AssignmentDashboard
-						    	currentUserID={this.props.currentUser._id}
-						    />
-							<Agenda 
-								currentUserID={this.props.currentUser._id}
-							/>
-					    </div>
-					    <div className='col-lg-8 right'>
-							<PostCreator reloadFeed={() => this.getFriendsPosts()} currentUser={this.props.currentUser}/>
-							<div style={{position: 'relative', height: '100%', width: '100%', borderRadius: 5}}>
-								{this.state.postData ? 
-									<Feed 
-										reloadPosts={() => this.getFriendsPosts()} 
-										feedData={this.state.postData} 
-										currentUser={this.props.currentUser}
-										noFeedDataMsg={"Sorry no posts to display. Find friends to see their posts!"}
-									/>
-								:
-									<Loader/>
-								}
+		if(!this.state.currentUser){
+			return (<Loader/>)
+		}else{
+			return(
+				<React.Fragment>
+					<Header updateCurrentUser={() => this.props.updateCurrentUser()} getUpcommingAssignments={() => this.getUpcommingAssignments()} currentUser={this.state.currentUser}/>
+					<div className='page-container black-bc'>
+						  <div 
+							  className="row" 
+							  style={this.state.showNewAssignmentForm || this.state.showNewAgForm ? {opacity: .3, transition: '.3s'} : {transition: '.3s'}}
+						  >
+							<div className='col-lg-4 left'>
+								<AssignmentDashboard
+									currentUserID={this.state.currentUser._id}
+								/>
+								<Agenda 
+									currentUserID={this.state.currentUser._id}
+								/>
 							</div>
-					    </div>
+							<div className='col-lg-8 right'>
+								<PostCreator reloadFeed={() => this.getFriendsPosts()} currentUser={this.state.currentUser}/>
+								<div style={{position: 'relative', height: '100%', width: '100%', borderRadius: 5}}>
+									{this.state.postData ? 
+										<Feed 
+											reloadPosts={() => this.getFriendsPosts()} 
+											feedData={this.state.postData} 
+											currentUser={this.state.currentUser}
+											noFeedDataMsg={"Sorry no posts to display. Find friends to see their posts!"}
+										/>
+									:
+										<Loader/>
+									}
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
-			</React.Fragment>
-		);
+				</React.Fragment>
+			);
+		}
 	}
 }
 

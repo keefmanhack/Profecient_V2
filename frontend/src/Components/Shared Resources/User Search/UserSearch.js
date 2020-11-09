@@ -50,9 +50,9 @@ function SearchItem(props){
 				<h2>{props.name}</h2>
 				<img 
 					className='school' 
-					src={props.school.logoUrl} 
+					src={props.school.logoUrl ? props.school.logoUrl : '/generic_school.jpg'} 
 					alt=""
-					onError={(e)=>{e.target.src="/generic_school.jpg"}}
+					onError={(e)=>{e.target.onerrror=null; e.target.src="/generic_school.jpg"}}
 				/>
 				<h3>{props.school.name}</h3>
 			</div>

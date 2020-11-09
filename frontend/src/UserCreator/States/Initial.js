@@ -20,7 +20,7 @@ class Initial{
     constructor(){
         this.nextState= new Final();
         this.validation = null;
-        this.component= LandingPage2;
+        this.component= Landing;
         this.userVerifier = new UserVerifier();
     }
 

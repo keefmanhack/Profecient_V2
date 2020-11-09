@@ -2,8 +2,41 @@ import axios from './index';
 
 import errors from '../UserCreator/ErrorCodes';
 
+import {getAccessToken, getRefreshToken} from '../Authentication/Tokens';
+
 const notConnected = {isValid: false, errorCode: errors.NOT_CONNECTED}
 class UserVerifier{
+
+	getTokens = async () => {
+		const res = await axios.get('/user/tokens/?refresh_token=' + getRefreshToken());
+		return res.data;
+	}
+
+	getCurrUser = async () =>{
+		const res = await axios.get('/user/current/?access_token=' + getAccessToken());
+		return res.data;
+	}
+
+	createUser = async user => {
+		try{
+			const endPoint = '/user/new';
+			const res = await axios.post(endPoint, user);
+			return res.data;
+		}catch(err){
+			console.log(err);
+		}
+	}
+
+	login = async (username, password) =>{
+		try{
+			const endPoint = '/login';
+			const res = await axios.post(endPoint, {username: username, password: password});
+			return res.data
+		}catch(err){
+			console.log(err);
+		}
+	}
+
 	verifyUserName = async username => {
 		const endPoint = '/users/verify/?username=' + username;
 		return await this.absractVerifier(endPoint);

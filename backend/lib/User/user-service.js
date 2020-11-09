@@ -1,5 +1,9 @@
 const BaseRequests = require('../BaseServiceRequests');
 const NotificationService = require('../Notification/index');
+const crypto = require('crypto');
+
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const findUsersByName = User => async searchString => {
 	if(!searchString){
@@ -86,8 +90,8 @@ const create = User => async data => {
 		user.following.push(user._id);
 		user.notifications.relations.notifBucket = await NotificationService.create();
 		user.notifications.academic.notifBucket = await NotificationService.create();
-		const newUser = await User.register(user, data.password);
-		return {success: true, user: newUser};
+		await User.register(user, data.password);
+		return {success: true, user: user};
 	}catch(err){
 		console.log(err);
 		return {success: false, error: err}
@@ -177,6 +181,65 @@ const validate = User => async obj => {
 	return validation;
 }
 
+const authorization = User => async (username, password, cb) => {
+	console.log('trig');
+	try{
+		const foundUser = await User.findOne({username: username});
+		if(!foundUser){
+			return cb(null, {isValid: false, message: 'Username is not found'});
+		}
+		if(!validPassword(password, foundUser.hash, foundUser.salt)){
+			return cb(null, {isValid: false, message: 'Incorrect Password'});
+		}
+		return cb(null, {isValid: true, user: foundUser});
+	}catch(err){
+		cb(err);
+	}
+}
+
+const findByRefreshToken = User => async token => {
+	try{
+		const user = await User.findOne({reload_token: token});
+		return user;
+	}catch(err){
+		console.log(err);
+	}
+}
+
+const findByAccessToken = User => async token =>{
+	try{
+		const user = await User.findOne({access_token: token});
+		return user;
+	}catch(err){
+		console.log(err);
+	}
+}
+
+const setTokens = User => async (id, tokens) => {
+	try{
+		const user = await User.findById(id);
+		user.access_token = tokens.access_token;
+		user.reload_token = tokens.reload_token;
+		return await user.save();
+	}catch(err){
+		console.log(err);
+	}
+}
+
+// function validPassword(password, hash, salt){
+// 	var hashVerify = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+//     return hash === hashVerify;
+// }
+// function genPassword(password) {
+//     var salt = crypto.randomBytes(32).toString('hex');
+//     var genHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+    
+//     return {
+//       salt: salt,
+//       hash: genHash
+//     };
+// }
+
 function getErrorCode(key){
 	if(key === 'email'){
 		return 0;
@@ -196,6 +259,10 @@ module.exports = User => {
 		findMultiple: BaseRequests.findMultipleById(User),
 
 		deleteAll: deleteAll(User),
+		findByRefreshToken: findByRefreshToken(User),
+		findByAccessToken: findByAccessToken(User),
+		setTokens: setTokens(User),
+		authorization: authorization(User),
 		deleteById: deleteById(User),
 		create: create(User),
 		findUsersByName: findUsersByName(User),

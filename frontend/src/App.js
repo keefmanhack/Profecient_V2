@@ -10,6 +10,8 @@ import ProfilePage from './Components/Profile Page/profile-page';
 
 import Loader from './Components/Shared Resources/Effects/loader';
 
+import AuthRoute from './Authentication/AuthRoute';
+
 import './Components/Shared Resources/index.css';
 
 import UserRequests from './APIRequests/User';
@@ -18,35 +20,31 @@ class App extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.testUserId = '5f9f5a451aa120b9a2f0e867';
+		// this.testUserId = '5f9f5a451aa120b9a2f0e867';
 
 		//Stan Smith - 5f9f5a451aa120b9a2f0e864
 		//Quenn Latifa  - 5f9f5a451aa120b9a2f0e867
 		//King Bee    - 5f9f5592ae9015ab30065c8d
 
-		this.UserRqst = new UserRequests(this.testUserId);
-
+		this.UserRqst = null;
 
 		this.state={
 			currentUser: null,
+			currentUserID: null,
 			foundID: null,
 		}
 	}
 
 	componentDidMount(){
-		this.getCurrentUser();
+		// this.getCurrentUser();
 		// this.UserRqst.createTestUsers();
 	}
 
-	// getRequestedUser(id){
-	// 	console.log(id);
-	// 	axios.get(`http://localhost:8080/users/` + id)
-	//     .then(res => {
-	// 		this.setState({
-	// 			foundUser: res.data,
-	// 		})
-	// 	})
-	// }
+	async setCurrentUserID(id){
+		this.UserRqst = new UserRequests(id);
+		this.setState({currentUserID: id});
+		await this.getCurrentUser();
+	}
 
 	async getCurrentUser(){
 		this.setState({currentUser: await this.UserRqst.getUser()})
@@ -78,16 +76,11 @@ class App extends React.Component{
 						<Route path='/message'>
 							{this.state.currentUser ? <MessageCenter currentUser={this.state.currentUser}/> : <Loader/>}
 						</Route>
-
-							
-						<Route path='/home'>
-							{this.state.currentUser ? 
-								<Home currentUser={this.state.currentUser}/> 
-							: 
-								<Loader/>
-							}
-						</Route>
-						<Route path='/profile/:id' component={({match}) => {
+						
+						<AuthRoute path='/home' component={Home}/>
+						<AuthRoute path='/profile/:id' component={ProfilePage}/>
+						
+						{/* <Route path='/profile/:id' component={({match}) => {
 							if(this.state.foundID !== match.params.id){
 								this.setFoundUser(match.params.id);
 							}
@@ -100,10 +93,10 @@ class App extends React.Component{
 							}else{
 								return (<Loader/>)
 							}
+						}}/> */}
+						<Route path='/login' component={({history}) => {
+							return (<Login history={history}/>)
 						}}/>
-						<Route path='/login'>
-							<Login/>
-						</Route>
 						<Route path='/' component={OnBoard}/>
 					</Switch>
 				</div>

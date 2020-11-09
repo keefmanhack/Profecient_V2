@@ -11,12 +11,14 @@ import UserRequests from '../../APIRequests/User';
 import GenericErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/GenericErr';
 import UserNameErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/UserNameErr';
 
+import UserVerifier from '../../APIRequests/UserVerifier';
+
 class Final{
     constructor(){
-        this.nextState=null;
+        this.nextState= null; //new SemesterCreator();
         this.validation = null;
         this.component= LandingPage2;
-        this.userReq = new UserRequests(null);
+        this.userVerifier = new UserVerifier();
     }
 
     getComponent(){
@@ -35,6 +37,7 @@ class Final{
             }
             return true;
         }catch(err){
+            console.log(err);
             return false;
         }
     }

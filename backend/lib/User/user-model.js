@@ -50,7 +50,9 @@ let UserSchema = mongoose.Schema({
 		messages: {
 
 		}
-	}
+	},
+	access_token: String,
+	refresh_token: String,
 })
 
 UserSchema.plugin(passportLocalMongoose);

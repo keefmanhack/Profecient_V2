@@ -1,6 +1,8 @@
 const express = require("express"),
 	  router  = express.Router();
 
+const isValid = require('../../lib/Authentication/verifyRequests');
+
 const UserService         = require('../../lib/User/index'),
 	  ClassService        = require('../../lib/Class/index'),
 	  SemesterService     = require('../../lib/Semester/index'),
@@ -9,12 +11,9 @@ const UserService         = require('../../lib/User/index'),
 const AcademicHandler = require('../../lib/CompositeServices/Notification/Academic/AcademicHandler');
 // Connection Routes
 
-router.post('/users/:id/class/connection', async (req, res) =>{
+router.post('/users/:id/class/connection', isValid, async (req, res) =>{
 	try{
-
-		const currUser = await UserService.findById(req.params.id);
 		const otherUser = await UserService.findById(req.body.otherUser);
-		console.log(req.body);
 		await AcademicHandler.addNewConnection(req.body.otherUserClass, otherUser._id, req.body.currUserClass, req.params.id);
 		res.send();
 	}catch(err){
@@ -22,20 +21,20 @@ router.post('/users/:id/class/connection', async (req, res) =>{
 	}
 })
 
-router.post('/users/:id/class/connection/delete', async (req, res) => {
-	try{
-		const currUser = await UserService.findById(req.params.id);
-		const otherUser = await UserService.findById(req.body.otherUser);
-		// await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
-		// await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
-		res.send();
-	}catch(err){
-		console.log(err);
-	}
-})
+// router.post('/users/:id/class/connection/delete', async (req, res) => {
+// 	try{
+// 		const currUser = await UserService.findById(req.params.id);
+// 		const otherUser = await UserService.findById(req.body.otherUser);
+// 		// await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
+// 		// await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
+// 		res.send();
+// 	}catch(err){
+// 		console.log(err);
+// 	}
+// })
 
 // Semester Creator Routes
-router.post('/users/:id/semester', async (req, res) => {
+router.post('/users/:id/semester', isValid, async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
 		const newClasses = await ClassService.createMultiple(req.body.semesterData.classes);
@@ -50,7 +49,7 @@ router.post('/users/:id/semester', async (req, res) => {
 })
 
 
-router.put('/users/:id/semester', async (req, res) => {
+router.put('/users/:id/semester', isValid, async (req, res) => {
 	//THIS ROUTE DOES NOT WORK YET
 	try{
 		const user = await UserService.findById(req.params.id);
@@ -119,7 +118,7 @@ router.get('/users/:id/semesters', async (req, res) => {
 })
 
 
-router.delete('/users/:id/semesters/:sem_id', async (req, res) => {
+router.delete('/users/:id/semesters/:sem_id', isValid, async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
 		const sem = await SemesterService.findById(req.params.sem_id);
@@ -136,19 +135,20 @@ router.delete('/users/:id/semesters/:sem_id', async (req, res) => {
 })
 
 
-router.delete('/users/:id/classes/:class_id/assignment/:ass_id', async (req, res) =>{
+router.delete('/users/:id/classes/:class_id/assignment/:ass_id', isValid, async (req, res) =>{
 	//go through list of linked Users
 	//if they still have a notification linked to this assignment then remove it
 	//send all linked users a notification that this assignment has been deleted
 	//STILL NEED TO ADD NOTIFICATION REMOVAL
 	try{
 		const foundClass = await ClassService.findById(req.params.class_id);
-		await AssignmentService.deleteOne(req.params.ass_id);
+		await AssignmentService.deleteById(req.params.ass_id);
 		foundClass.assignments.pull(req.params.ass_id);
 		await foundClass.save();
-		res.send();
+		res.json({success: true});
 	}catch(err){
 		console.log(err);
+		res.json({success: false});
 	}
 })
 
@@ -167,13 +167,14 @@ router.get('/users/:id/assignment/upcomming', async (req, res) => {
 	}
 })
 
-router.put('/assignment/:id', async (req,res) =>{
+router.put('/assignment/:id', isValid,  async (req,res) =>{
 	try{
 		await AssignmentService.update(req.params.id, req.body);
 		//will need to add notification piece here
-		res.send();
+		res.json({success: true});
 	}catch(err){
 		console.log(err);
+		res.json({success: false});
 	}
 })
 
@@ -187,27 +188,28 @@ router.get('/users/:id/classes/:classID/assignments', async (req,res) => {
 	}
 })
 
-router.post('/users/:id/classes/:classID/assignment', async (req, res) =>{
+router.post('/users/:id/classes/:classID/assignment', isValid, async (req, res) =>{
 	try{
 		await AcademicHandler.newAssignment(req.params.id,req.params.classID,req.body);
-		res.send();
+		res.json({success: true});
 	}catch(err){
 		console.log(err);
+		res.json({success: false});
 	}
 })
 
-router.post('/users/:id/classes/:classID/assignment/fromConnection', async (req, res) =>{
-	try{
-		const ass = await AssignmentService.findById(req.body.otherUserAssID);
-		const newAss = await AssignmentService.create(ass);
-		const foundClass = await ClassService.findById(req.params.id);
-		foundClass.assignments.push(newAss);
-		await foundClass.save();
-		res.send();
-		AcademicHandler.deleteNewAssNotification(user.params.id, req.body.noteID);
-	}catch(err){
-		console.log(err);
-	}
-})
+// router.post('/users/:id/classes/:classID/assignment/fromConnection', async (req, res) =>{
+// 	try{
+// 		const ass = await AssignmentService.findById(req.body.otherUserAssID);
+// 		const newAss = await AssignmentService.create(ass);
+// 		const foundClass = await ClassService.findById(req.params.id);
+// 		foundClass.assignments.push(newAss);
+// 		await foundClass.save();
+// 		res.send();
+// 		AcademicHandler.deleteNewAssNotification(user.params.id, req.body.noteID);
+// 	}catch(err){
+// 		console.log(err);
+// 	}
+// })
 
 module.exports = router;

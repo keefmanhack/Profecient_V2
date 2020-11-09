@@ -1,5 +1,4 @@
 import React from 'react';
-import Landing from './States/Initial/landing';
 import UserCreator from '../../../UserCreator/UserCreator';
 
 import Loader from '../../Shared Resources/Effects/loader';
@@ -8,7 +7,7 @@ import { FadeInOutHandleState } from '../../Shared Resources/Effects/CustomTrans
 class OnBoard extends React.Component{
     constructor(props){
         super(props);
-        this.uc = new UserCreator();
+        this.uc = new UserCreator(this.props.history);
         this.state = {
             comp: this.uc.getComponent(),
             showError: false,

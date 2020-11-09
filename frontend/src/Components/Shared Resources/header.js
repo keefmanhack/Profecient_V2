@@ -33,7 +33,7 @@ class Header extends React.Component{
 
 	render(){
 		const acNotes = this.props.currentUser.notifications.academic.unDismissed;
-		const msgNotes = this.props.currentUser.notifications.messages.unDismissed;
+		// const msgNotes = this.props.currentUser.notifications.messages.unDismissed;
 		const relNotes = this.props.currentUser.notifications.relations.unDismissed;
 		return(
 			<div className='top-bar black-bc'>
@@ -88,8 +88,8 @@ class Header extends React.Component{
 								<Link to='/message'>
 									<button className='green-c off-black-bc'><i className="fas fa-comments"></i></button>
 								</Link>
-								<button onClick={() => this.setState({showMsgNotes: true})} className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
-								{msgNotes> 0 ? <h5>{msgNotes}</h5> : null}
+								{/* <button onClick={() => this.setState({showMsgNotes: true})} className='drop-down off-black-bc'><i className="fas fa-chevron-down"></i></button>
+								{msgNotes> 0 ? <h5>{msgNotes}</h5> : null} */}
 
 							</div>
 						</div>

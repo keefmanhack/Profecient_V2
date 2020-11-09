@@ -1,8 +1,10 @@
 import Initial from './States/Initial';
 import Final from './States/Final';
+import UserVerifier from '../APIRequests/UserVerifier';
+import { setTokens } from '../Authentication/Tokens';
 
 class UserCreator{
-    constructor(){
+    constructor(history){
         this.user = {
             name: null,
             phoneNumber: null,
@@ -18,6 +20,8 @@ class UserCreator{
         this.error = false;
         this.state = new Initial();
         this.finalState = Final;
+        this.userVerifier = new UserVerifier();
+        this.history = history;
     }
 
     getComponent(){
@@ -29,9 +33,30 @@ class UserCreator{
         this.error = !isValid;
         if(isValid){
             this.updateUser(data);
-            if(this.state !== this.finalState){
+            if(!(this.state instanceof this.finalState)){
                 this.state = this.state.getNextState();
+            }else{
+                await this.loginUser();
             }
+        }
+    }
+    
+    async loginUser(){
+        try{
+            let res = await this.userVerifier.createUser(this.user);
+            if(!res.success){return false}
+            res = await this.userVerifier.login(this.user.username, this.user.password);
+            if(res.success){
+                setTokens(res.tokens);
+                this.history.push('/home');
+            }else{
+                this.error = true;
+                this.state = new Initial();
+            }
+
+        }catch(err){
+            console.log(err);
+            return false;
         }
     }
 

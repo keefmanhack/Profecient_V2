@@ -38,7 +38,7 @@ class Landing extends React.Component{
 				name: this.state.firstName + ' ' + this.state.lastName,
 				email: this.state.email,
 				phoneNumber: this.state.phoneNumber,
-				password: this.state.password,
+				password: this.state.password.password,
 			}
 			this.props.handleEvent(data);
 		}
