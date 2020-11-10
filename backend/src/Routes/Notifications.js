@@ -9,6 +9,8 @@ const AcFormatMap = require('../../lib/Notification/Formatter/AcademicFormatter/
 
 const NotificationHandler = require("../../lib/CompositeServices/Notification/NotificationHandler");
 
+const isValid = require('../../lib/Authentication/verifyRequests');
+
 router.get('/users/:id/notifications/relations', async (req, res) => {
 	try{
 		const userRelNotifID = await UserService.getNotifBucketID(req.params.id, UserService.notifCategories.relation);
@@ -21,7 +23,7 @@ router.get('/users/:id/notifications/relations', async (req, res) => {
 	}
 })
 
-router.delete('/users/:id/notifications/relations/:notifID', async (req, res) => {
+router.delete('/users/:id/notifications/relations/:notifID', isValid, async (req, res) => {
 	try{
 		await NotificationHandler.removeRelationNotifById(req.params.id, req.params.notifID);
 		res.send();
@@ -43,7 +45,7 @@ router.get('/users/:id/notifications/academic', async (req, res) => {
 })
 
 
-router.delete('/users/:id/notifications/academic/:noteID', async (req, res) => {
+router.delete('/users/:id/notifications/academic/:noteID', isValid, async (req, res) => {
 	try{
 		ClassNoteService.deleteNotification(req.params.noteID);
 		await UserService.deleteAcNotif(req.params.id, req.params.noteID);
@@ -63,7 +65,7 @@ router.get('/users/:id/notifications/message', async (req,res) => {
 	}
 })
 
-router.delete('/users/:id/notifications/message/:msgID', async (req,res) => {
+router.delete('/users/:id/notifications/message/:msgID', isValid, async (req,res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
 		const notifs = await MessageNoteService.remove(req.params.msgID);

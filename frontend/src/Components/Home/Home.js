@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Header from '../Shared Resources/header';
+import Header from '../Shared Resources/Header/header';
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 import AssignmentDashboard from './AssignmentDashboard';
 import Agenda from './Agenda/Agenda';

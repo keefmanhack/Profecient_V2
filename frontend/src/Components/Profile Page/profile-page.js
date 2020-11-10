@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import Feed from '../Shared Resources/feed/feed';
 import ClassView from './Class View/ClassView';
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
-import Header from '../Shared Resources/header';
+import Header from '../Shared Resources/Header/header';
 import PostCreator from '../Shared Resources/PostCreator';
 import Loader from '../Shared Resources/Effects/loader';
 
@@ -34,15 +34,25 @@ class ProfilePage extends React.Component{
 
 	async componentDidMount(){
 		try{
-			const user = await this.uV.getCurrUser();
-			this.setState({currentUser: user});
-			this.currUserReq = new UserRequests(user._id);
+			await this.getCurrentUser();
 			this.userReq = new UserRequests(this.props.match.params.id);
 			this.postReq = new PostRequests(this.props.match.params.id);
 			this.getProfileData();
 		}catch(err){
 			console.log(err);
 		}
+	}
+
+	async componentWillReceiveProps(nextProps){
+		this.userReq = new UserRequests(nextProps.match.params.id);
+		this.postReq = new PostRequests(nextProps.match.params.id);
+		this.getProfileData();
+	}
+
+	async getCurrentUser(){
+		const user = await this.uV.getCurrUser();
+		this.currUserReq = new UserRequests(user._id);
+		this.setState({currentUser: user});
 	}
 
 	getProfileData(){
@@ -60,7 +70,7 @@ class ProfilePage extends React.Component{
 
 	async toggleFollowing(possibleFollowingID, isFollowing){
 		await this.currUserReq.toggleUserFollowing(possibleFollowingID, isFollowing);
-		await this.props.reloadCurrUser();
+		await this.getCurrentUser();
 		this.setState({followAction: false});
 	}
 
@@ -87,13 +97,17 @@ class ProfilePage extends React.Component{
 													onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
 												/>
 												<h1>{this.state.profile.name}</h1>
-												<div className='school'>
-													<img src={this.state.profile.school.logoUrl ? this.state.profile.school.logogUrl : '/generic_school.jpg'} 
-														alt="" 
-														onError={(e)=>{e.target.onerror = null; e.target.src="/generic_school.jpg"}}
-													/>
-													<h2>{this.state.profile.school.name}</h2>
-												</div>
+												{this.state.profile.school ?
+													<div className='school'>
+														
+															<img src={this.state.profile.school.logogUrl ? this.state.profile.school.logogUrl : '/generic_school.jpg'} 
+																alt="" 
+																onError={(e)=>{e.target.onerror = null; e.target.src="/generic_school.jpg"}}
+															/>
+															<h2>{this.state.profile.school.name}</h2>
+														
+													</div>
+												: null}
 											</div>
 											<div className='follow-count'>
 												<div style={{display: 'inline-block', marginRight: 15}}>

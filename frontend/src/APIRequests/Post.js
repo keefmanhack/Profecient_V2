@@ -34,10 +34,10 @@ class PostRequests{
 			    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
 			  }
 			});
-			return res;
+			return res.data;
 		}catch(err){
 			console.log(err);
-			return;
+			return {success: false};
 		}
 	}
 	
@@ -95,10 +95,10 @@ class PostRequests{
 		try{
 			const endPoint = '/users/' + this.currUserID + '/posts/' +id;
 			const res = await axios.delete(endPoint); 
-			return true;
+			return res.data
 		}catch(err){
 			console.log(err);
-			return false;
+			return {success: false};
 		}
 	}
 

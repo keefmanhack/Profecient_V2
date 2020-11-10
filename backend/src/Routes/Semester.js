@@ -125,12 +125,13 @@ router.delete('/users/:id/semesters/:sem_id', isValid, async (req, res) => {
 		const foundClasses = await ClassService.findMultiple(sem.classes);
 		await AssignmentService.deleteMultiple(foundClasses.assignments);
 		await ClassService.deleteMultiple(sem.classes);
-		await SemesterService.deleteOne(req.params.sem_id);
+		await SemesterService.deleteById(req.params.sem_id);
 		user.semesters.pull(req.params.sem_id);
 		await user.save();
-		res.send();
+		res.json({success: true})
 	}catch(err){
 		console.log(err);
+		res.json({success: false});
 	}
 })
 

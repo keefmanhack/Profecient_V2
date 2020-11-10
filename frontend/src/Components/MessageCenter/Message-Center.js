@@ -4,7 +4,7 @@ import axios from 'axios';
 import {FadeInOutHandleState, FadeRightHandleState} from '../Shared Resources/Effects/CustomTransition';
 import NewMessage from './NewMessage';
 import {timeDifString} from './helperFunc';
-import Header from '../Shared Resources/header';
+import Header from '../Shared Resources/Header/header';
 
 import './message-center.css';
 

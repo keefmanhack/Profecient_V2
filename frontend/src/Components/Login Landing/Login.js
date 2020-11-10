@@ -23,6 +23,7 @@ class Login extends React.Component{
 		if(res.success){
 			setTokens(res.tokens);
 			this.props.history.push('/home');
+			window.location.reload(true);
 		}else{
 			this.setState({error: true});
 		}

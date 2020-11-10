@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+
 const accessToken = 'access_token';
 const refreshToken = 'refresh_token';
 
@@ -9,6 +10,13 @@ export const setTokens = tokens => {
     Cookies.set(accessToken, tokens.access_token, { expires: calcOneHour()});
     Cookies.set(refreshToken, tokens.refresh_token);
 }
+
+export const clearTokens = () => {
+    Cookies.set(accessToken, null);
+    Cookies.set(refreshToken, null);
+}
+
+
 
 const calcOneHour = () => {
     const expires = (60 * 60) * 1000

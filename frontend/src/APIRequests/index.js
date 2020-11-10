@@ -7,6 +7,4 @@ const BASE_URL = 'http://localhost:8080';
 axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common = {'Authorization': getAccessToken()}
 
-
-
 export default axios;

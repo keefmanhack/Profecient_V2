@@ -269,7 +269,6 @@ class NewAgendaItem extends React.Component{
     }
 
     render(){
-    	console.log(this.props.updateItem);
     	return(
     		<React.Fragment>
 	    		<div className='background-shader'/>

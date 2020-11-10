@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 import {convertToStdDate} from '../../Home/Agenda/Agenda_Helper';
 import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
-import MenuDropDown, {DropDownMain} from '../../Shared Resources/MenuDropDown';
+import MenuDropDown, {DropDownMain} from '../Drop Down/MenuDropDown';
 import {FailedSent, SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 import Loader from '../../Shared Resources/Effects/loader';
 import ImageGallary from '../../Shared Resources/ImageGallary';
@@ -56,7 +56,7 @@ class Post extends React.Component{
 		this.setState({showDialog: false});
 		const res = await this.props.postReq.remove(this.props.data._id);
 		this.setState({showLoader: false});
-		res ? this.setState({actionSuccess: true}) : this.setState({actionFailure: true});
+		res.success ? this.setState({actionSuccess: true}) : this.setState({actionFailure: true});
 	}
 
 	async getLikes(){

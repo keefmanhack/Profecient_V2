@@ -1,8 +1,13 @@
-import {getAccessToken, getRefreshToken, setTokens} from './Tokens';
+import {getAccessToken, getRefreshToken, setTokens, clearTokens} from './Tokens';
 import UserVerifier from '../APIRequests/UserVerifier';
 const userVer = new UserVerifier();
 
 export const isAuthenticated = () => !!getAccessToken();
+
+export const logOut = () => {
+  clearTokens();
+  redirectToLogin();
+}
 
 export const authenticate = async () => {
     if (!getRefreshToken()) {
@@ -24,6 +29,5 @@ export const authenticate = async () => {
   }
 
   const redirectToLogin = () => {
-    console.log('aclled');
     window.location.replace('/login')
   }

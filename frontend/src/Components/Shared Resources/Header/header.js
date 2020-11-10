@@ -1,15 +1,19 @@
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 
-import {FadeInOutHandleState} from './Effects/CustomTransition';
+import {FadeInOutHandleState} from '../Effects/CustomTransition';
 // import {SuccessCheck, FailedSent} from './Effects/lottie/LottieAnimations';
-import UserSearch from './User Search/UserSearch';
-import NotificationContainer from '../Shared Resources/Notifications/NotificationContainer';
+import UserSearch from '../User Search/UserSearch';
+import NotificationContainer from '../Notifications/NotificationContainer';
 
-import UserRequest from '../../APIRequests/User';
+import MenuDropDown, {DropDownMain, Divider} from '../Drop Down/MenuDropDown';
 
-import RelationalNotifReq from '../../APIRequests/Notification/Concrete/RelationalNotifReq';
-import AcademicNotifReq from '../../APIRequests/Notification/Concrete/AcademicNotifReq';
+import UserRequest from '../../../APIRequests/User';
+
+import RelationalNotifReq from '../../../APIRequests/Notification/Concrete/RelationalNotifReq';
+import AcademicNotifReq from '../../../APIRequests/Notification/Concrete/AcademicNotifReq';
+
+import {logOut} from '../../../Authentication/Authenticator';
 
 import './header.css';
 
@@ -23,6 +27,7 @@ class Header extends React.Component{
 			showACNotes: false,
 			showMsgNotes: false,
 			showRelNotes: false,
+			showDropDown: false,
 			foundClassMates: [],
 		}
 	}
@@ -98,14 +103,27 @@ class Header extends React.Component{
 
 				
 				<span className='profile'>
+					<Link to={'/profile/' + this.props.currentUser._id}>
 					<img 
 						src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + this.props.currentUser.profilePictureURL} 
 						alt=""
 						onError={(e) => {e.target.onerror = null; e.target.src="/generic_school.jpg"}}
 					/>
-					<Link to={'/profile/' + this.props.currentUser._id}>
-						<button className='blue-c'><i className="fas fa-chevron-down"></i></button>
 					</Link>
+					<button onClick={() => this.setState({showDropDown: true})} className='blue-c'><i className="fas fa-chevron-down"></i></button>
+					<FadeInOutHandleState condition={this.state.showDropDown}>
+						<div className='header-drop-down'>
+							<MenuDropDown hideDropDown={() => this.setState({showDropDown: false})}>
+								<DropDownMain>
+									<Link to={'/profile/' + this.props.currentUser._id}>
+										<button>My Profile</button>
+									</Link>
+									<Divider/>
+									<button onClick={() => logOut()}>Log Out</button>
+								</DropDownMain>
+							</MenuDropDown>
+						</div>
+					</FadeInOutHandleState>
 				</span>
 
 			</div>

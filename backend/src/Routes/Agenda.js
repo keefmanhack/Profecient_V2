@@ -6,6 +6,7 @@ const AgendaService = require('../../lib/Agenda/index');
 const SemesterService = require('../../lib/Semester/index');
 const ClassService = require('../../lib/Class/index');
 
+const isValid = require('../../lib/Authentication/verifyRequests');
 
 router.get('/users/:id/agenda/today', async (req, res) =>{
 	try{
@@ -25,7 +26,7 @@ router.get('/users/:id/agenda/today', async (req, res) =>{
 	}
 })
 
-router.post('/users/:id/agenda', async (req, res) =>{
+router.post('/users/:id/agenda', isValid, async (req, res) =>{
 	try{
 		const user = await UserService.findById(req.params.id);
 		const newAgItem = await AgendaService.createNew(req.body);
@@ -37,7 +38,7 @@ router.post('/users/:id/agenda', async (req, res) =>{
 	}
 })
 
-router.put('/users/:id/agenda/:ag', async (req, res) => {
+router.put('/users/:id/agenda/:ag', isValid, async (req, res) => {
 	try{
 		await AgendaService.updateById(req.params.ag, req.body);
 		res.send();
@@ -46,7 +47,7 @@ router.put('/users/:id/agenda/:ag', async (req, res) => {
 	}
 })
 
-router.delete('/users/:id/agenda/:ag', async (req, res) =>{
+router.delete('/users/:id/agenda/:ag', isValid, async (req, res) =>{
 	try{
 		await AgendaService.removeById(req.params.ag);
 		const user = await UserService.findById(req.params.id);

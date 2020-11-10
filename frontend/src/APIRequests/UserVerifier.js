@@ -20,7 +20,18 @@ class UserVerifier{
 	createUser = async user => {
 		try{
 			const endPoint = '/user/new';
-			const res = await axios.post(endPoint, user);
+			let formData = new FormData();
+			for(let x in user){
+				formData.append(x, user[x]);
+			}
+			
+			const res = await axios.post(endPoint, formData, {
+				headers: {
+				  'accept': 'application/json',
+				  'Accept-Language': 'en-US,en;q=0.8',
+				  'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+				}
+			  });
 			return res.data;
 		}catch(err){
 			console.log(err);

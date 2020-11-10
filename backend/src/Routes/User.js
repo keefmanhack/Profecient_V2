@@ -1,8 +1,12 @@
 const express = require("express"),
       router  = express.Router(),
-      passport = require('passport');
+      passport = require('passport'),
+      multer  = require('multer'),
+	  upload  = multer({storage: multer.memoryStorage(), limits: { fieldSize: 6 * 1024 * 1024 }});
 
 const UserService = require('../../lib/User/index');
+
+const isValid = require('../../lib/Authentication/verifyRequests');
 
 const FriendHandler = require('../../lib/CompositeServices/Notification/Relations/FriendHandler');
 
@@ -21,11 +25,14 @@ router.get('/failure', (req, res) => {
 })
 
 router.get('/user/tokens', async (req, res) => {
-    const user = await UserService.findByRefreshToken(req.query.refresh_token);
-    const tokens = generateTokens();
-    await UserService.setTokens(user._id, tokens);
-
-    res.json(tokens);
+    try{
+        const user = await UserService.findByRefreshToken(req.query.refresh_token);
+        const tokens = generateTokens();
+        await UserService.setTokens(user._id, tokens);
+        res.json(tokens);
+    }catch(err){
+        res.send();
+    }
 })
 
 router.get('/user/current', async (req, res) => {
@@ -65,10 +72,11 @@ router.get('/users/:id', async (req, res) => {
     }
 });
 
-router.post('/user/new', async (req, res) => {
+router.post('/user/new', upload.array('image',1), async (req, res) => {
     try{
-        const response = await UserService.create(req.body);
-        res.json(response);
+        UserService.create(req.body, function(response){
+            res.json(response);
+        });
     }catch(err){
         console.log(err);
     }
@@ -83,7 +91,7 @@ router.post('/users', async (req, res) => {
     }
 })
 
-router.post('/users/:id/following', async (req, res) =>{
+router.post('/users/:id/following', isValid, async (req, res) =>{
     try{
         const user = await UserService.findById(req.params.id);
         const isFollowing = user.following.includes(req.body.userID)

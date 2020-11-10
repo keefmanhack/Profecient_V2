@@ -36,7 +36,7 @@ class UserCreator{
             if(!(this.state instanceof this.finalState)){
                 this.state = this.state.getNextState();
             }else{
-                await this.loginUser();
+                const res = await this.loginUser();
             }
         }
     }
@@ -44,19 +44,21 @@ class UserCreator{
     async loginUser(){
         try{
             let res = await this.userVerifier.createUser(this.user);
-            if(!res.success){return false}
+            if(!res.success){
+                this.state = new Initial();
+                this.error = true;
+                return false
+            }
             res = await this.userVerifier.login(this.user.username, this.user.password);
             if(res.success){
                 setTokens(res.tokens);
                 this.history.push('/home');
-            }else{
-                this.error = true;
-                this.state = new Initial();
             }
-
         }catch(err){
             console.log(err);
-            return false;
+            this.state = new Initial();
+            this.error = true;
+            return false
         }
     }
 

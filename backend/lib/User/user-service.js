@@ -1,9 +1,7 @@
 const BaseRequests = require('../BaseServiceRequests');
 const NotificationService = require('../Notification/index');
-const crypto = require('crypto');
+const ImageServices =  require('../S3/ImageService');
 
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
 
 const findUsersByName = User => async searchString => {
 	if(!searchString){
@@ -83,21 +81,32 @@ const findLinks = User => async (classSearchData, currentLinks) => {
 	return returnLinks;
 }
 
-const create = User => async data => {
+const create = User => async (data, cb) => {
 	//ADD TESTS TO MAKE SURE USER IS VALID
 	try{
-		const user = new User(data);
+		let user = new User(data);
+
+		//setup default user settings
 		user.following.push(user._id);
 		user.notifications.relations.notifBucket = await NotificationService.create();
 		user.notifications.academic.notifBucket = await NotificationService.create();
+
 		await User.register(user, data.password);
-		return {success: true, user: user};
+
+		if(data.profilePictureData !== 'null'){
+			const imgPath = buildProfilePicturePath(user._id);
+			ImageServices.uploadImage(data.profilePictureData, imgPath, async imgPath => {
+				user.profilePictureURL = imgPath;
+				await user.save();
+				cb({success: true});
+			})
+		}else{
+			cb({success: true}) //needs to be written with the else or else it doesn't work
+		}
 	}catch(err){
 		console.log(err);
-		return {success: false, error: err}
+		cb({success: false});
 	}
-
-
 
 	// let user = new User(data);
 	// user.following.push(user._id);
@@ -170,9 +179,8 @@ const validate = User => async obj => {
 	const objKey = Object.keys(obj)[0];
 	let validation = {isValid: false, errorCode: getErrorCode(objKey)}
 	try{
-		const foundItems = await User.find({email: obj[objKey]});
-
-		if(foundItems.length === 0){
+		const itemCount = await User.countDocuments(obj);
+		if(itemCount === 0){
 			validation = {isValid: true, errorCode: null}
 		}
 	}catch(err){
@@ -182,7 +190,6 @@ const validate = User => async obj => {
 }
 
 const authorization = User => async (username, password, cb) => {
-	console.log('trig');
 	try{
 		const foundUser = await User.findOne({username: username});
 		if(!foundUser){
@@ -219,11 +226,15 @@ const setTokens = User => async (id, tokens) => {
 	try{
 		const user = await User.findById(id);
 		user.access_token = tokens.access_token;
-		user.reload_token = tokens.reload_token;
+		user.refresh_token = tokens.refresh_token;
 		return await user.save();
 	}catch(err){
 		console.log(err);
 	}
+}
+
+const buildProfilePicturePath = userID =>{
+	return 'users/' + userID + '/profilePic';
 }
 
 // function validPassword(password, hash, salt){
@@ -239,16 +250,9 @@ const setTokens = User => async (id, tokens) => {
 //       hash: genHash
 //     };
 // }
-
+const errorCodes ={email: 0, phoneNumber: 1, username: 2,}
 function getErrorCode(key){
-	if(key === 'email'){
-		return 0;
-	}else if(key === 'phoneNumber'){
-		return 1;
-	}else if(key === 'username'){
-		return 3;
-	}
-	return null;
+	return errorCodes[key];
 }
 
 

@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import LinkSelector from '../../Shared Resources/Link Selector/LinkSelector';
 import {FadeDownUpHandleState, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
-import MenuDropDown, {DropDownMain, Options} from '../../Shared Resources/MenuDropDown';
+import MenuDropDown, {DropDownMain, Options} from '../../Shared Resources/Drop Down/MenuDropDown';
 import Loader from '../../Shared Resources/Effects/loader';
 import SemesterCreator from '../Semester Creator/SemesterCreator';
 
@@ -23,11 +23,6 @@ function ClassView(props){
 	const [showNewSemForm, setShowNewSemForm] = useState(false);
 
 	useEffect(() => {
-		const getSemesters = async () => {
-			const data = await semReq.getAllSems();	
-			setSemesters(data);
-			if(data.length>0) setCurrSemesterID(data[data.length-1]._id);
-		}
 		getSemesters();
 	}, [showDialog, showNewSemForm])
 
@@ -37,6 +32,22 @@ function ClassView(props){
 
 	const getClasses = async () => {
 		setClasses(await semReq.getClasses(currSemesterID));
+	}
+
+	const getSemesters = async () => {
+		const data = await semReq.getAllSems();	
+		setSemesters(data);
+		data.length>0 ? setCurrSemesterID(data[data.length-1]._id) : setCurrSemesterID(null);
+	}
+
+	const deleteSemester = async () => {
+		const res = await semReq.remove(currSemesterID); 
+		if(!res.success){
+			alert('Unable to delete semester');
+		}
+		getSemesters();
+		getClasses();
+		setShowDialog(false);
 	}
 
 	const currSem = currSemesterID ? findSem(semesters, currSemesterID) : null;
@@ -59,7 +70,7 @@ function ClassView(props){
 					<React.Fragment>
 						<div className='sem-title'>
 							<h1 className={!currSemesterID ? 'muted-c': null}>
-								{currSemesterID ? currSem.name : 'No Semester Exists'}
+								{currSem ? currSem.name : 'No Semester Exists'}
 							</h1>
 						</div>
 						<FadeInOutHandleState condition={props.isCurrentUserViewing || semesters.length>0}>
@@ -87,7 +98,7 @@ function ClassView(props){
 							<React.Fragment>
 								{props.isCurrentUserViewing ?
 									<React.Fragment>
-										<button onClick={() => {semReq.remove(currSemesterID); setShowDialog(false);}}> 
+										<button onClick={() => deleteSemester()}> 
 											<i style={{color: 'red'}} className="fas fa-trash"></i> Delete Current Semester
 										</button>
 									</React.Fragment>

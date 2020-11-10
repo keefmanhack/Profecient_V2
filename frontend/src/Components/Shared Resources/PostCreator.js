@@ -80,20 +80,17 @@ class PostCreator extends React.Component{
 			});
 
 			const res = await this.postReq.newPost(this.textArea.current.innerText, this.state.images);
-			if(res && res.data !== 'Error'){
+			if(res.success){
 				this.setState({
-			    	sendingData: false,
 			    	images: null,
 			    	httpError: false,
-			    })
-			    this.textArea.current.innerText = '';
+				})
+				this.textArea.current.innerText = '';
 			    this.props.reloadFeed();
 			}else{
-				this.setState({
-			    	sendingData: false,
-			    	httpError: true,
-			    })
+				this.setState({httpError: true})
 			}
+			this.setState({sendingData: false});
 		}
 	}
 

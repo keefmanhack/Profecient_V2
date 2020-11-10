@@ -26,7 +26,6 @@ class LandingPage2 extends React.Component{
     }
 
     setProfileImage(file){
-        console.log(file);
         this.fileReader.onload = function(e){
             this.setState({profileImage: e.target.result});
         }.bind(this);

@@ -26,9 +26,11 @@ class UserSearch extends React.Component{
     }
 
 	render(){
-		const searchItems = this.props.users && this.props.users.length>0 ? this.props.users.map((user, index) => 
-				<SearchItem id={user._id} key={user._id} profilePic={user.profilePictureURL} name={user.name} school={user.school}/>
-			) : null;
+		const searchItems = this.props.users && this.props.users.length>0 ? this.props.users.map((user, index) => {
+			if(validUser(user)){
+				return (<SearchItem handleClick={() => this.props.hide()} id={user._id} key={user._id} profilePic={user.profilePictureURL} name={user.name} school={user.school}/>)
+			}		
+		}) : null;
 		return(
 			<div ref={this.wrapperRef} className='user-search'>
 				{searchItems}
@@ -40,7 +42,7 @@ class UserSearch extends React.Component{
 function SearchItem(props){
 	return(
 		<Link to={'/profile/' + props.id}>
-			<div className='search-item'>
+			<div onClick={() => props.handleClick()} className='search-item'>
 				<img 
 					className='person' 
 					src={'https://proficient-assets.s3.us-east-2.amazonaws.com/' + props.profilePic} 
@@ -48,16 +50,27 @@ function SearchItem(props){
 					onError={(e)=>{e.target.src="/generic_person.jpg"}}
 				/>
 				<h2>{props.name}</h2>
-				<img 
-					className='school' 
-					src={props.school.logoUrl ? props.school.logoUrl : '/generic_school.jpg'} 
-					alt=""
-					onError={(e)=>{e.target.onerrror=null; e.target.src="/generic_school.jpg"}}
-				/>
-				<h3>{props.school.name}</h3>
+				{props.school ?
+					<React.Fragment>
+						<img 
+							className='school' 
+							src={props.school.logoUrl ? props.school.logoUrl : '/generic_school.jpg'} 
+							alt=""
+							onError={(e)=>{e.target.onerrror=null; e.target.src="/generic_school.jpg"}}
+						/>
+						<h3>{props.school.name}</h3>
+					</React.Fragment>
+				: null}
 			</div>
 		</Link>
 	)
+}
+
+function validUser(user){
+	if(!user.name){
+		return false;
+	}
+	return true;
 }
 
 export default UserSearch;

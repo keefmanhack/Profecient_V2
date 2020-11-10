@@ -5,7 +5,9 @@ const express = require("express"),
 
 const UserService    = require('../../lib/User/index'),
       PostService    = require('../../lib/Post/index'),
-      CommentService = require('../../lib/Comment/index');
+	  CommentService = require('../../lib/Comment/index');
+
+const isValid = require('../../lib/Authentication/verifyRequests');
 
 const PostHandler = require('../../lib/CompositeServices/Notification/Relations/PostHandler');
 
@@ -30,17 +32,18 @@ router.get('/users/:id/posts', async (req, res) => {
 	}
 })
 
-router.delete('/users/:id/posts/:postID', async (req, res) => {
+router.delete('/users/:id/posts/:postID', isValid, async (req, res) => {
 	try{
 		PostHandler.deletePost(req.params.postID, req.params.id, () => {
-			res.send();
+			res.send({success: true});
 		})
 	}catch(err){
 		console.log(err);
+		res.send({success: false});
 	}
 })
 
-router.post('/users/:id/posts/:postID/likes', async (req, res) =>{
+router.post('/users/:id/posts/:postID/likes', isValid, async (req, res) =>{
 	try{
 		await PostHandler.toggleLiked(req.params.id, req.params.postID, req.params.id);
 		res.send();
@@ -68,7 +71,7 @@ router.get('/posts/:id/comments', async (req, res) => {
 	}
 })
 
-router.post('/users/:id/posts/:postID/comments', async (req, res) =>{
+router.post('/users/:id/posts/:postID/comments', isValid, async (req, res) =>{
 	try{
 		await PostHandler.createNewComment(req.params.id, req.params.postID, req.body);
 		res.send();
@@ -77,19 +80,15 @@ router.post('/users/:id/posts/:postID/comments', async (req, res) =>{
 	}
 });
 
-router.post('/users/:id/posts', upload.array('images',6), (req, res) => {
+router.post('/users/:id/posts', isValid, upload.array('images',6), (req, res) => {
 	try{
 		PostHandler.createNewPost(req.body.text, req.params.id, req.body.images, () => {
-			res.send();
+			res.json({success: true})
 		})
 	}catch(err){
 		console.log(err);
-		res.send('Error');
+		res.json({success: false})
 	}
 });
-
-
-
-
 
 module.exports = router;

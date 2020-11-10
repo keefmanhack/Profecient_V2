@@ -1,6 +1,8 @@
 import React from 'react';
 
-import {FadeInOut} from './Effects/CustomTransition';
+import {FadeInOut} from '../Effects/CustomTransition';
+
+import './index.css';
 
 class MenuDropDown extends React.Component{
 	constructor(props){
@@ -41,6 +43,10 @@ class DropDownMain extends React.Component{
 			</div>
 		);
 	}
+}
+
+function Divider(props){
+	return <hr/>
 }
 
 class Options extends React.Component{
@@ -89,4 +95,4 @@ class Options extends React.Component{
 }
 
 export default MenuDropDown;
-export {DropDownMain, Options};
+export {DropDownMain, Options, Divider};
