@@ -51,7 +51,7 @@ class Login extends React.Component{
 					type="password" 
 					placeholder='Password'
 				/>
-				<Link className='muted-c helper' to='/'>Forgot Password</Link>
+				<Link className='muted-c helper' to='/forgotPassword'>Forgot Password</Link>
 				<Link className='muted-c helper' to="/">Don't have an account? Sign Up!</Link>
 				<button onClick={() => this.logUserIn()} className='blue-bc black-c butt'>Login</button>
 			</div>

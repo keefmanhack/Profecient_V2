@@ -4,7 +4,7 @@ import ReactPasswordStrength from 'react-password-strength';
 import PhoneInput from 'react-phone-input-2'
 
 import {FadeInOutHandleState} from '../../../../Shared Resources/Effects/CustomTransition';
-
+import {phoneNumberTester, emailTester} from '../../../../../Authentication/RegexTesters';
 import './landing.css';
 import UserRequests from '../../../../../APIRequests/User';
 
@@ -66,7 +66,7 @@ class Landing extends React.Component{
 	render(){
 		return(
 			<div className='background' id='landing'>
-				<Link className='mont-font blue-c header-tag' to="/">Profecient</Link>
+				<Link className='mont-font blue-c header-tag' to="/">Proficient</Link>
 				<Link to='/home'>
 					<button className='blue-bc mont-font login white-c'>Login</button>
 				</Link>
@@ -147,14 +147,6 @@ class Landing extends React.Component{
 			</div>
 		);
 	}
-}
-
-function emailTester(text){
-	return /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(text);
-}
-
-function phoneNumberTester(text){
-	return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(text);
 }
 
 export default Landing;

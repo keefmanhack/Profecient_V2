@@ -46,6 +46,13 @@ body{
     background: #007bff;
 }
 
+.blue-to-green-bc{
+    background: rgb(211,236,209);
+    background: -moz-linear-gradient(144deg, rgba(211,236,209,1) 40%, rgba(0,123,255,1) 100%);
+    background: -webkit-linear-gradient(144deg, rgba(211,236,209,1) 40%, rgba(0,123,255,1) 100%);
+    background: linear-gradient(144deg, rgba(211,236,209,1) 40%, rgba(0,123,255,1) 100%);
+}
+
 .green-c{
     color: #28965A;
 }

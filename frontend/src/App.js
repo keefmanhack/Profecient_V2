@@ -6,6 +6,7 @@ import OnBoard from './Components/Login Landing/Landing-UserCreator/Onboard';
 import MessageCenter from './Components/MessageCenter/Message-Center';
 import Home from './Components/Home/Home';
 import ProfilePage from './Components/Profile Page/profile-page';
+import ForgotPassword from './Forgotten Password/ForgotPassword';
 
 
 import Loader from './Components/Shared Resources/Effects/loader';
@@ -80,20 +81,7 @@ class App extends React.Component{
 						<AuthRoute path='/home' component={Home}/>
 						<AuthRoute path='/profile/:id' component={ProfilePage}/>
 						
-						{/* <Route path='/profile/:id' component={({match}) => {
-							if(this.state.foundID !== match.params.id){
-								this.setFoundUser(match.params.id);
-							}
-							if(this.state.currentUser && this.state.foundID !==null){
-								return (<ProfilePage 
-									foundUser={this.state.foundID}  
-									currentUser={this.state.currentUser}
-									reloadCurrUser={() => this.getCurrentUser()}
-								/> )
-							}else{
-								return (<Loader/>)
-							}
-						}}/> */}
+						<Route path='/forgotPassword' component={ForgotPassword}/>
 						<Route path='/login' component={({history}) => {
 							return (<Login history={history}/>)
 						}}/>

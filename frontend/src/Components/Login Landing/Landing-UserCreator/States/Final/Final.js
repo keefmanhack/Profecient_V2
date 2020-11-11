@@ -54,8 +54,8 @@ class LandingPage2 extends React.Component{
 
     render(){
         return(
-            <div className='final mont-font'>
-                <Link className='mont-font blue-c header-tag' to="/">Profecient</Link>
+            <div className='final blue-to-green-bc mont-font'>
+                <Link className='mont-font blue-c header-tag' to="/">Proficient</Link>
                 <div className='final-form'>
                     <h1>Sign Up</h1>
                     <hr/>

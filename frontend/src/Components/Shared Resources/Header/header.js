@@ -43,7 +43,7 @@ class Header extends React.Component{
 		return(
 			<div className='top-bar black-bc'>
 				<Link to='/home'>
-					<h1 className='mont-font blue-c'>Profecient</h1>
+					<h1 className='mont-font blue-c'>Proficient</h1>
 				</Link>
 				<div style={{display: 'inline', 'position': 'relative'}}>
 					<input onChange={(e) => this.findUsers(e.target.value)} className='sans-font' type='text' placeholder='Find classmates'/>
