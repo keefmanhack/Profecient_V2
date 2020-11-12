@@ -177,11 +177,11 @@ const subtractRelationNotifCT = User => async (id, val) => {
 
 const validate = User => async obj => {
 	const objKey = Object.keys(obj)[0];
-	let validation = {isValid: false, errorCode: getErrorCode(objKey)}
+	let validation = {exists: true, errorCode: getErrorCode(objKey)}
 	try{
 		const itemCount = await User.countDocuments(obj);
 		if(itemCount === 0){
-			validation = {isValid: true, errorCode: null}
+			validation = {exists: false, errorCode: null}
 		}
 	}catch(err){
 		return validation;

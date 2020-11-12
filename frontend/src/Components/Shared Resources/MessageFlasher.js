@@ -17,27 +17,35 @@ class MessageFlasher extends React.Component{
     setEndFlashTimer(){
         this.timer = setTimeout(function(){
             this.props.resetter();
-        }, this.state.timeout)
+            this.timer = null;
+        }.bind(this), this.state.timeout);
     }
 
 
     render(){
-        if(this.props.condition){
-            this.setEndFlashTimer();
+        const Animation = this.props.animation;
+        if(!Animation){
+            return null;
+        }else{
+            if(this.timer==null && this.props.condition){
+                this.setEndFlashTimer();
+            }
             return(
-                <div style={flashStyles} className='flash-message'>
-                    {this.props.children}
+                <div style={flashStyles}>
+                    <Animation condition={this.props.condition}>
+                        {this.props.children}
+                    </Animation>
                 </div>
             )
-        }else{
-            return null;
         }
     }
 }
 
 const flashStyles = {
     position: 'fixed',
-    margin: '10px 33%',
+    left: 0,
+    top: 0,
+    width: '100%',
 }
 
 export default MessageFlasher;

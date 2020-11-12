@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import ReactPasswordStrength from 'react-password-strength';
 
@@ -12,15 +12,22 @@ import { FadeDownUpHandleState, FadeInOutHandleState } from '../Components/Share
 import MessageFlasher from '../Components/Shared Resources/MessageFlasher';
 
 import './index.css';
+import UserVerifier from '../APIRequests/UserVerifier';
 
 class ForgotPassword extends React.Component{
     constructor(props){
         super(props);
+
+        this.forms = [RequestForm, TokenForm, ResetPasswordForm];
+        this.uV = new UserVerifier();
+
         this.state={
             showMessage: false,
+            currentForm: this.forms[0],
         }
     }
     render(){
+        const Form = this.state.currentForm;
         return(
             <div className='blue-to-green-bc mont-font forgot-password'>
                 <Link className='mont-font blue-c header-tag' to="/">Proficient</Link>
@@ -32,9 +39,7 @@ class ForgotPassword extends React.Component{
                             <h1>This is some text</h1>
                         </FadeDownUpHandleState>
                     </MessageFlasher>
-                    {/* <RequestForm/> */}
-                    {/* <TokenForm/> */}
-                    <ResetPasswordForm/>
+                    <Form uV={this.uV}/>
                 </div>
                 <Link id='footer-tag'>A Gregoire Design Production</Link>
             </div>
@@ -45,34 +50,63 @@ class ForgotPassword extends React.Component{
 function ResetPasswordForm(props){
     const [passwordObj, setPasswordObj] = useState({isValid: false, password: ''});
     const [repPassword, setRepPassword] = useState('');
-    const [error, setError] = useState({input: false, notEqual: false, genericError: false});
+    const [error, setError] = useState({input: false, notValid: false, notEqual: false, genericError: false});
 
-    const submitForm = () => {
+    const submitForm = async () => {
+        if(!isError()){
+            const res = await props.uV.resetPassword(passwordObj.password);
+            if(res.success){
+                props.next()
+            }else{
+                const e = error;
+                e.genericError = true;
+                setError(e);
+            }
+        }
+    }
 
+    const isError = () => {
+        const e = error;
+        e.input = passwordObj.password === '';
+        e.notEqual = passwordObj.password !== repPassword;
+        e.notValid = !passwordObj.isValid;
+
+        setError(e);
+        return e.input || e.notEqual || e.notValid;
     }
 
     return(
         <div className='reset-password-form'>
             <h4>Reset your <strong>password</strong>.</h4>
             <form>
-            <ReactPasswordStrength
-                className="password"
-                minLength={5}
-                minScore={2}
-                style={error.input ? {border: '1px solid red', transition: '.3s'} : null}
-                scoreWords={['weak', 'okay', 'good', 'strong', 'stronger']}
-                changeCallback={(passwordObj) => passwordObj.isValid ? setPasswordObj(passwordObj) : () => {}}
-                inputProps={{ name: "password_input", autoComplete: "off", className: "form-control sans-font", placeholder:'Password'}}
-            />
-            <FadeInOutHandleState condition={passwordObj.password !== repPassword}>
-                <h5 className='red-c error'><i class="fas fa-times-circle"></i> The passwords don't match</h5>
-            </FadeInOutHandleState>
-            <input 
-                onChange={(e) => setRepPassword(e.target.value)} 
-                type="password"
-                className='rep-password'
-                placeholder='Retype Password'
-            />
+                <MessageFlasher condition={error.notValid} resetter={() =>{const e = error; e.notValid=false; setError(e)}}>
+                    <FadeDownUpHandleState condition={error.notValid}>
+                        <AbstractError errorMessage={<span>The password is <strong>not valid</strong>.</span>}/>
+                    </FadeDownUpHandleState>
+                </MessageFlasher>
+                <MessageFlasher condition={error.genericError} resetter={() =>{const e = error; e.genericError=false; setError(e)}}>
+                    <FadeDownUpHandleState condition={error.genericError}>
+                        <GenericErr/>
+                    </FadeDownUpHandleState>
+                </MessageFlasher>
+                <ReactPasswordStrength
+                    className="password"
+                    minLength={5}
+                    minScore={2}
+                    style={error.input ? {border: '1px solid red', transition: '.3s'} : null}
+                    scoreWords={['weak', 'okay', 'good', 'strong', 'stronger']}
+                    changeCallback={(passwordObj) => passwordObj.isValid ? setPasswordObj(passwordObj) : () => {}}
+                    inputProps={{ name: "password_input", autoComplete: "off", className: "form-control sans-font", placeholder:'Password'}}
+                />
+                <FadeInOutHandleState condition={passwordObj.password !== repPassword}>
+                    <h5 className='red-c error'><i class="fas fa-times-circle"></i> The passwords don't match</h5>
+                </FadeInOutHandleState>
+                <input 
+                    onChange={(e) => setRepPassword(e.target.value)} 
+                    type="password"
+                    className='rep-password'
+                    placeholder='Retype Password'
+                />
                 <button onClick={() => submitForm()} className='green-bc white-c'>Reset Password</button>
             </form>
         </div>
@@ -125,11 +159,13 @@ function TokenForm(props){
 }
 
 function RequestForm(props){
-    let [email, setEmail] = useState('');
-    let [error, setError] = useState({input: false, doesntExist: false, genericError: false});
+    const [email, setEmail] = useState('');
+    const [error, setError] = useState({input: false, doesntExist: false, genericError: false});
+
+    useEffect(()=>{}, []);
     
     const submitForm = async () => {
-        if(!isError){
+        if(!isError()){
             const res = await props.uV.sendPasswordUpdateEmail(email);
             if(res.success){
                 props.next();
@@ -142,7 +178,7 @@ function RequestForm(props){
     }
 
     const isError = async () => {
-        const errorCopy = error;
+        let errorCopy = error;
         const e = !emailTester(email);
         if(!e){
             const res = await props.uV.verifyEmail(email);
@@ -153,25 +189,33 @@ function RequestForm(props){
             }
         }
         errorCopy.input = e;
-        setError(errorCopy);
-        return e;
+        mySetError(errorCopy);
+        return error.input || error.doesntExist;
+    }
+
+    const mySetError = (e) => {
+        setError({input: e.input, doesntExist: e.doesntExist, genericError: e.genericError});
     }
 
     return(
         <div className='request-form'>
-            <MessageFlasher condition={error.doesntExist} resetter={() => {const e = error; e.doesntExist=false; setError(e)}}>
-                <FadeDownUpHandleState condition={error.doesntExist}>
+                <MessageFlasher 
+                    condition={error.doesntExist} 
+                    resetter={() => {const e = error; e.doesntExist=false; mySetError(e)}}
+                    animation={FadeDownUpHandleState}
+                >   
                     <EmailNotExist/>
-                </FadeDownUpHandleState>
-            </MessageFlasher>
+                </MessageFlasher>
 
-            <MessageFlasher condition={error.genericError} resetter={() => {const e = error; e.genericError=false; setError(e)}}>
-                <FadeDownUpHandleState condition={error.genericError}>
-                    <GenericErr/>
-                </FadeDownUpHandleState>
+            <MessageFlasher 
+                condition={error.genericError} 
+                resetter={() => {const e = error; e.genericError = false; mySetError(e)}}
+                animation={FadeDownUpHandleState}
+            >
+                <GenericErr/>
             </MessageFlasher>
             <h4>Enter the <strong>email</strong> used for your account.</h4>
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
                 <input 
                     onChange={(e) => setEmail(e.target.value)} 
                     placeholder='Email Address' 

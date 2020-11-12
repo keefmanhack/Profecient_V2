@@ -4,7 +4,7 @@ import errors from '../UserCreator/ErrorCodes';
 
 import {getAccessToken, getRefreshToken} from '../Authentication/Tokens';
 
-const notConnected = {isValid: false, errorCode: errors.NOT_CONNECTED}
+const notConnected = {exists: false, errorCode: errors.NOT_CONNECTED}
 class UserVerifier{
 
 	getTokens = async () => {
