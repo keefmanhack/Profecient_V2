@@ -6,14 +6,14 @@ handleError()
 getNextState()
 */
 import Final from './Final';
-import errors from '../ErrorCodes';
+import errors from '../../APIRequests/User Verifier/ErrorCodes';
 import Landing from  '../../Components/Login Landing/Landing-UserCreator/States/Initial/landing';
-import UserVerifier from '../../APIRequests/UserVerifier';
+import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 
-import GenericErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/GenericErr';
-import EmailErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/EmailErr';
-import PhoneNumberErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/PhoneNumberErr';
-import NotConnectedErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/NotConnectedErr';
+import GenericErr from '../../Components/Shared Resources/Messages/Error Messages/Concrete Errors/GenericErr';
+import EmailErr from '../../Components/Shared Resources/Messages/Error Messages/Concrete Errors/EmailErr';
+import PhoneNumberErr from '../../Components/Shared Resources/Messages/Error Messages/Concrete Errors/PhoneNumberErr';
+import NotConnectedErr from '../../Components/Shared Resources/Messages/Error Messages/Concrete Errors/NotConnectedErr';
 import LandingPage2 from '../../Components/Login Landing/Landing-UserCreator/States/Final/Final';
 
 class Initial{
@@ -35,11 +35,11 @@ class Initial{
     async isValid(user){
         try{
             this.validation = await this.userVerifier.verifyEmail(user.email);
-            if(!this.validation.isValid){
+            if(this.validation.exists){
                 return false;
             }
             this.validation = await this.userVerifier.verifyPhoneNumber(user.phoneNumber);
-            if(!this.validation.isValid){
+            if(this.validation.exists){
                 return false;
             }
             return true;

@@ -1,0 +1,20 @@
+.success-message{
+    background: white;
+    position: absolute;
+    margin: 0 40%;
+    top: 17px;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 17px;
+    -webkit-box-shadow: 0px 0px 25px -9px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 25px -9px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 25px -9px rgba(0,0,0,0.75);
+}
+
+.success-message p{
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+}

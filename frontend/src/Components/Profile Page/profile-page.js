@@ -13,7 +13,7 @@ import UserRequests from '../../APIRequests/User';
 import PostRequests from '../../APIRequests/Post';
 
 import './profile-page.css';
-import UserVerifier from '../../APIRequests/UserVerifier';
+import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 
 class ProfilePage extends React.Component{
 	constructor(props){

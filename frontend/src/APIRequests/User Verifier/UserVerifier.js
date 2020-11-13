@@ -1,11 +1,43 @@
-import axios from './index';
+import axios from '../index';
 
-import errors from '../UserCreator/ErrorCodes';
+import errors from './ErrorCodes';
 
-import {getAccessToken, getRefreshToken} from '../Authentication/Tokens';
+import {getAccessToken, getRefreshToken} from '../../Authentication/Tokens';
 
 const notConnected = {exists: false, errorCode: errors.NOT_CONNECTED}
+const unknownErr = {success: false, error: "There was an unknown error"};
 class UserVerifier{
+	
+	sendPasswordUpdateEmail = async email => {
+		try{
+			const endPoint = '/user/forgotPassword/email';
+			const res = await axios.post(endPoint, {email: email});
+			return res.data;
+		}catch(err){
+			return unknownErr
+		}
+	}
+
+	sendPasswordUpdateCode = async (email, code) => {
+		try{
+			const endPoint = '/user/forgotPassword/code';
+			const res = await axios.post(endPoint, {email: email, code: code});
+			return res.data;
+		}catch(err){
+			return unknownErr
+		}
+	}
+
+	resetPassword = async (email, code, password) => {
+		try{
+			const endPoint = '/user/forgotPassword/password';
+			const res = await axios.post(endPoint, {email: email, code: code, password: password});
+			return res.data
+		}catch(err){
+			return unknownErr;
+		}
+
+	}
 
 	getTokens = async () => {
 		const res = await axios.get('/user/tokens/?refresh_token=' + getRefreshToken());

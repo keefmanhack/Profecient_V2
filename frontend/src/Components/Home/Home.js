@@ -10,7 +10,7 @@ import Loader from '../Shared Resources/Effects/loader'
 
 import UserRequests       from '../../APIRequests/User';
 import PostRequests       from '../../APIRequests/Post';
-import UserVerifier from '../../APIRequests/UserVerifier';
+import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 
 
 class Home extends React.Component{

@@ -1,9 +1,10 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import UserVerifier from '../../APIRequests/UserVerifier';
+import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 import { setTokens } from '../../Authentication/Tokens';
 import { FadeDownUpHandleState } from '../Shared Resources/Effects/CustomTransition';
-import UsernameLoginErr from './Landing-UserCreator/Error Components/Concrete Errors/LoginUserNameErr';
+import MessageFlasher from '../Shared Resources/MessageFlasher';
+import LoginErr from '../Shared Resources/Messages/Error Messages/Concrete Errors/LoginErr';
 
 import './login.css';
 
@@ -36,9 +37,13 @@ class Login extends React.Component{
 				
 				<h2 className='muted-c'>Welcome Back</h2>
 				<h1 className='blue-c'>Login</h1>
-				<FadeDownUpHandleState condition={this.state.error}>
-					<UsernameLoginErr/>
-				</FadeDownUpHandleState>
+				<MessageFlasher 
+					condition={this.state.error} 
+					resetter={() => this.setState({error: false})}
+					animation={FadeDownUpHandleState}
+				>
+					<LoginErr/>
+				</MessageFlasher>
 				<input
 					onChange={(e) => this.setState({username: e.target.value})}
 					style={{marginBottom: 10}} 

@@ -5,7 +5,7 @@ import AbstractError from '../AbsractError';
 function GenericErr(props){
     return(
         <AbstractError 
-            errorMessage='Sorry, something went wrong creating this account.'
+            errorMessage='Sorry, something went wrong.'
         />
     ) 
 }

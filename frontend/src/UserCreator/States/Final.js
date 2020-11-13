@@ -5,13 +5,13 @@ isValid()
 handleError()
 getNextState()
 */
-import errors from '../ErrorCodes';
+import errors from '../../APIRequests/User Verifier/ErrorCodes';
 import LandingPage2 from '../../Components/Login Landing/Landing-UserCreator/States/Final/Final';
 import UserRequests from '../../APIRequests/User';
-import GenericErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/GenericErr';
-import UserNameErr from '../../Components/Login Landing/Landing-UserCreator/Error Components/Concrete Errors/UserNameErr';
+import GenericErr from '../../Components/Shared Resources/Messages/Error Messages/Concrete Errors/GenericErr';
+import UserNameErr from '../../Components/Shared Resources/Messages/Error Messages/Concrete Errors/UserNameErr';
 
-import UserVerifier from '../../APIRequests/UserVerifier';
+import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 
 class Final{
     constructor(){
@@ -32,7 +32,7 @@ class Final{
     async isValid(user){
         try{
             this.validation = await this.userVerifier.verifyUserName(user.username);
-            if(!this.validation.isValid){
+            if(this.validation.exists){
                 return false;
             }
             return true;

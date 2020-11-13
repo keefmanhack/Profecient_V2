@@ -12,7 +12,7 @@ let UserSchema = mongoose.Schema({
 	email: {type: String, unique: true, required: true}, 
 	phoneNumber: {type: Number, unique: true, require: true},
 	profilePictureURL: String,
-	resetPasswordToken: String,
+	resetPasswordCode: String,
 	resetPasswordExpires: Date,
 	posts: [{
 		type: mongoose.Schema.Types.ObjectId,

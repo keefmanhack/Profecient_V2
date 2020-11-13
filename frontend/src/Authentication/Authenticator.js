@@ -1,5 +1,5 @@
 import {getAccessToken, getRefreshToken, setTokens, clearTokens} from './Tokens';
-import UserVerifier from '../APIRequests/UserVerifier';
+import UserVerifier from '../APIRequests/User Verifier/UserVerifier';
 const userVer = new UserVerifier();
 
 export const isAuthenticated = () => !!getAccessToken();

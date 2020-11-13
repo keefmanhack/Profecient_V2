@@ -1,6 +1,9 @@
+const crypto = require('crypto');
+
 const BaseRequests = require('../BaseServiceRequests');
 const NotificationService = require('../Notification/index');
 const ImageServices =  require('../S3/ImageService');
+
 
 
 const findUsersByName = User => async searchString => {
@@ -233,6 +236,74 @@ const setTokens = User => async (id, tokens) => {
 	}
 }
 
+// Password reset functions
+const myMailer = require('../Mailer/mailer');
+const moment = require('moment');
+const sendforgotPasswordEmail = User => async email => {
+	try{
+		const user = (await User.find({email: email}))[0];
+		if(!user){return {success: false, error: 'Email does not exist'}};
+		const code = await generatePasswordCode();
+
+		user.resetPasswordCode = code;
+		user.resetPasswordExpires = Date.now() + 3600000; //one hour (i think)
+
+		await user.save();
+		const res = await myMailer.sendPasswordCode(user.email, code);
+		if(!res.success){return {success: false, error: 'Error sending email'}};
+		return {success: true, message: 'Verification code sent to ' + user.email};
+	}catch(err){
+		console.log(err);
+		return {success: false, error: 'Unknown error'};
+	}
+}
+
+const verifyforgotPasswordCode = User => async (email, code) => {
+	//errors to handle: cover all, code expired, wrong code
+	try{
+		const user = (await User.find({email: email}))[0];
+		const res = checkUserAndToken(user, code);
+		return res;
+	}catch(err){
+		return {success: false, error: 'There was a problem'}
+	}
+}
+
+const resetPassword = User => async (password, code, email) =>{
+	//code expired or wrong code
+	try{
+		const user = (await User.find({email: email}))[0];
+		if(!user){return {success: false, error: 'Email does not exist'}}
+		let res = checkUserAndToken(user, code);
+		if(!res.success){return res};
+		await user.setPassword(password);
+		myMailer.sendPasswordUpdatedVerification(user.email);
+		return {success: true, message: 'Password was succesfully updated'};
+	}catch(err){
+		return {success: false, error: 'Unknown error'};
+	}
+}
+
+function checkUserAndToken(user, code){
+	if(!user){return {success: false, error: 'Can not find user'}}
+	if(!user.resetPasswordCode || !user.resetPasswordExpires){return {success: false, error: 'Code was not requested'}}
+	if(!beforeTimeout(user.resetPasswordExpires)){return {success: false, error: 'Code expired'}};
+	if(code !== user.resetPasswordCode){return {success: false, error: 'The code is not correct'}};
+	return {success: true, message: 'You entered the correct code'};
+}
+
+function beforeTimeout(expiration){
+	const now = new moment();
+	return now.isBefore(moment(expiration));
+}
+const generatePasswordCode = async () =>{
+	const SIZE = 2;
+	const code = await crypto.randomBytes(SIZE);
+	return code.toString('hex');
+}
+//End of password reset functions
+
+
 const buildProfilePicturePath = userID =>{
 	return 'users/' + userID + '/profilePic';
 }
@@ -262,7 +333,10 @@ module.exports = User => {
 		size: BaseRequests.size(User),
 		findMultiple: BaseRequests.findMultipleById(User),
 
+		resetPassword: resetPassword(User),
+		verifyforgotPasswordCode: verifyforgotPasswordCode(User),
 		deleteAll: deleteAll(User),
+		sendforgotPasswordEmail: sendforgotPasswordEmail(User),
 		findByRefreshToken: findByRefreshToken(User),
 		findByAccessToken: findByAccessToken(User),
 		setTokens: setTokens(User),

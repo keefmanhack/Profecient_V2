@@ -4,6 +4,11 @@
     padding: 10px;
 }
 
+.request-form, .reset-password-form, .token-form{
+    position: relative;
+    border-radius: 5px;
+}
+
 .reset-password-form{
     position: relative;
 }
@@ -37,17 +42,6 @@
     font-size: 24px;
     width: 150px;
     display: block;
-}
-
-.forgot-password input::-webkit-outer-spin-button,
-.forgot-password input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-.forgot-password input[type=number] {
-  -moz-appearance: textfield;
 }
 
 .forgot-password button{

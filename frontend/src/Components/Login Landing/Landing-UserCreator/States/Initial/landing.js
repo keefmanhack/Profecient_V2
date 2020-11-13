@@ -6,13 +6,11 @@ import PhoneInput from 'react-phone-input-2'
 import {FadeInOutHandleState} from '../../../../Shared Resources/Effects/CustomTransition';
 import {phoneNumberTester, emailTester} from '../../../../../Authentication/RegexTesters';
 import './landing.css';
-import UserRequests from '../../../../../APIRequests/User';
+
 
 class Landing extends React.Component{
 	constructor(props){
 		super(props);
-
-		this.UserReq = new UserRequests(null);
 
 		this.state ={
 			firstName: '',

@@ -89,6 +89,21 @@ router.post('/users', async (req, res) => {
     }catch(err){
         console.log(err);
     }
+});
+
+router.post('/user/forgotPassword/email', async (req, res) => {
+    const response = await UserService.sendforgotPasswordEmail(req.body.email);
+    res.json(response);
+})
+
+router.post('/user/forgotPassword/code', async (req, res) => {
+    const response = await UserService.verifyforgotPasswordCode(req.body.email, req.body.code);
+    res.json(response);
+})
+
+router.post('/user/forgotPassword/password', async (req, res) => {
+    const response = await UserService.resetPassword(req.body.password, req.body.code, req.body.email);
+    res.json(response);
 })
 
 router.post('/users/:id/following', isValid, async (req, res) =>{

@@ -1,6 +1,6 @@
 import Initial from './States/Initial';
 import Final from './States/Final';
-import UserVerifier from '../APIRequests/UserVerifier';
+import UserVerifier from '../APIRequests/User Verifier/UserVerifier';
 import { setTokens } from '../Authentication/Tokens';
 
 class UserCreator{
