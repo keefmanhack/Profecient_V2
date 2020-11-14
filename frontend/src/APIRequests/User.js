@@ -4,6 +4,16 @@ class UserRequests{
 	constructor(id){
 		this.currUserID = id;
 	}
+
+	findPossibleFriends = async () => {
+		try{
+			const endPoint = '/user/' + this.currUserID + '/findFriends';
+			const res = await res.get(endPoint);
+			return res.data;
+		}catch(err){
+			return {success: false, error: 'Unknown error'};
+		}
+	}
 	
 	findMultiple = async name => {
 		try{

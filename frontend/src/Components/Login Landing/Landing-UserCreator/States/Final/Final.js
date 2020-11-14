@@ -42,10 +42,10 @@ class LandingPage2 extends React.Component{
 
     submitForm(){
         if(!this.checkErrors()){
-            const school = this.state.logo ? {name: this.state.logo.name, logoURL: this.state.logo.logo} : null;
             const data = {
                 username: this.state.username,
-                school: school,
+                schoolName: this.state.logo ? this.state.logo.name : null,
+                schoolLogoURL: this.state.logo ? this.state.logo.logo : null,
                 profilePictureData: this.state.profileImage,
             }
             this.props.handleEvent(data);

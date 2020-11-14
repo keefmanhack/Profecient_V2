@@ -12,10 +12,8 @@ class UserCreator{
             password: null,
             username: null,
             profilePictureData: null,
-            school: {
-                name: null,
-                logoURL: null,
-            }
+            schoolName: null,
+            schoolLogoURL: null,
         }
         this.error = false;
         this.state = new Initial();

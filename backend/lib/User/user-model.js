@@ -5,10 +5,8 @@ let passportLocalMongoose = require("passport-local-mongoose");
 let UserSchema = mongoose.Schema({
 	name: {type: String, required: true},
 	username: {type: String, unique:true, required: true},
-	school: {
-		name: String,
-		logoUrl: String,
-	},
+	schoolName: String,
+	schoolLogoURL: String,
 	email: {type: String, unique: true, required: true}, 
 	phoneNumber: {type: Number, unique: true, require: true},
 	profilePictureURL: String,

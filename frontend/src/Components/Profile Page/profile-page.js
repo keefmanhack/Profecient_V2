@@ -97,14 +97,14 @@ class ProfilePage extends React.Component{
 													onError={(e)=>{e.target.onerror = null; e.target.src="/generic_person.jpg"}}
 												/>
 												<h1>{this.state.profile.name}</h1>
-												{this.state.profile.school ?
+												{this.state.profile.schoolLogoURL && this.state.profile.schoolName ?
 													<div className='school'>
 														
-															<img src={this.state.profile.school.logogUrl ? this.state.profile.school.logogUrl : '/generic_school.jpg'} 
+															<img src={this.state.profile.schoolLogoURL ? this.state.profile.schoolLogoURL : '/generic_school.jpg'} 
 																alt="" 
 																onError={(e)=>{e.target.onerror = null; e.target.src="/generic_school.jpg"}}
 															/>
-															<h2>{this.state.profile.school.name}</h2>
+															<h2>{this.state.profile.schoolName}</h2>
 														
 													</div>
 												: null}

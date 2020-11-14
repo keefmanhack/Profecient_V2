@@ -7,7 +7,7 @@ import {getAccessToken, getRefreshToken} from '../../Authentication/Tokens';
 const notConnected = {exists: false, errorCode: errors.NOT_CONNECTED}
 const unknownErr = {success: false, error: "There was an unknown error"};
 class UserVerifier{
-	
+
 	sendPasswordUpdateEmail = async email => {
 		try{
 			const endPoint = '/user/forgotPassword/email';

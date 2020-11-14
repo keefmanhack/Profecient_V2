@@ -50,15 +50,15 @@ function SearchItem(props){
 					onError={(e)=>{e.target.src="/generic_person.jpg"}}
 				/>
 				<h2>{props.name}</h2>
-				{props.school ?
+				{props.schoolName && props.schoolLogoURL ?
 					<React.Fragment>
 						<img 
 							className='school' 
-							src={props.school.logoUrl ? props.school.logoUrl : '/generic_school.jpg'} 
+							src={props.schoolLogoUrl ? props.schoolLogoUrl : '/generic_school.jpg'} 
 							alt=""
 							onError={(e)=>{e.target.onerrror=null; e.target.src="/generic_school.jpg"}}
 						/>
-						<h3>{props.school.name}</h3>
+						<h3>{props.schoolName}</h3>
 					</React.Fragment>
 				: null}
 			</div>
