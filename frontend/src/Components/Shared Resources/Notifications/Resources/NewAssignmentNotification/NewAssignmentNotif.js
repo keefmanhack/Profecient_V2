@@ -26,14 +26,16 @@ function NewAssignmentNotification(props){
                             {props.data.user.name}
                         </span>
 			        </Link>
-                    <div className='school'> 
-                        <img 
-                            src={props.data.user.school.logoURL ? props.data.user.school.logoURL : '/generic_school.jpg'} 
-                            alt=""
-                            onError={(e) => {e.target.onerror=null; e.target.src="/generic_school.jpg"}}
-                        />
-                        <h3>{props.data.user.school.name}</h3>
-                    </div>
+                    {props.data.user.schoolLogoURL && props.data.user.schoolName ?
+                        <div className='school'> 
+                            <img 
+                                src={props.data.user.schoolLogoURL ? props.data.user.schoolLogoURL : '/generic_school.jpg'} 
+                                alt=""
+                                onError={(e) => {e.target.onerror=null; e.target.src="/generic_school.jpg"}}
+                            />
+                            <h3>{props.data.user.schoolName}</h3>
+                        </div>
+                    : null}
                 </div>
             }
             auxData={

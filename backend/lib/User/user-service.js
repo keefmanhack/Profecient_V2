@@ -284,6 +284,20 @@ const resetPassword = User => async (password, code, email) =>{
 	}
 }
 
+const findFriends = User => async id => {
+	try{
+		const user = await User.findById(id);
+		//algrorithm
+		//1. Look for mutual friends
+		//2. If school, find people that have the same school
+		//3. Find people with same area codes
+		
+
+	}catch(err){
+		return {success: false, error: 'Unknown error'}
+	}
+}
+
 function checkUserAndToken(user, code){
 	if(!user){return {success: false, error: 'Can not find user'}}
 	if(!user.resetPasswordCode || !user.resetPasswordExpires){return {success: false, error: 'Code was not requested'}}
@@ -333,6 +347,7 @@ module.exports = User => {
 		size: BaseRequests.size(User),
 		findMultiple: BaseRequests.findMultipleById(User),
 
+		findFriends: findFriends(User),
 		resetPassword: resetPassword(User),
 		verifyforgotPasswordCode: verifyforgotPasswordCode(User),
 		deleteAll: deleteAll(User),

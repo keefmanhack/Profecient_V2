@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlipInOut, FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
+import {FlipInOut, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 
 class SuggestedLinksContainer extends React.Component{
 

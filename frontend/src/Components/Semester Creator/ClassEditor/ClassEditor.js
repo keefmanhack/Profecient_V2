@@ -4,7 +4,7 @@ import TimePicker from 'react-time-picker';
 import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 
-import {FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 // import StartEndTime from '../StartEndTimeComp/StartEndTime';
 // import CE_Errors from './helperFunc';
 class ClassEditor extends React.Component{

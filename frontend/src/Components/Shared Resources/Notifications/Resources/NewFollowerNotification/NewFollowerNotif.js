@@ -25,14 +25,16 @@ function NewFollowerNotification(props){
 			    </Link>
             }
             auxData={
-                <div className='school'> 
-                    <img 
-                        src={props.data.school.logoURL ? props.data.school.logoURL : '/generic_school.jpg'} 
-                        alt=""
-                        onError={(e) => {e.target.onerror=null; e.target.src="/generic_school.jpg"}}
-                    />
-                    <h3>{props.data.school.name}</h3>
-                </div>
+                props.data.schoolLogoURL && props.data.schoolName ?
+                    <div className='school'> 
+                        <img 
+                            src={props.data.schoolLogoURL ? props.data.schoolLogoURL : '/generic_school.jpg'} 
+                            alt=""
+                            onError={(e) => {e.target.onerror=null; e.target.src="/generic_school.jpg"}}
+                        />
+                        <h3>{props.data.schoolName}</h3>
+                    </div>
+                : null
             }
             timeStamp={props.data.timeStamp}
         />

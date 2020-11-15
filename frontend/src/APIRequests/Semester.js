@@ -52,7 +52,7 @@ class SemesterRequests{
 			const res = await axios.post(endPoint, {semesterData: data});
 			return res.data;
 		}catch(err){
-			console.log(err);
+			return {success: false, error: 'Unknown error creating semester'}
 		}
 	}
 

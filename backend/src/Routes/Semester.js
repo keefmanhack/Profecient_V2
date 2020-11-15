@@ -42,9 +42,10 @@ router.post('/users/:id/semester', isValid, async (req, res) => {
 
 		user.semesters.push(newSem);
 		await user.save();
-		res.send();
+		res.json({success: true});
 	}catch(err){
 		console.log(err);
+		res.json({success: false, error: 'Unable to create a new semester'});
 	}
 })
 

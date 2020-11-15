@@ -3,6 +3,11 @@
     -moz-box-shadow: 0px 11px 38px 30px rgb(255 255 255);
     box-shadow: 0px 7px 13px -4px rgb(255 255 255);
     background: white;
+    position: absolute;
+    z-index: 4;
+    margin-right: 5px;
+    border-radius: 5px;
+    width: 170px;
 }
 
 .drop-down-con hr{
@@ -11,3 +16,44 @@
     border-color: rgba(255,255,255,.6);
 }
 
+.drop-down-con .main .item{
+    background: rgb(50,50,50);
+}
+
+.drop-down-con .main .item:nth-of-type(2n){
+    background: #444444;
+}
+
+.drop-down-con .main, .perif{
+	/* background: rgb(50,50,50); */
+	border-radius: 5px;
+	border: 1px solid white;
+}
+
+.drop-down-con .option{
+    position: relative;
+}
+
+.drop-down-con .perif{
+    position: absolute;
+    left: 100%;
+    top: 0;
+    z-index: 2;
+}
+
+.drop-down-con .perif button{
+	font-size: 16px;
+    font-weight: 200;
+    background: rgb(50,50,50);
+} 
+
+.drop-down-con button{
+	display: block;
+	width: 100%;
+	border: none;
+	font-size: 18px;
+	font-weight: 600;
+    background: none;
+	color: white;
+	border-radius: 5px;
+}

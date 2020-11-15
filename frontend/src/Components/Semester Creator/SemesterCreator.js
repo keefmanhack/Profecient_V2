@@ -1,24 +1,28 @@
 import React from 'react';
 import moment from 'moment';
+import {Link} from 'react-router-dom';
 
-import {BackInOutHandleState, FadeInOutHandleState, FadeRightHandleState} from '../../Shared Resources/Effects/CustomTransition';
+import {BackInOutHandleState, FadeDownUpHandleState, FadeInOutHandleState, FadeRightHandleState} from '../Shared Resources/Effects/CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
 import ClassEditor from './ClassEditor/ClassEditor';
-import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
+import {SuccessCheck} from '../Shared Resources/Effects/lottie/LottieAnimations';
 
-import SemesterRequests from '../../../APIRequests/Semester';
-import ClassRequests from '../../../APIRequests/Class';
+import SemesterRequests from '../../APIRequests/Semester';
+import ClassRequests from '../../APIRequests/Class';
+import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 
 import './semester-creator.css';
+import MessageFlasher from '../Shared Resources/MessageFlasher';
+import AbsractError from '../Shared Resources/Messages/Error Messages/AbsractError';
 
 
 class SemesterCreator extends React.Component{
 	constructor(props){
 		super(props);
-
-		this.semReq = new SemesterRequests(this.props.currentUser._id);
-		this.classReq = new ClassRequests(this.props.currentUser._id);
+		this.uV = new UserVerifier();
+		this.semReq = null;//null new SemesterRequests(this.props.currentUser._id);
+		this.classReq = null; //new ClassRequests(this.props.currentUser._id);
 
 		this.state ={
 			semData: {
@@ -48,21 +52,28 @@ class SemesterCreator extends React.Component{
 		}
 	}
 
-	componentDidMount(){
-		if(this.props.updateData !== null){
-			let semData = this.state.semData;
-			semData.name = this.props.updateData.name;
-			semData.classes = this.props.updateData.classes;
-			semData._id = this.props.updateData._id;
-			this.setState({
-				semData: semData,
-			})
-		}
+	async componentDidMount(){
+		const user = await this.uV.getCurrUser();
+		this.semReq = new SemesterRequests(user._id);
+		this.classReq = new ClassRequests(user._id);
+		// if(this.props.updateData !== null){
+		// 	let semData = this.state.semData;
+		// 	semData.name = this.props.updateData.name;
+		// 	semData.classes = this.props.updateData.classes;
+		// 	semData._id = this.props.updateData._id;
+		// 	this.setState({
+		// 		semData: semData,
+		// 	})
+		// }
 	}
 
 	async createSemester(){
-		await this.semReq.create(this.state.semData);
-		this.setState({successful: true});
+		const res = await this.semReq.create(this.state.semData);
+		if(res.success){
+			this.setState({successful: true});
+		}else{
+			this.setState({errMsg: res.error});
+		}
 	}
 
 	async updateSemester(){
@@ -225,17 +236,21 @@ class SemesterCreator extends React.Component{
 				<div className='background-shader'/>
 				<div className='semester-creator-container'>
 					<FadeInOutHandleState condition={this.state.successful}>
-		 				<SuccessCheck onCompleted={() =>this.props.hideNewSemForm()}/>
+		 				<SuccessCheck onCompleted={() => this.props.history.push('/home')}/>
 		 			</FadeInOutHandleState>
+					<MessageFlasher 
+						condition={this.state.errMsg !== ''} 
+						resetter={() => this.setState({errMsg: ''})}
+						animation={FadeDownUpHandleState}	
+					>
+						<AbsractError errorMessage={this.state.errMsg}/>
+					</MessageFlasher>
 
-
-					<button onClick={() => this.props.hideNewSemForm()} id='exit'>Exit</button>
+					<Link to='/home'>
+						<button id='exit'>Exit</button>
+					</Link>
 					<FadeRightHandleState condition={this.state.semData.classes.length > 0}>
-						{this.props.updateData === null ?
-							<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
-						:
-							<button onClick={() => this.updateSemester()} className='update-semester'>Edit Semester</button>	
-						}
+						<button onClick={() => this.createSemester()} className='create-semester'>Create Semester</button>
 					</FadeRightHandleState>
 
 					<BackInOutHandleState condition={this.state.semData.name === null} >

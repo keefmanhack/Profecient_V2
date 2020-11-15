@@ -28,7 +28,7 @@ class UserSearch extends React.Component{
 	render(){
 		const searchItems = this.props.users && this.props.users.length>0 ? this.props.users.map((user, index) => {
 			if(validUser(user)){
-				return (<SearchItem handleClick={() => this.props.hide()} id={user._id} key={user._id} profilePic={user.profilePictureURL} name={user.name} school={user.school}/>)
+				return (<SearchItem handleClick={() => this.props.hide()} id={user._id} key={user._id} profilePic={user.profilePictureURL} name={user.name} schoolName={user.schoolName} schoolLogoURL={user.schoolLogoURL}/>)
 			}		
 		}) : null;
 		return(
@@ -54,7 +54,7 @@ function SearchItem(props){
 					<React.Fragment>
 						<img 
 							className='school' 
-							src={props.schoolLogoUrl ? props.schoolLogoUrl : '/generic_school.jpg'} 
+							src={props.schoolLogoURL ? props.schoolLogoURL : '/generic_school.jpg'} 
 							alt=""
 							onError={(e)=>{e.target.onerrror=null; e.target.src="/generic_school.jpg"}}
 						/>

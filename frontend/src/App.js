@@ -16,6 +16,7 @@ import AuthRoute from './Authentication/AuthRoute';
 import './Components/Shared Resources/index.css';
 
 import UserRequests from './APIRequests/User';
+import SemesterCreator from './Components/Semester Creator/SemesterCreator';
 
 class App extends React.Component{
 	constructor(props){
@@ -80,6 +81,7 @@ class App extends React.Component{
 						
 						<AuthRoute path='/home' component={Home}/>
 						<AuthRoute path='/profile/:id' component={ProfilePage}/>
+						<AuthRoute path='/newSemester' component={SemesterCreator}/>
 						
 						<Route path='/forgotPassword' component={ForgotPassword}/>
 						<Route path='/login' component={({history}) => {

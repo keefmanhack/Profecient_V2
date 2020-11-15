@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import moment from 'moment';
+import {Link} from 'react-router-dom';
 
 import LinkSelector from '../../Shared Resources/Link Selector/LinkSelector';
 import {FadeDownUpHandleState, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
-import MenuDropDown, {DropDownMain, Options} from '../../Shared Resources/Drop Down/MenuDropDown';
+import MenuDropDown, {DropDownMain, Options, Item} from '../../Shared Resources/Drop Down/MenuDropDown';
 import Loader from '../../Shared Resources/Effects/loader';
-import SemesterCreator from '../Semester Creator/SemesterCreator';
 
 import SemesterRequests from '../../../APIRequests/Semester';
 import ClassRequests from '../../../APIRequests/Class';
@@ -20,11 +20,10 @@ function ClassView(props){
 	const [classes, setClasses] = useState(null);
 	const [currSemesterID, setCurrSemesterID] = useState(null);
 	const [showDialog, setShowDialog] = useState(false);
-	const [showNewSemForm, setShowNewSemForm] = useState(false);
 
 	useEffect(() => {
 		getSemesters();
-	}, [showDialog, showNewSemForm])
+	}, [showDialog])
 
 	useEffect(() => {
 		if(currSemesterID!==null) getClasses();
@@ -90,33 +89,40 @@ function ClassView(props){
 				<MenuDropDown hideDropDown={() => setShowDialog(false)}>
 					<DropDownMain>
 						{props.isCurrentUserViewing ?
-							<button onClick={() => setShowNewSemForm(true)}> 
-								<i style={{color: 'lightgreen'}} className="fas fa-plus-circle"></i> New Semester
-							</button>
+							<Item>
+								<Link to='/newSemester'>
+									<button> 
+										<i style={{color: 'lightgreen'}} className="fas fa-plus-circle"></i> New Semester
+									</button>
+								</Link>
+							</Item>
 						: null}
 						{semesters && semesters.length>0 ?
 							<React.Fragment>
 								{props.isCurrentUserViewing ?
 									<React.Fragment>
-										<button onClick={() => deleteSemester()}> 
-											<i style={{color: 'red'}} className="fas fa-trash"></i> Delete Current Semester
-										</button>
+										<Item>
+											<Link>
+												<button onClick={() => deleteSemester()}> 
+													<i style={{color: 'red'}} className="fas fa-trash"></i> Delete Current Semester
+												</button>
+											</Link>
+										</Item>
 									</React.Fragment>
 								:null}
-								<Options 
-									text={'Semester'} 
-									icon={<i class="fas fa-caret-right"></i>} 
-									options={semesters}
-									selected={currSem}
-									clickEvent={(i) => setCurrSemesterID(semesters[i]._id)}
-								/>
+								<Item>
+									<Options 
+										text={'Semester'} 
+										icon={<i class="fas fa-caret-right"></i>} 
+										options={semesters}
+										selected={currSem}
+										clickEvent={(i) => setCurrSemesterID(semesters[i]._id)}
+									/>
+								</Item>
 							</React.Fragment>
 						: null}
 					</DropDownMain>
 				</MenuDropDown>
-			</FadeInOutHandleState>
-			<FadeInOutHandleState condition={showNewSemForm}>
-				<SemesterCreator updateData={null} hideNewSemForm={() => setShowNewSemForm(false)} currentUser={props.currentUser}/>
 			</FadeInOutHandleState>
 		</div>
 	);

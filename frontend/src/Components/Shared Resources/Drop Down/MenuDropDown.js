@@ -94,5 +94,9 @@ class Options extends React.Component{
 	}
 }
 
+function Item(props){
+	return (<div className='item'>{props.children}</div>)
+}
+
 export default MenuDropDown;
-export {DropDownMain, Options, Divider};
+export {DropDownMain, Options, Divider, Item};

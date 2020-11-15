@@ -6,7 +6,7 @@ import {FadeInOutHandleState} from '../Effects/CustomTransition';
 import UserSearch from '../User Search/UserSearch';
 import NotificationContainer from '../Notifications/NotificationContainer';
 
-import MenuDropDown, {DropDownMain, Divider} from '../Drop Down/MenuDropDown';
+import MenuDropDown, {DropDownMain, Divider, Item} from '../Drop Down/MenuDropDown';
 
 import UserRequest from '../../../APIRequests/User';
 
@@ -115,11 +115,20 @@ class Header extends React.Component{
 						<div className='header-drop-down'>
 							<MenuDropDown hideDropDown={() => this.setState({showDropDown: false})}>
 								<DropDownMain>
-									<Link to={'/profile/' + this.props.currentUser._id}>
-										<button>My Profile</button>
-									</Link>
+									<Item>
+										<Link to={'/profile/' + this.props.currentUser._id}>
+											<button>My Profile</button>
+										</Link>
+									</Item>
+									<Item>
+										<Link to={'/newSemester'}>
+											<button>New Semester</button>
+										</Link>
+									</Item>
 									<Divider/>
-									<button onClick={() => logOut()}>Log Out</button>
+										<Item>
+											<button onClick={() => logOut()}>Log Out</button>
+										</Item>
 								</DropDownMain>
 							</MenuDropDown>
 						</div>
