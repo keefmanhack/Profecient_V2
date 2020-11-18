@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import Loader from '../Effects/loader';
+import Loader from '../Effects/Loader/loader';
 import {FadeRightHandleState, FadeInOutHandleState} from '../Effects/CustomTransition';
 import {SuccessCheck} from '../Effects/lottie/LottieAnimations';
 

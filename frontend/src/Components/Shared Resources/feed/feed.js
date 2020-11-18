@@ -5,7 +5,7 @@ import {convertToStdDate} from '../../Home/Agenda/Agenda_Helper';
 import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 import MenuDropDown, {DropDownMain} from '../Drop Down/MenuDropDown';
 import {FailedSent, SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
-import Loader from '../../Shared Resources/Effects/loader';
+import Loader from '../../Shared Resources/Effects/Loader/loader';
 import ImageGallary from '../../Shared Resources/ImageGallary';
 
 import './feed.css';

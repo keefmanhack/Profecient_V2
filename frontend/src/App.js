@@ -9,7 +9,7 @@ import ProfilePage from './Components/Profile Page/profile-page';
 import ForgotPassword from './Forgotten Password/ForgotPassword';
 
 
-import Loader from './Components/Shared Resources/Effects/loader';
+import Loader from './Components/Shared Resources/Effects/Loader/loader';
 
 import AuthRoute from './Authentication/AuthRoute';
 

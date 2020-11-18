@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {FadeInOutHandleState} from './Effects/CustomTransition';
-import Loader from './Effects/loader';
+import Loader from './Effects/Loader/loader';
 
 import PostRequests from '../../APIRequests/Post';
 

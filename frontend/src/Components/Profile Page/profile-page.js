@@ -7,7 +7,7 @@ import ClassView from './Class View/ClassView';
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
 import Header from '../Shared Resources/Header/header';
 import PostCreator from '../Shared Resources/PostCreator';
-import Loader from '../Shared Resources/Effects/loader';
+import Loader from '../Shared Resources/Effects/Loader/loader';
 
 import UserRequests from '../../APIRequests/User';
 import PostRequests from '../../APIRequests/Post';

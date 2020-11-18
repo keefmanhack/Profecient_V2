@@ -119,6 +119,18 @@ const createMultiple = ClassModel => async classArr => {
 	return returnArr;
 }
 
+getCurrent = ClassModel => async userID =>{
+	if(!userID){
+		throw new Error('Missing user ID to find user');
+	}
+	const user = await UserService.findById(userID);
+	if(user.semesters.length<1){return []}
+	const sem = await SemesterService.findById(user.semesters[user.semesters.length-1]._id);
+	if(sem.classes.length < 1){return []}
+	const classes = await ClassModel.find({_id: sem.classes});
+	return classes;
+}
+
 function connectionExists(connectionList, newConnection){
 	for(let i =0; i<connectionList.length; i++){
 		if(connectionList[i].userID + '' === newConnection.userID + '' && connectionList[i].classID + '' === newConnection.classID + ''){

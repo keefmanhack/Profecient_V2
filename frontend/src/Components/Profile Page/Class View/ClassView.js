@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import LinkSelector from '../../Shared Resources/Link Selector/LinkSelector';
 import {FadeDownUpHandleState, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 import MenuDropDown, {DropDownMain, Options, Item} from '../../Shared Resources/Drop Down/MenuDropDown';
-import Loader from '../../Shared Resources/Effects/loader';
+import Loader from '../../Shared Resources/Effects/Loader/loader';
 
 import SemesterRequests from '../../../APIRequests/Semester';
 import ClassRequests from '../../../APIRequests/Class';

@@ -76,7 +76,7 @@ class UserVerifier{
 			const res = await axios.post(endPoint, {username: username, password: password});
 			return res.data
 		}catch(err){
-			console.log(err);
+			return {success: false, error: 'Unknown error'}
 		}
 	}
 

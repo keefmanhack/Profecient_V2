@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import moment from 'moment';
 
-import Loader from '../../Effects/loader';
+import Loader from '../../Effects/Loader/loader';
 
 import './index.css';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import UserCreator from '../../../UserCreator/UserCreator';
 
-import Loader from '../../Shared Resources/Effects/loader';
+import Loader from '../../Shared Resources/Effects/Loader/loader';
 import { FadeInOutHandleState } from '../../Shared Resources/Effects/CustomTransition';
 
 class OnBoard extends React.Component{

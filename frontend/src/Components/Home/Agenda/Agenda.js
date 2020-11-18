@@ -7,7 +7,7 @@ import moment from 'moment';
 import {SuccessCheck} from '../../Shared Resources/Effects/lottie/LottieAnimations';
 import {findTopPosition, dateObjToStdTime, convertToStdDate} from './Agenda_Helper';
 import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
-import Loader from '../../Shared Resources/Effects/loader';
+import Loader from '../../Shared Resources/Effects/Loader/loader';
 
 import AgendaRequests from '../../../APIRequests/Agenda';
 

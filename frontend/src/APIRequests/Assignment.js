@@ -65,6 +65,15 @@ class AssignmentRequests{
 		}
 	}
 
+	getAll = async () =>{
+		try{
+			const endPoint = '/users/' + this.currUserID + '/assignments';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			return {success: false, error: 'Unknown error retreiving assignments'}
+		}
+	}
 
 
 

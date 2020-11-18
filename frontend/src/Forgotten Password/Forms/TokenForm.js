@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { FadeDownUpHandleState } from '../../Components/Shared Resources/Effects/CustomTransition';
 
-import Loader from '../../Components/Shared Resources/Effects/loader';
+import Loader from '../../Components/Shared Resources/Effects/Loader/loader';
 import MessageFlasher from '../../Components/Shared Resources/MessageFlasher';
 import AbsractError from '../../Components/Shared Resources/Messages/Error Messages/AbsractError';
 import ResetPasswordForm from './ResetPasswordForm';

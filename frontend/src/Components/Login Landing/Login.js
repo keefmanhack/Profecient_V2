@@ -4,6 +4,7 @@ import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 import { setTokens } from '../../Authentication/Tokens';
 import { FadeDownUpHandleState } from '../Shared Resources/Effects/CustomTransition';
 import MessageFlasher from '../Shared Resources/MessageFlasher';
+import AbsractError from '../Shared Resources/Messages/Error Messages/AbsractError';
 import LoginErr from '../Shared Resources/Messages/Error Messages/Concrete Errors/LoginErr';
 
 import './login.css';
@@ -16,7 +17,7 @@ class Login extends React.Component{
 		this.state={
 			username:'',
 			password: '',
-			error: false,
+			errMsg: ''
 		}
 	}
 	async logUserIn(){
@@ -26,7 +27,7 @@ class Login extends React.Component{
 			this.props.history.push('/home');
 			window.location.reload(true);
 		}else{
-			this.setState({error: true});
+			this.setState({errMsg: res.error});
 		}
 	}
 
@@ -38,11 +39,11 @@ class Login extends React.Component{
 				<h2 className='muted-c'>Welcome Back</h2>
 				<h1 className='blue-c'>Login</h1>
 				<MessageFlasher 
-					condition={this.state.error} 
-					resetter={() => this.setState({error: false})}
+					condition={this.state.errMsg !== ''} 
+					resetter={() => this.setState({errMsg: ''})}
 					animation={FadeDownUpHandleState}
 				>
-					<LoginErr/>
+					<AbsractError errorMessage={this.state.errMsg}/>
 				</MessageFlasher>
 				<input
 					onChange={(e) => this.setState({username: e.target.value})}

@@ -54,5 +54,15 @@ class ClassRequests{
 			console.log(err);
 		}
 	}
+
+	getCurrent = async () => {
+		try{
+			const endPoint = '/users/' + this.userID + '/current/classes';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			return {success: false, error: 'Unknown error getting classes'}
+		}
+	}
 }
 export default ClassRequests;

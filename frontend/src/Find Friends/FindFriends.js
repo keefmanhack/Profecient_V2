@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UserRequests from '../APIRequests/User';
 
 import MessageFlasher from '../Components/Shared Resources/MessageFlasher';
-import Loader from '../Components/Shared Resources/Effects/loader';
+import Loader from '../Components/Shared Resources/Effects/Loader/loader';
 import { FadeDownUpHandleState } from '../Components/Shared Resources/Effects/CustomTransition';
 import AbsractError from '../Components/Shared Resources/Messages/Success Messages/Error Components/AbsractError';
 

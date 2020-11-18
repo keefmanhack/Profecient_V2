@@ -75,6 +75,25 @@ router.post('/users/classes', async (req, res) => {
 })
 // End of Semeste Creator Routes
 
+router.get('/users/:id/current/classes', isValid, async (req, res) => {
+	try{
+		const classes = await ClassService.getCurrent(req.params.id);
+		return {success: true, classes: classes};
+	}catch(err){
+		res.json({success: false, error: 'Unknown error getting classes'})
+	}
+})
+
+router.get('/users/:id/assignments', isValid, async (req, res) => {
+	try{
+		const user = await UserService.findById(req.params.id);
+		const assignments = await AssignmentService.getAll(user._id);
+		res.json({success: true, assignments: assignments});
+	}catch(err){
+		res.json({success: false, error: 'Unknown error getting assignments'})
+	}
+})
+
 router.get('/users/:id/semesters/classes/assignments', async (req, res) =>{
 	try{
 		const user = await UserService.findById(req.params.id);

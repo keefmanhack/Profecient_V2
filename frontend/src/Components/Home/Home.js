@@ -2,11 +2,11 @@ import React from 'react';
 
 import Header from '../Shared Resources/Header/header';
 import {FadeInOutHandleState} from '../Shared Resources/Effects/CustomTransition';
-import AssignmentDashboard from './AssignmentDashboard';
+import AssignmentDashboard from './Assignment/AssignmentDashboard';
 import Agenda from './Agenda/Agenda';
 import Feed from '../Shared Resources/feed/feed';
 import PostCreator from '../Shared Resources/PostCreator';
-import Loader from '../Shared Resources/Effects/loader'
+import Loader from '../Shared Resources/Effects/Loader/loader'
 
 import UserRequests       from '../../APIRequests/User';
 import PostRequests       from '../../APIRequests/Post';

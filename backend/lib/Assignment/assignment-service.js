@@ -35,6 +35,34 @@ const findMultiple = Ass => async ids => {
 	return await Ass.find({_id: ids});
 }
 
+const UserService = require('../User/index');
+const SemesterService = require('../Semester/index');
+const ClassService = require('../Class/index');
+const AssignmentService = require('../Assignment/index');
+const getAll = Ass => async userID => {
+	const user = await UserService.findById(userID);
+	if(user.semesters.length <1){return []}
+	const lastSem = await SemesterService.findById(user.semesters[user.semesters.length-1]); //get last
+	if(lastSem.classes.length <1){return []}
+	const classes = await ClassService.findMultiple(lastSem.classes);
+	let arr = [];
+	for(let i =0; i< classes.length; i++){
+		for(let j = 0; j<classes[i].assignments.length; j++){
+			const ass = await Ass.findById(classes[i].assignments[j]);
+			const assData = {
+				assignment: ass,
+				parentClass: {
+					color: '#222342',
+					name: classes[i].name,
+					_id: classes[i]._id
+				}
+			}
+			arr.push(assData);
+		}
+	}
+	return arr;
+}
+
 module.exports = Ass => {
 	return {
 		update: BaseRequests.update(Ass),
@@ -45,5 +73,6 @@ module.exports = Ass => {
 		getAssesDueInAWeekSortedByDate: getAssesDueInAWeekSortedByDate(Ass),
 		create: create(Ass),
 		findMultiple: findMultiple(Ass),
+		getAll: getAll(Ass),
 	}
 }

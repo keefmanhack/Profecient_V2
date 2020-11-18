@@ -10,7 +10,7 @@ import MessageFlasher from '../../Components/Shared Resources/MessageFlasher';
 
 import errors from '../../APIRequests/User Verifier/ErrorCodes';
 import {emailTester} from '../../Authentication/RegexTesters';
-import Loader from '../../Components/Shared Resources/Effects/loader';
+import Loader from '../../Components/Shared Resources/Effects/Loader/loader';
 
 function RequestForm(props){
     const [email, setEmail] = useState('');
