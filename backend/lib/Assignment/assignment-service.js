@@ -38,13 +38,8 @@ const findMultiple = Ass => async ids => {
 const UserService = require('../User/index');
 const SemesterService = require('../Semester/index');
 const ClassService = require('../Class/index');
-const AssignmentService = require('../Assignment/index');
 const getAll = Ass => async userID => {
-	const user = await UserService.findById(userID);
-	if(user.semesters.length <1){return []}
-	const lastSem = await SemesterService.findById(user.semesters[user.semesters.length-1]); //get last
-	if(lastSem.classes.length <1){return []}
-	const classes = await ClassService.findMultiple(lastSem.classes);
+	const classes = getClasses();
 	let arr = [];
 	for(let i =0; i< classes.length; i++){
 		for(let j = 0; j<classes[i].assignments.length; j++){
@@ -63,12 +58,43 @@ const getAll = Ass => async userID => {
 	return arr;
 }
 
+
+get = Ass => async (userID, wasCompleted) =>{
+	const classes = await getClasses(userID);
+	let arr = [];
+	for(let i =0; i< classes.length; i++){
+		const assignments = await Ass.find({_id: classes[i].assignments, complete: wasCompleted});
+		for(let j = 0; j<assignments.length; j++){
+			const assData = {
+				assignment: assignments[j],
+				parentClass: {
+					color: '#222342',
+					name: classes[i].name,
+					_id: classes[i]._id
+				}
+			}
+			arr.push(assData);
+		}
+	}
+	return arr;
+}
+
+async function getClasses(userID){
+	const user = await UserService.findById(userID);
+	if(user.semesters.length <1){return []}
+	const lastSem = await SemesterService.findById(user.semesters[user.semesters.length-1]); //get last
+	if(lastSem.classes.length <1){return []}
+	const classes = await ClassService.findMultiple(lastSem.classes);
+	return classes
+}
+
 module.exports = Ass => {
 	return {
 		update: BaseRequests.update(Ass),
 		deleteById: BaseRequests.deleteById(Ass),
 		findById: BaseRequests.findById(Ass),
 
+		get: get(Ass),
 		deleteMultiple: deleteMultiple(Ass),
 		getAssesDueInAWeekSortedByDate: getAssesDueInAWeekSortedByDate(Ass),
 		create: create(Ass),

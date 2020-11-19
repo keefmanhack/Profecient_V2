@@ -58,7 +58,7 @@ class Assignment extends React.Component{
 		}
 
 		return(
-			<div onMouseEnter={() => this.setState({mouseOver: true})} onMouseLeave={() => this.setState({mouseOver: false})} className={'assignment sans-font ' + colorClass}>
+			<div onMouseEnter={() => this.setState({mouseOver: true})} onMouseLeave={() => this.setState({mouseOver: false})} className={'assignment animate__animated animate__faster animate__fadeInDown sans-font ' + colorClass}>
 				{this.state.deleting ? <Loader/>: null}
 				<div className='row'>
 					<div className='col-lg-6'>

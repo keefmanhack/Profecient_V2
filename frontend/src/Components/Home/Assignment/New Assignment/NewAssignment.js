@@ -60,17 +60,17 @@ class NewAssignment extends React.Component{
 		if(res.success){
 			if(res.classes.length===0){
 				this.setState({errMsg: 'You need classes to add an assignment'});
-				// setTimeout(() => {
-				// 	this.props.hideForm();
-				// }, 2000);
+				setTimeout(() => {
+					this.props.hideForm();
+				}, 2000);
 			}else{
 				this.setState({classes: res.classes});
 			}
 		}else{
 			this.setState({errMsg: res.error});
-			// setTimeout(() => {
-			// 	this.props.hideForm();
-			// }, 2000);
+			setTimeout(() => {
+				this.props.hideForm();
+			}, 2000);
 		}
 	}
 
@@ -128,7 +128,7 @@ class NewAssignment extends React.Component{
 			}
 			const editData = this.props.editData;
 			let res = editData ? await this.assReq.update(editData.parentClassID, editData.ass._id, this.state.selectedClassID, data) 
-				: await this.assReq.create(this.state.selectedClassID, data);
+				: await this.assReq.create(this.state.selectedID, data);
 			res.success ? this.setState({success: true}) : this.setState({error: true});
 		}
 	}
@@ -141,7 +141,7 @@ class NewAssignment extends React.Component{
 					resetter={() => this.setState({errMsg: ''})}
 					animation={FadeDownUpHandleState}
 				>
-					<AbsractError errorMessge={this.state.errMsg}/>
+					<AbsractError errorMessage={this.state.errMsg}/>
 				</MessageFlasher>
 				<div className='background-shader'/>
 				<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
@@ -204,7 +204,7 @@ function ClassSelector(props){
 	const classes = props.classes.map(data => 
 		<ClassBtn 
 			name={data.name} 
-			setSelected={() => props.setSelected(data._id)} 
+			setSelected={() => props.setSelectedID(data._id)} 
 			key={data._id}
 			isSelected={data._id === props.selectedID}
 		/>

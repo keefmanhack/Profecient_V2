@@ -46,6 +46,7 @@ const flashStyles = {
     left: 0,
     top: 0,
     width: '100%',
+    zIndex: 999,
 }
 
 export default MessageFlasher;

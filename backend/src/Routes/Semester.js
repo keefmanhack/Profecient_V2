@@ -78,8 +78,9 @@ router.post('/users/classes', async (req, res) => {
 router.get('/users/:id/current/classes', isValid, async (req, res) => {
 	try{
 		const classes = await ClassService.getCurrent(req.params.id);
-		return {success: true, classes: classes};
+		res.json({success: true, classes: classes});
 	}catch(err){
+		console.log(err);
 		res.json({success: false, error: 'Unknown error getting classes'})
 	}
 })
@@ -90,6 +91,25 @@ router.get('/users/:id/assignments', isValid, async (req, res) => {
 		const assignments = await AssignmentService.getAll(user._id);
 		res.json({success: true, assignments: assignments});
 	}catch(err){
+		res.json({success: false, error: 'Unknown error getting assignments'})
+	}
+})
+
+router.get('/users/:id/assignments/completed', isValid, async (req, res) => {
+	try{
+		const assignments = await AssignmentService.get(req.params.id, true);
+		res.json({success: true, assignments: assignments});
+	}catch(err){
+		res.json({success: false, error: 'Unknown error getting assignments'})
+	}
+})
+
+router.get('/users/:id/assignments/uncompleted', isValid, async (req, res) => {
+	try{
+		const assignments = await AssignmentService.get(req.params.id, false);
+		res.json({success: true, assignments: assignments});
+	}catch(err){
+		console.log(err);
 		res.json({success: false, error: 'Unknown error getting assignments'})
 	}
 })

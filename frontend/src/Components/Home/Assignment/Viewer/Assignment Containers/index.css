@@ -1,0 +1,8 @@
+.ass-cont h4{
+    display: inline-block;
+    color: white;
+    border-bottom: 1px solid;
+    padding-bottom: 3px;
+    font-weight: 200;
+    font-size: 20px;
+}

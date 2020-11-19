@@ -13,10 +13,10 @@ function WeekContainer(props){
 
 function groupWeekByDate(assignments){
     //data looks like [{heading: 'some text', assignments: []}]
-    assignments = assignments.sort((a, b) => a.dueDate-b.dueDate);
+    // assignments = assignments.sort((a, b) => a.dueDate-b.dueDate);
     const now = moment();
     for(let i =0; i<assignments.length; i++){
-        const d = assignments[i].dueDate;
+        const d = assignments[i].assignment.dueDate;
         if(now.diff(d, 'days') > 7){
             assignments = assignments.splice(i, 1);
         }
@@ -24,7 +24,7 @@ function groupWeekByDate(assignments){
     let groups = [];
     const headings =[];
     for(let i =0; i<assignments.length; i++){
-        const heading = createHeading(assignments[i].dueDate);
+        const heading = createHeading(assignments[i].assignment.dueDate);
         const index = headings.indexOf(heading);
         if(index === -1){
             headings.push(heading);
@@ -37,9 +37,11 @@ function groupWeekByDate(assignments){
 }
 
 function createHeading(date){
+    console.log(date);
     const d = moment(date);
     const now = moment();
-    const diff = now.diff(d, 'days');
+    const diff = d.diff(now, 'days');
+    
     if(diff < 0){
         return 'Overdue';
     }else if(diff === 0){

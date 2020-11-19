@@ -4,6 +4,7 @@ let ClassSchema = mongoose.Schema({
 	name: String,
 	location: String,
 	instructor: String,
+	color: {type: String, default: '#C724B1'},
 	time: {
 		start: Date,
 		end: Date,

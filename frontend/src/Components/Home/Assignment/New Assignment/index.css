@@ -84,6 +84,13 @@
     font-weight: 600;
 }
 
+.new-assignment .class-selector{
+    min-height: 40px;
+    width: 100%;
+    position: relative;
+    border-radius: 5px;
+}
+
 
 /*Time picker styles*/
     .react-time-picker{

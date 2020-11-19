@@ -75,6 +75,26 @@ class AssignmentRequests{
 		}
 	}
 
+	completed = async () => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/assignments/completed';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			return {success: false, error: 'Unknown error retreiving assignments'}
+		}
+	}
+
+	unCompleted = async () => {
+		try{
+			const endPoint = '/users/' + this.currUserID + '/assignments/uncompleted';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			return {success: false, error: 'Unknown error retreiving assignments'}
+		}
+	}
+
 
 
 }

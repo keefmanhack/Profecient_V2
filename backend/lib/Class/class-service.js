@@ -119,6 +119,8 @@ const createMultiple = ClassModel => async classArr => {
 	return returnArr;
 }
 
+const UserService = require('../User/index');
+const SemesterService = require('../Semester/index');
 getCurrent = ClassModel => async userID =>{
 	if(!userID){
 		throw new Error('Missing user ID to find user');
@@ -147,6 +149,7 @@ module.exports = ClassModel => {
 		findMultiple: BaseRequests.findMultipleById(ClassModel),
 		deleteById: BaseRequests.deleteById(ClassModel),
 
+		getCurrent: getCurrent(ClassModel),
 		createMultiple: createMultiple(ClassModel),
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
 		addConnectionTo: addConnectionTo(ClassModel),
