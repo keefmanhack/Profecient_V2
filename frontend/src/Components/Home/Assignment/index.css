@@ -1,0 +1,8 @@
+.assignment-dashboard{
+    position: relative;
+}
+.assignment-dashboard h1{
+    font-weight: bold;
+    font-size: 36px;
+    display: inline;
+}

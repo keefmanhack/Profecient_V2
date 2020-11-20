@@ -10,6 +10,8 @@ import {FadeInOutHandleState, FadeDownUpHandleState} from '../../Shared Resource
 import AbsractError from '../../Shared Resources/Messages/Error Messages/AbsractError';
 import MessageFlasher  from '../../Shared Resources/MessageFlasher';
 
+import './index.css';
+
 function AssignmentDashboard(props){
 	// const assReq = new AssignmentRequests(props.currentUserID);
 	const [shouldShowNewForm, setShouldShowNewForm]     = useState(false);

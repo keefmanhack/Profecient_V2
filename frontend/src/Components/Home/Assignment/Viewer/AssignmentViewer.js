@@ -19,7 +19,7 @@ function AssignmentViewer(props){
 	const assReq = new AssignmentRequests(props.currentUserID);
 	const [assignments, setAssignments]	= useState([]);
 	const [sortType, setSortType] 		= useState(SortSelector.getInitial());
-	const [wasCompleted, setWasCompleted] = useState(CompletedTogler.initialState);
+	const [wasCompleted, setWasCompleted] = useState(CompletedTogler.getInitial());
 	const [errMsg, setErrMsg] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -38,6 +38,24 @@ function AssignmentViewer(props){
 		setIsLoading(false);
 	}
 
+	const setCompleted = async (id, isComplete) =>{
+		console.log(id);
+		console.log(isComplete);
+	}
+
+	const edit = async (classID, assID) =>{
+		// console.log(id);
+	}
+
+	const remove = async (classID, assID) =>{
+		const res = await assReq.delete(classID, assID);
+		if(res.success){
+			getAssignments();
+		}else{
+			setErrMsg(res.error);
+		}
+	}
+
 	const AssignmentContainer = sortType.object;
 	return(
 		<React.Fragment>
@@ -54,7 +72,12 @@ function AssignmentViewer(props){
 				<hr/>
 				<div style={{borderRadius: 3, position: 'relative', minHeight:30}}>
 					{isLoading ? <Loader/> : null}
-					<AssignmentContainer assignments={assignments}/>
+					<AssignmentContainer  
+						edit={(id) => edit(id)}
+            			delete={(classID, assID) => remove(classID, assID)}
+						setCompleted={(id, b) => setCompleted(id, b)} 
+						assignments={assignments}
+					/>
 				</div>
 			</div>
 		</React.Fragment>

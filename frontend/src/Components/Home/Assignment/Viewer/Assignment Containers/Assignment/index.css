@@ -1,0 +1,112 @@
+.assignment{
+    background: white;
+    margin-bottom: 5px;
+    padding: 8px 10px 0px 10px;
+    border-radius: 5px;
+    font-weight: 800;
+    position: relative;
+    overflow: hidden;
+}
+
+.assignment .edit-delete{
+    position: absolute;
+    right: 0;
+    height: 100%;
+    top: 0;
+    border-radius: inherit;
+}
+
+.assignment .edit-delete button{
+    height: 100%;
+    border: none;
+    width: 50px;
+    z-index: 999;
+}
+
+.assignment .color-dot{
+    height: 8px;
+    width: 8px;
+    margin-right: 5px;
+    background: rgb(199, 36, 177);
+    border-radius: 100%;
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    border:1px solid white;
+}
+
+.assignment h1{
+    font-size: 18px;
+    margin-bottom: 5px;
+    display: block;
+    overflow: hidden;
+}
+
+.assignment h2{
+    font-size: 16px;
+    margin-bottom: 5px;
+    width: inherit;
+    text-align: left;
+}
+
+.assignment .see-more{
+    position: relative;
+    height: 12px;
+    margin: 0 33%;
+}
+
+.assignment .see-more button{
+    border: none;
+    font-weight: 800;
+    font-size: 10px;
+    height: 12px;
+    width: 100%;
+    background: #fdfdfd;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    position: absolute;
+}
+
+.assignment button.completed{
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    height: 20px;
+    width: 24px;
+    position: relative;
+    top: -3px;
+    transition: .3s;
+    right: -10px;
+}
+
+.assignment input{
+    height: 22px;
+}
+
+.assignment input:after {
+  background: red;
+  border-radius: 100%;
+}
+
+.assignment .more-info{
+    margin: 0 8%;
+}
+
+.assignment .more-info p{
+    margin: 0;
+    font-weight: 400;
+}
+
+.assignment .more-info h5{
+    font-weight: 200;
+}
+
+.assignment .more-info button{
+    font-size: 16px;
+    position: relative;
+    background: none;
+    border: none;
+    text-decoration: underline;
+    padding: 0;
+    margin-right: 5px;
+}

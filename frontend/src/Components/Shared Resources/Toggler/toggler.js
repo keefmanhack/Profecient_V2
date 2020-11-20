@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 
 import './index.css';
 function Toggler(props){
-    const [isOn, setIsOn] = useState(props.defaultToggle ? props.defaultToggle : false);
+    const [isOn, setIsOn] = useState(props.defaultToggle);
     const handleChange = () => {
-        const t = isOn
-        setIsOn(!t);
-        props.toggled(isOn);
+        const t = !isOn
+        setIsOn(t);
+        props.toggled(t);
     }
     return (
         <div className='toggler'>
