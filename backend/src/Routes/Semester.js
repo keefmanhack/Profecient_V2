@@ -215,7 +215,17 @@ router.put('/assignment/:id', isValid,  async (req,res) =>{
 		res.json({success: true});
 	}catch(err){
 		console.log(err);
-		res.json({success: false});
+		res.json({success: false, error: 'Unknown error updating assignment'});
+	}
+})
+
+router.put('/user/:id/assignment/:assID/toggleCompleted', isValid, async (req, res) => {
+	try{
+		await AssignmentService.toggleCompleted(req.params.assID, req.body.isComplete);
+		res.json({success: true});
+	}catch(err){
+		console.log(err);
+		res.json({success: false, error: 'Unknown error toggling assignment comletion'});
 	}
 })
 

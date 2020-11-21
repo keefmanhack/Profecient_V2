@@ -56,12 +56,14 @@ class AssignmentRequests{
 		}
 	}
 
-	toggleCompleted = async (assID, data) => {
+	toggleCompleted = async (assID, isComplete) => {
 		try{
-			const endPoint = '/assignment/' + assID
-			return await axios.put(endPoint, data);
+			const endPoint = '/user/' + this.currUserID+ '/assignment/' + assID + '/toggleCompleted';
+			const res = await axios.put(endPoint, {isComplete: isComplete});
+			return res.data;
 		}catch(err){
 			console.log(err);
+			return {success: false, error: 'Unknown error toggling assignment completion'}
 		}
 	}
 

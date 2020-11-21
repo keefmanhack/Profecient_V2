@@ -21,8 +21,8 @@ class NewAssignment extends React.Component{
 		super(props);
 		
 		this.state = {
-			date: this.props.editData ? new Date(this.props.editData.ass.dueDate) : new Date(),
-			time: this.props.editData ? new Date(this.props.editData.ass.dueTime) : new Date(),
+			date: new Date(),
+			time: new Date(),
 			errors: {
 				name: false,
 				classPicked: false,
@@ -33,6 +33,7 @@ class NewAssignment extends React.Component{
 			errMsg: '',
 			success: false,
 			error: false,
+			loading: false,
 		}
 
 		this.assReq = new AssignmentRequests(this.props.currentUserID);
@@ -46,12 +47,6 @@ class NewAssignment extends React.Component{
 
 	componentDidMount() {
 		this.getClasses();
-		const editData = this.props.editData
-		if(editData){
-			this.name.current.value = editData.ass.name;
-			this.description.current.value = editData.ass.description;
-		}
-			
         document.addEventListener('mousedown', this.handleClickOutside);
 	}
 	
@@ -94,13 +89,13 @@ class NewAssignment extends React.Component{
 		}
 
 		if(this.state.selectedID === null){
+			this.setState({errMsg: "You need to choose a class to add an assignment"});
 			error_copy.classPicked = true;
 		}else{
 			error_copy.classPicked = false;
 		}
 
 		if(this.state.dueDate === null){
-			this.setState({errMsg: "You need to choose a class to add an assignment"});
 			error_copy.dueDate = true;
 		}else{
 			error_copy.dueDate = false;
@@ -120,16 +115,16 @@ class NewAssignment extends React.Component{
 
 	async submitData(){
 		if(!this.checkErrors()){
+			this.setState({loading: true});
 			const data = {
 				name: this.name.current.value,
 				dueDate: new Date(this.state.date),
 				dueTime: new Date(this.state.time),
 				description: this.description.current.value,
 			}
-			const editData = this.props.editData;
-			let res = editData ? await this.assReq.update(editData.parentClassID, editData.ass._id, this.state.selectedClassID, data) 
-				: await this.assReq.create(this.state.selectedID, data);
-			res.success ? this.setState({success: true}) : this.setState({error: true});
+			let res =  await this.assReq.create(this.state.selectedID, data);
+			this.setState({loading: false});
+			res.success ? this.setState({success: true}) : this.setState({error: res.error});
 		}
 	}
 
@@ -140,11 +135,13 @@ class NewAssignment extends React.Component{
 					condition={this.state.errMsg!==''} 
 					resetter={() => this.setState({errMsg: ''})}
 					animation={FadeDownUpHandleState}
+					timeOut={3000}
 				>
 					<AbsractError errorMessage={this.state.errMsg}/>
 				</MessageFlasher>
 				<div className='background-shader'/>
 				<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
+					{this.state.loading ? <Loader/> : null}
 					<FadeInOutHandleState condition={this.state.success}>
 		 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>
 		 			</FadeInOutHandleState>
@@ -190,8 +187,8 @@ class NewAssignment extends React.Component{
 					<div className='col textarea-col'>
 						<textarea ref={this.description} placeholder='Description'></textarea>
 					</div>
-					<button onClick={() => this.submitData()} className={this.props.editData ? 'submit orange-bc' : 'submit blue-bc'}>
-						{this.props.editData ? 'Update' : 'Submit'}
+					<button onClick={() => this.submitData()} className='submit blue-bc'>
+						Submit
 					</button>
 				</div>
 			</React.Fragment>

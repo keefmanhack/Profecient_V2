@@ -5,15 +5,16 @@ import Loader from '../../../../../Shared Resources/Effects/Loader/loader';
 import {FadeInOutHandleState, FadeDownUpHandleState, FadeRightHandleState} from '../../../../../Shared Resources/Effects/CustomTransition';
 
 import './index.css';
+
+let actingTimeout = null;
 function Assignment(props){
-	let actingTimeout = null;
 	const [showMore, setShowMore] = useState(false);
 	const [hovering, setHovering] = useState(false);
 	const [acting, setActing]     = useState(false);
 
 	const handleActing = ()=>{
 		setActing(true);
-		actingTimeout = setTimeout(()=>{
+		actingTimeout = setTimeout(function(){
 			setActing(false);
 		},5000);
 	}
@@ -21,8 +22,7 @@ function Assignment(props){
 	useEffect(() =>{
 		return () => {
 			//functional equivalent to componentWillUnmount
-			alert('unmouting')
-			clearInterval(actingTimeout);
+			clearTimeout(actingTimeout);
 		}
 	}, [])
 

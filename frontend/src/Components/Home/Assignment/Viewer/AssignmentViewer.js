@@ -25,7 +25,7 @@ function AssignmentViewer(props){
 
 	useEffect(() => {
 		getAssignments();
-	}, [wasCompleted]);
+	}, [wasCompleted, props.reload]);
 
 	const getAssignments = async () => {
 		setIsLoading(true);
@@ -39,8 +39,8 @@ function AssignmentViewer(props){
 	}
 
 	const setCompleted = async (id, isComplete) =>{
-		console.log(id);
-		console.log(isComplete);
+		const res = await assReq.toggleCompleted(id, isComplete);
+		res.success ? getAssignments() : setErrMsg(res.error);
 	}
 
 	const edit = async (classID, assID) =>{
@@ -49,18 +49,14 @@ function AssignmentViewer(props){
 
 	const remove = async (classID, assID) =>{
 		const res = await assReq.delete(classID, assID);
-		if(res.success){
-			getAssignments();
-		}else{
-			setErrMsg(res.error);
-		}
+		res.success ? getAssignments() : setErrMsg(res.error);
 	}
 
 	const AssignmentContainer = sortType.object;
 	return(
 		<React.Fragment>
-			<MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')} animation={FadeDownUpHandleState}>
-				<AbsractError errorMessage={errMsg} />
+			<MessageFlasher timeOut={3000} condition={errMsg!==''} resetter={() => setErrMsg('')} animation={FadeDownUpHandleState}>
+				<AbsractError errorMessage={errMsg}/>
 			</MessageFlasher>
 			<div className='ass-viewer'>
 				<ViewSetter 

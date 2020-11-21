@@ -79,6 +79,15 @@ get = Ass => async (userID, wasCompleted) =>{
 	return arr;
 }
 
+toggleCompleted = Ass => async (assID, isComplete) => {
+	if(!assID){
+		throw new Error('Missing id to toggle assignment completion');
+	}
+	const ass = await Ass.findById(assID);
+	ass.complete = isComplete;
+	return await ass.save();
+}
+
 async function getClasses(userID){
 	const user = await UserService.findById(userID);
 	if(user.semesters.length <1){return []}
@@ -100,5 +109,6 @@ module.exports = Ass => {
 		create: create(Ass),
 		findMultiple: findMultiple(Ass),
 		getAll: getAll(Ass),
+		toggleCompleted: toggleCompleted(Ass),
 	}
 }

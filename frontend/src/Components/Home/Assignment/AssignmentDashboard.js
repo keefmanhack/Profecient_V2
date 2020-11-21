@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import moment from 'moment';
 
 //concrete components
-import NewAssignment from './New Assignment/NewAssignment';
+import NewAssignment from './Assignment Forms/NewAssignment';
 import AssignmentViewer from './Viewer/AssignmentViewer';
 //Effects
 import {FadeInOutHandleState, FadeDownUpHandleState} from '../../Shared Resources/Effects/CustomTransition';
@@ -17,7 +17,6 @@ function AssignmentDashboard(props){
 	const [shouldShowNewForm, setShouldShowNewForm]     = useState(false);
 	const [errMsg, setErrMsg]							= useState('');
 	
-	
 	return(
 		<React.Fragment>
 			<MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')} animation={FadeDownUpHandleState}>
@@ -26,13 +25,12 @@ function AssignmentDashboard(props){
 			<div className='assignment-dashboard sans-font' style={props.style}>
 				<h1 className='gray-c '>Assignments</h1>
 				<button onClick={() => setShouldShowNewForm(true)} className='add green-bc'>Add</button>
-				<AssignmentViewer currentUserID={props.currentUserID}/>
+				<AssignmentViewer reload={shouldShowNewForm} currentUserID={props.currentUserID}/>
 			</div>
 			<FadeInOutHandleState condition={shouldShowNewForm}>
 				<NewAssignment 
 					hideForm={() => setShouldShowNewForm(false)}
 					currentUserID={props.currentUserID}
-					// editData={editClassIndex !==null ? upCommingAss[editClassIndex] : null}
 				/>
 			</FadeInOutHandleState>
 		</React.Fragment>
