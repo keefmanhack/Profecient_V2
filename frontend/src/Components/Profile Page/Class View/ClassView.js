@@ -235,7 +235,7 @@ function AssignContainer(props){
 	}, [])
 
 	const upComAssign = assignments ? assignments.map((data, index) =>
-		data.completed ? null : 
+		data.complete ? null : 
 			<Assign
 				name={data.name}
 				dueDate={data.dueDate}
@@ -246,7 +246,7 @@ function AssignContainer(props){
 	) : null;
 
 	const compAssign = assignments ? assignments.map((data, index) =>
-		data.completed ? 
+		data.complete ? 
 			<Assign
 				name={data.name}
 				dueDate={data.dueDate}

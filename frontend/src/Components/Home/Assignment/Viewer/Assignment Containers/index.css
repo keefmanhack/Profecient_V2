@@ -1,3 +1,8 @@
+.ass-cont{
+    max-height: 203px;
+    overflow: scroll;
+}
+
 .ass-cont h4{
     display: inline-block;
     color: white;

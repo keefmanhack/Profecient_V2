@@ -6,7 +6,10 @@ import AbsractContainer from '../AbsractContainer';
 
 function AllContainer(props){
     return(
-        <AbsractContainer 
+        <AbsractContainer
+            edit={(classID, assID) => props.edit(classID, assID)}
+            delete={(classID, assID) => props.delete(classID, assID)}
+            setCompleted={(id, b) => props.setCompleted(id, b)}
             groups={groupAllByDate(props.assignments)}
         />
     )
