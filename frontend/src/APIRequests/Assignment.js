@@ -47,12 +47,13 @@ class AssignmentRequests{
 
 	update = async(classID, assID, newClassID, data) => {
 		try{
+			
 			await this.delete(classID, assID);
 			const res = await this.create(newClassID, data);
 			return res; //res already holds data since create return res.data
 		}catch(err){
 			console.log(err);
-			return {success: false}
+			return {success: false, error: 'There was an error updating this assignment'}
 		}
 	}
 

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import moment from 'moment';
 
 //concrete components
-import NewAssignment from './Assignment Forms/NewAssignment';
+import NewAssignmentForm from './Assignment Forms/NewAssignmentForm';
 import AssignmentViewer from './Viewer/AssignmentViewer';
 //Effects
 import {FadeInOutHandleState, FadeDownUpHandleState} from '../../Shared Resources/Effects/CustomTransition';
@@ -14,8 +14,8 @@ import './index.css';
 
 function AssignmentDashboard(props){
 	// const assReq = new AssignmentRequests(props.currentUserID);
-	const [shouldShowNewForm, setShouldShowNewForm]     = useState(false);
-	const [errMsg, setErrMsg]							= useState('');
+	const [shouldShowNewForm, setShouldShowNewForm]       = useState(false);
+	const [errMsg, setErrMsg]						      = useState('');
 	
 	return(
 		<React.Fragment>
@@ -28,7 +28,7 @@ function AssignmentDashboard(props){
 				<AssignmentViewer reload={shouldShowNewForm} currentUserID={props.currentUserID}/>
 			</div>
 			<FadeInOutHandleState condition={shouldShowNewForm}>
-				<NewAssignment 
+				<NewAssignmentForm 
 					hideForm={() => setShouldShowNewForm(false)}
 					currentUserID={props.currentUserID}
 				/>

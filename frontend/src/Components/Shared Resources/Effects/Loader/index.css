@@ -6,7 +6,7 @@
     border-radius: inherit;
     width: 100%;
     background: rgba(0,0,0,.9);
-    z-index: 10;
+    z-index: 2;
 }
 
 .loader ul{

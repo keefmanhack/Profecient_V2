@@ -7,25 +7,28 @@ import AssignmentRequests from '../../../../APIRequests/Assignment';
 import SortSelector from './Sort Selector/SortSelector';
 import ClassLegend from './Class Legend/ClassLegend';
 import CompletedTogler from './CompletedTogler';
+import UpdateAssignmentForm from '../Assignment Forms/UpdateAssignmentForm';
 
 //Effects/Messaging
 import MessageFlasher from '../../../Shared Resources/MessageFlasher';
-import {FadeDownUpHandleState} from '../../../Shared Resources/Effects/CustomTransition';
+import {FadeDownUpHandleState, FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
 import AbsractError from '../../../Shared Resources/Messages/Error Messages/AbsractError';
 import Loader from '../../../Shared Resources/Effects/Loader/loader';
 
 import './AssignmentViewer.css';
 function AssignmentViewer(props){
 	const assReq = new AssignmentRequests(props.currentUserID);
+	const [updateForm, setUpdateForm] = useState(null);
 	const [assignments, setAssignments]	= useState([]);
 	const [sortType, setSortType] 		= useState(SortSelector.getInitial());
 	const [wasCompleted, setWasCompleted] = useState(CompletedTogler.getInitial());
 	const [errMsg, setErrMsg] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+	const [shouldShowUpdateForm, setShouldShowUpdateForm] = useState(false);
 
 	useEffect(() => {
 		getAssignments();
-	}, [wasCompleted, props.reload]);
+	}, [wasCompleted, props.reload, shouldShowUpdateForm]);
 
 	const getAssignments = async () => {
 		setIsLoading(true);
@@ -44,9 +47,25 @@ function AssignmentViewer(props){
 	}
 
 	const edit = async (classID, assID) =>{
-		// console.log(id);
+		try{
+			const data = findAssignment(assignments, assID);
+			const t = <UpdateAssignmentForm 
+							selectedID={classID} 
+							dueDate={data.assignment.dueDate}
+							name={data.assignment.name}
+							description={data.assignment.description}
+							dueTime={data.assignment.dueTime}
+							assignmentID={data.assignment._id}
+							hideForm={() => setShouldShowUpdateForm(false)}
+							currentUserID={props.currentUserID}
+						/>
+			setUpdateForm(t);
+			setShouldShowUpdateForm(true)
+		}catch(err){
+			console.log(err);
+			setErrMsg('There was a problem updating this assignment');
+		}
 	}
-
 	const remove = async (classID, assID) =>{
 		const res = await assReq.delete(classID, assID);
 		res.success ? getAssignments() : setErrMsg(res.error);
@@ -76,8 +95,20 @@ function AssignmentViewer(props){
 					/>
 				</div>
 			</div>
+			<FadeInOutHandleState condition={shouldShowUpdateForm}>
+				<React.Fragment>
+					{updateForm}
+				</React.Fragment>
+			</FadeInOutHandleState>
 		</React.Fragment>
 	)
+}
+
+function findAssignment(asses, assID){
+	for(let i =0; i< asses.length; i++){
+		if(asses[i]._id + "" === assID + "")
+		return asses[i];
+	}
 }
 
 function ViewSetter(props){

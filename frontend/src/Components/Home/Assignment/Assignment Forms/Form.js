@@ -16,36 +16,35 @@ import MessageFlasher from '../../../Shared Resources/MessageFlasher';
 import AbsractError from '../../../Shared Resources/Messages/Error Messages/AbsractError';
 
 import './index.css';
-class NewAssignment extends React.Component{
+class Form extends React.Component{
 	constructor(props){
 		super(props);
 		
 		this.state = {
-			date: new Date(),
-			time: new Date(),
 			errors: {
 				name: false,
 				classPicked: false,
 				dueDate: false,
 			},
 			classes: null,
-			selectedID: null,
 			errMsg: '',
 			success: false,
 			error: false,
 			loading: false,
 		}
 
-		this.assReq = new AssignmentRequests(this.props.currentUserID);
+		
 		this.classReq = new ClassRequests(this.props.currentUserID);
 
-		this.wrapperRef = React.createRef();
-		this.handleClickOutside = this.handleClickOutside.bind(this);
 		this.name = React.createRef();
 		this.description = React.createRef();
+		this.wrapperRef = React.createRef();
+		this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
 
 	componentDidMount() {
+		this.name.current.value = this.props.data.name;
+		this.description.current.value = this.props.data.description;
 		this.getClasses();
         document.addEventListener('mousedown', this.handleClickOutside);
 	}
@@ -82,20 +81,20 @@ class NewAssignment extends React.Component{
 	checkErrors(){
 		let error_copy = this.state.errors;
 
-		if(this.name.current.value === ''){
+		if(this.props.data.name === ''){
 			error_copy.name = true;
 		}else{
 			error_copy.name = false;
 		}
 
-		if(this.state.selectedID === null){
+		if(this.props.data.selectedID === null){
 			this.setState({errMsg: "You need to choose a class to add an assignment"});
 			error_copy.classPicked = true;
 		}else{
 			error_copy.classPicked = false;
 		}
 
-		if(this.state.dueDate === null){
+		if(this.props.data.dueDate === null){
 			error_copy.dueDate = true;
 		}else{
 			error_copy.dueDate = false;
@@ -117,12 +116,12 @@ class NewAssignment extends React.Component{
 		if(!this.checkErrors()){
 			this.setState({loading: true});
 			const data = {
-				name: this.name.current.value,
-				dueDate: new Date(this.state.date),
-				dueTime: new Date(this.state.time),
-				description: this.description.current.value,
+				name: this.props.data.name,
+				dueDate: new Date(this.props.data.dueDate),
+				dueTime: new Date(this.props.data.dueTime),
+				description: this.props.data.description,
 			}
-			let res =  await this.assReq.create(this.state.selectedID, data);
+			let res =  await this.props.handleSubmit(data);
 			this.setState({loading: false});
 			res.success ? this.setState({success: true}) : this.setState({error: res.error});
 		}
@@ -151,18 +150,19 @@ class NewAssignment extends React.Component{
 					<button onClick={()=> this.props.hideForm()} id='X'>Cancel</button>
 					<ClassSelector 
 						classes={this.state.classes} 
-						selectedID={this.state.selectedID} 
-						setSelectedID={(id) => this.setState({selectedID: id})}
+						selectedID={this.props.data.selectedID} 
+						setSelectedID={(id) => this.props.updateData('selectedID', id)}
 					/>
 
 					<div className='row'>
 						<div className='col'>
 							<input 
 								style={this.state.errors.name ? {border: '1px solid red'} : null}
-								ref={this.name} 
 								placeholder='Assignment Name' 
 								className='name' 
-								type='text' 
+								type='text'
+								ref={this.name}
+								onChange={(e) => this.props.updateData('name', e.target.value)}
 							/>
 						</div>
 					</div>
@@ -170,25 +170,29 @@ class NewAssignment extends React.Component{
 					<div className='row'>
 						<div className='col'>
 							<DatePicker
-					        	selected={this.state.date}
-					        	onChange={(date) => this.setState({date: date})}
+					        	selected={this.props.data.dueDate}
+					        	onChange={(date) => this.props.updateData('dueDate', date)}
 					        	style={this.state.errors.dueDate ? {border: '1px solid red'} : null}
 					      	/>
 						</div>
 						<div className='col'>
 							<TimePicker
-					          onChange={(time) => this.setState({time: time})}
+					          onChange={(time) => this.props.updateData('dueTime', time)}
 					          clockIcon={null}
 					          disableClock={true}
-					          value={this.state.time}
+					          value={this.props.data.dueTime}
 					        />
 						</div>
 					</div>
 					<div className='col textarea-col'>
-						<textarea ref={this.description} placeholder='Description'></textarea>
+						<textarea 
+							onChange={(e) => this.props.updateData('description', e.target.value)} 
+							ref={this.description}
+							placeholder='Description'>	
+						</textarea>
 					</div>
-					<button onClick={() => this.submitData()} className='submit blue-bc'>
-						Submit
+					<button onClick={() => this.submitData()} className={'submit ' + this.props.submit.cssClass}>
+						{this.props.submit.name}
 					</button>
 				</div>
 			</React.Fragment>
@@ -229,4 +233,4 @@ function ClassBtn(props){
 	)
 }
 
-export default NewAssignment;
+export default Form;

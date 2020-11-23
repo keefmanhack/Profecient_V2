@@ -37,6 +37,7 @@ function Group(props){
             description={data.assignment.description}  
             dueDate={data.assignment.dueDate}
             dueTime={data.assignment.dueTime}
+            completed={data.assignment.complete}
             key={data.assignment._id}
             edit={() => props.edit(data.parentClass._id, data.assignment._id)}
             delete={() => props.delete(data.parentClass._id, data.assignment._id)}
