@@ -11,7 +11,7 @@ import UpdateAssignmentForm from '../Assignment Forms/UpdateAssignmentForm';
 
 //Effects/Messaging
 import MessageFlasher from '../../../Shared Resources/MessageFlasher';
-import {FadeDownUpHandleState, FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
 import AbsractError from '../../../Shared Resources/Messages/Error Messages/AbsractError';
 import Loader from '../../../Shared Resources/Effects/Loader/loader';
 
@@ -74,7 +74,7 @@ function AssignmentViewer(props){
 	const AssignmentContainer = sortType.object;
 	return(
 		<React.Fragment>
-			<MessageFlasher timeOut={3000} condition={errMsg!==''} resetter={() => setErrMsg('')} animation={FadeDownUpHandleState}>
+			<MessageFlasher timeOut={3000} condition={errMsg!==''} resetter={() => setErrMsg('')}>
 				<AbsractError errorMessage={errMsg}/>
 			</MessageFlasher>
 			<div className='ass-viewer'>

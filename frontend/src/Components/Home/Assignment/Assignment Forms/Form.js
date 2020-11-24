@@ -7,7 +7,7 @@ import AssignmentRequests from '../../../../APIRequests/Assignment';
 import ClassRequests from '../../../../APIRequests/Class';
 
 //Effects
-import {FadeDownUpHandleState, FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../../Shared Resources/Effects/CustomTransition';
 import {SuccessCheck, FailedSent} from '../../../Shared Resources/Effects/lottie/LottieAnimations';
 import Loader from '../../../Shared Resources/Effects/Loader/loader';
 
@@ -133,7 +133,6 @@ class Form extends React.Component{
 				<MessageFlasher 
 					condition={this.state.errMsg!==''} 
 					resetter={() => this.setState({errMsg: ''})}
-					animation={FadeDownUpHandleState}
 					timeOut={3000}
 				>
 					<AbsractError errorMessage={this.state.errMsg}/>

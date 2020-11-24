@@ -8,8 +8,6 @@ import AbsractSuccess from '../Components/Shared Resources/Messages/Success Mess
 
 import UserVerifier from '../APIRequests/User Verifier/UserVerifier';
 
-
-import { FadeDownUpHandleState} from '../Components/Shared Resources/Effects/CustomTransition';
 import MessageFlasher from '../Components/Shared Resources/MessageFlasher';
 
 import './index.css';
@@ -68,7 +66,6 @@ class ForgotPassword extends React.Component{
                 <MessageFlasher 
                     condition={this.state.resMessage} 
                     resetter={() => this.setState({resMessage: null})}
-                    animation={FadeDownUpHandleState}
                 >   
                     <React.Fragment>
                         {message}

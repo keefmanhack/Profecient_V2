@@ -3,7 +3,6 @@ import React, {useState, useEffect} from 'react';
 import ClassRequests from '../../../../../APIRequests/Class';
 
 import MessageFlasher from '../../../../Shared Resources/MessageFlasher';
-import {FadeDownUpHandleState} from '../../../../Shared Resources/Effects/CustomTransition';
 import AbsractError from '../../../../Shared Resources/Messages/Error Messages/AbsractError';
 import Loader from '../../../../Shared Resources/Effects/Loader/loader';
 
@@ -29,7 +28,7 @@ function ClassLegend(props){
 
 	return(
 		<React.Fragment>
-			<MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')} animation={FadeDownUpHandleState}>
+			<MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')}>
 				<AbsractError errorMessage={errMsg} />
 			</MessageFlasher>
 			<div className='class-legend'>

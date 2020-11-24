@@ -11,6 +11,8 @@ import SemesterRequests from '../../../APIRequests/Semester';
 import ClassRequests from '../../../APIRequests/Class';
 
 import './class-view.css';
+import MessageFlasher from '../../Shared Resources/MessageFlasher';
+import AbsractError from '../../Shared Resources/Messages/Error Messages/AbsractError';
 
 function ClassView(props){
 	const semReq = new SemesterRequests(props.otherUserID);
@@ -64,27 +66,12 @@ function ClassView(props){
 
 	return(
 		<div className='class-view-container'>
-			<div className='semester-container white-c'>
-				{semesters ?
-					<React.Fragment>
-						<div className='sem-title'>
-							<h1 className={!currSemesterID ? 'muted-c': null}>
-								{currSem ? currSem.name : 'No Semester Exists'}
-							</h1>
-						</div>
-						<FadeInOutHandleState condition={props.isCurrentUserViewing || semesters.length>0}>
-							<button className='white-c' onClick={() => setShowDialog(true)}>...</button>
-						</FadeInOutHandleState>
-					</React.Fragment>
-				: 
-					<Loader/>
-				}
-			</div>
-			<h5 className='muted-c'>{classes ? classes.length + ' Classes' : null}</h5>
+			<CurrentSemesterView/>
 			<hr/>
-			<div style={{minHeight: 150, maxHeight: 350, overflow: 'scroll', position: 'relative', borderRadius: 5}}>
-				{currSemesterID ? (classes ? classContainers: <Loader/>) : null}
-			</div>
+
+			<ClassList/>
+			<SemesterEditorDialog/>
+
 			<FadeInOutHandleState condition={showDialog}>
 				<MenuDropDown hideDropDown={() => setShowDialog(false)}>
 					<DropDownMain>
@@ -129,6 +116,7 @@ function ClassView(props){
 }
 
 
+
 class ClassCon extends React.Component{
 	constructor(props){
 		super(props);
@@ -164,13 +152,6 @@ class ClassCon extends React.Component{
 
 
 	render(){
-		const daySpans = this.days.map((day, index)=>
-			<span style={this.props.data.daysOfWeek[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
-		);
-
-		const startTime = moment(this.props.data.time.start).format('h:mm a');
-		const endTime = moment(this.props.data.time.end).format('h:mm a');
-
 		let connectedToClassID = null;
 
 		this.props.data.connectionsFrom.forEach(function(connection){

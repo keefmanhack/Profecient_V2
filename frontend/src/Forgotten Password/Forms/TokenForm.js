@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import { FadeDownUpHandleState } from '../../Components/Shared Resources/Effects/CustomTransition';
+import React, {useState} from 'react';
 
 import Loader from '../../Components/Shared Resources/Effects/Loader/loader';
 import MessageFlasher from '../../Components/Shared Resources/MessageFlasher';

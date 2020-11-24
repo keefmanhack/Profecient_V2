@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import ReactPasswordStrength from 'react-password-strength';
 
 import Loader from '../../Components/Shared Resources/Effects/Loader/loader';
-import {FadeDownUpHandleState, FadeInOutHandleState} from '../../Components/Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../Components/Shared Resources/Effects/CustomTransition';
 import MessageFlasher from '../../Components/Shared Resources/MessageFlasher';
 import AbsractError from '../../Components/Shared Resources/Messages/Error Messages/AbsractError';
 

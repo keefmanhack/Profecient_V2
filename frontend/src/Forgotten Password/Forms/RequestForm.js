@@ -5,7 +5,6 @@ import GenericErr from '../../Components/Shared Resources/Messages/Error Message
 
 import TokenForm from './TokenForm';
 
-import { FadeDownUpHandleState} from '../../Components/Shared Resources/Effects/CustomTransition';
 import MessageFlasher from '../../Components/Shared Resources/MessageFlasher';
 
 import errors from '../../APIRequests/User Verifier/ErrorCodes';
@@ -60,7 +59,6 @@ function RequestForm(props){
             <MessageFlasher 
                 condition={error.doesntExist} 
                 resetter={() => {const e = error; e.doesntExist=false; mySetError(e)}}
-                animation={FadeDownUpHandleState}
             >   
                 <EmailNotExist/>
             </MessageFlasher>
@@ -68,7 +66,6 @@ function RequestForm(props){
             <MessageFlasher 
                 condition={error.genericError} 
                 resetter={() => {const e = error; e.genericError = false; mySetError(e)}}
-                animation={FadeDownUpHandleState}
             >
                 <GenericErr/>
             </MessageFlasher>

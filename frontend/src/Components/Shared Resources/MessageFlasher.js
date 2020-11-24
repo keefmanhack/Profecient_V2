@@ -1,4 +1,5 @@
 import React from 'react';
+import { FadeDownUpHandleState } from './Effects/CustomTransition';
 
 class MessageFlasher extends React.Component{
     constructor(props){
@@ -23,7 +24,7 @@ class MessageFlasher extends React.Component{
 
 
     render(){
-        const Animation = this.props.animation;
+        const Animation = this.props.animation ? this.props.animation : FadeDownUpHandleState;
         if(!Animation){
             return null;
         }else{

@@ -5,7 +5,7 @@ import moment from 'moment';
 import NewAssignmentForm from './Assignment Forms/NewAssignmentForm';
 import AssignmentViewer from './Viewer/AssignmentViewer';
 //Effects
-import {FadeInOutHandleState, FadeDownUpHandleState} from '../../Shared Resources/Effects/CustomTransition';
+import {FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
 
 import AbsractError from '../../Shared Resources/Messages/Error Messages/AbsractError';
 import MessageFlasher  from '../../Shared Resources/MessageFlasher';
@@ -19,7 +19,7 @@ function AssignmentDashboard(props){
 	
 	return(
 		<React.Fragment>
-			<MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')} animation={FadeDownUpHandleState}>
+			<MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')}>
 				<AbsractError errorMessage={errMsg} />
 			</MessageFlasher>
 			<div className='assignment-dashboard sans-font' style={props.style}>

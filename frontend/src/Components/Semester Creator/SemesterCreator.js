@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import {Link} from 'react-router-dom';
 
-import {BackInOutHandleState, FadeDownUpHandleState, FadeInOutHandleState, FadeRightHandleState} from '../Shared Resources/Effects/CustomTransition';
+import {BackInOutHandleState, FadeInOutHandleState, FadeRightHandleState} from '../Shared Resources/Effects/CustomTransition';
 import SuggestedLinksContainer from './SuggestedLinks/SuggestedLinksContainer';
 import SevenDayAgenda from './SevenDayAgenda/SevenDayAgenda';
 import ClassEditor from './ClassEditor/ClassEditor';
@@ -240,8 +240,7 @@ class SemesterCreator extends React.Component{
 		 			</FadeInOutHandleState>
 					<MessageFlasher 
 						condition={this.state.errMsg !== ''} 
-						resetter={() => this.setState({errMsg: ''})}
-						animation={FadeDownUpHandleState}	
+						resetter={() => this.setState({errMsg: ''})}	
 					>
 						<AbsractError errorMessage={this.state.errMsg}/>
 					</MessageFlasher>

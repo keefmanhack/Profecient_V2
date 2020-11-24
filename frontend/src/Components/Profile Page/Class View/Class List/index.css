@@ -1,0 +1,7 @@
+.class-list{
+    min-height: 150; 
+    max-height: 350;
+    overflow: 'scroll';
+    position: 'relative';
+    border-radius: 5;
+}

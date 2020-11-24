@@ -2,7 +2,6 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import UserVerifier from '../../APIRequests/User Verifier/UserVerifier';
 import { setTokens } from '../../Authentication/Tokens';
-import { FadeDownUpHandleState } from '../Shared Resources/Effects/CustomTransition';
 import MessageFlasher from '../Shared Resources/MessageFlasher';
 import AbsractError from '../Shared Resources/Messages/Error Messages/AbsractError';
 import LoginErr from '../Shared Resources/Messages/Error Messages/Concrete Errors/LoginErr';
@@ -41,7 +40,6 @@ class Login extends React.Component{
 				<MessageFlasher 
 					condition={this.state.errMsg !== ''} 
 					resetter={() => this.setState({errMsg: ''})}
-					animation={FadeDownUpHandleState}
 				>
 					<AbsractError errorMessage={this.state.errMsg}/>
 				</MessageFlasher>
