@@ -1,289 +1,77 @@
 import React, {useState, useEffect} from 'react';
-import moment from 'moment';
-import {Link} from 'react-router-dom';
 
-import LinkSelector from '../../Shared Resources/Link Selector/LinkSelector';
-import {FadeDownUpHandleState, FadeInOutHandleState} from '../../Shared Resources/Effects/CustomTransition';
-import MenuDropDown, {DropDownMain, Options, Item} from '../../Shared Resources/Drop Down/MenuDropDown';
-import Loader from '../../Shared Resources/Effects/Loader/loader';
+import CurrentSemesterView from './Current Semester View/CurrentSemesterView';
+import ClassList from './Class List/ClassList';
+import SemesterEditorDialog from './SemesterEditorDialog';
 
 import SemesterRequests from '../../../APIRequests/Semester';
-import ClassRequests from '../../../APIRequests/Class';
 
-import './class-view.css';
+import Loader from '../../Shared Resources/Effects/Loader/loader';
 import MessageFlasher from '../../Shared Resources/MessageFlasher';
 import AbsractError from '../../Shared Resources/Messages/Error Messages/AbsractError';
 
-function ClassView(props){
-	const semReq = new SemesterRequests(props.otherUserID);
-	const classReq = new ClassRequests(props.otherUserID);
+import './class-view.css';
 
-	const [semesters, setSemesters] = useState(null);
-	const [classes, setClasses] = useState(null);
-	const [currSemesterID, setCurrSemesterID] = useState(null);
-	const [showDialog, setShowDialog] = useState(false);
+function ClassView(props){
+	const semReq = new SemesterRequests(props.userID);
+	const isCurrentUserViewing = true;
+	const [semesters, setSemesters] = useState([]);
+	const [currSemID, setCurrSemesterID] = useState(null);
+	const [errMsg, setErrMsg] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		getSemesters();
-	}, [showDialog])
-
-	useEffect(() => {
-		if(currSemesterID!==null) getClasses();
-	}, [currSemesterID])
-
-	const getClasses = async () => {
-		setClasses(await semReq.getClasses(currSemesterID));
-	}
+	}, []);
 
 	const getSemesters = async () => {
-		const data = await semReq.getAllSems();	
-		setSemesters(data);
-		data.length>0 ? setCurrSemesterID(data[data.length-1]._id) : setCurrSemesterID(null);
-	}
-
-	const deleteSemester = async () => {
-		const res = await semReq.remove(currSemesterID); 
-		if(!res.success){
-			alert('Unable to delete semester');
+		setIsLoading(true);
+		const res = await semReq.getAllSems();
+		setIsLoading(false);
+		if(res.success){
+			setSemesters(res.semesters);
+			setCurrSemesterID(res.semesters[res.semesters.length]._id)
+		}else{
+			setErrMsg(res.error);
 		}
-		getSemesters();
-		getClasses();
-		setShowDialog(false);
 	}
-
-	const currSem = currSemesterID ? findSem(semesters, currSemesterID) : null;
-	const classContainers =  classes ? classes.map((data, index) =>
-		<ClassCon
-			data={data}
-			key={index}
-			isCurrentUserViewing={props.isCurrentUserViewing}
-			currentUser={props.currentUser}
-			otherUserID={props.otherUserID}
-			classReq={classReq}
-			reloadClasses={() => getClasses()}
-		/> 
-	): null
-
+	const deleteSemester = async () => {
+		setIsLoading(true);
+		const res = await semReq.remove(currSemID);
+		setIsLoading(false);
+		res.success ? getSemesters() : setErrMsg(res.error);
+	}
+	const areSemesters = semesters.length>0;
 	return(
 		<div className='class-view-container'>
-			<CurrentSemesterView/>
-			<hr/>
+			{isLoading ? <Loader/> : null}
+			<MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')}>
+				<AbsractError errorMessage={errMsg}/>
+			</MessageFlasher>
 
+			<CurrentSemesterView sem={findCurrentSemester(semesters, currSemID)}/>
+			<hr/>
 			<ClassList/>
-			<SemesterEditorDialog/>
-
-			<FadeInOutHandleState condition={showDialog}>
-				<MenuDropDown hideDropDown={() => setShowDialog(false)}>
-					<DropDownMain>
-						{props.isCurrentUserViewing ?
-							<Item>
-								<Link to='/newSemester'>
-									<button> 
-										<i style={{color: 'lightgreen'}} className="fas fa-plus-circle"></i> New Semester
-									</button>
-								</Link>
-							</Item>
-						: null}
-						{semesters && semesters.length>0 ?
-							<React.Fragment>
-								{props.isCurrentUserViewing ?
-									<React.Fragment>
-										<Item>
-											<Link>
-												<button onClick={() => deleteSemester()}> 
-													<i style={{color: 'red'}} className="fas fa-trash"></i> Delete Current Semester
-												</button>
-											</Link>
-										</Item>
-									</React.Fragment>
-								:null}
-								<Item>
-									<Options 
-										text={'Semester'} 
-										icon={<i class="fas fa-caret-right"></i>} 
-										options={semesters}
-										selected={currSem}
-										clickEvent={(i) => setCurrSemesterID(semesters[i]._id)}
-									/>
-								</Item>
-							</React.Fragment>
-						: null}
-					</DropDownMain>
-				</MenuDropDown>
-			</FadeInOutHandleState>
+			{areSemesters ?
+				<SemesterEditorDialog 
+					semesters={semesters}
+					currSemID={currSemID}
+					setCurrSemesterID={(id) => setCurrSemesterID(id)}
+					deleteSemester={() => deleteSemester()}
+					isCurrentUserViewing={props.isCurrentUserViewing}
+				/>
+			:null}
 		</div>
 	);
 }
 
-
-
-class ClassCon extends React.Component{
-	constructor(props){
-		super(props);
-
-		this.state={
-			showAssignment: false,
-		}
-
-		this.days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-	}
-
-	toggleShowAssignment(){
-		const showAssCopy = this.state.showAssignment;
-
-		this.setState({
-			showAssignment: !showAssCopy,
-			showLinkSelector: false,
-			linkAddedSuccess: false,
-			reloading: false,
-		})
-	}
-
-	addNewLink(data){
-		console.log(data);
-	}
-
-	async removeLink(classID){
-		this.setState({reloading: true});
-		await this.props.classReq.removeAConnection(this.props.otherUserID, classID, this.props.data._id, this.props.currentUser._id);
-		this.props.reloadClasses();
-		this.setState({reloading: false})
-	}
-
-
-	render(){
-		let connectedToClassID = null;
-
-		this.props.data.connectionsFrom.forEach(function(connection){
-			if(connection.userID + '' === this.props.currentUser._id + ''){
-				connectedToClassID = connection.classID;
-			}
-		}.bind(this))
-
-		let linkBtn;
-
-		if(connectedToClassID){
-			linkBtn = <button onClick={() => this.removeLink(connectedToClassID)} className='link orange-bc white-c' >UnLink</button>
-		}else{
-			linkBtn = <button onClick={() => this.setState({showLinkSelector: true})} className='link blue-bc'>Link</button>
-		}
-
-		const dropDownDis = this.state.showAssignment ? <i className="fas fa-chevron-up"></i> : <i className="fas fa-chevron-down"></i>;
-		return(
-			<div className='class-container'>
-				{this.state.reloading ? <Loader/> : null}
-				<FadeInOutHandleState condition={this.state.showLinkSelector}>
-					<LinkSelector
-						otherUserID={this.props.otherUserID}
-						linkClass={this.props.data}
-						currentUser={this.props.currentUser}
-						addNewLink={(data) => this.addNewLink(data)}
-						success={this.state.linkAddedSuccess}
-						hideForm={() => {this.setState({showLinkSelector: false}); this.props.reloadClasses()}}
-					/>
-				</FadeInOutHandleState>
-				{this.props.isCurrentUserViewing ? null :
-					<React.Fragment>
-					{linkBtn}
-					</React.Fragment>
-				}
-				<h1>{this.props.data.name}</h1>
-				<h2>{this.props.data.instructor}</h2>
-				<h3>{this.props.data.location}</h3>
-				<h4 style={{marginBottom: 0}}>{daySpans}</h4>
-				<h4>{startTime} - {endTime}</h4>
-				<button className='see-assign' onClick={() => this.toggleShowAssignment()}>
-					{dropDownDis} {this.state.showAssignment ? 'Close' : 'See'} Assignments 
-				</button>
-				<div style={{position: 'relative'}}>
-					<FadeDownUpHandleState condition={this.state.showAssignment}>
-						<AssignContainer classID={this.props.data._id} classReq={this.props.classReq}/>
-					</FadeDownUpHandleState>
-				</div>
-			</div>
-		);
-	}
-}
-
-function AssignContainer(props){
-	const [assignments, setAssignments] = useState(null);
-
-	useEffect(() => {
-		const getAssignments = async () => {
-			setAssignments(await props.classReq.getAssignments(props.classID));
-		}
-		getAssignments();
-	}, [])
-
-	const upComAssign = assignments ? assignments.map((data, index) =>
-		data.complete ? null : 
-			<Assign
-				name={data.name}
-				dueDate={data.dueDate}
-				description={data.description}
-				style={{background: findColor(data.dueDate)}}
-				key={index}
-			/>
-	) : null;
-
-	const compAssign = assignments ? assignments.map((data, index) =>
-		data.complete ? 
-			<Assign
-				name={data.name}
-				dueDate={data.dueDate}
-				description={data.description}
-				key={index}
-				style={{background: 'rgb(211, 227, 246)'}}
-			/>
-		: null
-	): null;
-
-	return(
-		<div className='assign-container'>
-			<h5>Upcomming</h5>
-			<hr/>
-			{assignments ? upComAssign : <Loader/>}
-			<h5 style={{marginTop: 10}}>Completed</h5>
-			<hr/>
-			{assignments ? compAssign : <Loader/>}
-		</div>
-	);
-}
-
-function Assign(props){
-
-	return(
-		<div style={props.style} className='assign'>
-			<h1>{props.name}</h1>
-			<h2>{moment(props.dueDate).format('LL')}</h2>
-			
-			<p>{props.description}</p>
-		</div>
-	);
-}
-
-function findSem(allSems, selectedID){
-	for(let i =0; i<allSems.length; i++){
-		if(allSems[i]._id === selectedID){
-			return allSems[i];
+function findCurrentSemester(semesters, id){
+	for(let i =0; i<semesters.length; i++){
+		if(semesters[i]._id + '' === id + ''){
+			return semesters[i];
 		}
 	}
+	return null;
 }
 
-function findColor(date){
-	const today = moment();
-	const dueDate = moment(date);
-	const dayDiff = today.diff(dueDate, 'days');
-
-	if(dayDiff === 0){
-		return 'rgb(255, 206, 206)'; //red
-	}else if(dayDiff <7){
-		return 'rgb(249, 231, 205)'; //orange
-	}
-
-	return 'rgb(210, 244, 219)'; //green
-}
-
-export {MenuDropDown};
-export{DropDownMain};
 export default ClassView;

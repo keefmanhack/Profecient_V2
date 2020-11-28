@@ -42,7 +42,7 @@ class SemesterRequests{
 			return res.data;
 		}catch(err){	
 			console.log(err);
-			return {success: false}
+			return {success: false, error: 'Error deleting semester'}
 		}
 	}
 

@@ -1,5 +1,8 @@
 import React from 'react';
+
 import SimpleContainer from './SimpleContainer';
+
+import AssignmentShower from './Assignment Shower/AssignmentShower';
 
 function AssignmentContainer(props){
     return(
@@ -12,11 +15,12 @@ function AssignmentContainer(props){
             classID={props.classID}
             currentUserID={props.currentUserID}    
             assignmentContainer={
-                <AssignmentContainer 
+                <AssignmentShower 
                     assignmentIDs={props.assignmentIDs} 
                     currentUserID={props.currentUserID}
                 />
             }
+            interaction={props.interaction}
         />
     )
 }

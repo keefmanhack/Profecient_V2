@@ -1,41 +1,12 @@
 import React from 'react';
 
 function CurrentSemesterView(props){
-	const semReq = new SemesterRequests(props.currentUserID);
-	const [isLoading, setIsLoading] = useState(true);
-	const [sem, setSem] = useState(null);
-	const [errMsg, setErrMsg] = useState('');
-
-	useEffect(() => {
-		getCurrentSem();
-	}, []);
-
-	const getCurrentSem = async () => {
-		setIsLoading(true)
-		const res = await semReq.getCurrentSem();
-		setIsLoading(false);
-		if(res.success){
-			setSem(res.currentSemester);
-		}else{
-			setErrMsg(res.error);
-		}
-	}
-
-
 	return(
 		<div className='semester-container white-c'>
-			{!isLoading ? <Loader/> : null}
-			<MessageFlasher condition={errMsg!==''} resetter={setErrMsg('')}>
-				<AbsractError errorMessage={errMsg}/>
-			</MessageFlasher>
-			{props.isCurrentUserViewing ? 
-				<button className='white-c' onClick={() => props.setShowDialog()}>...</button>
-			: null}
-			
-			{!sem ? 
+			{!props.sem ? 
 				<NoSemester/>
 			:
-				<Semester name={sem.name} classesLength={sem.classes.length}/>
+				<Semester name={props.sem.name} classesLength={props.sem.classes.length}/>
 			}
 		</div>
 	)
