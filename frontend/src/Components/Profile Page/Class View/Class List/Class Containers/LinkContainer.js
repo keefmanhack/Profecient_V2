@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import ContainerWithAssignments from './ContainerWithAssignments';
+import AssignmentContainer from './AssignmentContainer';
 import LinkSelector from '../../../../Shared Resources/Link Selector/LinkSelector';
 
 import ClassRequests from '../../../../../APIRequests/Class';
@@ -12,26 +12,37 @@ import AbsractError from '../../../../Shared Resources/Messages/Error Messages/A
 
 function LinkContainer(props){
     return(
-        <ContainerWithAssignments
-            name={props.name}
-            instructor={props.instructor}
-            location={props.location}
-            daysOfWeek={props.daysOfWeek}
-            time={props.time}
-            classID={props.classID}
-            currentUserID={props.currentUserID}    
-            assignmentIDs={props.assignmentIDs} 
-            currentUserID={props.currentUserID}
-            interaction={<LinkUnLinkButton connectionsFrom={props.connectionsFrom} currentUserID={props.currentUserID}/>}
+        <AssignmentContainer
+            name={props.classData.name}
+            instructor={props.classData.instructor}
+            location={props.classData.location}
+            daysOfWeek={props.classData.daysOfWeek}
+            time={props.classData.time}
+            assignmentIDs={props.assignmentIDs}
+            userID={props.userID}
+            interaction={
+                <LinkUnLinkButton 
+                    reload={()=>props.reload()} 
+                    connectionsFrom={props.connectionsFrom} 
+                    currentUserID={props.currentUserID}
+                    otherUserID={props.userID}
+                    classID={props.classData._id} 
+                />
+            }
         />
     )
 }
 
 function LinkUnLinkButton(props){
-    const button = isLinked(props.connectionsFrom, props.currentUserID) ?  <UnLinkButton/> : <LinkButton/>
-    return(
-       {button}
-    )
+    return isLinked(props.connectionsFrom, props.currentUserID) ?  
+        <UnLinkButton/> 
+    : 
+        <LinkButton 
+            reload={()=>props.reload()}
+            otherUserID={props.otherUserID}
+            classID={props.classID}
+            currentUserID={props.currentUserID}
+        />
 }
 
 function isLinked(connectionsFrom, userID){
@@ -81,7 +92,7 @@ function LinkButton(props){
     const showLinkSelector = () => {
         const t = <LinkSelector 
                     otherUserID={props.otherUserID}
-                    linkClass={props.classData}
+                    linkClass={props.classID}
                     currentUser={props.currentUserID}
                     hideForm={() => setShouldShowLinkSelector(false)}
         />

@@ -85,7 +85,7 @@ router.get('/users/:id/current/classes', isValid, async (req, res) => {
 	}
 })
 
-router.get('/users/:id/assignments', isValid, async (req, res) => {
+router.get('/users/:id/assignments', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
 		const assignments = await AssignmentService.getAll(user._id);
@@ -95,7 +95,19 @@ router.get('/users/:id/assignments', isValid, async (req, res) => {
 	}
 })
 
-router.get('/users/:id/assignments/completed', isValid, async (req, res) => {
+router.get('/users/:id/assignments/query', async (req, res) => {
+	try{
+		const assignmentIDs = req.query.assignmentIDs;
+		const assignments = await AssignmentService.findMultiple(assignmentIDs);
+		res.json({success: true, assignments: assignments});
+	}catch(err){
+		console.log(err);
+		res.json({success: false, error: 'Error getting assignments'});
+	}
+	
+})
+
+router.get('/users/:id/assignments/completed', async (req, res) => {
 	try{
 		const assignments = await AssignmentService.get(req.params.id, true);
 		res.json({success: true, assignments: assignments});
@@ -104,7 +116,7 @@ router.get('/users/:id/assignments/completed', isValid, async (req, res) => {
 	}
 })
 
-router.get('/users/:id/assignments/uncompleted', isValid, async (req, res) => {
+router.get('/users/:id/assignments/uncompleted', async (req, res) => {
 	try{
 		const assignments = await AssignmentService.get(req.params.id, false);
 		res.json({success: true, assignments: assignments});
@@ -151,9 +163,11 @@ router.get('/users/:id/semesters/:semID/classes', async (req, res) => {
 router.get('/users/:id/semesters', async (req, res) => {
 	try{
 		const user = await UserService.findById(req.params.id);
-		res.json(await SemesterService.findMultiple(user.semesters));
+		const semesters = await SemesterService.findMultiple(user.semesters);
+		res.json({success: true, semesters: semesters});
 	}catch(err){
 		console.log(err);
+		res.json({success: false, error: "Error getting assignments for this user"});
 	}
 })
 
@@ -208,16 +222,16 @@ router.get('/users/:id/assignment/upcomming', async (req, res) => {
 	}
 })
 
-router.put('/assignment/:id', isValid,  async (req,res) =>{
-	try{
-		await AssignmentService.update(req.params.id, req.body);
-		//will need to add notification piece here
-		res.json({success: true});
-	}catch(err){
-		console.log(err);
-		res.json({success: false, error: 'Unknown error updating assignment'});
-	}
-})
+// router.put('/assignment/:id', isValid,  async (req,res) =>{
+// 	try{
+// 		await AssignmentService.update(req.params.id, req.body);
+// 		//will need to add notification piece here
+// 		res.json({success: true});
+// 	}catch(err){
+// 		console.log(err);
+// 		res.json({success: false, error: 'Unknown error updating assignment'});
+// 	}
+// })
 
 router.put('/user/:id/assignment/:assID/toggleCompleted', isValid, async (req, res) => {
 	try{

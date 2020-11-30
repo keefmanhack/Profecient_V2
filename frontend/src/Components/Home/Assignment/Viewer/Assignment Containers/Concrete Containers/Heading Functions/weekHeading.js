@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-function dayHeading(date){
+function weekHeading(date){
     const d = moment(date).startOf('day');
     const now = moment().startOf('day');
     const diff = d.diff(now, 'days');
@@ -16,4 +16,4 @@ function dayHeading(date){
     }
 }
 
-export default dayHeading;
+export default weekHeading;

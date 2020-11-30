@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 
-import Loader from '../../../../../Shared Resources/Effects/Loader/loader';
-import {FadeInOutHandleState, FadeDownUpHandleState, FadeRightHandleState} from '../../../../../Shared Resources/Effects/CustomTransition';
+import Loader from '../Effects/Loader/loader';
+import {FadeInOutHandleState, FadeDownUpHandleState} from '../Effects/CustomTransition';
 
 import './index.css';
 
@@ -10,16 +10,29 @@ function Assignment(props){
 	const [showMore, setShowMore] = useState(false);
 
 	return(
-		<div className={'assignment ' + findColor(props.dueDate)}>
+        <div 
+            className={'assignment ' + findColor(props.dueDate)} 
+            onMouseEnter={() => props.entered ? props.entered() : null}
+		    onMouseLeave={() => props.left ? props.left() : null}
+        >
+            {props.acting? <Loader/> : null}
+            {props.editDelete}
 			<div>
 				<ClassColorDot color={props.color}/>
 				<span>{props.name}</span>
+                {props.completed}
 			</div>
 			<FadeDownUpHandleState condition={showMore}>
 				<MoreInformation dueDate={props.dueDate} description={props.description} dueTime={props.dueTime}/>
 			</FadeDownUpHandleState>
 			<MoreInformationToggler toggled={(b) => setShowMore(b)}/>
 		</div>
+	)
+}
+
+function ClassColorDot(props){
+	return(
+		<div className='color-dot' style={{background: props.color ? props.color: null}}/>
 	)
 }
 

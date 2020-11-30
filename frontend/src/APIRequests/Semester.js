@@ -22,6 +22,7 @@ class SemesterRequests{
 			return res.data;
 		}catch(err){
 			console.log(err);
+			return {success: false, error: "Error getting semesters for this user"}
 		}
 	}
 

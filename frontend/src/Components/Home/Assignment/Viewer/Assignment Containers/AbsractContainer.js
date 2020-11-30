@@ -1,7 +1,6 @@
 import React from 'react';
-import { FadeInOut, FadeInOutHandleState, FadeRightHandleState } from '../../../../Shared Resources/Effects/CustomTransition';
 
-import Assignment from './Assignment/Assignment';
+import InteractAssignment from '../../../../Shared Resources/Assignment Types/InteractAssignment';
 
 import './index.css';
 function AbsractContainer(props){
@@ -30,8 +29,8 @@ function AbsractContainer(props){
 }
 
 function Group(props){
-    const assignments = props.assignments.map((data, index) => 
-        <Assignment 
+    const assignments = props.assignments.map(data => 
+        <InteractAssignment 
             name={data.assignment.name} 
             classColor={data.parentClass.color} 
             description={data.assignment.description}  

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 
 import CurrentSemesterView from './Current Semester View/CurrentSemesterView';
 import ClassList from './Class List/ClassList';
-import SemesterEditorDialog from './SemesterEditorDialog';
+import SemesterEditorDialog from './Semester Editor Dialog/SemesterEditorDialog';
 
 import SemesterRequests from '../../../APIRequests/Semester';
 
@@ -30,7 +30,7 @@ function ClassView(props){
 		setIsLoading(false);
 		if(res.success){
 			setSemesters(res.semesters);
-			setCurrSemesterID(res.semesters[res.semesters.length]._id)
+			setCurrSemesterID(res.semesters[res.semesters.length-1]._id)
 		}else{
 			setErrMsg(res.error);
 		}
@@ -51,7 +51,10 @@ function ClassView(props){
 
 			<CurrentSemesterView sem={findCurrentSemester(semesters, currSemID)}/>
 			<hr/>
-			<ClassList/>
+			<ClassList
+				userID={props.userID}
+				currentUserID={props.currentUserID}
+			/>
 			{areSemesters ?
 				<SemesterEditorDialog 
 					semesters={semesters}

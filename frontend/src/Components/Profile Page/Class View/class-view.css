@@ -1,5 +1,7 @@
 .class-view-container{
     margin-top: 20px;
+    position: relative;
+    border-radius: 3px;
 }
 
 .class-view-container .drop-down-con{

@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import dayHeading from './Heading Functions/DayHeading';
+import allHeading from './Heading Functions/allHeading';
 import AbsractContainer from '../AbsractContainer';
 
 function AllContainer(props){
@@ -21,7 +21,7 @@ function groupAllByDate(assignments){
     let groups = [];
     const headings =[];
     for(let i =0; i<assignments.length; i++){
-        const heading = dayHeading(assignments[i].assignment.dueDate);
+        const heading = allHeading(assignments[i].assignment.dueDate);
         const index = headings.indexOf(heading);
         if(index === -1){
             headings.push(heading);

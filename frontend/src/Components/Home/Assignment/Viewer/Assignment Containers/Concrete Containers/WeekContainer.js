@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import dayHeading from './Heading Functions/DayHeading';
+import weekHeading from './Heading Functions/weekHeading';
 import AbsractContainer from '../AbsractContainer';
 
 function WeekContainer(props){
@@ -28,7 +28,7 @@ function groupWeekByDate(assignments){
     let groups = [];
     const headings =[];
     for(let i =0; i<assThisWeek.length; i++){
-        const heading = dayHeading(assThisWeek[i].assignment.dueDate);
+        const heading = weekHeading(assThisWeek[i].assignment.dueDate);
         const index = headings.indexOf(heading);
         if(index === -1){
             headings.push(heading);

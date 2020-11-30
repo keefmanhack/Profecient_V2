@@ -11,7 +11,7 @@ import Loader from '../../../Shared Resources/Effects/Loader/loader';
 
 import './index.css';
 function ClassList(props){
-    const classReq = new ClassRequests(props.otherUserID);
+    const classReq = new ClassRequests(props.userID);
     const [classes, setClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
@@ -31,32 +31,40 @@ function ClassList(props){
         }
     }
 
-    const containers = classes.map(classData =>
-        props.isCurrentUserViewing ? 
-            <OwnedContainer 
-                name={classData.name}
-                instructor={classData.instructor}
-                location={classData.location}
-                daysOfWeek={classData.daysOfWeek}
-                time={classData.time}
-                classID={classData._id}
-                currentUserID={props.currentUserID}    
-                assignmentIDs={classData.assignments} 
-                currentUserID={props.currentUserID}
-            />
-        :
-            <LinkContainer 
-                name={classData.name}
-                instructor={classData.instructor}
-                location={classData.location}
-                daysOfWeek={classData.daysOfWeek}
-                time={classData.time}
-                classID={classData._id}
-                currentUserID={props.currentUserID}    
-                assignmentIDs={classData.assignments} 
-                currentUserID={props.currentUserID}
-            />
-    )
+    const containers = classes.map(classData => {
+        let data = {
+            name: classData.name,
+            instructor: classData.instructor,
+            location: classData.location,
+            daysOfWeek: classData.daysOfWeek,
+            time: classData.time,
+            _id: classData._id,
+        }
+        let container
+        if(props.isCurrentUserViewing){
+                container=  (
+                    <OwnedContainer
+                        classData={data}
+                        currentUserID={props.currentUserID}    
+                        assignmentIDs={classData.assignments}
+                        key={classData._id}
+                    />
+                )
+            }else{
+                container = (
+                    <LinkContainer 
+                        key={classData._id}
+                        classData={data}
+                        userID={props.userID}
+                        assignmentIDs={classData.assignments} 
+                        currentUserID={props.currentUserID}
+                        connectionsFrom={classData.connectionsFrom}
+                        reload={() =>getClasses()}
+                    />
+                )
+            }
+        return container;
+    })
     return(
         <div className='class-list'>
             {isLoading ? <Loader/> : null}

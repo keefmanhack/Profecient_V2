@@ -1,0 +1,16 @@
+.class-view-container button.drop-down{
+    position: absolute;
+    top: 14px;
+    right: 0;
+    border: none;
+    /* background: none; */
+    font-weight: 800;
+    font-size: 24px;
+    height: 20px;
+    border-radius: 3px;
+}
+
+button.drop-down span{
+    position: relative;
+    top: -16px;
+}

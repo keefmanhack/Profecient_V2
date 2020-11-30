@@ -12,12 +12,11 @@ function AssignmentContainer(props){
             location={props.location}
             daysOfWeek={props.daysOfWeek}
             time={props.time}
-            classID={props.classID}
-            currentUserID={props.currentUserID}    
+            classID={props.classID}   
             assignmentContainer={
                 <AssignmentShower 
                     assignmentIDs={props.assignmentIDs} 
-                    currentUserID={props.currentUserID}
+                    userID={props.userID}
                 />
             }
             interaction={props.interaction}

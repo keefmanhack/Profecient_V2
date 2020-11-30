@@ -4,15 +4,16 @@ import moment from 'moment';
 function SimpleContainer(props){
     return(
         <div className='class-container'>
+            <React.Fragment>
             {props.interaction}
-            {/* <LinkButton/> */}
+            </React.Fragment>
+            
             <h1>{props.name}</h1>
             <h2>{props.instructor}</h2>
             <h3>{props.location}</h3>
             <DayList daysOfWeek={props.daysOfWeek}/>
             <ToFromTime start={props.time.start} end={props.time.end}/>
             {props.assignmentContainer}
-            {/* <AssignmentShower classID={props.classID} currentUserID={props.currentUserID}/> */}
         </div>
     )
 }

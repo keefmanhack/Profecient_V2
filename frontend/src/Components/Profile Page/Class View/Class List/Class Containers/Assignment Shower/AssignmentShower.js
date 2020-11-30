@@ -2,22 +2,33 @@ import React, { useState, useEffect } from 'react';
 
 import AssignmentRequests from '../../../../../../APIRequests/Assignment';
 
-import {FadeDownUpHandleState} from '../../../../../Shared Resources/Effects/CustomTransition';
+import SimpleAssignment from '../../../../../Shared Resources/Assignment Types/SimpleAssignment';
+
+import {FadeDownUpHandleState, FadeInOut} from '../../../../../Shared Resources/Effects/CustomTransition';
 import MessageFlasher from '../../../../../Shared Resources/MessageFlasher';
 import AbsractError from '../../../../../Shared Resources/Messages/Error Messages/AbsractError';
+import Loader from '../../../../../Shared Resources/Effects/Loader/loader';
 
 function AssignmentShower(props){
     const [showAsses, setShowAsses] = useState(false);
+    const [errMsg, setErrMsg] = useState('');
 
-    const dropDownDis = <i className={"fas fa-chevron-" + showAsses ? 'up' : 'down'}></i> 
+    const dropDownDis = <i className={showAsses ? 'fas fa-chevron-up' : 'fas fa-chevron-down'}></i> 
     return(
         <React.Fragment>
+            <MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')}>
+                <AbsractError errorMessage={errMsg}/>
+            </MessageFlasher>
             <button className='see-assign' onClick={() => {const t = showAsses; setShowAsses(!t)}}>
                 {dropDownDis} {showAsses ? 'Close' : 'See'} Assignments 
             </button>
-            <div style={{position: 'relative'}}>
+            <div style={{position: 'relative', overflow: 'hidden'}}>
                 <FadeDownUpHandleState condition={showAsses}>
-                    <AssignContainer classID={props.classID} userID={props.otherUserID}/>
+                    <AssignContainer 
+                        setErrMsg={(msg) => setErrMsg(msg)} 
+                        assignmentIDs={props.assignmentIDs} 
+                        userID={props.userID}
+                    />
                 </FadeDownUpHandleState>
             </div>
         </React.Fragment>
@@ -28,23 +39,22 @@ function AssignContainer(props){
     const assReq = new AssignmentRequests(props.userID);
     const [assignments, setAssignments] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [errMsg, setErrMsg] = useState('');
 
 	useEffect(() => {
-		getAssignments();
+        getAssignments();
     }, [])
     
     const getAssignments = async () => {
         setIsLoading(true);
-        const res = await assReq.findMultple(props.assignmentIDs);
+        const res = await assReq.getMultiple(props.assignmentIDs);
         setIsLoading(false);
         if(res.success){
             setAssignments(res.assignments);
         }else{
-            setErrMsg(res.error);
+            props.setErrMsg(res.error);
         }
     }
-    let completed, unCompleted = [];
+    let completed = [], unCompleted = [];
     for(let i =0; i<assignments.length; i++){
         const a = assignments[i];
         const ass = <SimpleAssignment
@@ -60,16 +70,15 @@ function AssignContainer(props){
 	return(
 		<div className='assign-container'>
             {isLoading ? <Loader/> : null}
-            <MessageFlasher condition={errMsg!==''} resetter={() => setErrMsg('')}>
-                <AbsractError errorMessage={errMsg}/>
-            </MessageFlasher>
 
-			<h5>UnCompleted</h5>
-			<hr/>
-			{unCompleted}
-			<h5 style={{marginTop: 10}}>Completed</h5>
-			<hr/>
-			{completed}
+            <div>
+                <h5>UnCompleted</h5>
+                <hr/>
+                {unCompleted}
+                <h5 style={{marginTop: 10}}>Completed</h5>
+                <hr/>
+                {completed}
+            </div>
 		</div>
 	);
 }

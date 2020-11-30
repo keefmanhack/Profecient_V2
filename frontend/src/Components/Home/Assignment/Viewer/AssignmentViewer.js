@@ -88,7 +88,7 @@ function AssignmentViewer(props){
 				<div style={{borderRadius: 3, position: 'relative', minHeight:30}}>
 					{isLoading ? <Loader/> : null}
 					<AssignmentContainer  
-						edit={(id) => edit(id)}
+						edit={(classID, assID) => edit(classID, assID)}
             			delete={(classID, assID) => remove(classID, assID)}
 						setCompleted={(id, b) => setCompleted(id, b)} 
 						assignments={assignments}
@@ -104,10 +104,10 @@ function AssignmentViewer(props){
 	)
 }
 
-function findAssignment(asses, assID){
-	for(let i =0; i< asses.length; i++){
-		if(asses[i]._id + "" === assID + "")
-		return asses[i];
+function findAssignment(assignmentData, assID){
+	for(let i =0; i< assignmentData.length; i++){
+		if(assignmentData[i].assignment._id + "" === assID + "")
+			return assignmentData[i];
 	}
 }
 

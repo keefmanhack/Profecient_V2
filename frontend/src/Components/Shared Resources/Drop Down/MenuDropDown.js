@@ -76,7 +76,7 @@ class Options extends React.Component{
 			options = this.props.options.map((data, index) =>
 				<button 
 					onClick={() => this.props.clickEvent(index)}
-					style={data === this.props.selected ? {fontWeight: 600}: null}
+					style={data._id === this.props.selectedID ? {fontWeight: 600}: null}
 					key={index}
 				>{data.name}</button>
 			);
