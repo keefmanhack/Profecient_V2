@@ -21,7 +21,7 @@ router.get('/success', (req, res) => {
 })
 
 router.get('/failure', (req, res) => {
-    res.json({success: false})
+    res.json({success: false, error: 'Your email or password is incorrect'})
 })
 
 router.get('/user/tokens', async (req, res) => {

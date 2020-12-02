@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 
 import AssignmentContainer from './AssignmentContainer';
-import LinkSelector from '../../../../Shared Resources/Link Selector/LinkSelector';
+import LinkSelector from '../Link Selector/LinkSelector';
 
-import ClassRequests from '../../../../../APIRequests/Class';
+import ClassRequests from '../../../APIRequests/Class';
 
-import {FadeInOutHandleState} from '../../../../Shared Resources/Effects/CustomTransition';
-import MessageFlasher from '../../../../Shared Resources/MessageFlasher';
-import AbsractError from '../../../../Shared Resources/Messages/Error Messages/AbsractError';
+import {FadeInOutHandleState} from '../Effects/CustomTransition';
+import MessageFlasher from '../MessageFlasher';
+import AbsractError from '../Messages/Error Messages/AbsractError';
 
 
 function LinkContainer(props){
@@ -95,10 +95,9 @@ function LinkButton(props){
                     linkClass={props.classID}
                     currentUser={props.currentUserID}
                     hideForm={() => setShouldShowLinkSelector(false)}
-        />
-
+                />
         setLinkSelector(t);
-        shouldShowLinkSelector(true);
+        setShouldShowLinkSelector(true);
     }
 
 

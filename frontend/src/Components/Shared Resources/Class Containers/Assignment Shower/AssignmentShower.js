@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-import AssignmentRequests from '../../../../../../APIRequests/Assignment';
+import AssignmentRequests from '../../../../APIRequests/Assignment';
 
-import SimpleAssignment from '../../../../../Shared Resources/Assignment Types/SimpleAssignment';
+import SimpleAssignment from '../../Assignment Types/SimpleAssignment';
 
-import {FadeDownUpHandleState, FadeInOut} from '../../../../../Shared Resources/Effects/CustomTransition';
-import MessageFlasher from '../../../../../Shared Resources/MessageFlasher';
-import AbsractError from '../../../../../Shared Resources/Messages/Error Messages/AbsractError';
-import Loader from '../../../../../Shared Resources/Effects/Loader/loader';
+import {FadeDownUpHandleState, FadeInOut} from '../../Effects/CustomTransition';
+import MessageFlasher from '../../MessageFlasher';
+import AbsractError from '../../Messages/Error Messages/AbsractError';
+import Loader from '../../Effects/Loader/loader';
 
 function AssignmentShower(props){
     const [showAsses, setShowAsses] = useState(false);

@@ -3,16 +3,21 @@ import moment from 'moment';
 
 function SimpleContainer(props){
     return(
-        <div className='class-container'>
+        <div 
+            className='class-container'
+            onClick={() => props.handleClick ? props.handleClick() : null}
+            style={props.style}
+        >
             <React.Fragment>
             {props.interaction}
             </React.Fragment>
-            
-            <h1>{props.name}</h1>
-            <h2>{props.instructor}</h2>
-            <h3>{props.location}</h3>
-            <DayList daysOfWeek={props.daysOfWeek}/>
-            <ToFromTime start={props.time.start} end={props.time.end}/>
+            <div style={{width: '61%',}}>
+                <h1>{props.name}</h1>
+                <h2>{props.instructor}</h2>
+                <h3>{props.location}</h3>
+                <DayList daysOfWeek={props.daysOfWeek}/>
+                <ToFromTime start={props.time.start} end={props.time.end}/>
+            </div>
             {props.assignmentContainer}
         </div>
     )

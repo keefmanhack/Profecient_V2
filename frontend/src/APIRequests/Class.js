@@ -64,5 +64,15 @@ class ClassRequests{
 			return {success: false, error: 'Unknown error getting classes'}
 		}
 	}
+
+	getClassesBySemester = async semID => {
+		try{
+			const endPoint = '/users/' + this.userID + '/semesters/' + semID + '/classes';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			return {success: false, error: 'Unknown error getting classes'}
+		}
+	}
 }
 export default ClassRequests;

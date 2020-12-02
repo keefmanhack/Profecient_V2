@@ -5,15 +5,25 @@ class SemesterRequests{
 		this.currUserID = id;
 	}
 
-	getCurrSemWClasses = async () => {
+	getCurrent = async () => {
 		try{
-			const endPoint = `/users/` + this.currUserID + '/semesters/current';
-			const response = await axios.get(endPoint);
-			return response.data;
+			const endPoint = '/users/' + this.currUserID + '/semesters/current';
+			const res = await axios.get(endPoint);
+			return res.data;
 		}catch(err){
-			console.log(err);
+			return {success: false, error: 'Unable to get current semester'}
 		}
 	}
+
+	// getCurrSemWClasses = async () => {
+	// 	try{
+	// 		const endPoint = `/users/` + this.currUserID + '/semesters/current';
+	// 		const response = await axios.get(endPoint);
+	// 		return response.data;
+	// 	}catch(err){
+	// 		console.log(err);
+	// 	}
+	// }
 
 	getAllSems = async () => {
 		try{

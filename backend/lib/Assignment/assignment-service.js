@@ -30,7 +30,7 @@ const create = Ass => async data =>{
 
 const findMultiple = Ass => async ids => {
 	if(!ids){
-		throw new Error("No ids supplied to find assginments");
+		return [];
 	}
 	return await Ass.find({_id: ids});
 }

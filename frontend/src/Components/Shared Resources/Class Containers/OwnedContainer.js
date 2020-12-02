@@ -13,7 +13,11 @@ function OwnedContainer(props){
             currentUserID={props.currentUserID}    
             assignmentIDs={props.assignmentIDs} 
             currentUserID={props.currentUserID}
-            interaction={<button onClick={() => props.handleClick()}>Edit Connections</button>}
+            interaction={
+                <button 
+                    className='edit-connection white-bc blue-c' 
+                    onClick={() => props.handleClick()}>Edit Connections</button>
+            }
         />
     )
 }

@@ -138,24 +138,24 @@ router.get('/users/:id/semesters/classes/assignments', async (req, res) =>{
 router.get('/users/:id/semesters/current', async (req,res) =>{
 	try{
 		const user = await UserService.findById(req.params.id);
-		if(user.semesters.length>0){
-			 res.json(await SemesterService.getCurrentSemester(user.semesters[user.semesters.length-1]));
+		if(user.semesters.length === 0) {
+			res.json({success: true})
 		}else{
-			res.send();
+			const semester = await SemesterService.findById(user.semesters[user.semesters.length-1]._id);
+			res.json({success: true, semester:semester});
 		}
 	}catch(err){
-		console.log(err);
+		res.json({success: false, error: 'Unable to get current semester'});
 	}
 })
 
 router.get('/users/:id/semesters/:semID/classes', async (req, res) => {
 	try{
-		// const user = await UserService.findById(req.params.id); //this doesn't need to be here
 		const semester = await SemesterService.findById(req.params.semID);
 		const classes = await ClassService.findMultiple(semester.classes);
-		res.json(classes);
+		res.json({success: true, classes: classes});
 	}catch(err){
-		res.send();
+		res.json({success: false, error: 'Error getting classes'})
 		console.log(err);
 	}
 })

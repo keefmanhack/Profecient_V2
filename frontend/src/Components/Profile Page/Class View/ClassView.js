@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 
 import CurrentSemesterView from './Current Semester View/CurrentSemesterView';
-import ClassList from './Class List/ClassList';
 import SemesterEditorDialog from './Semester Editor Dialog/SemesterEditorDialog';
+import ManageConnectionClassList from '../../Shared Resources/Class List/MangeConnectionClassList';
+import ToggleLinkClassList from '../../Shared Resources/Class List/ToggleLinkClassList';
 
 import SemesterRequests from '../../../APIRequests/Semester';
 
@@ -14,7 +15,6 @@ import './class-view.css';
 
 function ClassView(props){
 	const semReq = new SemesterRequests(props.userID);
-	const isCurrentUserViewing = true;
 	const [semesters, setSemesters] = useState([]);
 	const [currSemID, setCurrSemesterID] = useState(null);
 	const [errMsg, setErrMsg] = useState('');
@@ -42,6 +42,7 @@ function ClassView(props){
 		res.success ? getSemesters() : setErrMsg(res.error);
 	}
 	const areSemesters = semesters.length>0;
+	const ClassList = props.isCurrentUserViewing ? ManageConnectionClassList : ToggleLinkClassList;
 	return(
 		<div className='class-view-container'>
 			{isLoading ? <Loader/> : null}
@@ -51,18 +52,21 @@ function ClassView(props){
 
 			<CurrentSemesterView sem={findCurrentSemester(semesters, currSemID)}/>
 			<hr/>
-			<ClassList
-				userID={props.userID}
-				currentUserID={props.currentUserID}
-			/>
-			{areSemesters ?
-				<SemesterEditorDialog 
-					semesters={semesters}
-					currSemID={currSemID}
-					setCurrSemesterID={(id) => setCurrSemesterID(id)}
-					deleteSemester={() => deleteSemester()}
-					isCurrentUserViewing={props.isCurrentUserViewing}
-				/>
+			{areSemesters && currSemID ?
+				<React.Fragment>
+					<ClassList
+						userID={props.userID}
+						currentUserID={props.currentUserID}
+						semID={currSemID}
+					/>
+					<SemesterEditorDialog 
+						semesters={semesters}
+						currSemID={currSemID}
+						setCurrSemesterID={(id) => setCurrSemesterID(id)}
+						deleteSemester={() => deleteSemester()}
+						isCurrentUserViewing={props.isCurrentUserViewing}
+					/>
+				</React.Fragment>
 			:null}
 		</div>
 	);

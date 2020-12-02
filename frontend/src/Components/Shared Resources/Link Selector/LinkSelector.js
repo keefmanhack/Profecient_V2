@@ -1,112 +1,112 @@
-import React from 'react';
-import moment from 'moment';
+import React, { useState, useEffect } from 'react';
 
-import Loader from '../Effects/Loader/loader';
-import {FadeRightHandleState, FadeInOutHandleState} from '../Effects/CustomTransition';
-import {SuccessCheck} from '../Effects/lottie/LottieAnimations';
+import SimpleContainer from '../Class Containers/SimpleContainer';
+import SelectableClassList from '../Class List/SelectableClassList';
+
 
 import SemesterRequests from '../../../APIRequests/Semester';
 import ClassRequests from '../../../APIRequests/Class';
 
+import MessageFlasher from '../MessageFlasher';
+import AbsractError from '../Messages/Error Messages/AbsractError';
+import Loader from '../Effects/Loader/loader';
+import {FadeRightHandleState, FadeInOutHandleState} from '../Effects/CustomTransition';
+import {SuccessCheck} from '../Effects/lottie/LottieAnimations';
+
 import './LinkSelector.css';
 
-class LinkSelector extends React.Component{
-	constructor(props){
-		super(props);
+function LinkSelector(props){
+	const semReq = new SemesterRequests(props.currentUserID);
+	const [success, setSuccess] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [errMsg, setErrMsg] = useState('');
+	const [selectedClassID, setSelectedClassID] = useState(null);
+	const [currSemester, setCurrSemester] = useState(null);
 
-		this.semReq = new SemesterRequests(this.props.currentUser._id);
-		this.classReq = new ClassRequests(this.props.currentUser._id);
+	useEffect(() => {
+		getSemester();
+	}, []);
 
-		this.state={
-			currSemester: null,
-			selectedIndex: -1,
-			success: false,
-		}
+	const getSemester = async () => {
+		setLoading(true);
+		const res = await semReq.getCurrent();
+		setLoading(false);
+		res.success ? setCurrSemester(res.semester) : setErrMsg(res.error);
 	}
 
-	componentDidMount(){
-		this.getClassData();
+	const addNewLink = async () => {
+		let res;
+		// const res = await classReq.addNewConnection(props.otherUserID, props.linkClass._id, selectedClassID, props.currentUserID);
+		res.success ? setSuccess(true) : setErrMsg(res.error);
 	}
 
-	async getClassData(){
-		this.setState({currSemester: await this.semReq.getCurrSemWClasses()});
-	}
+	return(
+		<React.Fragment>
+			<div className='background-shader'/>
+			<div className='link-selector form-bc sans-font'>
+				{loading ? <Loader/> : null}
+				<FadeInOutHandleState condition={success}>
+					<SuccessCheck onCompleted={() =>props.hideForm()}/>
+				</FadeInOutHandleState>
+				<button onClick={() => props.hideForm()} className='cancel red-c'>Cancel</button>
+				<FadeRightHandleState condition={!!selectedClassID}>
+					<button onClick={() => addNewLink()} className='add blue-bc'>Add Link</button>
+				</FadeRightHandleState>
+				<MessageFlasher condition={errMsg !== ''} resetter={()=>setErrMsg('')}>
+					<AbsractError errorMessage={errMsg}/>
+				</MessageFlasher>
+				<Header
+					currSemester={currSemester}
+				/>
+				<SimpleContainer
+					name={props.linkedClass.name}
+					instructor={props.linkedClass.instructor}
+					location={props.linkedClass.location}
+					daysOfWeek={props.linkedClass.daysOfWeek}
+					time={props.linkedClass.time}
+				/>
+				<ClassList 
+					currSemester={currSemester}
+					classSelected={(id) => setSelectedClassID(id)}
+					userID={props.currentUserID}
+					selectedID={selectedClassID}
+				/>
+			</div>
+		</React.Fragment>
+	)
+}
 
-	async addNewLink(){
-		await this.classReq.addNewConnection(this.props.otherUserID, this.props.linkClass._id, this.state.currSemester.classes[this.state.selectedIndex]._id, this.props.currentUser._id);
-		this.setState({success: true});
-	}
-
-	render(){
-		const classItems = this.state.currSemester ? this.state.currSemester.classes.map((data, index) => 
-			<ClassItem 
-				data={data} 
-				selected={this.state.selectedIndex>-1 && this.state.selectedIndex===index} 
-				classItemClicked={() => this.setState({selectedIndex: index})} key={index}
-			/>
-		) : null;
-
-		const linkClass= this.props.linkClass;
-		const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-		const daySpans = days.map((day, index)=>
-				<span style={linkClass.daysOfWeek[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
-		);
-		const startTime = moment(linkClass.time.start).format('h:mm a');
-		const endTime = moment(linkClass.time.end).format('h:mm a');
+function ClassList(props){
+	if(!props.currSemester){
 		return(
-			<React.Fragment>
-				<div className='background-shader'/>
-				<div className='link-selector form-bc sans-font'>
-					<FadeInOutHandleState condition={this.state.success}>
-		 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>
-		 			</FadeInOutHandleState>
-					<button onClick={() => this.props.hideForm()} className='cancel red-c'>Cancel</button>
-					<FadeRightHandleState condition={this.state.selectedIndex>-1}>
-						<button onClick={() => this.addNewLink()} className='add blue-bc'>Add Link</button>
-					</FadeRightHandleState>
-					{this.state.currSemester ?
-						<React.Fragment>	
-							<h1 className='bold-text'>{this.state.currSemester.name}</h1>
-							<h5 className='light-text muted-c'>Add new link</h5>
-							<hr/>
-							<div className='gray-bc link-info'>
-								<h2>{linkClass.name}</h2>
-								<h3>{linkClass.instructor}</h3>
-								<h4>{linkClass.location}</h4>
-								<h4 className='indent light-text'>{daySpans}</h4>
-								<h4 className='indent light-text'>{startTime} - {endTime}</h4>
-							</div>
-							<div className='class-items white-bc'>
-								{classItems}
-							</div>
-						</React.Fragment>
-					:
-						<Loader/>
-					}
-				</div>
-			</React.Fragment>
-		);
+			<div className='light-grey-bc animate__animated animate__faster animate__fadeIn' style={{textAlign: 'center', borderRadius:5}}>
+                <p className='white-c'>You haven't created a semester</p>
+            </div>
+		)
+	}else{
+		return(
+			<SelectableClassList
+				semID={props.currSemester._id}
+				classSelected={(id) => props.classSelected(id)}
+				userID={props.userID}
+				selectedID={props.selectedID}
+			/>
+		)
 	}
 }
 
-function ClassItem(props){
-	const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-	const daySpans = days.map((day, index)=>
-			<span style={props.data.daysOfWeek[index] ? {fontWeight: 800}: {fontWeight: 200}} key={index}> {day} </span>
-	);
-	const startTime = moment(props.data.time.start).format('h:mm a');
-	const endTime = moment(props.data.time.end).format('h:mm a');
+function Header(props){
 	return(
-		<div 
-			className='class-item' 
-			onClick={() => props.classItemClicked()} 
-			style={props.selected ? {border: '4px solid #007bff', transition: '.3s'} : null}
-		>
-			<h2>{props.data.name}</h2>
-			<h3>{props.data.instructor}</h3>
-			<h4>{props.data.location}</h4>
-			<h4 className='indent light-text'>{daySpans}</h4>
-			<h4 className='indent light-text'>{startTime} - {endTime}</h4>
+		<div>
+			{props.currSemester ?
+				<React.Fragment>
+					<h1 className='bold-text'>{props.currSemester.name}</h1>
+					<h5 className='light-text muted-c'>Add new link</h5>
+				</React.Fragment>
+			:
+				<h1 className='muted-c'>No Semester Exists</h1>
+			}
+			<hr/>
 		</div>
 	)
 }

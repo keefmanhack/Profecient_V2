@@ -21,6 +21,7 @@ class Login extends React.Component{
 	}
 	async logUserIn(){
 		const res = await this.uV.login(this.state.username, this.state.password);
+		console.log(res);
 		if(res.success){
 			setTokens(res.tokens);
 			this.props.history.push('/home');
