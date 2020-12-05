@@ -12,11 +12,11 @@
 
 .link-selector button.add{
 	position: absolute;
-    top: 25px;
+    top: 45px;
     right: 10px;
 }
 
-.link-selector h1{
+.link-selector h1.semester{
 	font-size: 40px;
 }
 
@@ -26,30 +26,6 @@
 
 .link-selector hr{
 	margin: 0;
-}
-
-.link-selector h2{
-	text-align: left;
-    font-size: 24px;
-    font-weight: 600;
-    display: inline;
-    margin-right: 9px;
-}
-
-.link-selector h3{
-	text-align: left;
-    display: inline;
-    font-size: 14px;
-}
-
-.link-selector h4{
-	margin-left: 15px;
-    font-size: 16px;
-    margin-bottom: 0;
-}
-
-.link-selector h4.indent{
-	margin-left: 25px;
 }
 
 .link-selector button.cancel{

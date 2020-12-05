@@ -17,6 +17,7 @@ function ClassList(props){
     }, [props.semID]);
 
     const getClasses = async () => {
+        if(!props.semID){return}
         setIsLoading(true);
         const res = await classReq.getClassesBySemester(props.semID);
         setIsLoading(false);

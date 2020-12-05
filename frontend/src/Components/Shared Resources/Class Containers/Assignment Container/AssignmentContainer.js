@@ -1,8 +1,10 @@
 import React from 'react';
 
-import SimpleContainer from './SimpleContainer';
+import SimpleContainer from '../SimpleContainer/SimpleContainer';
 
 import AssignmentShower from './Assignment Shower/AssignmentShower';
+
+import './index.css';
 
 function AssignmentContainer(props){
     return(
@@ -12,7 +14,8 @@ function AssignmentContainer(props){
             location={props.location}
             daysOfWeek={props.daysOfWeek}
             time={props.time}
-            classID={props.classID}   
+            classID={props.classID}
+            classList={props.classList} 
             assignmentContainer={
                 <AssignmentShower 
                     assignmentIDs={props.assignmentIDs} 

@@ -13,9 +13,15 @@ describe('Creates new notification when a user followers another user', () =>{
 	let user1, user2;
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		user1 = (await UserService.create(userGen())).user;
-		user2 = (await UserService.create(userGen())).user;
-		done();
+		UserService.create(userGen(), res => {
+			user1 = res.user;
+			UserService.create(userGen, res => {
+				user2 = res.user;
+				done();
+			})
+		})
+
+		
 	})
 
 	afterAll(async done => {

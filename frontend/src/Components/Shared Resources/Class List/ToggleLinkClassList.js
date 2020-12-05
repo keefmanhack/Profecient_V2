@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import BaseClassList from './BaseClassList';
-import LinkContainer from '../Class Containers/LinkContainer';
+import LinkContainer from '../Class Containers/Link Container/LinkContainer';
 
 function ToggleLinkClassList(props){
     const [classes, setClasses] = useState([]);
@@ -30,7 +30,7 @@ function ToggleLinkClassList(props){
             )
         return container;
     })
-
+ 
     return(
         <BaseClassList
             setClasses={(classes) => setClasses(classes)}

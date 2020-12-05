@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 
 import BaseClassList from './BaseClassList';
-import SelectableContainer from '../Class Containers/SelectableContainer';
+import SelectableContainer from '../Class Containers/Selectable Container/SelectableContainer';
 
-function ToggleLinkClassList(props){
+function SelectableClassList(props){
     const [classes, setClasses] = useState([]);
 
     const containers = classes.map(classData => {
@@ -37,4 +37,4 @@ function ToggleLinkClassList(props){
     )
 }
 
-export default ToggleLinkClassList;
+export default SelectableClassList;

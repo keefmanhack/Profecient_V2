@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import SimpleContainer from '../Class Containers/SimpleContainer';
+import SimpleContainer from '../Class Containers/SimpleContainer/SimpleContainer';
 import SelectableClassList from '../Class List/SelectableClassList';
 
 
@@ -35,8 +35,8 @@ function LinkSelector(props){
 	}
 
 	const addNewLink = async () => {
-		let res;
-		// const res = await classReq.addNewConnection(props.otherUserID, props.linkClass._id, selectedClassID, props.currentUserID);
+		const classReq = new ClassRequests(props.currentUserID);
+		const res = await classReq.addNewConnection(props.linkedClass._id, selectedClassID);
 		res.success ? setSuccess(true) : setErrMsg(res.error);
 	}
 
@@ -64,6 +64,7 @@ function LinkSelector(props){
 					location={props.linkedClass.location}
 					daysOfWeek={props.linkedClass.daysOfWeek}
 					time={props.linkedClass.time}
+					classList={'gray-bc'}
 				/>
 				<ClassList 
 					currSemester={currSemester}
@@ -100,7 +101,7 @@ function Header(props){
 		<div>
 			{props.currSemester ?
 				<React.Fragment>
-					<h1 className='bold-text'>{props.currSemester.name}</h1>
+					<h1 className='bold-text semester'>{props.currSemester.name}</h1>
 					<h5 className='light-text muted-c'>Add new link</h5>
 				</React.Fragment>
 			:

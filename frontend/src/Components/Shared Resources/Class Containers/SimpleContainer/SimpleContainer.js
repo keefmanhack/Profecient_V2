@@ -1,11 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 
+import './index.css';
 function SimpleContainer(props){
     return(
         <div 
-            className='class-container'
+            className={'class-container ' + props.classList}
             onClick={() => props.handleClick ? props.handleClick() : null}
+            onMouseEnter={() => props.handleMouseEnter ? props.handleMouseEnter() : null}
+            onMouseLeave={() => props.handleMouseLeave ? props.handleMouseLeave() : null}
             style={props.style}
         >
             <React.Fragment>

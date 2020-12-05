@@ -151,7 +151,7 @@ class ProfilePage extends React.Component{
 								<div className='col-lg-4 left'>
 									<ClassView 
 										isCurrentUserViewing={this.state.currentUser !==null && this.state.profile._id === this.state.currentUser._id}
-										currentUser={this.state.currentUser}
+										currentUserID={this.state.currentUser._id}
 										userID={this.state.profile._id}
 									/>
 								</div>

@@ -96,19 +96,19 @@ const create = User => async (data, cb) => {
 
 		await User.register(user, data.password);
 
-		if(data.profilePictureData !== 'null'){
+		if(!!data.profilePictureData){ //removed !== 'null'
 			const imgPath = buildProfilePicturePath(user._id);
 			ImageServices.uploadImage(data.profilePictureData, imgPath, async imgPath => {
 				user.profilePictureURL = imgPath;
 				await user.save();
-				cb({success: true});
+				cb({success: true, user: user});
 			})
 		}else{
-			cb({success: true}) //needs to be written with the else or else it doesn't work
+			cb({success: true, user: user}) //needs to be written with the else or else it doesn't work
 		}
 	}catch(err){
 		console.log(err);
-		cb({success: false});
+		cb({success: false, error: 'Unable to create new user'});
 	}
 
 	// let user = new User(data);

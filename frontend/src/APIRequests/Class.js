@@ -5,18 +5,18 @@ class ClassRequests{
 		this.userID = id;
 	}
 
-	addNewConnection = async (otherUserID, otherUserClassID, myClassID, currUserID) =>{
+	addNewConnection = async (recvConnectionClassID, connectingClassID) =>{
 		try{
-			const endPoint = '/users/' + currUserID + '/class/connection';
+			const endPoint = '/users/' + this.userID + '/class/connection';
 			const data={
-				otherUser: otherUserID,
-				otherUserClass: otherUserClassID,
-				currUserClass: myClassID,
+				recvConnectionClassID: recvConnectionClassID,
+				connectingClassID: connectingClassID
 			}
 			const res = await axios.post(endPoint, data);
 			return res.data;
 		}catch(err){
 			console.log(err);
+			return {success: false, error: 'Unknown error adding new link'}
 		}
 	}
 

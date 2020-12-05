@@ -21,17 +21,22 @@ describe('Proper handeling of assignment creation', () =>{
 
         class1 = await ClassService.create(testClasses[0]);
         sem1 = await SemesterService.create({name: 'User 1 Sem', classes: [class1]});
-        user1 = (await UserService.create(userGen())).user;
-        user1.semesters.push(sem1);
-        await user1.save();
+        UserService.create(userGen(), async res => {
+            user1 = res.user;
+            user1.semesters.push(sem1);
+            await user1.save();
 
-        class2 = await ClassService.create(testClasses[1]);
-        sem2 = await SemesterService.create({name: 'User 2 Sem', classes: [class2]});
-        user2 = (await UserService.create(userGen())).user;
-        user2.semesters.push(sem2);
-        await user2.save();
-
-		done();
+            UserService.create(userGen(), async res => {
+                user2 = res.user;
+                class2 = await ClassService.create(testClasses[1]);
+                sem2 = await SemesterService.create({name: 'User 2 Sem', classes: [class2]});
+                
+                user2.semesters.push(sem2);
+                await user2.save();
+        
+                done();
+            })
+        })
 	})
 
 	afterAll(async done => {

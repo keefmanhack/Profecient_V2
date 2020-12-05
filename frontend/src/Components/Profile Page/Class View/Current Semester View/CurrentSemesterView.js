@@ -1,6 +1,7 @@
 import React from 'react';
 
 function CurrentSemesterView(props){
+	console.log(props.sem);
 	return(
 		<div className='semester-container white-c'>
 			{!props.sem ? 

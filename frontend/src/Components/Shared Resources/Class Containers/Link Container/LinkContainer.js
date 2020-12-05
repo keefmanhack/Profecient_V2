@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from 'react';
 
-import AssignmentContainer from './AssignmentContainer';
-import LinkSelector from '../Link Selector/LinkSelector';
+import AssignmentContainer from '../Assignment Container/AssignmentContainer';
+import LinkSelector from '../../Link Selector/LinkSelector';
 
-import ClassRequests from '../../../APIRequests/Class';
+import ClassRequests from '../../../../APIRequests/Class';
 
-import {FadeInOutHandleState} from '../Effects/CustomTransition';
-import MessageFlasher from '../MessageFlasher';
-import AbsractError from '../Messages/Error Messages/AbsractError';
+import {FadeInOutHandleState} from '../../Effects/CustomTransition';
+import MessageFlasher from '../../MessageFlasher';
+import AbsractError from '../../Messages/Error Messages/AbsractError';
 
-
+import './index.css';
 function LinkContainer(props){
     return(
         <AssignmentContainer
@@ -20,13 +20,14 @@ function LinkContainer(props){
             time={props.classData.time}
             assignmentIDs={props.assignmentIDs}
             userID={props.userID}
+            classList={'light-green-bc'}
             interaction={
                 <LinkUnLinkButton 
                     reload={()=>props.reload()} 
                     connectionsFrom={props.connectionsFrom} 
                     currentUserID={props.currentUserID}
                     otherUserID={props.userID}
-                    classID={props.classData._id} 
+                    classData={props.classData} 
                 />
             }
         />
@@ -40,7 +41,7 @@ function LinkUnLinkButton(props){
         <LinkButton 
             reload={()=>props.reload()}
             otherUserID={props.otherUserID}
-            classID={props.classID}
+            classData={props.classData}
             currentUserID={props.currentUserID}
         />
 }
@@ -92,8 +93,8 @@ function LinkButton(props){
     const showLinkSelector = () => {
         const t = <LinkSelector 
                     otherUserID={props.otherUserID}
-                    linkClass={props.classID}
-                    currentUser={props.currentUserID}
+                    linkedClass={props.classData}
+                    currentUserID={props.currentUserID}
                     hideForm={() => setShouldShowLinkSelector(false)}
                 />
         setLinkSelector(t);

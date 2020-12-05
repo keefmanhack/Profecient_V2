@@ -16,17 +16,23 @@ describe('Creates new notification when a user followers another user', () =>{
 	let user1, user2, notifID;
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		user1 = (await UserService.create(userGen())).user;
-		user2 = (await UserService.create(userGen())).user;
-		//create multiple notifications
-		await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
-		await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
-		await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
+		UserService.create(userGen(), async res => {
+			user1 = res.user;
 
-        user2 = await UserService.findById(user2._id);
-        let temp = await NotificationService.findById(user2.notifications.relations.notifBucket)
-        notifID = temp.list.pop().to;
-		done();
+			UserService.create(userGen(), async res => {
+				user2 = res.user;
+
+				//create multiple notifications
+				await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
+				await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
+				await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
+
+				user2 = await UserService.findById(user2._id);
+				let temp = await NotificationService.findById(user2.notifications.relations.notifBucket)
+				notifID = temp.list.pop().to;
+				done();
+			})
+		})
 	})
 
 	afterAll(async done => {

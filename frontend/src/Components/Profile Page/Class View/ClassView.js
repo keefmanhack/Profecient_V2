@@ -22,7 +22,8 @@ function ClassView(props){
 
 	useEffect(() => {
 		getSemesters();
-	}, []);
+
+	}, [props.userID]);
 
 	const getSemesters = async () => {
 		setIsLoading(true);
@@ -30,7 +31,9 @@ function ClassView(props){
 		setIsLoading(false);
 		if(res.success){
 			setSemesters(res.semesters);
-			setCurrSemesterID(res.semesters[res.semesters.length-1]._id)
+			if(res.semesters.length>0){
+				setCurrSemesterID(res.semesters[res.semesters.length-1]._id)
+			}
 		}else{
 			setErrMsg(res.error);
 		}
@@ -52,21 +55,19 @@ function ClassView(props){
 
 			<CurrentSemesterView sem={findCurrentSemester(semesters, currSemID)}/>
 			<hr/>
+			<ClassList
+				userID={props.userID}
+				currentUserID={props.currentUserID}
+				semID={currSemID}
+			/>
 			{areSemesters && currSemID ?
-				<React.Fragment>
-					<ClassList
-						userID={props.userID}
-						currentUserID={props.currentUserID}
-						semID={currSemID}
-					/>
-					<SemesterEditorDialog 
-						semesters={semesters}
-						currSemID={currSemID}
-						setCurrSemesterID={(id) => setCurrSemesterID(id)}
-						deleteSemester={() => deleteSemester()}
-						isCurrentUserViewing={props.isCurrentUserViewing}
-					/>
-				</React.Fragment>
+				<SemesterEditorDialog 
+					semesters={semesters}
+					currSemID={currSemID}
+					setCurrSemesterID={(id) => setCurrSemesterID(id)}
+					deleteSemester={() => deleteSemester()}
+					isCurrentUserViewing={props.isCurrentUserViewing}
+				/>
 			:null}
 		</div>
 	);
