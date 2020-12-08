@@ -17,10 +17,14 @@ describe('Can properly format a newFollower notification', () => {
     let user1, user2, newFollowerNotif;
     beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        user1 = (await UserService.create(userGen())).user;
-        user2 = (await UserService.create(userGen())).user;
-        newFollowerNotif = await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
-		done();
+        UserService.create(userGen(), res=>{
+            user1=res.user;
+            UserService.create(userGen(), async res=>{
+                user2=res.user;
+                newFollowerNotif = await FriendHandler.createAndAddANewFollowerNotif(user1._id, user2._id);
+		        done();
+            })
+        })
     })
 
     afterAll(async done => {
@@ -40,8 +44,8 @@ describe('Can properly format a newFollower notification', () => {
         //test
         expect(formattedData.length).toEqual(1);
         expect(formattedData[0].name).toEqual(user1.name);
-        expect(formattedData[0].school.logoURL).toEqual(user1.school.logoURL);
-        expect(formattedData[0].school.name).toEqual(user1.school.name);
+        expect(formattedData[0].schoolLogoURL).toEqual(user1.schoolLogoURL);
+        expect(formattedData[0].schoolName).toEqual(user1.schoolName);
         expect(formattedData[0].profilePictureURL).toEqual(user1.profilePictureURL);
         expect(formattedData[0].followerID).toEqual(user1._id);
 
@@ -67,14 +71,21 @@ describe('Can properly format a postbucket notif', () => {
     let user1, notifBucket, relNotifs, post;
     beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        user1 = (await UserService.create(userGen())).user;
-        user2 = (await UserService.create(userGen())).user;
-        PostHandler.createNewPost('Fake text', user1._id, null, async newPost => {
-            post = newPost;
-            notifBucket = await PostBucketNotifService.findById(newPost.notifBucketID);
-            relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
-            done();
-        })    
+        UserService.create(userGen(), res=>{
+            user1=res.user;
+            UserService.create(userGen(), res=>{
+                user2=res.user;
+
+                PostHandler.createNewPost('Fake text', user1._id, null, async newPost => {
+                    post = newPost;
+                    notifBucket = await PostBucketNotifService.findById(newPost.notifBucketID);
+                    relNotifs = await NotificationService.findByIdAndPopulateList(user1.notifications.relations.notifBucket);
+                    done();
+                })  
+            })
+        })
+
+          
     })
 
     afterAll(async done => {

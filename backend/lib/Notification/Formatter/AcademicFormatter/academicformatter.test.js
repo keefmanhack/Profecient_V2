@@ -22,19 +22,32 @@ describe('Formatting academic notifications', () => {
 
         class1 = await ClassService.create(testClasses[0]);
         sem1 = await SemesterService.create({name: 'User 1 Sem', classes: [class1]});
-        user1 = (await UserService.create(userGen())).user;
-        user1.semesters.push(sem1);
-        await user1.save();
+        UserService.create(userGen(), async res=>{
+            user1=res.user;
+            user1.semesters.push(sem1);
+            await user1.save();
 
-        class2 = await ClassService.create(testClasses[1]);
-        sem2 = await SemesterService.create({name: 'User 2 Sem', classes: [class2]});
-        user2 = (await UserService.create(userGen())).user;
-        user2.semesters.push(sem2);
-        await user2.save();
+            class2 = await ClassService.create(testClasses[1]);
+            sem2 = await SemesterService.create({name: 'User 2 Sem', classes: [class2]});
+            UserService.create(userGen(), async res=>{
+                user2=res.user;
+                user2.semesters.push(sem2);
+                await user2.save();
+    
 
-        await AcademicHandler.addNewConnection(class2._id, user2._id, class1._id, user1._id);
+                ConnectionHandler.new(); //come back dummy
+    
+                done();
+            })
 
-        done();
+           
+        })
+
+        
+
+
+
+        
     })
 
     afterAll(async done => {

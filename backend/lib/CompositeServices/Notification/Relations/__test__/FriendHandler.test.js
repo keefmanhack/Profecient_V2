@@ -15,7 +15,7 @@ describe('Creates new notification when a user followers another user', () =>{
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
 		UserService.create(userGen(), res => {
 			user1 = res.user;
-			UserService.create(userGen, res => {
+			UserService.create(userGen(), res => {
 				user2 = res.user;
 				done();
 			})

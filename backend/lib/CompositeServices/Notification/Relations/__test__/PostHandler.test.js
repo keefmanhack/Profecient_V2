@@ -14,10 +14,15 @@ require('dotenv').config();
 describe('Creates a new post notification bucket when user creates a post', () =>{
     let user1, user2, post1, post2;
 	beforeAll(async done => {
-        await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		user1 = (await UserService.create(userGen())).user;
-		user2 =( await UserService.create(userGen())).user;
-		done();
+		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
+		UserService.create(userGen(), res => {
+			user1 = res.user;
+			UserService.create(userGen(), res => {
+				user2 = res.user;
+				done();
+			})
+		})
+		
 	})
 
 	afterAll(async done => {
@@ -76,9 +81,10 @@ describe('Creates a new post notification bucket when user creates a post', () =
 describe('Deletes a post notification bucket from a user when  post is deleted', () =>{
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-
-		user1 = (await UserService.create(userGen())).user;
-		done();
+		UserService.create(userGen(), res => {
+			user1 = res.user;
+			done();
+		})
 	})
 
 	afterAll(async done => {
@@ -109,12 +115,18 @@ describe('Notifications on post likes and comments', () =>{
 	let user1, user2, user3, post;
 	beforeAll(async done => {
 		await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-		user1 = (await UserService.create(userGen())).user;
-		user2 = (await UserService.create(userGen())).user;
-		user3 = (await UserService.create(userGen())).user;
-		PostHandler.createNewPost("Test notifications of likes and comments", user1._id, null, newPost =>{
-			post=newPost;
-			done();
+		UserService.create(userGen(), res=>{
+			user1=res.user;
+			UserService.create(userGen(), res=>{
+				user2=res.user;
+				UserService.create(userGen(), res=>{
+					user3=res.user;
+					PostHandler.createNewPost("Test notifications of likes and comments", user1._id, null, newPost =>{
+						post=newPost;
+						done();
+					})
+				})
+			})
 		})
 	})
 

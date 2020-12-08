@@ -13,6 +13,7 @@ const AcademicHandler = require('../../lib/CompositeServices/Notification/Academ
 
 router.post('/users/:id/class/connection', isValid, async (req, res) =>{
 	try{
+		const response = await ConnectionHandler.new()
 		const response = await AcademicHandler.addNewConnection(req.body.otherUserClass, otherUser._id, req.body.currUserClass, req.params.id);
 		res.json(response);
 	}catch(err){

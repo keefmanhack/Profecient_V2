@@ -33,7 +33,9 @@ describe('Proper handeling of assignment creation', () =>{
                 
                 user2.semesters.push(sem2);
                 await user2.save();
-        
+                
+                await ConnectionHandler.new(); //Come back dummy
+
                 done();
             })
         })
@@ -51,30 +53,7 @@ describe('Proper handeling of assignment creation', () =>{
 		done();
     })
     
-    it('Can properly handle new connections', async () => {
-        await AcademicHandler.addNewConnection(class2._id, user2._id, class1._id, user1._id);
-        class2 = await ClassService.findById(class2._id);
-        class1 = await ClassService.findById(class1._id);
-
-
-        expect(class2.connectionsFrom.length).toEqual(1);
-        expect(class2.connectionsFrom[0].userID).toEqual(user1._id);
-        expect(class2.connectionsFrom[0].classID).toEqual(class1._id);
-
-        expect(class1.connectionsTo.length).toEqual(1);
-        expect(class1.connectionsTo[0].userID).toEqual(user2._id);
-        expect(class1.connectionsTo[0].classID).toEqual(class2._id);
-    })
-
-    it('Does not add a connection which already exists', async () => {
-        await AcademicHandler.addNewConnection(class2._id, user2._id, class1._id, user1._id);
-        class2 = await ClassService.findById(class2._id);
-        class1 = await ClassService.findById(class1._id);
-
-        expect(class2.connectionsFrom.length).toEqual(1);
-        expect(class1.connectionsTo.length).toEqual(1);
-    })
-
+    
     it('Properly handles adding a new assignment', async () => {
         let newAss = await AcademicHandler.newAssignment(user2._id, class2._id, testAss[0]);
         user1 = await UserService.findById(user1._id);

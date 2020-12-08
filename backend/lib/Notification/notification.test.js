@@ -15,11 +15,13 @@ describe('Able to insert generic items into list', () =>{
 
 	beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        newUser = (await UserService.create(userGen())).user;
-        Notifications = await NotificationService.findById(newUser.notifications.relations.notifBucket);
-        createdBucket = await PostBucketService.create();
-        newFollowerNotif = await NewFollowerService.create(newUser._id);
-		done();
+        UserService.create(userGen(), async res=>{
+            newUser=res.user;
+            Notifications = await NotificationService.findById(newUser.notifications.relations.notifBucket);
+            createdBucket = await PostBucketService.create();
+            newFollowerNotif = await NewFollowerService.create(newUser._id);
+            done();
+        })
 	})
 
 	afterAll(async done => {

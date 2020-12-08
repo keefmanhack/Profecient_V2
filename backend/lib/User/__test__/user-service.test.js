@@ -12,9 +12,13 @@ describe('Following and unfollowing', () =>{
     let user1, user2;
 	beforeAll(async done => {
         await mongoose_tester.connect(process.env.PROF_MONGO_DB_TEST);
-        user1 = (await UserService.create(userGen())).user;
-        user2 = (await UserService.create(userGen())).user;
-		done();
+        UserService.create(userGen(), res=>{
+            user1=res.user;
+            UserService.create(userGen(), res=>{
+                user2=res.user;
+                done();
+            })
+        })
 	})
 
 	afterAll(async done => {
@@ -62,12 +66,12 @@ describe('Can create a new user', () => {
         done();
     })
 
-    it('Can create a new user', async () => {
-        const genUser = userGen();
-        password = genUser.password;
-        let res = await UserService.create(genUser);
-        if(res.success){
-            user1 = res.user;
-        }
+    it('Can create a new user', async done => {
+        const userData = userGen();
+        UserService.create(userData, res=>{
+            expect(res.success).toEqual(true);
+            expect(userData.name).toEqual(res.user.name);
+            done();
+        })
     })
 })

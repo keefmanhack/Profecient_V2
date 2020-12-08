@@ -25,7 +25,10 @@ const addConnectionFrom = ClassModel => async (id, classID, userID) => {
 	const newConnection = {userID: userID, classID: classID};
 	if(!connectionExists(foundClass.connectionsFrom, newConnection)){
 		foundClass.connectionsFrom.push(newConnection);
-		return await foundClass.save();
+		await foundClass.save();
+		return {success: true,}
+	}else{
+		return {success: false, error: 'Connection exists'}
 	}
 }
 
@@ -37,10 +40,44 @@ const addConnectionTo = ClassModel => async (id, classID, userID) => {
 	const newConnection = {userID: userID, classID: classID};
 	if(!connectionExists(foundClass.connectionsTo, newConnection)){
 		foundClass.connectionsTo.push(newConnection);
-		return await foundClass.save();
+		await foundClass.save();
+		return {success: true,}
+	}else{
+		return {success: false, error: 'Connection exists'}
 	}
 }
 
+const removeConnectionFrom = ClassModel => async (id, classID, userID) => {
+	if(!id || !classID || ! userID){
+		throw new Error('Missing data to remove a connection from');
+	}
+	const foundClass = await ClassModel.findById(id);
+	const connection = {userID: userID, classID: classID};
+	const cID = connectionExists(foundClass.connectionsFrom, connection);
+	if(cID){
+		foundClass.connectionsFrom.pull(cID);
+		await foundClass.save();
+		return {success: true,}
+	}else{
+		return {success: false, error: 'Connection does not exist'}
+	}
+}
+
+const removeConnectionTo = ClassModel => async (id, classID, userID) => {
+	if(!id || !classID || ! userID){
+		throw new Error('Missing data to remove a connection to');
+	}
+	const foundClass = await ClassModel.findById(id);
+	const connection = {userID: userID, classID: classID};
+	const cID = connectionExists(foundClass.connectionsTo, connection);
+	if(cID){
+		foundClass.connectionsTo.pull(cID);
+		await foundClass.save();
+		return {success: true,}
+	}else{
+		return {success: false, error: 'Connection does not exist'}
+	}
+}
 
 const updateClasses = ClassModel => async data=> {
 	if(!data){
@@ -136,7 +173,7 @@ getCurrent = ClassModel => async userID =>{
 function connectionExists(connectionList, newConnection){
 	for(let i =0; i<connectionList.length; i++){
 		if(connectionList[i].userID + '' === newConnection.userID + '' && connectionList[i].classID + '' === newConnection.classID + ''){
-			return true;
+			return connectionList[i]._id;
 		}
 	}
 	return false;
@@ -154,6 +191,8 @@ module.exports = ClassModel => {
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
 		addConnectionTo: addConnectionTo(ClassModel),
 		addConnectionFrom: addConnectionFrom(ClassModel),
+		removeConnectionFrom: removeConnectionFrom(ClassModel),
+		removeConnectionTo: removeConnectionTo(ClassModel),
 		updateClasses: updateClasses(ClassModel),
 		deleteMultiple: deleteMultiple(ClassModel),
 		getAllClassAssIDs: getAllClassAssIDs(ClassModel),

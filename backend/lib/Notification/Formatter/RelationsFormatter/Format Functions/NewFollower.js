@@ -6,7 +6,8 @@ const formatFunc = async (newFollowerData, currUserID) => {
         const newFollower = await UserService.findById(newFollowerData.followerID);
         const data = {
             name: newFollower.name,
-            school: newFollower.school,
+            schoolName: newFollower.schoolName,
+            schoolLogoURL: newFollower.schoolLogoURL,
             profilePictureURL: newFollower.profilePictureURL,
             followerID: newFollower._id,
             _id: newFollowerData._id,
