@@ -1,16 +1,23 @@
-const ClassService = require('../../Class/index');
+const ClassService = require('../../Class/index'),
+      ConnectionNotif = require('../../Notification/Categories/Academic/New Connection/ConnectionNotif');
 
 
 class ConnectionHandler{
     static async new(userIDRec, classIDRec, userIDRequ, classIDRequ){
-		if(!classIDRec || !userIDRec || !classIDRec || !userIDRec){
-			throw new Error('Missing data to add a connection');
-		}
-        let res = await ClassService.addConnectionFrom(classIDRec, classIDRequ, userIDRequ);
-        if(!res.success){return res}
-        res = await ClassService.addConnectionTo(classIDRequ, classIDRec, userIDRec);
-        return res;
-  }
+      if(!classIDRec || !userIDRec || !classIDRec || !userIDRec){
+        throw new Error('Missing data to add a connection');
+      }
+          let res = await ClassService.addConnectionFrom(classIDRec, classIDRequ, userIDRequ);
+          if(!res.success){return res}
+          res = await ClassService.addConnectionTo(classIDRequ, classIDRec, userIDRec);
+          if(!res.success){return res}
+
+          //dispatch notification
+          const CNotif = new ConnectionNotif(userIDRec);
+          CNotif.push(classIDRec, userIDRequ, classIDRequ);
+
+          return res;
+    }
   
   static async remove(userIDRec, classIDRec, userIDRequ, classIDRequ){
     if(!classIDRec || !userIDRec || !classIDRec || !userIDRec){

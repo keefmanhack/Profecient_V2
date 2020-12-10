@@ -5,6 +5,7 @@ const testClasses = require('../../Testing Data/testClasses');
 const ClassService = require('../../Class/index');
 const SemesterService = require('../../Semester/index');
 const UserService =  require('../../User/index');
+const NotificationService = require('../../Notification/index');
 
 const ConnectionHandler = require('./ConnectionHandler');
 
