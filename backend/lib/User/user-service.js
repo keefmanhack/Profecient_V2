@@ -346,6 +346,7 @@ module.exports = User => {
 		findById: BaseRequests.findById(User),
 		size: BaseRequests.size(User),
 		findMultiple: BaseRequests.findMultipleById(User),
+		findAll: BaseRequests.findAll(User),
 
 		findFriends: findFriends(User),
 		resetPassword: resetPassword(User),

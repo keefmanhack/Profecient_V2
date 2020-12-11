@@ -1,16 +1,20 @@
 const ClassService = require('../../../../Class/index');
 const UserService = require('../../../../User/index');
 const AssignmentService =  require('../../../../Assignment/index');
+const NewAssignmentNotifService = require('../../../Categories/Academic/New Assignment/index');
 
-const formatFunc = async (newAssignmentData, userID) => {
+const formatFunc = async (newAssignmentNotifID, userID) => {
     try{
+        const newAssignmentData = await NewAssignmentNotifService.findById(newAssignmentNotifID);
+
         const assignment = await AssignmentService.findById(newAssignmentData.assignmentID);
         const otherUser = await UserService.findById(newAssignmentData.ownerID);
         const foundClass = await ClassService.findById(newAssignmentData.parentClassID);
         const data = {
             user: {
                 name: otherUser.name,
-                school: otherUser.school,
+                schoolName: otherUser.schoolName,
+                schoolLogoURL: otherUser.schoolLogoURL,
                 profilePictureURL: otherUser.profilePictureURL,
                 _id: otherUser._id,
             },

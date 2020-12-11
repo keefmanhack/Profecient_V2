@@ -14,7 +14,7 @@ class ConnectionHandler{
 
           //dispatch notification
           const CNotif = new ConnectionNotif(userIDRec);
-          CNotif.push(classIDRec, userIDRequ, classIDRequ);
+          await CNotif.push(classIDRec, userIDRequ, classIDRequ);
 
           return res;
     }

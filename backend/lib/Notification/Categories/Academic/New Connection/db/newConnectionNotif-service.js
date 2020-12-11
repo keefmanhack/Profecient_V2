@@ -1,6 +1,6 @@
 const BaseRequests = require('../../../../../BaseServiceRequests');
 
-const create = Notification => async (classID, connectedClassID, connectedUserID) => {
+const create = Notification => async (classID, connectedUserID, connectedClassID) => {
     if(!classID || !connectedClassID || !connectedUserID){
         throw new Error('Missing data to create a new connection notification');
     }

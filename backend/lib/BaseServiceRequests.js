@@ -37,6 +37,10 @@ const update = Model => async (id, data) =>{
 	return await Model.findByIdAndUpdate(id, data);
 }
 
+const findAll = Model => async () => {
+    return await Model.find({});
+}
+
 
 module.exports = {
     size: size,
@@ -45,4 +49,5 @@ module.exports = {
     findMultipleById: findMultipleById,
     create: create,
     update: update,
+    findAll: findAll
 };

@@ -13,6 +13,9 @@ const Formatter = require('../formatter');
 const academicFormatMap = require('./formatMap');
 const AssignmentService = require('../../../Assignment/index');
 
+const ACFormatter = require('./ACFormatter');
+const ConnectionHandler = require('../../../CompositeServices/Connection Handler/ConnectionHandler');
+
 require('dotenv').config();
 
 describe('Formatting academic notifications', () => {
@@ -35,18 +38,10 @@ describe('Formatting academic notifications', () => {
                 await user2.save();
     
 
-                ConnectionHandler.new(); //come back dummy
-    
+                await ConnectionHandler.new(user2._id, class2._id, user1._id, class1._id);
                 done();
-            })
-
-           
+            })           
         })
-
-        
-
-
-
         
     })
 
@@ -64,24 +59,32 @@ describe('Formatting academic notifications', () => {
         done();	
     })
 
+    it('Can properly format a new connection notification', async () => {
+        const acf = new ACFormatter(user2._id);
+        const formattedList = await acf.format();
+        
+        expect(formattedList.length).toEqual(1);
+        const t = formattedList[0];
+        
+        expect(t.user._id).toEqual(user1._id);
+        expect(t.myClass.name).toEqual(class2.name);
+        expect(t.connectedClass.name).toEqual(class1.name);
+    })
+
     it('Can properly format a new assignment notification', async () => {
         ass = await AcademicHandler.newAssignment(user2._id, class2._id, testAss[0]);
-        const notfBucketID = await UserService.getNotifBucketID(user1._id, UserService.notifCategories.academic);
-        const acNotifs = await NotificationService.findByIdAndPopulateList(notfBucketID);
-
-        const formattedList = await Formatter.format(acNotifs, academicFormatMap);
+        const acf = new ACFormatter(user1._id);
+        const formattedList = await acf.format();
         
         expect(formattedList.length).toEqual(1);
         expect(formattedList[0].user.name).toEqual(user2.name);
-        expect(formattedList[0].user.school.name).toEqual(user2.school.name);
-        expect(formattedList[0].user.school.logoURL).toEqual(user2.school.logoURL);
+        expect(formattedList[0].user.schoolName).toEqual(user2.schoolName);
+        expect(formattedList[0].user.schoolLogoURL).toEqual(user2.schoolLogoURL);
         expect(formattedList[0].user.profilePictureURL).toEqual(user2.profilePictureURL);
         
         expect(formattedList[0].assignment.name).toEqual(ass.name);
         expect(formattedList[0].assignment.description).toEqual(ass.description);
         expect(formattedList[0].assignment.dueDate).toEqual(ass.dueDate);
         expect(formattedList[0].assignment.parentClassName).toEqual(class2.name);
-        
-        expect(formattedList[0]._id).toEqual(acNotifs.list[0].to._id);
     })
 })

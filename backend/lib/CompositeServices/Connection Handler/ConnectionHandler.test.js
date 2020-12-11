@@ -66,8 +66,8 @@ describe('Handeling new connections', () =>{
         const acNotifs = await NotificationService.findById(user2.notifications.academic.notifBucket);
         
         expect(user2.notifications.academic.unDismissed).toEqual(1);
-        expect(acNotifs.length).toEqual(1);
-        expect(acNotifs[0].onModel).toEqual('NewConnection');
+        expect(acNotifs.list.length).toEqual(1);
+        expect(acNotifs.list[0].onModel).toEqual('NewConnection');
     })
 
     it('Does not add new connection to user2 class', async () => {

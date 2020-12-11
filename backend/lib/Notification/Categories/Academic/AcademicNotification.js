@@ -7,11 +7,28 @@ class AcademicNotification{
     }
 
     push = async notif =>{
-        const bucket = await this.getBucket();
-        console.log(bucket);
-        bucket.push(notif);
-        bucket = await this.bucket.save();
-        return bucket;
+        try{
+            let bucket = await this.getBucket();
+            bucket.list.push({to: notif, onModel: notif.constructor.modelName});
+            bucket = await bucket.save();
+            await this.increment();
+            return {success: true, bucket: bucket};
+        }catch(err){
+            console.log(err);
+            return {success: false, error: 'Unknown error adding academic notification'}
+        }
+    }
+
+    increment = async () => {
+        try{
+            let user = await UserService.findById(this.userID);
+            user.notifications.academic.unDismissed++;
+            user = await user.save();
+            return {success: true, user: user}
+        }catch(err){
+            console.log(err);
+            return {success: false, error: 'Unknown error incrementing academic notification'}
+        }
     }
 
     getBucket = async () =>{
@@ -20,7 +37,5 @@ class AcademicNotification{
         return bucket;
     }
 }
-
-
 
 module.exports = AcademicNotification;

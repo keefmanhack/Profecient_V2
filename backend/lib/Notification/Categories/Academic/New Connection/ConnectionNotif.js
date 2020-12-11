@@ -6,10 +6,11 @@ class ConnectionNotif{
         this.userID = userID;
     }
 
-    push = async (classID, connectedClassID, connectedUserID) => {
-        const notif = await NewConnectionNotifService.create(classID, connectedClassID, connectedUserID);
+    push = async (classID, connectedUserID, connectedClassID) => {
+        const notif = await NewConnectionNotifService.create(classID, connectedUserID, connectedClassID);
         const ACNotifs = new AcademicNotifications(this.userID);
-        ACNotifs.push(notif);
+        const res = await ACNotifs.push(notif);
+        return res;
     }
 }
 
