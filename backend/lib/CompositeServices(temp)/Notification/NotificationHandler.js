@@ -1,8 +1,8 @@
-const FriendHandler = require("./Relations/FriendHandler");
+const FriendHandler = require("../../Relation Handlers/FriendHandler");
 const UserService = require('../../User/index');
 const NotificationService = require('../../Notification/index');
-const PostHandler = require("./Relations/PostHandler");
-const AcademicHandler = require("./Academic/AcademicHandler");
+const PostHandler = require("../../Relation Handlers/PostHandler");
+const AcademicHandler = require("../../Assignment/Assignment Handler/AssignmentHandler");
 
 let removeFuncMap = new Map();
 removeFuncMap.set('NewFollower', FriendHandler.removeNotification);

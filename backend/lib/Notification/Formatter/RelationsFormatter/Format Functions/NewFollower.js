@@ -1,4 +1,4 @@
-const NotificationHandler = require('../../../../CompositeServices/Notification/NotificationHandler');
+const NotificationHandler = require('../../../../CompositeServices(temp)/Notification/NotificationHandler');
 const UserService = require('../../../../User/index');
 
 const formatFunc = async (newFollowerData, currUserID) => {

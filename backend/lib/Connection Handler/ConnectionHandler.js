@@ -1,5 +1,5 @@
-const ClassService = require('../../Class/index'),
-      ConnectionNotif = require('../../Notification/Categories/Academic/New Connection/ConnectionNotif');
+const ClassService = require('../Class/index'),
+      ConnectionNotif = require('../Notification/Categories/Academic/New Connection/ConnectionNotif');
 
 
 class ConnectionHandler{

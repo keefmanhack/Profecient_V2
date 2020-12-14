@@ -4,7 +4,7 @@ const express = require("express"),
 const MessageService = require('../../lib/Message/index');
 const UserService = require('../../lib/User/index');
 
-const MessageHandler = require('../../lib/CompositeServices/MessageHandler');
+// const MessageHandler = require('../../lib/CompositeServices/MessageHandler');
 
 router.get('/users/:id/messageStreams', async (req,res) =>{
 	try{

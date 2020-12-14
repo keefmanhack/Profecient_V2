@@ -1,4 +1,4 @@
-const BaseRequests = require('../../../../BaseServiceRequests');
+const BaseRequests = require('../../../../../BaseServiceRequests');
 
 const createNewAssNotification = Notification => async (usersClassToBeNotified, userNotifing, userNotifingClass, notifingUserAssignmentID) => {
 	if(!usersClassToBeNotified || !userNotifing || !userNotifingClass || !notifingUserAssignmentID){

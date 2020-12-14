@@ -1,13 +1,13 @@
 const PostHandler = require('../PostHandler');
-const mongoose_tester = require('../../../../../mongoose_test_config.js');
+const mongoose_tester = require('../../../mongoose_test_config');
 // mongoose_tester.set('debug', true);
 
-const UserService = require('../../../../User/index');
-const NotificationService = require('../../../../Notification/index');
-const PostBucketService = require('../../../../Notification/Categories/Relations/PostBucket/index');
-const PostService = require('../../../../Post/index');
+const UserService = require('../../User/index');
+const NotificationService = require('../../Notification/index');
+const PostBucketService = require('../../Notification/Categories/Relations/PostBucket/index');
+const PostService = require('../../Post/index');
 
-const userGen = require('../../../../Testing Data/testUserGenerator');
+const userGen = require('../../Testing Data/testUserGenerator');
 
 require('dotenv').config();
 

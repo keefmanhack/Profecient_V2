@@ -14,7 +14,8 @@ function ClassList(props){
 
     useEffect(() => {
         getClasses();
-    }, [props.semID]);
+    }, [props.semID, props.reload]);
+
 
     const getClasses = async () => {
         if(!props.semID){return}

@@ -36,7 +36,7 @@ function LinkSelector(props){
 
 	const addNewLink = async () => {
 		const classReq = new ClassRequests(props.currentUserID);
-		const res = await classReq.addNewConnection(props.linkedClass._id, selectedClassID);
+		const res = await classReq.addNewConnection(props.linkedUserID, props.linkedClass._id, selectedClassID);
 		res.success ? setSuccess(true) : setErrMsg(res.error);
 	}
 

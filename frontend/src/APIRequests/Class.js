@@ -5,12 +5,13 @@ class ClassRequests{
 		this.userID = id;
 	}
 
-	addNewConnection = async (recvConnectionClassID, connectingClassID) =>{
+	addNewConnection = async (recvUserID, recvClassID, reqClassID) =>{
 		try{
 			const endPoint = '/users/' + this.userID + '/class/connection';
 			const data={
-				recvConnectionClassID: recvConnectionClassID,
-				connectingClassID: connectingClassID
+				recvUserID: recvUserID,
+				recvClassID: recvClassID,
+				reqClassID: reqClassID
 			}
 			const res = await axios.post(endPoint, data);
 			return res.data;
@@ -20,13 +21,13 @@ class ClassRequests{
 		}
 	}
 
-	removeAConnection = async (otherUserID, currUserClass, otherUserClass, currUserID) => {
+	removeAConnection = async (recvUserID, recvClassID, reqClassID) => {
 		try{
-			const endPoint = '/users/' + currUserID + '/class/connection/delete';
+			const endPoint = '/users/' + this.userID + '/class/connection/delete';
 			const data={
-				otherUser: this.userID,
-				currUserClass: currUserClass,
-				otherUserClass: otherUserClass,
+				recvUserID: recvUserID,
+				recvClassID: recvClassID,
+				reqClassID: reqClassID
 			}
 			const res = await axios.post(endPoint, data);
 			return res.data;

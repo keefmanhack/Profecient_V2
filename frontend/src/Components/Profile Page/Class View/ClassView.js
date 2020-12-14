@@ -37,6 +37,7 @@ function ClassView(props){
 		}else{
 			setErrMsg(res.error);
 		}
+
 	}
 	const deleteSemester = async () => {
 		setIsLoading(true);

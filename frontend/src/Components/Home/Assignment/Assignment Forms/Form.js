@@ -123,7 +123,7 @@ class Form extends React.Component{
 			}
 			let res =  await this.props.handleSubmit(data);
 			this.setState({loading: false});
-			res.success ? this.setState({success: true}) : this.setState({error: res.error});
+			res.success ? this.setState({success: true}) : this.setState({errMsg: res.error});
 		}
 	}
 

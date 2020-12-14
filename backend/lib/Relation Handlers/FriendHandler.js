@@ -1,6 +1,6 @@
-const UserService         = require('../../../User/index'),
-	  newFollowerService  = require('../../../Notification/Categories/Relations/New Follower/index'),
-	  NotificationService = require('../../../Notification/index');
+const UserService         = require('../User/index'),
+	  newFollowerService  = require('../Notification/Categories/Relations/New Follower/index'),
+	  NotificationService = require('../Notification/index');
 
 
 class FriendHandler{

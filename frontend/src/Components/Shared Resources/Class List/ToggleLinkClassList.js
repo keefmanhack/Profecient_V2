@@ -5,6 +5,8 @@ import LinkContainer from '../Class Containers/Link Container/LinkContainer';
 
 function ToggleLinkClassList(props){
     const [classes, setClasses] = useState([]);
+    const [reloadKey, setReloadKey] = useState(0);
+
 
     const containers = classes.map(classData => {
         let data = 
@@ -25,17 +27,18 @@ function ToggleLinkClassList(props){
                     assignmentIDs={classData.assignments} 
                     currentUserID={props.currentUserID}
                     connectionsFrom={classData.connectionsFrom}
-                    reload={() => {}}
+                    reload={() => setReloadKey(Math.random())}
                 />
             )
         return container;
-    })
- 
+    })  
+
     return(
         <BaseClassList
             setClasses={(classes) => setClasses(classes)}
             containers={containers}
             semID={props.semID}
+            reload={reloadKey}
         />
     )
 }

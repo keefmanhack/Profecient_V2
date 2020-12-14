@@ -1,11 +1,11 @@
 const FriendHandler = require('../FriendHandler');
-const mongoose_tester = require('../../../../../mongoose_test_config.js');
-const NewFollowerService = require('../../../../Notification/Categories/Relations/New Follower/index');
-const NotificationService = require('../../../../Notification/index');
+const mongoose_tester = require('../../../mongoose_test_config.js');
+const NewFollowerService = require('../../Notification/Categories/Relations/New Follower/index');
+const NotificationService = require('../../Notification/index');
 
-const UserService = require('../../../../User/index');
+const UserService = require('../../User/index');
 
-const userGen = require('../../../../Testing Data/testUserGenerator');
+const userGen = require('../../Testing Data/testUserGenerator');
 
 require('dotenv').config();
 

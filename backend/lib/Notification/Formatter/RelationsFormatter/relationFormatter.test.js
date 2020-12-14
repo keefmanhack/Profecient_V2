@@ -1,5 +1,5 @@
 const mongoose_tester = require('../../../../mongoose_test_config');
-const FriendHandler = require('../../../CompositeServices/Notification/Relations/FriendHandler');
+const FriendHandler = require('../../../Relation Handlers/FriendHandler');
 const NotificationService = require('../../../Notification/index');
 const NewFollowerService = require('../../../Notification/Categories/Relations/New Follower/index');
 const PostBucketNotifService = require('../../../Notification/Categories/Relations/PostBucket/index');
@@ -9,7 +9,7 @@ const RelFormatMap = require('./formatMap');
 const userGen = require('../../../Testing Data/testUserGenerator');
 const UserService = require('../../../User/index');
 const Formatter = require('../formatter');
-const PostHandler = require('../../../CompositeServices/Notification/Relations/PostHandler');
+const PostHandler = require('../../../Relation Handlers/PostHandler');
 
 require('dotenv').config();
 

@@ -7,7 +7,7 @@ const Formatter = require('../../lib/Notification/Formatter/formatter');
 const RelFormatMap = require('../../lib/Notification/Formatter/RelationsFormatter/formatMap');
 const AcFormatMap = require('../../lib/Notification/Formatter/AcademicFormatter/formatMap');
 
-const NotificationHandler = require("../../lib/CompositeServices/Notification/NotificationHandler");
+// const NotificationHandler = require("../../lib/CompositeServices/Notification/NotificationHandler");
 
 const isValid = require('../../lib/Authentication/verifyRequests');
 

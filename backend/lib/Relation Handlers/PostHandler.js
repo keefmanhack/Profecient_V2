@@ -1,8 +1,8 @@
-const PostService = require('../../../Post/index');
-const PostBucketService = require('../../../Notification/Categories/Relations/PostBucket/index');
-const NotificationService = require('../../../Notification/index');
-const UserService = require('../../../User/index');
-const CommentService = require('../../../Comment/index');
+const PostService = require('../Post/index');
+const PostBucketService = require('../Notification/Categories/Relations/PostBucket/index');
+const NotificationService = require('../Notification/index');
+const UserService = require('../User/index');
+const CommentService = require('../Comment/index');
 
 
 class PostHandler{

@@ -1,7 +1,7 @@
 const UserService = require('../../../../User/index');
 const PostService = require('../../../../Post/index');
 const CommentService = require('../../../../Comment/index');
-const NotificationHandler = require('../../../../CompositeServices/Notification/NotificationHandler');
+const NotificationHandler = require('../../../../CompositeServices(temp)/Notification/NotificationHandler');
 
 const formatFunc = async (postBucketData, currUserID) => {
     if(!postBucketData.lastLiker  && !postBucketData.lastComment){

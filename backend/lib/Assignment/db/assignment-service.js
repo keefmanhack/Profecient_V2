@@ -1,5 +1,8 @@
 const moment = require('moment');
-const BaseRequests = require('../BaseServiceRequests');
+const BaseRequests = require('../../BaseServiceRequests');
+const UserService = require('../../User/index');
+const SemesterService = require('../../Semester/index');
+const ClassService = require('../../Class/index');
 
 const deleteMultiple = Ass => async ids =>{
 	if(!ids){
@@ -35,9 +38,7 @@ const findMultiple = Ass => async ids => {
 	return await Ass.find({_id: ids});
 }
 
-const UserService = require('../User/index');
-const SemesterService = require('../Semester/index');
-const ClassService = require('../Class/index');
+
 const getAll = Ass => async userID => {
 	const classes = getClasses();
 	let arr = [];

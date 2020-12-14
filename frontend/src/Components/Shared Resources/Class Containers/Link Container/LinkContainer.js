@@ -35,46 +35,56 @@ function LinkContainer(props){
 }
 
 function LinkUnLinkButton(props){
-    return isLinked(props.connectionsFrom, props.currentUserID) ?  
-        <UnLinkButton/> 
-    : 
-        <LinkButton 
-            reload={()=>props.reload()}
-            otherUserID={props.otherUserID}
-            classData={props.classData}
-            currentUserID={props.currentUserID}
-        />
+    const reqClassID = isLinked(props.connectionsFrom, props.currentUserID);
+    return(
+        reqClassID ?  
+            <UnLinkButton
+                reload={()=>props.reload()}
+                recvUserID={props.otherUserID}
+                recvClassID={props.classData._id}
+                reqUserID={props.currentUserID}
+                reqClassID={reqClassID}
+            /> 
+        : 
+            <LinkButton 
+                reload={()=>props.reload()}
+                otherUserID={props.otherUserID}
+                classData={props.classData}
+                currentUserID={props.currentUserID}
+            />
+    )
 }
 
 function isLinked(connectionsFrom, userID){
     for(let i =0; i<connectionsFrom.length; i++){
         const id = connectionsFrom[i].userID;
-        if(id + '' ===  userID + ''){return true}
+        if(id + '' ===  userID + ''){return connectionsFrom[i].classID}
     }
 
     return false;
 }
 
 function UnLinkButton(props){
-    const classReq = new ClassRequests(props.otherUserID);
+    const classReq = new ClassRequests(props.reqUserID);
     const [errMsg, setErrMsg] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const removeLink = async () => {
-        props.setLoading(true);
-        const res = await classReq.removeAConnection(props.classID, props.currentUserID);
-        props.setLoading(false);
+        setLoading(true);
+        const res = await classReq.removeAConnection(props.recvUserID, props.recvClassID, props.reqClassID);
         if(res.success){
            props.reload(); 
         }else{
             setErrMsg(res.error);
         }
+        setLoading(false);
     }
     return(
         <React.Fragment>
             <MessageFlasher condition={errMsg !== ''} resetter={() => setErrMsg('')}>
                 <AbsractError errorMessage={errMsg}/>
             </MessageFlasher>
-            <button onClick={() => removeLink()} className='link orange-bc white-c' >
+            <button disabled={loading} onClick={() => removeLink()} className='link orange-bc white-c' >
                 UnLink
             </button>
         </React.Fragment>
@@ -92,7 +102,7 @@ function LinkButton(props){
 
     const showLinkSelector = () => {
         const t = <LinkSelector 
-                    otherUserID={props.otherUserID}
+                    linkedUserID={props.otherUserID}
                     linkedClass={props.classData}
                     currentUserID={props.currentUserID}
                     hideForm={() => setShouldShowLinkSelector(false)}

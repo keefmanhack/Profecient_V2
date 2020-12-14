@@ -8,7 +8,7 @@ const UserService = require('../../lib/User/index');
 
 const isValid = require('../../lib/Authentication/verifyRequests');
 
-const FriendHandler = require('../../lib/CompositeServices/Notification/Relations/FriendHandler');
+const FriendHandler = require('../../lib/Relation Handlers/FriendHandler');
 
 router.get('/users/verify', async (req, res) => {
     const query = req.query;

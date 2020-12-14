@@ -1,7 +1,7 @@
 const ClassService = require('../../../../Class/index');
 const UserService = require('../../../../User/index');
-const AssignmentService =  require('../../../../Assignment/index');
-const NewAssignmentNotifService = require('../../../Categories/Academic/New Assignment/index');
+const AssignmentService =  require('../../../../Assignment/db/index');
+const NewAssignmentNotifService = require('../../../Categories/Academic/New Assignment/db/index');
 
 const formatFunc = async (newAssignmentNotifID, userID) => {
     try{

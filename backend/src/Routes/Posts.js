@@ -9,7 +9,7 @@ const UserService    = require('../../lib/User/index'),
 
 const isValid = require('../../lib/Authentication/verifyRequests');
 
-const PostHandler = require('../../lib/CompositeServices/Notification/Relations/PostHandler');
+const PostHandler = require('../../lib/Relation Handlers/PostHandler');
 
 router.get('/users/:id/friends/posts', async (req, res) => {
 	try{

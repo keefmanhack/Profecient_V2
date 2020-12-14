@@ -1,8 +1,8 @@
-const ClassService         = require('../../../Class/index'),
-	  NewAssignmentService = require('../../../Notification/Categories/Academic/New Assignment/index'),
-	  NotificationService  = require('../../../Notification/index'),
-	  UserService          = require('../../../User/index'),
-	  AssignmentService    = require('../../../Assignment/index');
+const ClassService         = require('../Class/index'),
+	  NewAssignmentService = require('../Notification/Categories/Academic/New Assignment/index'),
+	  NotificationService  = require('../Notification/index'),
+	  UserService          = require('../User/index'),
+	  AssignmentService    = require('../Assignment/index');
 class AcademicHandler{
 
 

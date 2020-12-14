@@ -32,6 +32,7 @@ class AssignmentRequests{
 			return res.data;
 		}catch(err){
 			console.log(err);
+			return {success: false, error: 'Error deleting assignment'}
 		}
 	}
 
@@ -42,6 +43,7 @@ class AssignmentRequests{
 			return res.data;
 		}catch(err){
 			console.log(err);
+			return {success: false, error: 'Error creating assignment'}
 		}
 	}
 

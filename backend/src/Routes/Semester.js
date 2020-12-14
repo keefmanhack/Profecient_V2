@@ -6,15 +6,16 @@ const isValid = require('../../lib/Authentication/verifyRequests');
 const UserService         = require('../../lib/User/index'),
 	  ClassService        = require('../../lib/Class/index'),
 	  SemesterService     = require('../../lib/Semester/index'),
-	  AssignmentService   = require('../../lib/Assignment/index');
+	  AssignmentService   = require('../../lib/Assignment/db/index');
 
-const AcademicHandler = require('../../lib/CompositeServices/Notification/Academic/AcademicHandler');
+const AssignmentHandler = require('../../lib/Assignment/Assignment Handler/AssignmentHandler');
+const ConnectionHandler = require('../../lib/Connection Handler/ConnectionHandler');
 // Connection Routes
 
 router.post('/users/:id/class/connection', isValid, async (req, res) =>{
 	try{
-		const response = await ConnectionHandler.new()
-		const response = await AcademicHandler.addNewConnection(req.body.otherUserClass, otherUser._id, req.body.currUserClass, req.params.id);
+		const t = req.body;
+		const response = await ConnectionHandler.new(t.recvUserID, t.recvClassID, req.params.id, t.reqClassID);
 		res.json(response);
 	}catch(err){
 		console.log(err);
@@ -22,17 +23,16 @@ router.post('/users/:id/class/connection', isValid, async (req, res) =>{
 	}
 })
 
-// router.post('/users/:id/class/connection/delete', async (req, res) => {
-// 	try{
-// 		const currUser = await UserService.findById(req.params.id);
-// 		const otherUser = await UserService.findById(req.body.otherUser);
-// 		// await ClassService.toggleConnectionTo(req.body.currUserClass, otherUser._id, req.body.otherUserClass);
-// 		// await ClassService.toggleConnectionFrom(req.body.otherUserClass, currUser._id, req.body.currUserClass);
-// 		res.send();
-// 	}catch(err){
-// 		console.log(err);
-// 	}
-// })
+router.post('/users/:id/class/connection/delete', async (req, res) => {
+	try{
+		const t = req.body;
+		const response = await ConnectionHandler.remove(t.recvUserID, t.recvClassID, req.params.id, t.reqClassID);
+		res.json(response);
+	}catch(err){
+		console.log(err);
+		res.json({success: false, error: 'Error while removing this connection'});
+	}
+})
 
 // Semester Creator Routes
 router.post('/users/:id/semester', isValid, async (req, res) => {
@@ -256,11 +256,12 @@ router.get('/users/:id/classes/:classID/assignments', async (req,res) => {
 
 router.post('/users/:id/classes/:classID/assignment', isValid, async (req, res) =>{
 	try{
-		await AcademicHandler.newAssignment(req.params.id,req.params.classID,req.body);
+		const assData = req.body;
+		await AssignmentHandler.new(req.params.id, req.params.classID, assData);
 		res.json({success: true});
 	}catch(err){
 		console.log(err);
-		res.json({success: false});
+		res.json({success: false, error: 'Error creating assignment'});
 	}
 })
 
