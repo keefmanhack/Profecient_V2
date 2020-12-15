@@ -36,6 +36,17 @@ class ClassRequests{
 		}
 	}
 
+	getFormatedToConnections = async id => {
+		try{
+			const endPoint = '/users/' + this.userID + '/class/' + id + '/toConnections/formatted';
+			const res = await axios.get(endPoint);
+			return res.data;
+		}catch(err){
+			console.log(err);
+			return {success: false, error: 'Error retreiving class links'}
+		}
+	}
+
 	getAssignments = async classID =>{
 		try{
 			const endPoint = '/users/' + this.userID + '/classes/' + classID + '/assignments';

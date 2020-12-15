@@ -1,23 +1,59 @@
 const ClassService = require('../Class/index'),
+      UserService = require('../User/index'),
       ConnectionNotif = require('../Notification/Categories/Academic/New Connection/ConnectionNotif');
 
 
 class ConnectionHandler{
-    static async new(userIDRec, classIDRec, userIDRequ, classIDRequ){
-      if(!classIDRec || !userIDRec || !classIDRec || !userIDRec){
-        throw new Error('Missing data to add a connection');
-      }
-          let res = await ClassService.addConnectionFrom(classIDRec, classIDRequ, userIDRequ);
-          if(!res.success){return res}
-          res = await ClassService.addConnectionTo(classIDRequ, classIDRec, userIDRec);
-          if(!res.success){return res}
+  constructor(userID){
+    this.userID = userID;
+  }
 
-          //dispatch notification
-          const CNotif = new ConnectionNotif(userIDRec);
-          await CNotif.push(classIDRec, userIDRequ, classIDRequ);
-
-          return res;
+  async getFormatted(classID){
+    if(!classID){
+      throw new Error('Missing id to get class links');
     }
+    const toConnections = await ClassService.getToConnections(classID); //still needs written
+    const returnArr = [];
+
+    for(let i =0; i<toConnections.length; i++){
+      const user = await UserService.findById(toConnections[i].userID);
+      const classData = await ClassService.findById(toConnections[i].classID);
+      const t = {
+        _id: toConnections[i]._id,
+        user: {
+          name: user.name,
+          profilePictureURL: user.profilePictureURL,
+          _id: name._id
+        },
+        classData: {
+          name: classData.name,
+          instructor: classData.instructor,
+          location: classData.location,
+          daysOfWeek: classData.daysOfWeek,
+          assignments: classData.assignments,
+          _id: classData._id,
+        }
+      }
+      returnArr.push(t);
+    }
+    return returnArr;
+  }
+
+  static async new(userIDRec, classIDRec, userIDRequ, classIDRequ){
+    if(!classIDRec || !userIDRec || !classIDRec || !userIDRec){
+      throw new Error('Missing data to add a connection');
+    }
+        let res = await ClassService.addConnectionFrom(classIDRec, classIDRequ, userIDRequ);
+        if(!res.success){return res}
+        res = await ClassService.addConnectionTo(classIDRequ, classIDRec, userIDRec);
+        if(!res.success){return res}
+
+        //dispatch notification
+        const CNotif = new ConnectionNotif(userIDRec);
+        await CNotif.push(classIDRec, userIDRequ, classIDRequ);
+
+        return res;
+  }
   
   static async remove(userIDRec, classIDRec, userIDRequ, classIDRequ){
     if(!classIDRec || !userIDRec || !classIDRec || !userIDRec){

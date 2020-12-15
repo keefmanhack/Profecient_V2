@@ -12,6 +12,17 @@ const AssignmentHandler = require('../../lib/Assignment/Assignment Handler/Assig
 const ConnectionHandler = require('../../lib/Connection Handler/ConnectionHandler');
 // Connection Routes
 
+router.get('/users/:id/class/:classID/toConnections/formatted', async (req, res) => {
+	try{
+		const ch = new ConnectionHandler(req.params.id);
+		const formattedConnections = await ch.getFormatted(req.params.classID);
+		res.json({success: true, connections: formattedConnections});
+	}catch(err){
+		console.log(err);
+		res.json({success: false, error: 'Server error retrieving class links'});
+	}
+})
+
 router.post('/users/:id/class/connection', isValid, async (req, res) =>{
 	try{
 		const t = req.body;
