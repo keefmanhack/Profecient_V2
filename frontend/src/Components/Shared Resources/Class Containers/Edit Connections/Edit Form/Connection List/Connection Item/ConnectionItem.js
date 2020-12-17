@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 
+import CheckBox from '../../../../../Check Box/CheckBox';
+import AssignmentContainer from '../../../../Assignment Container/AssignmentContainer';
+
 function ConnectionItem(props){
     return(
         <div className='connection-item'>
             <div>
-                <CheckBox/>
+                <CheckBox
+                    onCheck={()=>{}}
+                    defaultCheck={props.selected}
+                    onCheck={() => props.onSelected()}
+                />
             </div>
             <div>
                 <UserInformation profilePictureURL={props.user.profilePictureURL} name={props.user.name}/>

@@ -70,6 +70,17 @@ describe('Handeling new connections', () =>{
         expect(acNotifs.list[0].onModel).toEqual('NewConnection');
     })
 
+    it('Can properly format to connections for user 1', async () => {
+        user1 = await UserService.findById(user1._id);
+        const ch = new ConnectionHandler(user1._id);
+        const toConnections = await ch.getFormatted(class1._id);
+
+        expect(toConnections.size).toEqual(1);
+        const t = toConnections.values().next().value;
+        expect(t.user.name).toEqual(user2.name);
+        expect(t.classData._id).toEqual(class2._id);
+    })
+
     it('Does not add new connection to user2 class', async () => {
         const res = await ConnectionHandler.new(user2._id, class2._id, user1._id, class1._id);
 

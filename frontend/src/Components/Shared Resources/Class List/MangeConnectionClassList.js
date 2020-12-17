@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import OwnedContainer from '../Class Containers/OwnedContainer';
+import EditConnectionsContainer from '../Class Containers/Edit Connections/EditConnectionsContainer';
 import BaseClassList from './BaseClassList';
 
 function ManageConnectionClassList(props){
@@ -18,7 +18,7 @@ function ManageConnectionClassList(props){
             }
         const container =
             (
-                <OwnedContainer
+                <EditConnectionsContainer
                     classData={data}
                     currentUserID={props.currentUserID}    
                     assignmentIDs={classData.assignments}

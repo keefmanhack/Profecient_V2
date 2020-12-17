@@ -179,6 +179,14 @@ function connectionExists(connectionList, newConnection){
 	return false;
 }
 
+const getToConnections = ClassModel =>  async id => {
+	if(!id){
+		throw new Error('Missing id to get To Connections for class');
+	}
+	const c = await ClassModel.findById(id);
+	return c.connectionsTo;
+}
+
 module.exports = ClassModel => {
 	return {
 		create: BaseRequests.create(ClassModel),
@@ -187,6 +195,7 @@ module.exports = ClassModel => {
 		deleteById: BaseRequests.deleteById(ClassModel),
 
 		getCurrent: getCurrent(ClassModel),
+		getToConnections: getToConnections(ClassModel),
 		createMultiple: createMultiple(ClassModel),
 		getClassesOccuringToday: getClassesOccuringToday(ClassModel),
 		addConnectionTo: addConnectionTo(ClassModel),

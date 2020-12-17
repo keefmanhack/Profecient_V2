@@ -3,27 +3,28 @@ const ClassService = require('../Class/index'),
       ConnectionNotif = require('../Notification/Categories/Academic/New Connection/ConnectionNotif');
 
 
+//Role: Process requests on Connections between classes
+
 class ConnectionHandler{
   constructor(userID){
-    this.userID = userID;
+    this.userID = userID; //this probably doesn't need to exist
   }
 
   async getFormatted(classID){
     if(!classID){
       throw new Error('Missing id to get class links');
     }
-    const toConnections = await ClassService.getToConnections(classID); //still needs written
-    const returnArr = [];
+    const toConnections = await ClassService.getToConnections(classID);
+    let map = new Map();
 
     for(let i =0; i<toConnections.length; i++){
       const user = await UserService.findById(toConnections[i].userID);
       const classData = await ClassService.findById(toConnections[i].classID);
       const t = {
-        _id: toConnections[i]._id,
         user: {
           name: user.name,
           profilePictureURL: user.profilePictureURL,
-          _id: name._id
+          _id: user._id
         },
         classData: {
           name: classData.name,
@@ -34,9 +35,9 @@ class ConnectionHandler{
           _id: classData._id,
         }
       }
-      returnArr.push(t);
+      map.set(toConnections[i]._id, t);
     }
-    return returnArr;
+    return map;
   }
 
   static async new(userIDRec, classIDRec, userIDRequ, classIDRequ){

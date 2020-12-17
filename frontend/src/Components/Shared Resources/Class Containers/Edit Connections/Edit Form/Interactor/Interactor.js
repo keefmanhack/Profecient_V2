@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {FadeRightHandleState} from '../../../../../Shared Resources/Effects/CustomTransition';
+
 import './index.css';
 function Interactor(props){
     return(
@@ -14,9 +16,9 @@ function Interactor(props){
 
 function DeleteRenderer(props){
     return(
-        <FadeInRightHandleState condtion={props.selectCount>0}>
+        <FadeRightHandleState condtion={props.selectCount>0}>
             <button onClick={()=>props.delete()}>Delete {props.selectCount} Connections</button>
-        </FadeInRightHandleState>
+        </FadeRightHandleState>
     )
 }
 

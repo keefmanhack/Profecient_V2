@@ -16,7 +16,8 @@ router.get('/users/:id/class/:classID/toConnections/formatted', async (req, res)
 	try{
 		const ch = new ConnectionHandler(req.params.id);
 		const formattedConnections = await ch.getFormatted(req.params.classID);
-		res.json({success: true, connections: formattedConnections});
+		console.log(formattedConnections);
+		res.json({success: true, connectionMap: [...formattedConnections]});
 	}catch(err){
 		console.log(err);
 		res.json({success: false, error: 'Server error retrieving class links'});
