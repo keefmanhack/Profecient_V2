@@ -6,6 +6,7 @@ import ClassRequests from '../../../../../APIRequests/Class';
 //Composed components
 import Interactor from './Interactor/Interactor';
 import ConnectionList from './Connection List/ConnectionList';
+import PopUp from '../../../Pop Up/PopUp';
 
 import {getSelectCount, selectAllHelper, unSelectAllHelper, getSelectedIDs} from './HelperFunctions';
 
@@ -29,7 +30,6 @@ function EditConnectionsForm(props){
         setIsLoading(true);
         const res = await classReq.getFormatedToConnections(props.classID);
         if(res.success){
-            console.log(res.connectionMap);
             setConnections(new Map(res.connectionMap));
         }else{
             setErrMsg(res.error);
@@ -39,7 +39,7 @@ function EditConnectionsForm(props){
 
     const deleteConnections =  async () => {
         setIsLoading(true);
-        const res = await classReq.removeToConnections(getSelectedIDs(connections));
+        const res = await classReq.removeToConnections(props.classID, getSelectedIDs(connections));
         res.success ? getConnections() : setErrMsg(res.error);
         setIsLoading(false);
     }
@@ -50,65 +50,34 @@ function EditConnectionsForm(props){
         c.selected=val;
         t.set(id, c);
 
-        setConnections(t);
+        setConnections(new Map(t));
     }
 
     return(
-        <PopUp hideForm={() => props.hideForm()} className='edit-connections'>
+        <PopUp hideForm={() => props.hideForm()} className='edit-connections form-bc mont-font'>
                 <MessageFlasher resetter={() => setErrMsg('')} condition={errMsg!==''}>
                     <AbsractError errorMessage={errMsg}/>
                 </MessageFlasher>
 
                 <h1>Edit Connections</h1>
-                <h2>{props.className}</h2>
+                <h2 className='green-c'>{props.className}</h2>
                 <hr/>
-                <button onClick={()=>props.hideForm()} className='red-c'>Exit</button>
+                <button onClick={()=>props.hideForm()} className='red-c exit'>Exit</button>
                 <div>
                     <Interactor
                         delete={() => deleteConnections()}
-                        selectAll={() => setConnections(selectAllHelper(connections))}
-                        unSelectAll={() => setConnections(unSelectAllHelper(connections))}
+                        selectAll={() => setConnections(new Map(selectAllHelper(connections)))}
+                        unSelectAll={() => setConnections(new Map(unSelectAllHelper(connections)))}
                         selectCount={getSelectCount(connections)}
                     />
                 </div>
                 <ConnectionRenderer 
                     isLoading={isLoading}
                     connections={connections}
-                    onSelected={(id) => addSelected(id)}
+                    onSelected={(id, b) => addSelected(id, b)}
                 />
         </PopUp>
     )
-}
-
-class PopUp extends React.Component{
-    constructor(props){
-        super(props)
-
-        this.wrapperRef = React.createRef();
-		this.handleClickOutside = this.handleClickOutside.bind(this);
-    }
-
-    componentDidMount(){
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
-
-    componentWillUnmount(){
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    }
-
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
-            this.props.hideForm();
-        }
-    }
-
-    render(){
-        return(
-            <div ref={this.wrapperRef} className={'pop-up ' + this.props.className}>
-                {this.props.children}
-            </div>
-        )
-    }
 }
 
 function ConnectionRenderer(props){

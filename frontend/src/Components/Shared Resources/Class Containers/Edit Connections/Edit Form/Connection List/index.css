@@ -1,0 +1,46 @@
+.connection-list{
+    max-height: 300px;
+    overflow: scroll;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.connection-item{
+    padding: 5px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+.connection-item img{
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
+}
+
+.connection-item h5{
+    display: inline;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.connection-item .user-information{
+    display: inline;
+    margin-left: 10px;
+}
+
+.connection-item .class-information{
+    margin-left: 34px;
+    position: relative;
+}
+
+.connection-item button.see-more{
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    border-radius: 3px;
+}
+
+.class-information .class-container h2{
+    margin-left: 5px;
+}

@@ -7,14 +7,14 @@ import AbsractError from '../Messages/Error Messages/AbsractError';
 import Loader from '../Effects/Loader/loader';
 
 import './index.css';
-function ClassList(props){
+function BaseClassList(props){
     const classReq = new ClassRequests(props.userID);
     const [isLoading, setIsLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
-
+    console.log(props.semID);
     useEffect(() => {
         getClasses();
-    }, [props.semID, props.reload]);
+    }, [props.semID, props.reload, props.userID]);
 
 
     const getClasses = async () => {
@@ -45,4 +45,4 @@ function ClassList(props){
     )
 }
 
-export default ClassList;
+export default BaseClassList;

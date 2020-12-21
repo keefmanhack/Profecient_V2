@@ -1,0 +1,12 @@
+button.checkbox{
+    height: 30px;
+    width: 30px;
+    border: none;
+    border-radius: 5px;
+}
+
+.checkbox.inset-shadow{
+    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.32);
+    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.32);
+    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.32);
+}

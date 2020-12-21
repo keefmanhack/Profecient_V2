@@ -5,20 +5,13 @@ import AssignmentContainer from '../../../../Assignment Container/AssignmentCont
 
 function ConnectionItem(props){
     return(
-        <div className='connection-item'>
-            <div>
-                <CheckBox
-                    onCheck={()=>{}}
-                    defaultCheck={props.selected}
-                    onCheck={() => props.onSelected()}
-                />
-            </div>
-            <div>
-                <UserInformation profilePictureURL={props.user.profilePictureURL} name={props.user.name}/>
-            </div>
-            <div>
-                <ClassInformation userID={props.user._id} classData={props.classData}/>
-            </div>
+        <div className='connection-item light-green-bc'>
+            <CheckBox
+                defaultCheck={props.selected}
+                onCheck={(b) => props.onSelected(b)}
+            />
+            <UserInformation profilePictureURL={props.user.profilePictureURL} name={props.user.name}/>
+            <ClassInformation userID={props.user._id} classData={props.classData}/>
         </div>
     )
 }
@@ -27,7 +20,7 @@ function ClassInformation(props){
     const [seeMore, setSeeMore] = useState(false);
 
     return(
-        <div>
+        <div className='class-information'>
             {seeMore ? 
                 <AssignmentContainer
                     name={props.classData.name}
@@ -48,10 +41,15 @@ function ClassInformation(props){
 }
 
 function SeeMoreToggler(props){
-    return props.seeMore ?
-        <button onClick={() => props.setSeeMore(true)}>See More</button>
-    :
-        <button onClick={() => props.setSeeMore(false)}>See Less</button>
+    return(
+        <button className='see-more muted-bc' onClick={() => props.setSeeMore(!props.seeMore)}>
+            {props.seeMore ?
+                'See Less'
+                :
+                'See More'
+            }
+        </button>
+    )
 }
 
 function UserInformation(props){

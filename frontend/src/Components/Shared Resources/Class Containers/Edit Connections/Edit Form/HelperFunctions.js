@@ -1,5 +1,5 @@
 export function getSelectCount(connMap){
-    return getSelectedIDs.length;
+    return getSelectedIDs(connMap).length;
 }
 
 export function selectAllHelper(connMap){
@@ -23,7 +23,7 @@ export function getSelectedIDs(connMap){
     let returnArr =[];
 
     for (let [key, value] of connMap) {
-        if(connMap.get(key).selected){
+        if(value.selected){
             returnArr.push(key);
         }
     }

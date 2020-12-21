@@ -22,7 +22,7 @@ function ClassView(props){
 
 	useEffect(() => {
 		getSemesters();
-
+		console.log(currSemID);
 	}, [props.userID]);
 
 	const getSemesters = async () => {
@@ -31,13 +31,13 @@ function ClassView(props){
 		setIsLoading(false);
 		if(res.success){
 			setSemesters(res.semesters);
+			console.log(res.semesters);
 			if(res.semesters.length>0){
 				setCurrSemesterID(res.semesters[res.semesters.length-1]._id)
 			}
 		}else{
 			setErrMsg(res.error);
 		}
-
 	}
 	const deleteSemester = async () => {
 		setIsLoading(true);

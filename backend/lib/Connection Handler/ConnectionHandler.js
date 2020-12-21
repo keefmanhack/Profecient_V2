@@ -1,3 +1,4 @@
+const { connections } = require('mongoose');
 const ClassService = require('../Class/index'),
       UserService = require('../User/index'),
       ConnectionNotif = require('../Notification/Categories/Academic/New Connection/ConnectionNotif');
@@ -31,6 +32,7 @@ class ConnectionHandler{
           instructor: classData.instructor,
           location: classData.location,
           daysOfWeek: classData.daysOfWeek,
+          time: classData.time,
           assignments: classData.assignments,
           _id: classData._id,
         }
@@ -64,6 +66,28 @@ class ConnectionHandler{
     if(!res.success){return res}
     res = await ClassService.removeConnectionTo(classIDRequ, classIDRec, userIDRec);
     return res;
+  }
+
+  static async removeMultiple(userID, classID, connectionIDs){
+    if(!classID || !connectionIDs || !userID){
+      throw new Error('Missing data to remove multiple to connections')
+    }
+    if(!Array.isArray(connectionIDs)){connectionIDs=[connectionIDs]}
+    const c = await ClassService.findById(classID);
+    for(let i =0; i<connectionIDs.length; i++){
+      const connection = findConnectionByID(c.connectionsTo, connectionIDs[i]);
+      if(connection){
+        await this.remove(connection.userID, connection.classID, userID, classID);
+      }
+    }
+  }
+}
+
+function findConnectionByID(connections, id){
+  for(let i =0; i< connections.length; i++){
+    if(connections[i]._id + '' === id + ''){
+      return connections[i];
+    }
   }
 }
 

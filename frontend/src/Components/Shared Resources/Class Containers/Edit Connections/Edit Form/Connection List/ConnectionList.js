@@ -5,20 +5,19 @@ import ConnectionItem from './Connection Item/ConnectionItem';
 import './index.css';
 function ConnectionList(props){
     let connectionItems = [];
-    console.log(props.connections);
-    // for (let [key, value] of props.connections) {
-    //     const t = <ConnectionItem
-    //         key={key}
-    //         selected={value.selected}
-    //         user={value.user}
-    //         classData={value.classData}
-    //         onSelected={() => props.onSelected(key)}
-    //     />
-    //     connectionItems.push(t);
-    // }
+    for (let [key, value] of props.connections) {
+        const t = <ConnectionItem
+            key={key}
+            selected={value.selected}
+            user={value.user}
+            classData={value.classData}
+            onSelected={(b) => props.onSelected(key, b)}
+        />
+        connectionItems.push(t);
+    }
 
     return(
-        <div className='connection-list'>
+        <div className='connection-list light-grey-bc'>
             {connectionItems.length>0 ?
                 connectionItems
             :

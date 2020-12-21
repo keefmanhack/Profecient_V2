@@ -138,7 +138,7 @@ class Form extends React.Component{
 					<AbsractError errorMessage={this.state.errMsg}/>
 				</MessageFlasher>
 				<div className='background-shader'/>
-				<div ref={this.wrapperRef} className='new-assignment new-form sans-font'>
+				<div ref={this.wrapperRef} className='new-assignment new-form sans-font form-bc'>
 					{this.state.loading ? <Loader/> : null}
 					<FadeInOutHandleState condition={this.state.success}>
 		 				<SuccessCheck onCompleted={() =>this.props.hideForm()}/>

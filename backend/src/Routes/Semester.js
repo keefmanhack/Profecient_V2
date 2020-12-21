@@ -16,11 +16,20 @@ router.get('/users/:id/class/:classID/toConnections/formatted', async (req, res)
 	try{
 		const ch = new ConnectionHandler(req.params.id);
 		const formattedConnections = await ch.getFormatted(req.params.classID);
-		console.log(formattedConnections);
 		res.json({success: true, connectionMap: [...formattedConnections]});
 	}catch(err){
 		console.log(err);
 		res.json({success: false, error: 'Server error retrieving class links'});
+	}
+})
+
+router.delete('/users/:id/class/:classID/toConnections', async (req, res) => {
+	try{
+		await ConnectionHandler.removeMultiple(req.params.id, req.params.classID, req.query.connectionIDs);
+		res.json({success: true});
+	}catch(err){
+		console.log(err);
+		res.json({success: false, error: 'Server error deleting connections'})
 	}
 })
 

@@ -33,6 +33,7 @@ function SelectableClassList(props){
             setClasses={(classes) => setClasses(classes)}
             containers={containers}
             semID={props.semID}
+            userID={props.userID}
         />
     )
 }

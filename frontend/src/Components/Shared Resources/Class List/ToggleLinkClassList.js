@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import BaseClassList from './BaseClassList';
 import LinkContainer from '../Class Containers/Link Container/LinkContainer';
@@ -39,6 +39,7 @@ function ToggleLinkClassList(props){
             containers={containers}
             semID={props.semID}
             reload={reloadKey}
+            userID={props.userID}
         />
     )
 }

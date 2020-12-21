@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import EditConnectionsContainer from '../Class Containers/Edit Connections/EditConnectionsContainer';
 import BaseClassList from './BaseClassList';
@@ -33,6 +33,7 @@ function ManageConnectionClassList(props){
             setClasses={(classes) => setClasses(classes)}
             containers={containers}
             semID={props.semID}
+            userID={props.userID}
         />
     )
 }

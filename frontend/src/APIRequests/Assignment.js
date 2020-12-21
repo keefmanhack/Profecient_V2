@@ -1,4 +1,7 @@
+import { from } from 'form-data';
 import axios from './index';
+
+import {buildQueryString} from './helperFunc';
 
 class AssignmentRequests{
 	constructor(id){
@@ -111,15 +114,4 @@ class AssignmentRequests{
 
 	
 }
-
-function buildQueryString(name, ids){
-	if(ids.length===0){return name + '='}
-	let s = '';
-	for(let i =0; i<ids.length-1;i++){
-		s += name + '=' + ids[i] + '&';
-	}
-	s += name + '=' + ids[ids.length-1];
-	return s;
-}
-
 export default AssignmentRequests;

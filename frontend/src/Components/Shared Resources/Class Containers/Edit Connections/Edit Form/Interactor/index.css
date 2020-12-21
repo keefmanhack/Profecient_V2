@@ -1,0 +1,23 @@
+.class-view-container .interactor h5{
+    margin: 0;
+    font-weight: 200;
+}
+
+.class-view-container .interactor h5 span{
+    font-weight: 400;
+}
+
+.interactor button{
+    border-radius: 5%;
+    border: none;
+}
+
+.interactor button:first-of-type{
+    margin-right: 5px;
+}
+
+.interactor button.remove{
+    position: absolute;
+    right: 5px;
+    top: 116px;
+}

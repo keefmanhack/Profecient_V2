@@ -1,3 +1,4 @@
+import { buildQueryString } from './helperFunc';
 import axios from './index';
 
 class ClassRequests{
@@ -84,6 +85,17 @@ class ClassRequests{
 			return res.data;
 		}catch(err){
 			return {success: false, error: 'Unknown error getting classes'}
+		}
+	}
+
+	removeToConnections = async (classID, ids) => {
+		try{
+			const endpoint = '/users/' + this.userID + '/class/' + classID + '/toConnections?' + buildQueryString('connectionIDs', ids);
+			const res = await axios.delete(endpoint)
+			return res.data;
+		}catch(err){
+			console.log(err);
+			return {success: false, error: 'Unable to delete connections'}
 		}
 	}
 }
