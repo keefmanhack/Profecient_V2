@@ -16,11 +16,6 @@ app.use(
 );
 app.use(express.json());
 
-app.use(require('express-session')({
-    secret: process.env.EXP_SESS_SECRET,
-    resave: false,
-    saveUninitialized: false,
-}));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
