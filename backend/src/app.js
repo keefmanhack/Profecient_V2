@@ -2,14 +2,15 @@ const   express 	= require('express'),
  		app     	= express(),
 		cors 	    = require('cors'),
 		passport      = require('passport'),
-		LocalStrategy = require('passport-local');
+		LocalStrategy = require('passport-local'),
+		path		  = require('path');
 
 const User = require('../lib/User/user-model');
 const UserService = require('../lib/User/index');
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:' + process.env.FRONTEND_PORT,
     credentials: true,
   })
 );
@@ -42,6 +43,12 @@ app.use(AgendaRoutes);
 app.use(PostRoutes);
 app.use(SemesterRoutes);
 app.use(UserRoutes);
+
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
+});
 
 
 const testUsers = require('../lib/Testing Data/testUsers');

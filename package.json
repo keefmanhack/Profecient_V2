@@ -1,0 +1,28 @@
+{
+  "name": "profecient_v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "backend/server.js",
+  "dependencies": {
+    "concurrency": "^0.1.4",
+    "nodemon": "^2.0.6",
+    "reactide-config": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && nodemon",
+    "frontend:build": "cd frontend && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keefmanhack/Profecient_V2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keefmanhack/Profecient_V2/issues"
+  },
+  "homepage": "https://github.com/keefmanhack/Profecient_V2#readme"
+}

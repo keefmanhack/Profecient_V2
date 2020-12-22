@@ -1,7 +1,8 @@
 const mongoose      = require('mongoose');
+const path = require('path')
 
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
+    require('dotenv').config({ path: path.resolve(__dirname, '../.env')});
     console.log('configured');
 }
 
@@ -16,6 +17,6 @@ mongoose.connect(mongoUrl);
 
 const app = require('./src/app.js');
 
-app.listen(process.env.PORT || 8080, () => {
-	console.log('Server running');
+app.listen(process.env.BACKEND_PORT, () => {
+	console.log('Server running on ' + process.env.BACKEND_PORT);
 });
