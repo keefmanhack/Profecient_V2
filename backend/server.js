@@ -17,6 +17,6 @@ mongoose.connect(mongoUrl);
 
 const app = require('./src/app.js');
 
-app.listen(process.env.BACKEND_PORT, () => {
+app.listen(process.env.PORT || process.env.BACKEND_PORT, () => {
 	console.log('Server running on ' + process.env.BACKEND_PORT);
 });
